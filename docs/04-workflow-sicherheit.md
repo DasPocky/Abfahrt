@@ -31,11 +31,11 @@
 | `sast` | semgrep (Code-Analyse) |
 | `preview` | nach `build`: Preview-Deploy, URL als PR-Kommentar |
 
-**Laufzeit:** Alle Jobs laufen gleichzeitig, `concurrency` bricht veraltete Läufe ab, npm-Cache ist aktiv. Bei einem privaten Repo stehen 2.000 Action-Minuten pro Monat zur Verfügung. Das reicht für etwa 150 PR-Durchläufe.
+**Laufzeit:** Alle Jobs laufen gleichzeitig, `concurrency` bricht veraltete Läufe ab, npm-Cache ist aktiv.
 
 ## Sicherheitsmaßnahmen
 
-| Maßnahme | Jetzt (privat, Free) | Nach Veröffentlichung |
+| Maßnahme | Basis (auch privat möglich) | Zusätzlich ab Veröffentlichung in M0 |
 |---|---|---|
 | Kein direkter Push auf `main` | Abmachung + CI-Check | **Ruleset** erzwingt: nur PR, CI grün, kein Force-Push/Löschen, nur Merge-Commits, signierte Commits |
 | Secret-Schutz | gitleaks in CI, `.gitignore` für `.env`/`.dev.vars` | + GitHub Secret-Scanning mit **Push-Schutz** |
@@ -45,7 +45,7 @@
 | Cloudflare-Token | nur als GitHub-Secret, Rechte nur „Workers Scripts: Edit“ für einen Account | gleich |
 | Meldeweg | `SECURITY.md` | + private Vulnerability Reports |
 
-Beim Wechsel auf öffentlich ändern sich **nur Einstellungen**: Ruleset und Scans in GitHub aktivieren. Code und Workflows bleiben gleich.
+Das Repo wird in M0 öffentlich, dann werden Ruleset und Scans in GitHub aktiviert. Öffentliche Repos haben unbegrenzte Action-Minuten.
 
 ## Was du einmalig tun musst
 

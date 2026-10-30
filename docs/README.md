@@ -18,11 +18,10 @@ Echtzeit-ÖPNV-PWA mit Fokus Düsseldorf/Rheinland und Abdeckung von ganz Deutsc
 - **Daten:** VRR OpenService als Primärquelle, Transitous für ganz Deutschland und als Fallback
 - **Reihenfolge:** M1 Abfahrtsmonitor + Favoriten → M2 Verbindungen → M3 Störungen/Push → M4 Extras
 - **Workflow:** Issue → Branch → PR → Merge-Commit (no-ff) nach OK, Conventional Commits, signierte Commits
-- **Repo:** erst privat mit Gratis-Scannern, später öffentlich mit GitHub-Rulesets
+- **Repo:** wird in M0 **öffentlich** (Bedingung von Transitous). Danach greifen GitHub-Rulesets, CodeQL und Secret-Push-Schutz gratis.
+- **Lizenz:** AGPL-3.0
 
 ## Offene Punkte
 
-1. **Transitous verlangt Open Source.** Die Nutzung ist nur erlaubt, wenn der Quellcode öffentlich unter einer Open-Source-Lizenz steht. Vorher sind nur leichte Prototyp-Tests erlaubt. Daraus folgt: **Spätestens bevor Familie und Freunde die App nutzen (Ende M1), muss das Repo öffentlich werden.** Vorschlag: Repo schon in M0 öffentlich machen und eine Lizenz wählen. Damit wären alle GitHub-Schutzfunktionen sofort gratis.
-2. **Lizenz:** Vorschlag **AGPL-3.0** (wer den Code als Dienst weiterbetreibt, muss Änderungen offenlegen) oder **MIT** (maximal frei).
-3. **VRR-Produktivzugang:** Die Nutzung ohne Registrierung ist nur für Test/Entwicklung/Hobby erlaubt. Spätestens vor der Freigabe an Familie und Freunde schickst du eine kurze Mail an `opendata-oepnv@vrr.de`, den Entwurf liefere ich.
-4. **Cache auf `workers.dev`:** Wird beim ersten Deploy getestet (M0). Eine eigene Domain (≈ 10–15 €/Jahr) ist nicht nötig, solange das klappt.
+1. **VRR-Produktivzugang:** Ich liefere in M0 den Mailtext an `opendata-oepnv@vrr.de`, du schickst ihn ab.
+2. **Cache auf `workers.dev`:** Wird beim ersten Deploy getestet (M0). Eine eigene Domain ist nicht nötig, solange das klappt.
