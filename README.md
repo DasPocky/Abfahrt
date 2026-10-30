@@ -7,4 +7,4 @@ Echtzeit-ÖPNV-Auskunft als Progressive Web App – Fokus Düsseldorf/Rheinland,
 - Störungen & Meldungen
 - Favoriten & Pendlerstrecken
 
-Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`docs/`](docs/) (in Arbeit).
+Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`docs/`](docs/).
