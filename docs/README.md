@@ -18,7 +18,7 @@ Echtzeit-ÖPNV-PWA mit Fokus Düsseldorf/Rheinland und Abdeckung von ganz Deutsc
 - **Daten:** VRR OpenService als Primärquelle, Transitous für ganz Deutschland und als Fallback
 - **Reihenfolge:** M1 Abfahrtsmonitor + Favoriten → M2 Verbindungen → M3 Störungen/Push → M4 Extras
 - **Workflow:** Issue → Branch → PR → Merge-Commit (no-ff) nach OK, Conventional Commits, signierte Commits
-- **Repo:** wird in M0 **öffentlich** (Bedingung von Transitous). Danach greifen GitHub-Rulesets, CodeQL und Secret-Push-Schutz gratis.
+- **Repo:** bleibt privat, bis die erste Version steht (Ende M1), dann **öffentlich** (Bedingung von Transitous). Bis dahin nutzen wir Transitous nur für leichte Entwicklungstests und schützen das Repo mit Gratis-Scannern. Danach greifen GitHub-Rulesets, CodeQL und Secret-Push-Schutz.
 - **Lizenz:** AGPL-3.0
 
 ## Offene Punkte

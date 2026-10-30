@@ -5,7 +5,6 @@ Jeder Punkt wird ein eigenes Issue. Ich schlage die Issues vor, du nickst sie ab
 ## M0 – Fundament
 
 - Repo-Regeln: Issue-/PR-Vorlagen, Labels, `CONTRIBUTING.md`, `SECURITY.md`, Lizenz AGPL-3.0
-- Repo öffentlich schalten, Ruleset für `main`, CodeQL, Secret-Scanning mit Push-Schutz
 - Mailtext VRR-Produktivzugang
 - CI: parallele Jobs (Lint, Typecheck, Tests, Build, Security-Scans, PR-Titel-Check), Dependabot
 - Projekt-Gerüst: React + Vite + TS, Worker mit Static Assets, `wrangler.jsonc`
@@ -25,6 +24,7 @@ Jeder Punkt wird ein eigenes Issue. Ich schlage die Issues vor, du nickst sie ab
 - Karte mit Haltestellen (MapLibre + OpenFreeMap)
 - PWA: installierbar, Offline-Shell, Hell/Dunkel automatisch
 - Über-Seite mit Pflicht-Quellhinweisen
+- Veröffentlichung: Repo öffentlich schalten, Ruleset für `main`, CodeQL, Secret-Scanning mit Push-Schutz
 
 ## M2 – Verbindungssuche
 

@@ -71,7 +71,7 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - `plan` Düsseldorf → Köln: 5 Verbindungen mit Fußwegen
 
 **Nutzungsbedingungen**, alle Punkte müssen zutreffen:
-1. **Projekt ist Open Source.** Der Quellcode muss unter einer Open-Source-Lizenz veröffentlicht sein. Leichte Prototyp-Tests vorher sind ok. ⚠️ Das betrifft unsere Entscheidung „erst privat“, siehe [Offene Punkte](README.md#offene-punkte).
+1. **Projekt ist Open Source.** Der Quellcode muss unter einer Open-Source-Lizenz veröffentlicht sein. Leichte Prototyp-Tests vorher sind ok. Bei uns geschieht das mit der ersten Version (Ende M1), bis dahin nur leichte Entwicklungstests.
 2. **Nicht kommerziell.**
 3. **Ressourcenschonend:** Mehr als 720 Anfragen/24 h vom Typ `/plan`, viele Nutzer oder automatisierte Abfragen erfordern vorherige Abstimmung im Matrix-Kanal.
 4. **User-Agent** bei jeder Anfrage mit App-Name, Version und Kontakt (E-Mail oder URL)
