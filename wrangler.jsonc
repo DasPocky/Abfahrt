@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "abfahrt",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "binding": "ASSETS",
+    // React-App (SPA): unbekannte Pfade liefern index.html
+    "not_found_handling": "single-page-application",
+    // Nur /api/* läuft durch den Worker, alles andere direkt aus den Static Assets
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": {
+    "enabled": true,
+  },
+}

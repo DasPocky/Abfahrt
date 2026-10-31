@@ -6,6 +6,7 @@ Bitte **kein öffentliches Issue** anlegen. Melde Sicherheitsprobleme vertraulic
 [„Report a vulnerability“](https://github.com/DasPocky/Abfahrt/security/advisories/new).
 
 Bitte gib an:
+
 - betroffener Bereich (App, Worker-API, CI)
 - Schritte zum Nachstellen
 - mögliche Auswirkungen

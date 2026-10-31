@@ -9,6 +9,27 @@ Echtzeit-ÖPNV-Auskunft als Progressive Web App – Fokus Düsseldorf/Rheinland,
 
 Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`docs/`](docs/).
 
+## Entwicklung
+
+Voraussetzung: Node.js ≥ 22.22.2 (empfohlen 24, siehe `.nvmrc`)
+
+```bash
+npm ci              # Abhängigkeiten installieren
+npm run dev         # App + Worker lokal (http://localhost:5173)
+npm run lint        # ESLint + Prettier
+npm run typecheck   # Worker-Typen erzeugen + TypeScript prüfen
+npm test            # Tests App (jsdom) + Worker (Workers-Runtime)
+npm run build       # Produktions-Build nach dist/
+npm run preview     # Build lokal wie in Produktion testen
+```
+
+| Ordner         | Inhalt                                                |
+| -------------- | ----------------------------------------------------- |
+| `src/`         | React-App (PWA)                                       |
+| `worker/`      | Cloudflare Worker, API unter `/api/*`                 |
+| `public/`      | statische Dateien, u. a. `_headers` (Security-Header) |
+| `test/worker/` | Worker-Tests                                          |
+
 ## Mitmachen & Sicherheit
 
 - Ablauf und Regeln: [`CONTRIBUTING.md`](CONTRIBUTING.md)

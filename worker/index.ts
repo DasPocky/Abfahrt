@@ -1,0 +1,35 @@
+import { withSecurityHeaders } from "./security-headers";
+
+const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
+
+function json(data: unknown, init?: ResponseInit): Response {
+  return Response.json(data, {
+    ...init,
+    headers: { "Cache-Control": "no-store", ...init?.headers },
+  });
+}
+
+async function handleApi(request: Request): Promise<Response> {
+  if (!ALLOWED_METHODS.has(request.method)) {
+    return json({ error: "method_not_allowed" }, { status: 405, headers: { Allow: "GET, HEAD" } });
+  }
+
+  const { pathname } = new URL(request.url);
+  switch (pathname) {
+    case "/api/health":
+      return json({ status: "ok" });
+    default:
+      return json({ error: "not_found" }, { status: 404 });
+  }
+}
+
+export default {
+  async fetch(request, env): Promise<Response> {
+    const { pathname } = new URL(request.url);
+    if (pathname.startsWith("/api/")) {
+      return withSecurityHeaders(await handleApi(request));
+    }
+    // Wird nur erreicht, falls ein Nicht-API-Pfad den Worker trifft
+    return env.ASSETS.fetch(request);
+  },
+} satisfies ExportedHandler<Env>;
