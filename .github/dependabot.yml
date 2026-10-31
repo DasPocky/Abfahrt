@@ -1,0 +1,39 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Berlin
+    # Neue Versionen erst nach 7 Tagen (Schutz vor kompromittierten Releases).
+    # Gilt nicht für Sicherheits-Updates.
+    cooldown:
+      default-days: 7
+    labels: [dependencies]
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Alle normalen Versions-Updates in einem Sammel-PR pro Woche.
+      # Sicherheits-Updates kommen weiterhin einzeln und sofort.
+      npm:
+        applies-to: version-updates
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Berlin
+    # Neue Versionen erst nach 7 Tagen (Schutz vor kompromittierten Releases).
+    # Gilt nicht für Sicherheits-Updates.
+    cooldown:
+      default-days: 7
+    labels: [dependencies]
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions:
+        applies-to: version-updates
+        patterns: ["*"]
