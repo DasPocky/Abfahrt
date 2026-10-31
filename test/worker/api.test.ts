@@ -31,3 +31,12 @@ describe("Worker-API", () => {
     expect(res.headers.get("Allow")).toBe("GET, HEAD");
   });
 });
+
+describe("Cache-Probe", () => {
+  it("meldet erst miss, dann hit", async () => {
+    const first = await exports.default.fetch(`${BASE}/api/cache-probe`);
+    expect(await first.json()).toMatchObject({ cache: "miss" });
+    const second = await exports.default.fetch(`${BASE}/api/cache-probe`);
+    expect(await second.json()).toMatchObject({ cache: "hit" });
+  });
+});

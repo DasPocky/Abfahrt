@@ -1,0 +1,103 @@
+name: deploy
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: deploy-${{ github.event.pull_request.number || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  preview:
+    # PRs aus Forks bekommen keine Secrets und werden nicht deployt
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: preview
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Preview-Version hochladen
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npx wrangler versions upload --preview-alias "pr-${PR_NUMBER}" --tag "${HEAD_SHA:0:7}" --message "PR #${PR_NUMBER}"
+      - name: Preview-URL im PR kommentieren
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTPUT: ${{ runner.temp }}/wrangler-output.ndjson
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          alias_url=$(jq -r 'select(.type == "version-upload") | .preview_alias_url // empty' "$OUTPUT")
+          version_url=$(jq -r 'select(.type == "version-upload") | .preview_url // empty' "$OUTPUT")
+          marker="<!-- abfahrt-preview -->"
+          body=$(printf '%s\n### 🚀 Preview\n\n| | |\n|---|---|\n| Dieser PR (immer aktuell) | %s |\n| Dieser Stand (`%s`) | %s |\n' \
+            "$marker" "$alias_url" "${HEAD_SHA:0:7}" "$version_url")
+          comment_id=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"${marker}\")) | .id" | head -n 1)
+          if [ -n "$comment_id" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" -f body="$body" >/dev/null
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -f body="$body" >/dev/null
+          fi
+          echo "Preview: $alias_url" >> "$GITHUB_STEP_SUMMARY"
+
+  production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Produktion deployen
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
+          OUTPUT: ${{ runner.temp }}/wrangler-output.ndjson
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          npx wrangler deploy --tag "${COMMIT_SHA:0:7}" --message "main ${COMMIT_SHA:0:7}"
+          target=$(jq -r 'select(.type == "deploy") | .targets[]? | select(contains("workers.dev"))' "$OUTPUT" | head -n 1)
+          url="https://${target#https://}"
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+          echo "Produktion: $url" >> "$GITHUB_STEP_SUMMARY"
+      - name: Smoke-Test
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -fsS "${URL}/api/health" | grep -q '"ok"'; then echo "API ok"; exit 0; fi
+            sleep 5
+          done
+          echo "::error::/api/health unter ${URL} nicht erreichbar"; exit 1

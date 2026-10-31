@@ -60,7 +60,7 @@ Limits laut offizieller Doku (Stand 30.10.2026):
 | Durable Objects (SQLite) | 100.000 Req./Tag                    | Reserve, z. B. für Rate-Limit-Zähler                                        |
 | Static Assets            | 20.000 Dateien, 25 MiB/Datei        | ✅                                                                          |
 
-**Caching:** Die Cache API (`caches.default`) hält Abfahrten 15–30 s und Haltestellensuchen 24 h. Ob die Cache API auf `*.workers.dev` greift, ist in der Doku nicht eindeutig (sicher ist es nur für Custom Domains). Das wird beim ersten Deploy getestet. Fallback ist ein In-Memory-Cache pro Isolate.
+**Caching:** Die Cache API (`caches.default`) hält Abfahrten 15–30 s und Haltestellensuchen 24 h. Ob die Cache API auf `*.workers.dev` greift, ist in der Doku nicht eindeutig (sicher ist es nur für Custom Domains). Das wird beim ersten Produktions-Deploy mit dem Diagnose-Endpunkt `/api/cache-probe` getestet (erster Aufruf `miss`, zweiter `hit`). Fallback ist ein In-Memory-Cache pro Isolate.
 
 **Transitous `/plan`:** Ein Zähler im Worker sorgt dafür, dass wir unter 720 Anfragen/24 h bleiben. Darüber nutzen wir nur VRR bzw. sprechen uns vorher mit Transitous ab.
 

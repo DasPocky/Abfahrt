@@ -3,6 +3,9 @@
   "name": "abfahrt",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
+  // Produktion unter abfahrt.<subdomain>.workers.dev, Previews pro PR
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "binding": "ASSETS",
     // React-App (SPA): unbekannte Pfade liefern index.html
