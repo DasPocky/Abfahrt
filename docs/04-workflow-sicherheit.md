@@ -33,9 +33,22 @@ Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 | `secrets`           | gitleaks (komplette Historie)                                                     |
 | `pr-title`          | nur PRs: Titel im Conventional-Commits-Format                                     |
 | CodeQL              | Code-Analyse über GitHub „Default setup“ (eigener Workflow von GitHub)            |
-| `preview`           | folgt mit #6: Preview-Deploy, URL als PR-Kommentar                                |
 
 **Laufzeit:** Alle Jobs laufen gleichzeitig, `concurrency` bricht veraltete Läufe eines PRs ab, npm-Cache ist aktiv.
+
+## Deploy (Cloudflare Workers)
+
+Workflow: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
+
+| Ereignis         | Job                                     | Ergebnis                                                                                                                                              |
+| ---------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PR gegen `main`  | `preview` (Environment `preview`)       | `wrangler versions upload` mit Alias `pr-<nr>`, die URL kommt als PR-Kommentar und wird bei jedem Push aktualisiert. Die Produktion bleibt unberührt. |
+| Merge auf `main` | `production` (Environment `production`) | `wrangler deploy`, danach Smoke-Test auf `/api/health`                                                                                                |
+
+- **Produktion:** https://abfahrt.bjoern-ef9.workers.dev
+- **Preview pro PR:** `https://pr-<nr>-abfahrt.bjoern-ef9.workers.dev`
+- PRs aus Forks bekommen keine Secrets und werden nicht deployt.
+- **Rollback:** Cloudflare-Dashboard → Workers → `abfahrt` → _Deployments_, frühere Version auswählen, oder lokal `npx wrangler rollback`.
 
 **Prüfung der Workflows:** Vor Änderungen an `.github/` lokal `actionlint` und `zizmor` laufen lassen.
 
@@ -48,7 +61,7 @@ Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 | Abhängigkeiten                | Dependabot (wöchentlich gesammelt, 7 Tage Cooldown, Security sofort), Versionen exakt gepinnt, Installationsskripte verboten (`allowScripts`), `npm audit` + Signaturprüfung, Dependency-Review | Dependabot alerts, security updates, Malware alerts                                                  |
 | Code-Analyse                  | –                                                                                                                                                                                               | CodeQL (Default setup)                                                                               |
 | Actions gehärtet              | Actions auf Commit-SHA gepinnt, `permissions:` minimal je Job, keine `pull_request_target`-Workflows                                                                                            | gleich                                                                                               |
-| Cloudflare-Token              | nur als GitHub-Secret, Rechte nur „Workers Scripts: Edit“ für einen Account                                                                                                                     | gleich                                                                                               |
+| Cloudflare-Token              | nur als GitHub-Secret, eigenes Token nur für GitHub Actions mit „Workers Scripts: Edit“ auf ein Konto                                                                                           | gleich                                                                                               |
 | Meldeweg                      | `SECURITY.md`                                                                                                                                                                                   | + private Vulnerability Reports                                                                      |
 
 Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechten Spalte schaltet der Repo-Owner ein, ein Teil davon setzt die CI-Jobs voraus (Ruleset: Pflicht-Checks). Action-Minuten sind unbegrenzt.
@@ -61,4 +74,12 @@ Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechte
    git config --global user.signingkey ~/.ssh/id_ed25519.pub
    git config --global commit.gpgsign true
    ```
-2. **Cloudflare-API-Token für GitHub Actions** (in M0): Cloudflare-Dashboard → _My Profile_ → _API Tokens_ → Vorlage _Edit Cloudflare Workers_. Dann in GitHub unter _Settings → Secrets and variables → Actions_ als `CLOUDFLARE_API_TOKEN` hinterlegen und `CLOUDFLARE_ACCOUNT_ID` ergänzen. Den Token sieht nur GitHub, ich bekomme ihn nie zu Gesicht.
+2. **Cloudflare-API-Token für GitHub Actions:**
+   - Cloudflare-Dashboard → _My Profile_ → _API Tokens_ → _Create Token_ → _Create Custom Token_
+   - Permissions: **Account → Workers Scripts → Edit**
+   - Account Resources: **Include → EndLab**
+   - Optional: _TTL_ (Ablaufdatum) setzen
+   - In GitHub unter _Settings → Secrets and variables → Actions_:
+     - Tab **Secrets** → _New repository secret_ → Name `CLOUDFLARE_API_TOKEN`, Wert = Token
+     - Tab **Variables** → _New repository variable_ → Name `CLOUDFLARE_ACCOUNT_ID`, Wert = Account-ID (nicht geheim)
+   - Den Token sieht nur GitHub, er landet nie im Chat oder im Repo.
