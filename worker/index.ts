@@ -3,10 +3,9 @@ import { withSecurityHeaders } from "./security-headers";
 const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
 
 function json(data: unknown, init?: ResponseInit): Response {
-  return Response.json(data, {
-    ...init,
-    headers: { "Cache-Control": "no-store", ...init?.headers },
-  });
+  const headers = new Headers(init?.headers);
+  if (!headers.has("Cache-Control")) headers.set("Cache-Control", "no-store");
+  return Response.json(data, { ...init, headers });
 }
 
 async function handleApi(request: Request): Promise<Response> {
