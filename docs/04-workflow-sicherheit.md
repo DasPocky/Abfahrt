@@ -20,31 +20,36 @@
 
 ## CI (GitHub Actions), parallele Jobs
 
-| Job         | Inhalt                                                     |
-| ----------- | ---------------------------------------------------------- |
-| `lint`      | ESLint + Prettier-Check                                    |
-| `typecheck` | `tsc --noEmit` (App + Worker)                              |
-| `test`      | Vitest (App), Worker-Tests mit `@cloudflare/vitest-plugin` |
-| `build`     | Vite-Build + `wrangler deploy --dry-run`                   |
-| `pr-title`  | PR-Titel im Conventional-Commits-Format                    |
-| `secrets`   | gitleaks (komplette Historie)                              |
-| `deps`      | osv-scanner (bekannte Lücken in Abhängigkeiten)            |
-| `sast`      | semgrep (Code-Analyse)                                     |
-| `preview`   | nach `build`: Preview-Deploy, URL als PR-Kommentar         |
+Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 
-**Laufzeit:** Alle Jobs laufen gleichzeitig, `concurrency` bricht veraltete Läufe ab, npm-Cache ist aktiv.
+| Job                 | Inhalt                                                                     |
+| ------------------- | -------------------------------------------------------------------------- |
+| `lint`              | ESLint + Prettier-Check                                                    |
+| `typecheck`         | `wrangler types` + `tsc -b` (App, Worker, Configs)                         |
+| `test`              | Vitest (App), Worker-Tests mit `@cloudflare/vitest-plugin`                 |
+| `build`             | Vite-Build + `wrangler deploy --dry-run`                                   |
+| `audit`             | `npm audit` (ab „moderate“) + `npm audit signatures` (Registry-Signaturen) |
+| `dependency-review` | nur PRs: neue/geänderte Abhängigkeiten mit bekannten Lücken blockieren     |
+| `secrets`           | gitleaks (komplette Historie)                                              |
+| `pr-title`          | nur PRs: Titel im Conventional-Commits-Format                              |
+| CodeQL              | Code-Analyse über GitHub „Default setup“ (eigener Workflow von GitHub)     |
+| `preview`           | folgt mit #6: Preview-Deploy, URL als PR-Kommentar                         |
+
+**Laufzeit:** Alle Jobs laufen gleichzeitig, `concurrency` bricht veraltete Läufe eines PRs ab, npm-Cache ist aktiv.
+
+**Prüfung der Workflows:** Vor Änderungen an `.github/` lokal `actionlint` und `zizmor` laufen lassen.
 
 ## Sicherheitsmaßnahmen
 
-| Maßnahme                      | Im Repo / CI                                                                                         | GitHub-Einstellung (öffentliches Repo)                                                               |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Kein direkter Push auf `main` | Abmachung + CI-Check                                                                                 | **Ruleset** erzwingt: nur PR, CI grün, kein Force-Push/Löschen, nur Merge-Commits, signierte Commits |
-| Secret-Schutz                 | gitleaks in CI, `.gitignore` für `.env`/`.dev.vars`                                                  | + GitHub Secret-Scanning mit **Push-Schutz**                                                         |
-| Abhängigkeiten                | Dependabot (wöchentlich gesammelt, Security sofort) + osv-scanner                                    | + Dependency-Review-Action                                                                           |
-| Code-Analyse                  | semgrep                                                                                              | + CodeQL                                                                                             |
-| Actions gehärtet              | Actions auf Commit-SHA gepinnt, `permissions:` minimal je Job, keine `pull_request_target`-Workflows | gleich                                                                                               |
-| Cloudflare-Token              | nur als GitHub-Secret, Rechte nur „Workers Scripts: Edit“ für einen Account                          | gleich                                                                                               |
-| Meldeweg                      | `SECURITY.md`                                                                                        | + private Vulnerability Reports                                                                      |
+| Maßnahme                      | Im Repo / CI                                                                                                                                    | GitHub-Einstellung (öffentliches Repo)                                                               |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Kein direkter Push auf `main` | Abmachung + CI-Check                                                                                                                            | **Ruleset** erzwingt: nur PR, CI grün, kein Force-Push/Löschen, nur Merge-Commits, signierte Commits |
+| Secret-Schutz                 | gitleaks in CI, `.gitignore` für `.env`/`.dev.vars`                                                                                             | + GitHub Secret-Scanning mit **Push-Schutz**                                                         |
+| Abhängigkeiten                | Dependabot (wöchentlich gesammelt, 7 Tage Cooldown, Security sofort), Versionen exakt gepinnt, `npm audit` + Signaturprüfung, Dependency-Review | Dependabot alerts, security updates, Malware alerts                                                  |
+| Code-Analyse                  | –                                                                                                                                               | CodeQL (Default setup)                                                                               |
+| Actions gehärtet              | Actions auf Commit-SHA gepinnt, `permissions:` minimal je Job, keine `pull_request_target`-Workflows                                            | gleich                                                                                               |
+| Cloudflare-Token              | nur als GitHub-Secret, Rechte nur „Workers Scripts: Edit“ für einen Account                                                                     | gleich                                                                                               |
+| Meldeweg                      | `SECURITY.md`                                                                                                                                   | + private Vulnerability Reports                                                                      |
 
 Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechten Spalte schaltet der Repo-Owner ein, ein Teil davon setzt die CI-Jobs voraus (Ruleset: Pflicht-Checks). Action-Minuten sind unbegrenzt.
 
