@@ -1,0 +1,29 @@
+name: Fehler
+description: Etwas funktioniert nicht wie erwartet
+labels: [bug]
+body:
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: Was ist passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: erwartet
+    attributes:
+      label: Was hast du erwartet?
+    validations:
+      required: true
+  - type: textarea
+    id: schritte
+    attributes:
+      label: Schritte zum Nachstellen
+      description: Haltestelle, Uhrzeit, Ansicht …
+      placeholder: |
+        1. Haltestelle „Düsseldorf Hbf“ öffnen
+        2. …
+  - type: input
+    id: geraet
+    attributes:
+      label: Gerät / Browser
+      placeholder: z. B. iPhone 15, iOS 19, installierte PWA

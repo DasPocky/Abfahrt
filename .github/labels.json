@@ -1,0 +1,11 @@
+[
+  { "name": "feature",      "color": "1d76db", "description": "Neue Funktion" },
+  { "name": "bug",          "color": "d73a4a", "description": "Fehler" },
+  { "name": "docs",         "color": "0075ca", "description": "Dokumentation" },
+  { "name": "security",     "color": "b60205", "description": "Sicherheit" },
+  { "name": "infra",        "color": "5319e7", "description": "Repo, CI, Deploy, Tooling" },
+  { "name": "dependencies", "color": "0366d6", "description": "Abhängigkeits-Updates" },
+  { "name": "frontend",     "color": "fbca04", "description": "Bereich: React-App" },
+  { "name": "worker",       "color": "f9a03f", "description": "Bereich: Cloudflare Worker / API" },
+  { "name": "data",         "color": "0e8a16", "description": "Bereich: Datenquellen" }
+]
