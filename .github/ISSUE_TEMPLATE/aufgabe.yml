@@ -21,6 +21,6 @@ body:
       label: Akzeptanzkriterien
       description: Woran erkennen wir, dass es fertig ist?
       value: |
-        - [ ] 
+        - [ ]
     validations:
       required: true

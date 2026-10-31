@@ -2,12 +2,12 @@
 
 Echtzeit-ÖPNV-PWA mit Fokus Düsseldorf/Rheinland und Abdeckung von ganz Deutschland. Sie läuft komplett im Cloudflare-Free-Plan.
 
-| Dokument | Inhalt |
-|---|---|
-| [01 – Datenquellen](01-datenquellen.md) | Recherche, Live-Tests, Lizenzen, Limits |
-| [02 – Architektur](02-architektur.md) | Aufbau, Worker-API, Cloudflare-Budget, App-Sicherheit |
-| [03 – Roadmap](03-roadmap.md) | Meilensteine M0–M4 |
-| [04 – Workflow & Sicherheit](04-workflow-sicherheit.md) | Issues, Branches, PRs, CI, Repo-Schutz |
+| Dokument                                                | Inhalt                                                |
+| ------------------------------------------------------- | ----------------------------------------------------- |
+| [01 – Datenquellen](01-datenquellen.md)                 | Recherche, Live-Tests, Lizenzen, Limits               |
+| [02 – Architektur](02-architektur.md)                   | Aufbau, Worker-API, Cloudflare-Budget, App-Sicherheit |
+| [03 – Roadmap](03-roadmap.md)                           | Meilensteine M0–M4                                    |
+| [04 – Workflow & Sicherheit](04-workflow-sicherheit.md) | Issues, Branches, PRs, CI, Repo-Schutz                |
 
 ## Getroffene Entscheidungen
 
