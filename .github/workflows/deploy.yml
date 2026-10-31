@@ -38,7 +38,8 @@ jobs:
           WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.ndjson
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: npx wrangler versions upload --preview-alias "pr-${PR_NUMBER}" --tag "${HEAD_SHA:0:7}" --message "PR #${PR_NUMBER}"
+        run: |
+          npx wrangler versions upload --preview-alias "pr-${PR_NUMBER}" --tag "${HEAD_SHA:0:7}" --message "PR #${PR_NUMBER}"
       - name: Preview-URL im PR kommentieren
         env:
           GH_TOKEN: ${{ github.token }}
