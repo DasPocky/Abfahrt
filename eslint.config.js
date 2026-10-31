@@ -14,6 +14,11 @@ export default tseslint.config(
     extends: [reactHooks.configs.flat["recommended-latest"], reactRefresh.configs.vite],
   },
   {
+    // shadcn-Komponenten exportieren neben der Komponente auch Varianten
+    files: ["src/components/ui/**/*.tsx"],
+    rules: { "react-refresh/only-export-components": "off" },
+  },
+  {
     files: ["*.{js,ts}"],
     languageOptions: { globals: globals.node },
   },

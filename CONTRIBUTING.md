@@ -13,6 +13,7 @@
 ## Regeln
 
 - Kein direkter Push auf `main`
+- **Neue Abhängigkeiten:** Versionen exakt pinnen und nur Releases übernehmen, die mindestens 7 Tage alt sind (Schutz vor kompromittierten Releases). Ausnahme: Die neuere Version behebt eine bekannte Sicherheitslücke.
 - Keine Secrets im Repo. Lokale Werte gehören in `.dev.vars` bzw. `.env`, beide sind in `.gitignore`.
 - Datenquellen nur über den Worker abfragen und die Nutzungsbedingungen einhalten, siehe [`docs/01-datenquellen.md`](docs/01-datenquellen.md).
 

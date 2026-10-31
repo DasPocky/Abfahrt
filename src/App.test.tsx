@@ -12,12 +12,12 @@ describe("App", () => {
   it("meldet eine erreichbare API", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json({ status: "ok" }));
     render(<App />);
-    expect(await screen.findByText("API: erreichbar")).toBeInTheDocument();
+    expect(await screen.findByText("API erreichbar")).toBeInTheDocument();
   });
 
   it("meldet eine nicht erreichbare API", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(null, { status: 500 }));
     render(<App />);
-    expect(await screen.findByText("API: nicht erreichbar")).toBeInTheDocument();
+    expect(await screen.findByText("API nicht erreichbar")).toBeInTheDocument();
   });
 });

@@ -28,7 +28,8 @@
 - **Routing:** React Router. **Datenabruf:** TanStack Query mit `refetchInterval: 30_000`. Der Countdown läuft zwischen den Abrufen lokal weiter.
 - **Karte:** MapLibre GL JS + OpenFreeMap
 - **Speicher:** Favoriten und Einstellungen in `localStorage`, versioniert. Export/Import per Link bzw. QR kommt später.
-- **Design:** klar und modern, große Countdown-Zahlen, Linienfarben als Akzent, Hell/Dunkel automatisch per `prefers-color-scheme`
+- **UI:** Tailwind CSS v4 + [shadcn/ui](https://ui.shadcn.com) (Preset „Vega“, Radix, Lucide-Icons, Schrift Inter lokal gebündelt). Komponenten liegen als Code in `src/components/ui/` und kommen per `npx shadcn@<version> add <name>` hinzu. Das CLI ist bewusst kein Projekt-Paket (bekannte Lücke in `deepmerge`), `src/styles/shadcn.css` ist lokal eingebunden.
+- **Design:** klar und modern, große Countdown-Zahlen, Linienfarben als Akzent, Hell/Dunkel automatisch per `prefers-color-scheme`. Farb-Tokens in `src/index.css`, inkl. `success`/`warning` für pünktlich/verspätet.
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
