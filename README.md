@@ -11,12 +11,12 @@ Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`do
 
 ## Entwicklung
 
-Voraussetzung: Node.js ≥ 22.22.2 (empfohlen 24, siehe `.nvmrc`)
+Voraussetzung: Node.js 26 LTS (siehe `.nvmrc`)
 
 ```bash
 npm ci              # Abhängigkeiten installieren
 npm run dev         # App + Worker lokal (http://localhost:5173)
-npm run lint        # ESLint + Prettier
+npm run lint        # Oxlint (typgestützt) + Prettier
 npm run typecheck   # Worker-Typen erzeugen + TypeScript prüfen
 npm test            # Tests App (jsdom) + Worker (Workers-Runtime)
 npm run build       # Produktions-Build nach dist/

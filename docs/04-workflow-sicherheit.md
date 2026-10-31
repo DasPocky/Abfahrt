@@ -22,18 +22,18 @@
 
 Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 
-| Job                 | Inhalt                                                                     |
-| ------------------- | -------------------------------------------------------------------------- |
-| `lint`              | ESLint + Prettier-Check                                                    |
-| `typecheck`         | `wrangler types` + `tsc -b` (App, Worker, Configs)                         |
-| `test`              | Vitest (App), Worker-Tests mit `@cloudflare/vitest-plugin`                 |
-| `build`             | Vite-Build + `wrangler deploy --dry-run`                                   |
-| `audit`             | `npm audit` (ab „moderate“) + `npm audit signatures` (Registry-Signaturen) |
-| `dependency-review` | nur PRs: neue/geänderte Abhängigkeiten mit bekannten Lücken blockieren     |
-| `secrets`           | gitleaks (komplette Historie)                                              |
-| `pr-title`          | nur PRs: Titel im Conventional-Commits-Format                              |
-| CodeQL              | Code-Analyse über GitHub „Default setup“ (eigener Workflow von GitHub)     |
-| `preview`           | folgt mit #6: Preview-Deploy, URL als PR-Kommentar                         |
+| Job                 | Inhalt                                                                            |
+| ------------------- | --------------------------------------------------------------------------------- |
+| `lint`              | Oxlint mit Typprüfung (`--type-aware`, basiert auf TypeScript 7) + Prettier-Check |
+| `typecheck`         | `wrangler types` + `tsc -b` mit TypeScript 7 (App, Worker, Configs)               |
+| `test`              | Vitest (App), Worker-Tests mit `@cloudflare/vitest-plugin`                        |
+| `build`             | Vite-Build + `wrangler deploy --dry-run`                                          |
+| `audit`             | `npm audit` (ab „moderate“) + `npm audit signatures` (Registry-Signaturen)        |
+| `dependency-review` | nur PRs: neue/geänderte Abhängigkeiten mit bekannten Lücken blockieren            |
+| `secrets`           | gitleaks (komplette Historie)                                                     |
+| `pr-title`          | nur PRs: Titel im Conventional-Commits-Format                                     |
+| CodeQL              | Code-Analyse über GitHub „Default setup“ (eigener Workflow von GitHub)            |
+| `preview`           | folgt mit #6: Preview-Deploy, URL als PR-Kommentar                                |
 
 **Laufzeit:** Alle Jobs laufen gleichzeitig, `concurrency` bricht veraltete Läufe eines PRs ab, npm-Cache ist aktiv.
 
