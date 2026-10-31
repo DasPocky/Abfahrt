@@ -35,7 +35,7 @@
 
 ## Sicherheitsmaßnahmen
 
-| Maßnahme | Ab M0 (privat) | Zusätzlich ab Veröffentlichung (Ende M1) |
+| Maßnahme | Im Repo / CI | GitHub-Einstellung (öffentliches Repo) |
 |---|---|---|
 | Kein direkter Push auf `main` | Abmachung + CI-Check | **Ruleset** erzwingt: nur PR, CI grün, kein Force-Push/Löschen, nur Merge-Commits, signierte Commits |
 | Secret-Schutz | gitleaks in CI, `.gitignore` für `.env`/`.dev.vars` | + GitHub Secret-Scanning mit **Push-Schutz** |
@@ -45,7 +45,7 @@
 | Cloudflare-Token | nur als GitHub-Secret, Rechte nur „Workers Scripts: Edit“ für einen Account | gleich |
 | Meldeweg | `SECURITY.md` | + private Vulnerability Reports |
 
-Das Repo wird Ende M1 öffentlich, dann werden Ruleset und Scans in GitHub aktiviert. Code und Workflows bleiben gleich. Bis dahin stehen 2.000 Action-Minuten pro Monat zur Verfügung, danach unbegrenzt.
+Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechten Spalte schaltet der Repo-Owner ein, ein Teil davon setzt die CI-Jobs voraus (Ruleset: Pflicht-Checks). Action-Minuten sind unbegrenzt.
 
 ## Was du einmalig tun musst
 

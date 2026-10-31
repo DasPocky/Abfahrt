@@ -1,0 +1,26 @@
+name: Aufgabe / Feature
+description: Neue Funktion, Doku, Infrastruktur oder sonstige Arbeit
+body:
+  - type: textarea
+    id: ziel
+    attributes:
+      label: Ziel
+      description: Was soll erreicht werden und warum?
+    validations:
+      required: true
+  - type: textarea
+    id: inhalt
+    attributes:
+      label: Inhalt
+      description: Was genau gehört dazu?
+    validations:
+      required: true
+  - type: textarea
+    id: akzeptanz
+    attributes:
+      label: Akzeptanzkriterien
+      description: Woran erkennen wir, dass es fertig ist?
+      value: |
+        - [ ] 
+    validations:
+      required: true
