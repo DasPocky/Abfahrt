@@ -99,6 +99,15 @@ describe("Abfahrten", () => {
     expect(calls.some((u) => u.includes("v5/stoptimes"))).toBe(true);
   });
 
+  it("bleibt im VRR-Gebiet für spätere Zeitpunkte beim VRR", async () => {
+    const calls = mockUpstream({ XML_DM_REQUEST: vrrDmBerlin });
+    const tomorrow = new Date(Date.now() + 20 * 60 * 60 * 1000).toISOString();
+    const res = await get(`departures?stop=vrr:de:05111:18036&when=${tomorrow}`);
+    const body = await res.json<DeparturesResponse>();
+    expect(body.source).toBe("vrr");
+    expect(calls.some((u) => u.includes("transitous"))).toBe(false);
+  });
+
   it("validiert die Haltestellen-ID", async () => {
     expect((await get("departures?stop=../../etc")).status).toBe(400);
     expect((await get("departures?stop=vrr:de:05111:18036&when=morgen")).status).toBe(400);

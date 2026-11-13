@@ -75,9 +75,11 @@ async function loadDepartures(
     };
   }
 
-  // VRR-Haltestelle: im VRR-Gebiet mit Echtzeit vom VRR, sonst über Transitous
+  // VRR-Haltestelle: im VRR-Gebiet vom VRR (für die Zukunft gibt es dort noch keine
+  // Echtzeit, dann trotzdem VRR), sonst über Transitous
   const fromVrr = await vrr.departures(rawId, when);
-  if (vrr.isVrrArea(rawId) && fromVrr.hasRealtime) {
+  const isFuture = when !== undefined && when.getTime() - Date.now() > 60 * 60 * 1000;
+  if (vrr.isVrrArea(rawId) && (fromVrr.hasRealtime || isFuture)) {
     return { stop: fromVrr.stop, departures: fromVrr.departures, source: "vrr", generatedAt };
   }
   const transitousId = await transitousForStop(request, ctx, fromVrr.stop);
