@@ -75,11 +75,13 @@ Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechte
    git config --global commit.gpgsign true
    ```
 2. **Cloudflare-API-Token für GitHub Actions:**
-   - Cloudflare-Dashboard → _My Profile_ → _API Tokens_ → _Create Token_ → _Create Custom Token_
-   - Permissions: **Account → Workers Scripts → Edit**
-   - Account Resources: **Include → EndLab**
-   - Optional: _TTL_ (Ablaufdatum) setzen
+   - Account-API-Token (von Cloudflare für CI/CD empfohlen, hängt nicht an einem Benutzer, Präfix `cfat_`)
+   - Cloudflare-Dashboard → Konto **EndLab** → _Manage account_ → _Account API tokens_ → _Create Token_
+   - Token name: `github-actions-abfahrt`
+   - Permission policies: _Start from scratch_ → **Workers Scripts → Write** (ältere Ansicht: _Edit_), sonst nichts
+   - Token expiration: _1 year_, Client IP filtering leer lassen (GitHub Actions nutzt wechselnde IPs)
+   - _Review token_ → _Create token_ → Token kopieren (wird nur einmal angezeigt)
    - In GitHub unter _Settings → Secrets and variables → Actions_:
      - Tab **Secrets** → _New repository secret_ → Name `CLOUDFLARE_API_TOKEN`, Wert = Token
-     - Tab **Variables** → _New repository variable_ → Name `CLOUDFLARE_ACCOUNT_ID`, Wert = Account-ID (nicht geheim)
+   - Die Konto-ID steht in `wrangler.jsonc` (nicht geheim), es braucht keine weitere Variable.
    - Den Token sieht nur GitHub, er landet nie im Chat oder im Repo.
