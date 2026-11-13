@@ -1,10 +1,12 @@
+import { API_PREFIX } from "../shared/base-path";
+
 // Diagnose: Funktioniert die Cache API auf dieser Domain (z. B. *.workers.dev)?
 // Der erste Aufruf legt einen Eintrag für 60 s ab, weitere Aufrufe melden einen Treffer.
 const PROBE_TTL_SECONDS = 60;
 
 export async function cacheProbe(request: Request, ctx: ExecutionContext): Promise<Response> {
   const cache = caches.default;
-  const key = new Request(new URL("/api/cache-probe", request.url).toString());
+  const key = new Request(new URL(`${API_PREFIX}cache-probe`, request.url).toString());
 
   const hit = await cache.match(key);
   if (hit) {

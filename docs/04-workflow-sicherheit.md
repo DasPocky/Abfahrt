@@ -43,11 +43,11 @@ Workflow: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
 | Ereignis         | Job                                     | Ergebnis                                                                                                                                              |
 | ---------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PR gegen `main`  | `preview` (Environment `preview`)       | `wrangler versions upload` mit Alias `pr-<nr>`, die URL kommt als PR-Kommentar und wird bei jedem Push aktualisiert. Die Produktion bleibt unberührt. |
-| Merge auf `main` | `production` (Environment `production`) | `wrangler deploy`, danach Smoke-Test auf `/api/health`                                                                                                |
+| Merge auf `main` | `production` (Environment `production`) | `wrangler deploy`, danach Smoke-Test auf `https://endlab.de/abfahrt/` und `/abfahrt/api/health`                                                       |
 
-- **Produktion:** https://abfahrt.bjoern-ef9.workers.dev
+- **Produktion:** https://endlab.de/abfahrt (Route `endlab.de/abfahrt*` auf der Zone `endlab.de`), zusätzlich https://abfahrt.bjoern-ef9.workers.dev
 - **Preview pro PR:** `https://pr-<nr>-abfahrt.bjoern-ef9.workers.dev`
-- PRs aus Forks bekommen keine Secrets und werden nicht deployt.
+- PRs aus Forks und von Dependabot bekommen keine Actions-Secrets und bekommen deshalb keine Preview. Die Pflicht-Checks laufen trotzdem.
 - **Rollback:** Cloudflare-Dashboard → Workers → `abfahrt` → _Deployments_, frühere Version auswählen, oder lokal `npx wrangler rollback`.
 
 **Prüfung der Workflows:** Vor Änderungen an `.github/` lokal `actionlint` und `zizmor` laufen lassen.
@@ -78,7 +78,9 @@ Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechte
    - Account-API-Token (von Cloudflare für CI/CD empfohlen, hängt nicht an einem Benutzer, Präfix `cfat_`)
    - Cloudflare-Dashboard → Konto **EndLab** → _Manage account_ → _Account API tokens_ → _Create Token_
    - Token name: `github-actions-abfahrt`
-   - Permission policies: _Start from scratch_ → **Workers Scripts → Write** (ältere Ansicht: _Edit_), sonst nichts
+   - Permission policies: _Start from scratch_
+     - Konto **EndLab**: **Workers Scripts → Edit/Write** (aktuell zusätzlich „Workers Editor“)
+     - Zone **endlab.de**: **Workers Routes → Edit/Write** (für die Route `endlab.de/abfahrt*`)
    - Token expiration: _1 year_, Client IP filtering leer lassen (GitHub Actions nutzt wechselnde IPs)
    - _Review token_ → _Create token_ → Token kopieren (wird nur einmal angezeigt)
    - In GitHub unter _Settings → Secrets and variables → Actions_:

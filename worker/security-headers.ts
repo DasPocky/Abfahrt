@@ -1,7 +1,7 @@
 // Gleiche Header wie public/_headers (Static Assets), hier für die API-Antworten.
 export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "Strict-Transport-Security": "max-age=31536000",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "geolocation=(self), camera=(), microphone=()",

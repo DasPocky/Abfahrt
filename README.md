@@ -11,7 +11,7 @@ Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`do
 
 ## Live
 
-- App: https://abfahrt.bjoern-ef9.workers.dev
+- App: https://endlab.de/abfahrt (Cloudflare-Worker-Route, wie die anderen EndLab-Apps)
 - Jeder PR bekommt automatisch eine eigene Preview-URL (Kommentar im PR).
 
 ## Entwicklung
