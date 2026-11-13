@@ -4,12 +4,14 @@ Jeder Punkt wird ein eigenes Issue. Ich schlage die Issues vor, du nickst sie ab
 
 ## M0 – Fundament
 
+Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
+
 - Repo-Regeln: Issue-/PR-Vorlagen, Labels, `CONTRIBUTING.md`, `SECURITY.md`, Lizenz AGPL-3.0
 - Mailtext VRR-Produktivzugang
 - GitHub-Einstellungen: Ruleset für `main`, CodeQL, Secret-Scanning mit Push-Schutz, private Vulnerability Reports
 - CI: parallele Jobs (Lint, Typecheck, Tests, Build, Security-Scans, PR-Titel-Check), Dependabot
 - Projekt-Gerüst: React + Vite + TS, Worker mit Static Assets, `wrangler.jsonc`
-- Deploy-Pipeline: Preview pro PR, Produktion bei Merge auf `main`. Dabei testen: Cache API auf `workers.dev`.
+- Deploy-Pipeline: Preview pro PR, Produktion bei Merge auf `main`. Cache API auf `workers.dev` getestet: funktioniert.
 
 ## M1 – Abfahrtsmonitor + Favoriten (MVP)
 
@@ -42,7 +44,7 @@ Jeder Punkt wird ein eigenes Issue. Ich schlage die Issues vor, du nickst sie ab
 
 ## M4 – Extras
 
-- Live-Fahrzeugkarte (Transitous `map/trips`)
+- Live-Fahrzeugkarte (Transitous `map/trips`, Machbarkeit am 07.11.2026 getestet, siehe [Datenquellen](01-datenquellen.md#transitous-motis-2))
 - Wagenreihung/Auslastung (DB RIS::Transports, Registrierung nötig)
 - Widget-/Tafel-Ansicht (z. B. Tablet an der Wand)
 - Teilen per Link

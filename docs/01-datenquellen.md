@@ -74,6 +74,13 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - Heinrich-Heine-Allee: 8/11 Abfahrten mit Echtzeit
 - `plan` Düsseldorf → Köln: 5 Verbindungen mit Fußwegen
 
+**Test 07.11.2026, Live-Fahrzeugkarte** (`v5/map/trips`, Düsseldorfer Innenstadt ca. 3 × 2 km, Zeitfenster 2 min, zoom 15):
+
+- 147 Fahrtabschnitte in einer Abfrage: 37 Straßenbahn, 38 U-Bahn, 36 Bus, 5 S-Bahn, 5 Regio, 12 Fernverkehr, 14 Fernbus
+- 125 davon mit Echtzeit
+- je Abschnitt: Streckenverlauf (`polyline`), Plan- und Echtzeit für Abfahrt/Ankunft, Linie (`trips`)
+- Antwortgröße ca. 275 kB. Die Position wird im Browser entlang der Polyline interpoliert, der Worker cached pro Kachel. So entsteht eine flüssige Karte wie bei TRAVIC, aber mit eigenen Mitteln und offenen Daten.
+
 **Nutzungsbedingungen**, alle Punkte müssen zutreffen:
 
 1. **Projekt ist Open Source.** Der Quellcode muss unter einer Open-Source-Lizenz veröffentlicht sein. Leichte Prototyp-Tests vorher sind ok. ✅ Erfüllt: Das Repo ist seit 31.10.2026 öffentlich (AGPL-3.0).
