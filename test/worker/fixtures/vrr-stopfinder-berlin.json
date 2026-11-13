@@ -1,0 +1,45 @@
+{
+  "serverInfo": {
+    "controllerVersion": "10.6.34.3",
+    "serverID": "EFA-X-DELFI03_",
+    "virtDir": "openservice",
+    "serverTime": "2026-11-13T17:06:12",
+    "calcTime": 69.029,
+    "logRequestId": "bdaa48c2a9c9baf5"
+  },
+  "version": "10.4.18.18",
+  "systemMessages": [{ "type": "error", "module": "BROKER", "code": -8011, "text": "" }],
+  "locations": [
+    {
+      "id": "40012942",
+      "name": "Berlin, S+U Hauptbahnhof Gleis 22",
+      "disassembledName": "S+U Hauptbahnhof Gleis 22",
+      "coord": [52.526593, 13.36968],
+      "type": "stop",
+      "matchQuality": 242,
+      "isBest": false,
+      "parent": { "id": "placeID:11000000:1", "name": "Berlin", "type": "locality" },
+      "properties": {
+        "additionalTariffData": { "area": "", "zones": "", "layer1": "", "layer2": "" },
+        "mainLocality": "Berlin"
+      }
+    },
+    {
+      "id": "de:11000:900003201",
+      "isGlobalId": true,
+      "name": "Berlin, S+U Hauptbahnhof",
+      "disassembledName": "S+U Hauptbahnhof",
+      "coord": [52.525593, 13.369546],
+      "type": "stop",
+      "matchQuality": 245,
+      "isBest": true,
+      "productClasses": [0, 1, 2, 4, 5, 6, 13, 17],
+      "parent": { "id": "placeID:11000000:1", "name": "Berlin", "type": "locality" },
+      "properties": {
+        "additionalTariffData": { "area": "", "zones": "", "layer1": "", "layer2": "" },
+        "stopId": "40003201",
+        "mainLocality": "Berlin"
+      }
+    }
+  ]
+}

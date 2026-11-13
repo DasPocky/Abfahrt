@@ -58,7 +58,18 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 | `GET /abfahrt/api/alerts?lines=&stop=`           | Störungen                    | M3          |
 | `POST /abfahrt/api/push/subscribe`               | Push-Abo                     | M3          |
 
-Haltestellen-IDs sind **global eindeutige DHID/IFOPT-Kennungen** (z. B. `de:05111:18036`). VRR und Transitous verwenden beide diese Kennungen. Darüber entscheidet der Worker, welche Quelle zuständig ist.
+Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und wird von App und Worker gemeinsam genutzt.
+
+**Haltestellen-IDs** tragen die Quelle als Präfix: `vrr:de:05111:18036` (DHID/IFOPT) oder `transitous:<id>`.
+
+**Quellenwahl für Abfahrten** (`worker/api.ts`):
+
+1. `transitous:`-IDs → Transitous `v5/stoptimes`
+2. `vrr:`-IDs im **VRR-Gebiet** (Kreisschlüssel, 2. Teil der DHID, z. B. `05111` = Düsseldorf) **mit Echtzeit** → VRR-Abfahrtsmonitor (sekundengenau, inkl. Hinweisen)
+3. `vrr:`-IDs außerhalb des VRR (dort liefert der VRR keine Echtzeit) → passende Transitous-Haltestelle per Geocoding im Umkreis von 500 m (Zuordnung 7 Tage gecacht), dann Transitous-Abfahrten
+4. Notfalls Fahrplandaten vom VRR ohne Echtzeit
+
+Die Suche nutzt den VRR-Stopfinder (deutschlandweit) und weicht bei Ausfall auf Transitous aus. Linienfarben liefert nur Transitous. Für VRR-Linien kommen sie in der App über eine Farbtabelle hinzu (Folge-Issue).
 
 ## Cloudflare-Free-Budget
 
@@ -75,7 +86,7 @@ Limits laut offizieller Doku (Stand 30.10.2026):
 | Durable Objects (SQLite) | 100.000 Req./Tag                    | Reserve, z. B. für Rate-Limit-Zähler                                        |
 | Static Assets            | 20.000 Dateien, 25 MiB/Datei        | ✅                                                                          |
 
-**Caching:** Die Cache API (`caches.default`) hält Abfahrten 15–30 s und Haltestellensuchen 24 h. Die Cache API greift auch auf `*.workers.dev`. Getestet am 13.11.2026 in Produktion mit dem Diagnose-Endpunkt `/api/cache-probe`: erster Aufruf `miss`, danach `hit`. Eine eigene Domain ist dafür nicht nötig.
+**Caching:** Die Cache API (`caches.default`) hält Abfahrten 30 s (Schlüssel auf die Minute gerundet), Haltestellensuchen 24 h und die VRR→Transitous-Zuordnung 7 Tage. Die Cache API greift auch auf `*.workers.dev`. Getestet am 13.11.2026 in Produktion mit dem Diagnose-Endpunkt `/api/cache-probe`: erster Aufruf `miss`, danach `hit`. Eine eigene Domain ist dafür nicht nötig.
 
 **Transitous `/plan`:** Ein Zähler im Worker sorgt dafür, dass wir unter 720 Anfragen/24 h bleiben. Darüber nutzen wir nur VRR bzw. sprechen uns vorher mit Transitous ab.
 
@@ -85,7 +96,8 @@ Limits laut offizieller Doku (Stand 30.10.2026):
   - strikte `Content-Security-Policy` (nur eigene Origin + OpenFreeMap)
   - `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` (Geolocation nur self)
 - **Eingabevalidierung** aller `/api`-Parameter, z. B. mit `zod`. Keine Weiterleitung beliebiger URLs, der Worker ist kein offener Proxy.
-- **Rate-Limit** pro IP im Worker, Pflicht laut VRR-§6.2
+- **Rate-Limit** pro IP im Worker (60 Anfragen/Minute je Isolate, `worker/rate-limit.ts`), Pflicht laut VRR-§6.2
+- **User-Agent** `Abfahrt/<version> (+Repo-URL)` bei allen Anfragen an die Quellen, Pflicht laut Transitous-Policy
 - **Keine personenbezogenen Daten:** keine Accounts, kein Tracking, keine Logs mit Standortdaten
 
 ## Pflicht-Quellhinweise (Impressum/„Über“-Seite + Ergebnislisten)

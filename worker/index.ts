@@ -1,28 +1,46 @@
 import { API_PREFIX, BASE_PATH } from "../shared/base-path";
+import { getDepartures, searchStops } from "./api";
 import { cacheProbe } from "./cache-probe";
+import { apiError, json, UpstreamError } from "./http";
+import { isRateLimited } from "./rate-limit";
 import { withSecurityHeaders } from "./security-headers";
 
 const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
-
-function json(data: unknown, init?: ResponseInit): Response {
-  const headers = new Headers(init?.headers);
-  if (!headers.has("Cache-Control")) headers.set("Cache-Control", "no-store");
-  return Response.json(data, { ...init, headers });
-}
 
 async function handleApi(request: Request, ctx: ExecutionContext): Promise<Response> {
   if (!ALLOWED_METHODS.has(request.method)) {
     return json({ error: "method_not_allowed" }, { status: 405, headers: { Allow: "GET, HEAD" } });
   }
 
-  const { pathname } = new URL(request.url);
-  switch (pathname.slice(API_PREFIX.length)) {
-    case "health":
-      return json({ status: "ok" });
-    case "cache-probe":
-      return cacheProbe(request, ctx);
-    default:
-      return json({ error: "not_found" }, { status: 404 });
+  const url = new URL(request.url);
+  const route = url.pathname.slice(API_PREFIX.length);
+  if (route === "health") return json({ status: "ok" });
+
+  const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+  if (isRateLimited(ip)) {
+    return apiError(429, "rate_limited", "Zu viele Anfragen, bitte kurz warten");
+  }
+
+  try {
+    switch (route) {
+      case "stops/search":
+        return await searchStops(request, ctx, url.searchParams);
+      case "departures":
+        return await getDepartures(request, ctx, url.searchParams);
+      case "cache-probe":
+        return await cacheProbe(request, ctx);
+      default:
+        return apiError(404, "not_found");
+    }
+  } catch (err) {
+    if (err instanceof Error && err.message === "not_found") {
+      return apiError(404, "stop_not_found", "Haltestelle nicht gefunden");
+    }
+    console.error(err);
+    if (err instanceof UpstreamError) {
+      return apiError(502, "upstream_unavailable", "Datenquelle gerade nicht erreichbar");
+    }
+    return apiError(500, "internal_error");
   }
 }
 
