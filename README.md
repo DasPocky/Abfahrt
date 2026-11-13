@@ -9,6 +9,12 @@ Echtzeit-ÖPNV-Auskunft als Progressive Web App – Fokus Düsseldorf/Rheinland,
 
 Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`docs/`](docs/).
 
+## Bedienung
+
+1. Auf der Startseite den Namen einer Haltestelle eingeben (ab 2 Zeichen erscheinen Vorschläge).
+2. Treffer antippen – oder per Tastatur: Pfeil runter/hoch wählt, Enter öffnet, Esc leert die Suche.
+3. Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen weiter. Der Link lässt sich als Lesezeichen speichern.
+
 ## Live
 
 - App: https://endlab.de/abfahrt (Cloudflare-Worker-Route, wie die anderen EndLab-Apps)
@@ -20,7 +26,7 @@ Voraussetzung: Node.js 26 LTS (siehe `.nvmrc`)
 
 ```bash
 npm ci              # Abhängigkeiten installieren
-npm run dev         # App + Worker lokal (http://localhost:5173)
+npm run dev         # App + Worker lokal (http://localhost:5173/abfahrt/)
 npm run lint        # Oxlint (typgestützt) + Prettier
 npm run typecheck   # Worker-Typen erzeugen + TypeScript prüfen
 npm test            # Tests App (jsdom) + Worker (Workers-Runtime)
@@ -30,8 +36,8 @@ npm run preview     # Build lokal wie in Produktion testen
 
 | Ordner         | Inhalt                                                |
 | -------------- | ----------------------------------------------------- |
-| `src/`         | React-App (PWA)                                       |
-| `worker/`      | Cloudflare Worker, API unter `/api/*`                 |
+| `src/`         | React-App (PWA), reine Logik mit Tests in `src/lib/`  |
+| `worker/`      | Cloudflare Worker, API unter `/abfahrt/api/*`         |
 | `public/`      | statische Dateien, u. a. `_headers` (Security-Header) |
 | `test/worker/` | Worker-Tests                                          |
 

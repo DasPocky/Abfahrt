@@ -33,7 +33,14 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 ## Frontend
 
 - **React + Vite + TypeScript**, PWA über `vite-plugin-pwa` (Manifest, Service Worker, Offline-Shell)
-- **Routing:** React Router. **Datenabruf:** TanStack Query mit `refetchInterval: 30_000`. Der Countdown läuft zwischen den Abrufen lokal weiter.
+- **Routing:** React Router (`createBrowserRouter`, `basename` = `BASE_PATH` aus `shared/base-path.ts`). Routen in `src/routes.tsx`:
+  - `/abfahrt/` – Startseite mit Haltestellensuche
+  - `/abfahrt/haltestelle/:stopId` – Live-Abfahrten; `stopId` ist die quellen-präfixierte ID aus der API, URL-kodiert (`vrr%3Ade%3A05111%3A18235`)
+  - alles andere – „Seite nicht gefunden“. Direktaufrufe und Reloads funktionieren über den SPA-Fallback der Static Assets (lokal, in Produktion und auf `workers.dev`).
+- **Datenabruf:** TanStack Query, Zugriff auf die API nur über `src/lib/api.ts` (Vertrag `shared/api-types.ts`, Antworten werden grob auf ihre Form geprüft). 4xx-Fehler werden nicht wiederholt, andere höchstens zweimal.
+  - Suche: Debounce 250 ms, ab 2 Zeichen, Treffer 5 min gecacht
+  - Abfahrten: `refetchInterval: 30_000`. Ein lokaler Ticker (15 s) aktualisiert nur den Countdown, ohne neuen Abruf.
+- **Anzeige-Logik** als reine, getestete Module in `src/lib/`: `time.ts` (Countdown „jetzt“/„in N Min“/ab 60 Min Uhrzeit, Verspätung +N mit Farbton, Zeitzone Europe/Berlin), `departures.ts` (Sortierung nach tatsächlicher Abfahrtszeit, Gleiswechsel), `line-colors.ts` (Linienfarbe aus der API, sonst Fallback nach Verkehrsmittel). Linienfarben setzt React per CSSOM (`style`-Prop), das ist mit `style-src 'self'` erlaubt.
 - **Karte:** MapLibre GL JS + OpenFreeMap
 - **Speicher:** Favoriten und Einstellungen in `localStorage`, versioniert. Export/Import per Link bzw. QR kommt später.
 - **UI:** Tailwind CSS v4 + [shadcn/ui](https://ui.shadcn.com) (Preset „Vega“, Radix, Lucide-Icons, Schrift Inter lokal gebündelt). Komponenten liegen als Code in `src/components/ui/` und kommen per `npx shadcn@<version> add <name>` hinzu. Das CLI ist bewusst kein Projekt-Paket (bekannte Lücke in `deepmerge`), `src/styles/shadcn.css` ist lokal eingebunden.
