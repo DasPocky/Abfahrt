@@ -1,0 +1,53 @@
+{
+  "serverInfo": {
+    "controllerVersion": "10.6.34.3",
+    "serverID": "EFA-X-DELFI04_",
+    "virtDir": "openservice",
+    "serverTime": "2026-11-13T17:06:14",
+    "calcTime": 88.563,
+    "logRequestId": "15c0990970ed262d"
+  },
+  "version": "10.4.18.18",
+  "systemMessages": [
+    {
+      "type": "message",
+      "module": "BROKER",
+      "code": -8010,
+      "text": "Any - input uniquely verified"
+    }
+  ],
+  "locations": [
+    {
+      "id": "de:05111:18036",
+      "isGlobalId": true,
+      "name": "Düsseldorf, Heinrich-Heine-Allee U",
+      "disassembledName": "Heinrich-Heine-Allee U",
+      "coord": [51.226398, 6.776828],
+      "type": "stop",
+      "matchQuality": 949,
+      "isBest": true,
+      "productClasses": [2, 5, 7],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "assignedStops": [
+        {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "coord": [51.226398, 6.776828],
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "productClasses": [2, 5, 7],
+          "connectingMode": 100,
+          "properties": { "stopId": "20018036" }
+        }
+      ],
+      "properties": {
+        "additionalTariffData": { "area": "", "zones": "", "layer1": "", "layer2": "" },
+        "stopId": "20018036",
+        "mainLocality": "Düsseldorf",
+        "downloads": [{ "type": "SM", "url": "vrr/18036_D-Heinrich-Heine-Allee.pdf", "size": 1243 }]
+      }
+    }
+  ]
+}

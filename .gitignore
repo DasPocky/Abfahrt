@@ -31,3 +31,6 @@ Thumbs.db
 
 # Generierte Typen (npm run cf-typegen)
 worker-configuration.d.ts
+
+# Arbeitskopien von Claude-Agenten
+.claude/worktrees/

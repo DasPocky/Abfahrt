@@ -1,0 +1,896 @@
+{
+  "serverInfo": {
+    "controllerVersion": "10.6.34.3",
+    "serverID": "EFA-X-DELFI04_",
+    "virtDir": "openservice",
+    "serverTime": "2026-11-13T17:09:06",
+    "calcTime": 140.497,
+    "logRequestId": "15c0990970ed3442"
+  },
+  "version": "10.4.18.18",
+  "systemMessages": [],
+  "locations": [
+    {
+      "id": "de:05111:18036",
+      "isGlobalId": true,
+      "name": "Düsseldorf, Heinrich-Heine-Allee U",
+      "disassembledName": "Heinrich-Heine-Allee U",
+      "coord": [51.226398, 6.776828],
+      "type": "stop",
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "assignedStops": [
+        {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "coord": [51.226398, 6.776828],
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "productClasses": [2, 5, 7],
+          "connectingMode": 100,
+          "properties": { "stopId": "20018036" }
+        }
+      ],
+      "properties": {
+        "additionalTariffData": { "area": "", "zones": "", "layer1": "", "layer2": "" },
+        "stopId": "20018036",
+        "downloads": [{ "type": "SM", "url": "vrr/18036_D-Heinrich-Heine-Allee.pdf", "size": 1243 }]
+      }
+    }
+  ],
+  "stopEvents": [
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:4:6",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "6",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.225655, 6.77751],
+        "properties": {
+          "stopId": "20018036",
+          "area": "4",
+          "platform": "6",
+          "platformName": "6",
+          "plannedPlatformName": "6"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:05:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:05:00Z",
+      "departureTimeEstimated": "2026-11-13T16:17:00Z",
+      "transportation": {
+        "id": "rbg:70073: :H:j26",
+        "name": "U-Bahn U73",
+        "disassembledName": "U73",
+        "number": "U73",
+        "description": "D-Gerresheim  - Grafenberg - Heinr.-Heine-Allee  - D-Bilk  - Uni-Kliniken - D-Universität Ost",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018296", "name": "D-Uni Ost/Botanischer Garten", "type": "stop" },
+        "properties": {
+          "isSTT": true,
+          "tripCode": 891,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U73:RBG-70-73",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018217", "name": "D-Gerresheim S", "type": "stop" }
+      },
+      "properties": { "AVMSTripID": "RB_VIA.9903005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:7:3",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "3",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.225976, 6.777115],
+        "properties": {
+          "stopId": "20018036",
+          "area": "7",
+          "platform": "3",
+          "platformName": "3",
+          "plannedPlatformName": "3"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:06:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:06:00Z",
+      "departureTimeEstimated": "2026-11-13T16:12:36Z",
+      "transportation": {
+        "id": "rbg:70077: :R:j26",
+        "name": "U-Bahn U77",
+        "disassembledName": "U77",
+        "number": "U77",
+        "description": "D-Lierenfeld Btf - Düsseldorf Hbf - Heinr.-Heine-Allee  - Oberkassel - D-Am Seestern",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018829", "name": "D-Am Seestern", "type": "stop" },
+        "properties": {
+          "isSTT": true,
+          "tripCode": 75,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U77:RBG-70-77",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018084", "name": "D-Lierenfeld Btf", "type": "stop" }
+      },
+      "properties": { "AVMSTripID": "RB_VIA.9201005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:7:1",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "1",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.226055, 6.776935],
+        "properties": {
+          "stopId": "20018036",
+          "area": "7",
+          "platform": "1",
+          "platformName": "1",
+          "plannedPlatformName": "1"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:08:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:08:30Z",
+      "departureTimeEstimated": "2026-11-13T16:11:00Z",
+      "transportation": {
+        "id": "rbg:70080: :R:j26",
+        "name": "U-Bahn U80",
+        "disassembledName": "U80",
+        "number": "U80",
+        "description": "Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Flughafen Terminal",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018517", "name": "D-Flughafen Terminal S U", "type": "stop" },
+        "properties": {
+          "isSTT": true,
+          "tripCode": 229,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U80:RBG-70-80",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018235", "name": "Düsseldorf Hbf", "type": "stop" }
+      },
+      "properties": { "AVMSTripID": "RB_VIA.10978005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:4:6",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "6",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.225655, 6.77751],
+        "properties": {
+          "stopId": "20018036",
+          "area": "4",
+          "platform": "6",
+          "platformName": "6",
+          "plannedPlatformName": "6"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:08:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:08:00Z",
+      "departureTimeEstimated": "2026-11-13T16:13:36Z",
+      "transportation": {
+        "id": "rbg:70071: :H:j26",
+        "name": "U-Bahn U71",
+        "disassembledName": "U71",
+        "number": "U71",
+        "description": "D-Rath  - Mörsenbroich - Heinrich-Heine-Allee  - D-Bilk  - D-Volmerswerth, Hellriegelstraße",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018275", "name": "D-Hellriegelstraße", "type": "stop" },
+        "properties": {
+          "isSTT": true,
+          "tripCode": 583,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U71:RBG-70-71",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018209", "name": "D-Rath S", "type": "stop" }
+      },
+      "properties": { "AVMSTripID": "RB_VIA.9280005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:8:4",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "4",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.226088, 6.776693],
+        "properties": {
+          "stopId": "20018036",
+          "area": "8",
+          "platform": "4",
+          "platformName": "4",
+          "plannedPlatformName": "4"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:09:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:09:00Z",
+      "departureTimeEstimated": "2026-11-13T16:10:12Z",
+      "transportation": {
+        "id": "rbg:70075: :H:j26",
+        "name": "U-Bahn U75",
+        "disassembledName": "U75",
+        "number": "U75",
+        "description": "Neuss Hbf - D-Heerdt - Heinr.-Heine-Allee  - Düsseldorf Hbf - D-Eller Mitte  - D-Eller, Vennhauser Allee",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018084", "name": "D-Lierenfeld Btf", "type": "stop" },
+        "properties": {
+          "isSTT": true,
+          "tripCode": 482,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U75:RBG-70-75",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20020055", "name": "Neuss Hauptbahnhof", "type": "stop" }
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2026-11-06T06:38:00Z" },
+          "priority": "normal",
+          "id": "ems-56690",
+          "version": "325",
+          "type": "lineInfo",
+          "urlText": "Linien 701, 724, 731, 732, 735, 815, U75 - Haltestellenveränderungen - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+          "url": "http://ems.vrr.de/info-link/79657939-38b6-5f5c-95bd-2eef6ea1186d",
+          "content": "<div>Wegen Bauarbeiten kommt es zu Einschr&auml;nkungen auf den Linien 701, U75, 724, 731, 732, 735 und 815. <br />Die Bahnen der Linie U75 fahren nicht zwischen &bdquo;Lierenfeld Betriebshof&ldquo; und &bdquo;Vennhauser Allee&ldquo;. Es fahren Ersatzbusse.<br />Die Bahnen der Linie 701 fahren nicht wie gewohnt zwischen \"D-Oberbilk S\" und \"Vennhauser Allee\". Sie fahren ab der Haltestelle \"D-Oberbilk S\" eine Umleitung bis \"Lierenfeld Betriebshof S&uuml;d\" und wenden dort. Zwischen den Haltestellen \"Lierenfeld Betriebshof S&uuml;d\" und \"Vennhauser Allee\" fahren Ersatzbusse.</div>\n<div><br />Die Buslinien 724, 731, 732, 735 und 815 werden umgeleitet. Einzelne Haltestellen werden verlegt.</div>\n<div>&nbsp;</div>\n<div><img src=\"https://ems.vrr.de/s/QUZXR.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik Richtung Neuss bzw. PSD Bank DOME\" width=\"400\" height=\"671\" /><img src=\"https://ems.vrr.de/s/-IcAY.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik Richtung Vennhauser Allee\" width=\"400\" height=\"672\" /><img src=\"https://ems.vrr.de/s/h2A05.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik\" width=\"400\" height=\"672\" /></div>",
+          "subtitle": "U75, 701, 724, 731, 732, 735 und 815: Busse statt Bahnen, Umleitungen und Haltestellenverlegung",
+          "title": "U75, 701, 724, 731, 732, 735 und 815: Busse statt Bahnen, Umleitungen und Haltestellenverlegung",
+          "additionalText": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "properties": {
+            "publisher": "ems.comm.addinfo",
+            "infoType": "lineInfo",
+            "incidentDateTime": "12/11/2026 04:00 - 15/11/2026 04:00",
+            "smsText": "Linien 701, 724, 731, 732, 735, 815, U75 - Haltestellenveränderungen - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+            "attachments": [
+              {
+                "ID": 0,
+                "type": "image/jpeg",
+                "path": "https://ems.vrr.de/s/QUZXR.jpg",
+                "virtPath": "https://ems.vrr.de/s/QUZXR.jpg",
+                "linkText": "Vollansicht Zeppelinstr Sperrgrafik Richtung Neuss bzw. PSD Bank DOME",
+                "linkTarget": "_blank",
+                "size": 175035
+              },
+              {
+                "ID": 0,
+                "type": "image/jpeg",
+                "path": "https://ems.vrr.de/s/-IcAY.jpg",
+                "virtPath": "https://ems.vrr.de/s/-IcAY.jpg",
+                "linkText": "Vollansicht Zeppelinstr Sperrgrafik Richtung Vennhauser Allee",
+                "linkTarget": "_blank",
+                "size": 167863
+              },
+              {
+                "ID": 0,
+                "type": "image/jpeg",
+                "path": "https://ems.vrr.de/s/h2A05.jpg",
+                "virtPath": "https://ems.vrr.de/s/h2A05.jpg",
+                "linkText": "Vollansicht Zeppelinstr Sperrgrafik",
+                "linkTarget": "_blank",
+                "size": 179999
+              }
+            ]
+          }
+        },
+        {
+          "timestamps": { "creation": "2026-11-02T12:47:00Z" },
+          "priority": "normal",
+          "id": "314207",
+          "version": "1",
+          "type": "lineInfo",
+          "urlText": "",
+          "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314207",
+          "content": "<a href=\"https://www.rheinbahn.de/Zeppelinstrasse\">Hier alle Infos</a>",
+          "subtitle": "Gleisarbeiten bringen Änderungen auf den Linien U75, 701 und fünf Buslinien",
+          "title": "Rheinbahn investiert in zuverlässige Verbindungen und mehr Fahrkomfort auf der Zeppelinstraße:",
+          "properties": {
+            "infoType": "lineInfo",
+            "incidentDateTime": "12/11/2026 04:00 - 15/11/2026 04:00",
+            "wapText": "Wegen Gleisarbeiten auf der Zeppelinstraße kommt es zu Änderungen auf den Bahnlinien U75 und 701 sowie auf den Buslinien 724, 731, 732, 735 und 815 - von Donnerstag, 12. November, 4 Uhr, bis Sonntag, 15. November, 4 Uhr.",
+            "smsText": "Wegen Gleisarbeiten auf der Zeppelinstraße kommt es zu Änderungen auf den Bahnlinien U75 und 701 sowie auf den Buslinien 724, 731, 732, 735 und 815 - von Donnerstag, 12. November, 4 Uhr, bis Sonntag, 15. November, 4 Uhr."
+          }
+        }
+      ],
+      "properties": { "AVMSTripID": "RB_VIA.10213005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:4:5",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "5",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.225695, 6.778283],
+        "properties": {
+          "stopId": "20018036",
+          "area": "4",
+          "platform": "5",
+          "platformName": "5",
+          "plannedPlatformName": "5"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:09:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:09:30Z",
+      "departureTimeEstimated": "2026-11-13T16:09:12Z",
+      "transportation": {
+        "id": "rbg:70072: :R:j26",
+        "name": "U-Bahn U72",
+        "disassembledName": "U72",
+        "number": "U72",
+        "description": "D-Benrath Btf - Holthausen - Uni-Kliniken - D-Bilk  - Heinrich-Heine-Allee  - D-Wehrhahn  - D-Oberrath - Ratingen Mitte",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018213", "name": "Ratingen Mitte", "type": "stop" },
+        "properties": {
+          "isSTT": true,
+          "tripCode": 818,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U72:RBG-70-72",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018262", "name": "D-Benrath Btf", "type": "stop" }
+      },
+      "properties": { "AVMSTripID": "RB_VIA.9536005" }
+    },
+    {
+      "realtimeStatus": ["EXTRA_TRIP", "EXTRA_STOPS"],
+      "location": {
+        "id": "de:05111:18036:8:2",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "2",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.226066, 6.776855],
+        "properties": {
+          "realtimeStatus": ["EXTRA_TRIP"],
+          "stopId": "20018036",
+          "area": "8",
+          "platform": "2",
+          "platformName": "2",
+          "plannedPlatformName": "2"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:10:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:10:48Z",
+      "transportation": {
+        "id": "dvg:20079: :H:j26",
+        "name": "Bahn U79",
+        "disassembledName": "U79",
+        "number": "U79",
+        "description": "DU-Meiderich Bf - Duisburg Hbf - D-Kaiserswerth - Düsseldorf Hbf - Oberbilk - D-Universität Ost",
+        "product": { "id": 0, "class": 2, "name": "Bahn", "iconId": 1 },
+        "operator": { "code": "DVG", "id": "20", "name": "DVG AG" },
+        "destination": { "id": "20018093", "name": "D-Kaiserslauterner Str.", "type": "stop" },
+        "properties": {
+          "trainType": "Bahn",
+          "isSTT": true,
+          "tripCode": 65534,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U79:DVG-20-79",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20016056", "name": "Duisburg Meiderich Bf", "type": "stop" }
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2025-11-17T08:10:00Z" },
+          "priority": "normal",
+          "id": "ems-42695",
+          "version": "245",
+          "type": "lineInfo",
+          "urlText": "Linie 701, 705, E701, U78, U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+          "url": "http://ems.vrr.de/info-link/b42de25d-eb04-5cf5-9589-f4f2d3d21956",
+          "content": "<div>Die Landeshauptstadt und die Rheinbahn erneuern im U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab Sommer den Brandschutz der Haltestelle. Dazu wurden in den letzten Wochen vorbereitende Arbeiten durchgef&uuml;hrt. Dabei wurde nun ein Austritt von Schadstoffen festgestellt, sodass der U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab 21. Mai, bis auf Weiteres, nicht angefahren werden kann.<br />Die Bahnen k&ouml;nnen den U-Bahnhof weiterhin passieren, ohne dass dabei eine Gefahr f&uuml;r die Gesundheit besteht. Jedoch durchfahren die Bahnen aus Sicherheitsgr&uuml;nden die Haltestelle mit einer reduzierten Geschwindigkeit. Der Ein- und Ausstieg an der Haltestelle ist bis auf Weiteres nicht m&ouml;glich.<br />Der oberirdische Fahrgastbetrieb der Stra&szlig;enbahnlinien 701 und 705 ist von der Einschr&auml;nkung der U-Bahnlinien U78 und U79 nicht betroffen.</div>",
+          "subtitle": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+          "title": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+          "additionalText": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "properties": {
+            "publisher": "ems.comm.addinfo",
+            "infoType": "lineInfo",
+            "incidentDateTime": "17/11/2025 09:00 - 31/12/2500 01:00",
+            "smsText": "Linie U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung"
+          }
+        }
+      ],
+      "properties": { "AVMSTripID": "RB_VIA.305789" }
+    },
+    {
+      "realtimeStatus": ["EXTRA_TRIP", "EXTRA_STOPS"],
+      "location": {
+        "id": "de:05111:18036:8:2",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "2",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.226066, 6.776855],
+        "properties": {
+          "realtimeStatus": ["EXTRA_TRIP"],
+          "stopId": "20018036",
+          "area": "8",
+          "platform": "2",
+          "platformName": "2",
+          "plannedPlatformName": "2"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:10:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:10:48Z",
+      "transportation": {
+        "id": "rbg:70079: :H:j26",
+        "name": "Bahn U79",
+        "disassembledName": "U79",
+        "number": "U79",
+        "description": "DU-Meiderich Bf - Duisburg Hbf - D-Kaiserswerth - Düsseldorf Hbf - Oberbilk - D-Universität Ost",
+        "product": { "id": 0, "class": 2, "name": "Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018093", "name": "D-Kaiserslauterner Str.", "type": "stop" },
+        "properties": {
+          "trainType": "Bahn",
+          "isSTT": true,
+          "tripCode": 65534,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U79:RBG-70-79",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20016056", "name": "Duisburg Meiderich Bf", "type": "stop" }
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2025-11-14T09:48:00Z" },
+          "priority": "normal",
+          "id": "ems-42633",
+          "version": "1851",
+          "type": "lineInfo",
+          "urlText": "Linien 701, 705, E701, U78, U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+          "url": "http://ems.vrr.de/info-link/fa11b505-89b5-5791-a6a9-57aece5fbe94",
+          "content": "<div>Die Landeshauptstadt und die Rheinbahn erneuern im U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab Sommer den Brandschutz der Haltestelle. Dazu wurden in den letzten Wochen vorbereitende Arbeiten durchgef&uuml;hrt. Dabei wurde nun ein Austritt von Schadstoffen festgestellt, sodass der U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab 21. Mai, bis auf Weiteres, nicht angefahren werden kann.<br />Die Bahnen k&ouml;nnen den U-Bahnhof weiterhin passieren, ohne dass dabei eine Gefahr f&uuml;r die Gesundheit besteht. Jedoch durchfahren die Bahnen aus Sicherheitsgr&uuml;nden die Haltestelle mit einer reduzierten Geschwindigkeit. Der Ein- und Ausstieg an der Haltestelle ist bis auf Weiteres nicht m&ouml;glich.<br />Der oberirdische Fahrgastbetrieb der Stra&szlig;enbahnlinien 701 und 705 ist von der Einschr&auml;nkung der U-Bahnlinien U78 und U79 nicht betroffen.</div>",
+          "subtitle": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+          "title": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+          "additionalText": "<div>Die beschriebenen &Auml;nderungen sind in der elektronischen Fahrplanauskunft (EFA) ber&uuml;cksichtigt.</div>",
+          "properties": {
+            "publisher": "ems.comm.addinfo",
+            "infoType": "lineInfo",
+            "incidentDateTime": "14/11/2025 10:00 - 31/12/2500 01:00",
+            "smsText": "Linien 701, 705, E701, U78, U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung"
+          }
+        }
+      ],
+      "properties": { "AVMSTripID": "RB_VIA.305789" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:1:7",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "7",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.22673, 6.77672],
+        "properties": {
+          "stopId": "20018036",
+          "area": "1",
+          "platform": "7",
+          "platformName": "7",
+          "plannedPlatformName": "7"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:10:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:10:30Z",
+      "departureTimeEstimated": "2026-11-13T16:10:00Z",
+      "transportation": {
+        "id": "rbg:72782: :H:j26",
+        "name": "Niederflurbus 782",
+        "disassembledName": "782",
+        "number": "782",
+        "description": "D-Heinrich-Heine-Allee  - Hilden Nord - Hilden Mitte - Hilden Süd  - Solingen Hbf",
+        "product": { "id": 13, "class": 5, "name": "Niederflurbus", "iconId": 5 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20013800", "name": "Solingen, Hauptbahnhof", "type": "stop" },
+        "properties": {
+          "trainType": "Bahn",
+          "isSTT": true,
+          "tripCode": 475,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:782:RBG-72-782",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018036", "name": "D-Heinrich-Heine-Allee U", "type": "stop" }
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2026-09-23T09:35:00Z" },
+          "priority": "normal",
+          "id": "312858",
+          "version": "1",
+          "type": "lineInfo",
+          "urlText": "",
+          "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=312858",
+          "content": "<a href=\"https://www.rheinbahn.de/Breitestrasse_Benrather_Strasse\">Hier alle Infos</a>",
+          "subtitle": "Änderungen für neun Buslinien",
+          "title": "Bauarbeiten im Bereich Breitestraße und Benrather Straße:",
+          "properties": {
+            "infoType": "lineInfo",
+            "incidentDateTime": "23/09/2026 10:28 - 21/09/2028 04:00",
+            "wapText": "Wegen Bauarbeiten im Bereich Breitestraße und Benrather Straße werden die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE4 und NE7 umgeleitet - ab Montag, 21. September 2026, 4 Uhr.",
+            "smsText": "Wegen Bauarbeiten im Bereich Breitestraße und Benrather Straße werden die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE4 und NE7 umgeleitet - ab Montag, 21. September 2026, 4 Uhr."
+          }
+        },
+        {
+          "timestamps": { "creation": "2025-10-27T08:50:00Z" },
+          "priority": "normal",
+          "id": "266787",
+          "version": "9",
+          "type": "lineInfo",
+          "urlText": "",
+          "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=266787",
+          "content": "<DIV>Wegen Bauarbeiten wird die Kasernenstraße in Höhe des Heinrich-Heine-Platzes gesperrt - <STRONG>ab Sonntag, 29. Januar 2023, 4 Uhr</STRONG>. Davon betroffen sind die <STRONG>Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5 und NE7</STRONG>:</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Buslinien SB50, 780, 782 und 785<BR></STRONG>Stadtauswärts fahren die Busse ab der Haltestelle \"Heinrich-Heine-Allee, Steig 7\" vor dem KundenCenter eine Umleitung. Die Haltestelle \"Benrather Straße\" entfällt, bitte stattdessen die Haltestelle \"Heinrich-Heine-Allee, Steig 7\" nutzen. Die Haltestelle \"Steinstraße/Königsallee, Steig 11\" muss leider entfallen, bitte stattdessen den Steig 7 nutzen.</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Buslinien 805, 817, NE3 und NE5</STRONG><BR>Die Busse fahren stadtauswärts ab der Haltestelle \"Heinrich-Heine-Allee, Steig 7\" vor dem KundenCenter eine Umleitung. Die Haltestelle \"Benrather Straße\" entfällt, bitte stattdessen die Haltestelle \"Heinrich-Heine-Allee, Steig 7\" nutzen.&nbsp; Die Haltestelle \"Steinstraße/Königsallee, Steig 11\" muss leider entfallen, bitte stattdessen die Haltestelle \"Steinstraße/Berliner Allee\" nutzen.</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Buslinie NE7</STRONG><BR>Die Busse fahren stadtauswärts ab der Haltestelle \"Heinrich-Heine-Allee, Steig 7\" vor dem KundenCenter eine Umleitung. Die Haltestelle \"Benrather Straße\" entfällt, bitte stattdessen die Haltestelle \"Heinrich-Heine-Allee, Steig 7\" nutzen.</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Information</STRONG><BR>Aushänge an den betroffenen Haltestellen und Durchsagen in den Bussen informieren die Kunden über die Änderungen. Die Rheinbahn bittet um Verständnis.</DIV>",
+          "subtitle": "Umleitungen für die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5 und NE7",
+          "title": "Sperrung der Kasernenstraße:",
+          "properties": {
+            "infoType": "lineInfo",
+            "incidentDateTime": "29/01/2023 04:00 - 31/12/2026 04:00",
+            "wapText": "Wegen Bauarbeiten wird die Kasernenstraße in Höhe des Heinrich-Heine-Platzes gesperrt - ab Sonntag, 29. Januar, 4 Uhr, für etwa anderthalb Jahre. Davon betroffen sind die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5",
+            "smsText": "Wegen Bauarbeiten wird die Kasernenstraße in Höhe des Heinrich-Heine-Platzes gesperrt - ab Sonntag, 29. Januar, 4 Uhr, für etwa anderthalb Jahre. Davon betroffen sind die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5"
+          }
+        }
+      ],
+      "properties": { "AVMSTripID": "RB_VIA.3405005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:7:3",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "3",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.225976, 6.777115],
+        "properties": {
+          "stopId": "20018036",
+          "area": "7",
+          "platform": "3",
+          "platformName": "3",
+          "plannedPlatformName": "3"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:11:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:11:00Z",
+      "departureTimeEstimated": "2026-11-13T16:13:18Z",
+      "transportation": {
+        "id": "rbg:70075: :R:j26",
+        "name": "U-Bahn U75",
+        "disassembledName": "U75",
+        "number": "U75",
+        "description": "D-Eller, Vennhauser Allee - D-Eller Mitte  - Düsseldorf Hbf -  Heinr.-Heine-Allee  - D-Heerdt - Neuss Hbf",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20020055", "name": "Neuss Hauptbahnhof", "type": "stop" },
+        "properties": {
+          "trainType": "Bahn",
+          "isSTT": true,
+          "tripCode": 1115,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U75:RBG-70-75",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018084", "name": "D-Lierenfeld Btf", "type": "stop" }
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2026-11-06T06:38:00Z" },
+          "priority": "normal",
+          "id": "ems-56690",
+          "version": "325",
+          "type": "lineInfo",
+          "urlText": "Linien 701, 724, 731, 732, 735, 815, U75 - Haltestellenveränderungen - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+          "url": "http://ems.vrr.de/info-link/79657939-38b6-5f5c-95bd-2eef6ea1186d",
+          "content": "<div>Wegen Bauarbeiten kommt es zu Einschr&auml;nkungen auf den Linien 701, U75, 724, 731, 732, 735 und 815. <br />Die Bahnen der Linie U75 fahren nicht zwischen &bdquo;Lierenfeld Betriebshof&ldquo; und &bdquo;Vennhauser Allee&ldquo;. Es fahren Ersatzbusse.<br />Die Bahnen der Linie 701 fahren nicht wie gewohnt zwischen \"D-Oberbilk S\" und \"Vennhauser Allee\". Sie fahren ab der Haltestelle \"D-Oberbilk S\" eine Umleitung bis \"Lierenfeld Betriebshof S&uuml;d\" und wenden dort. Zwischen den Haltestellen \"Lierenfeld Betriebshof S&uuml;d\" und \"Vennhauser Allee\" fahren Ersatzbusse.</div>\n<div><br />Die Buslinien 724, 731, 732, 735 und 815 werden umgeleitet. Einzelne Haltestellen werden verlegt.</div>\n<div>&nbsp;</div>\n<div><img src=\"https://ems.vrr.de/s/QUZXR.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik Richtung Neuss bzw. PSD Bank DOME\" width=\"400\" height=\"671\" /><img src=\"https://ems.vrr.de/s/-IcAY.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik Richtung Vennhauser Allee\" width=\"400\" height=\"672\" /><img src=\"https://ems.vrr.de/s/h2A05.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik\" width=\"400\" height=\"672\" /></div>",
+          "subtitle": "U75, 701, 724, 731, 732, 735 und 815: Busse statt Bahnen, Umleitungen und Haltestellenverlegung",
+          "title": "U75, 701, 724, 731, 732, 735 und 815: Busse statt Bahnen, Umleitungen und Haltestellenverlegung",
+          "additionalText": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "properties": {
+            "publisher": "ems.comm.addinfo",
+            "infoType": "lineInfo",
+            "incidentDateTime": "12/11/2026 04:00 - 15/11/2026 04:00",
+            "smsText": "Linien 701, 724, 731, 732, 735, 815, U75 - Haltestellenveränderungen - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+            "attachments": [
+              {
+                "ID": 0,
+                "type": "image/jpeg",
+                "path": "https://ems.vrr.de/s/QUZXR.jpg",
+                "virtPath": "https://ems.vrr.de/s/QUZXR.jpg",
+                "linkText": "Vollansicht Zeppelinstr Sperrgrafik Richtung Neuss bzw. PSD Bank DOME",
+                "linkTarget": "_blank",
+                "size": 175035
+              },
+              {
+                "ID": 0,
+                "type": "image/jpeg",
+                "path": "https://ems.vrr.de/s/-IcAY.jpg",
+                "virtPath": "https://ems.vrr.de/s/-IcAY.jpg",
+                "linkText": "Vollansicht Zeppelinstr Sperrgrafik Richtung Vennhauser Allee",
+                "linkTarget": "_blank",
+                "size": 167863
+              },
+              {
+                "ID": 0,
+                "type": "image/jpeg",
+                "path": "https://ems.vrr.de/s/h2A05.jpg",
+                "virtPath": "https://ems.vrr.de/s/h2A05.jpg",
+                "linkText": "Vollansicht Zeppelinstr Sperrgrafik",
+                "linkTarget": "_blank",
+                "size": 179999
+              }
+            ]
+          }
+        },
+        {
+          "timestamps": { "creation": "2026-11-02T12:47:00Z" },
+          "priority": "normal",
+          "id": "314207",
+          "version": "1",
+          "type": "lineInfo",
+          "urlText": "",
+          "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314207",
+          "content": "<a href=\"https://www.rheinbahn.de/Zeppelinstrasse\">Hier alle Infos</a>",
+          "subtitle": "Gleisarbeiten bringen Änderungen auf den Linien U75, 701 und fünf Buslinien",
+          "title": "Rheinbahn investiert in zuverlässige Verbindungen und mehr Fahrkomfort auf der Zeppelinstraße:",
+          "properties": {
+            "infoType": "lineInfo",
+            "incidentDateTime": "12/11/2026 04:00 - 15/11/2026 04:00",
+            "wapText": "Wegen Gleisarbeiten auf der Zeppelinstraße kommt es zu Änderungen auf den Bahnlinien U75 und 701 sowie auf den Buslinien 724, 731, 732, 735 und 815 - von Donnerstag, 12. November, 4 Uhr, bis Sonntag, 15. November, 4 Uhr.",
+            "smsText": "Wegen Gleisarbeiten auf der Zeppelinstraße kommt es zu Änderungen auf den Bahnlinien U75 und 701 sowie auf den Buslinien 724, 731, 732, 735 und 815 - von Donnerstag, 12. November, 4 Uhr, bis Sonntag, 15. November, 4 Uhr."
+          }
+        }
+      ],
+      "properties": { "AVMSTripID": "RB_VIA.10269005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:8:4",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "4",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.226088, 6.776693],
+        "properties": {
+          "stopId": "20018036",
+          "area": "8",
+          "platform": "4",
+          "platformName": "4",
+          "plannedPlatformName": "4"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:11:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:11:30Z",
+      "departureTimeEstimated": "2026-11-13T16:16:00Z",
+      "transportation": {
+        "id": "rbg:70076: :H:j26",
+        "name": "U-Bahn U76",
+        "disassembledName": "U76",
+        "number": "U76",
+        "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Oberbilk   - Holthausen",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018266", "name": "D-Holthausen", "type": "stop" },
+        "properties": {
+          "trainType": "Bahn",
+          "isSTT": true,
+          "tripCode": 60,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U76:RBG-70-76",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018140", "name": "D-Lörick", "type": "stop" }
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2026-10-28T16:23:00Z" },
+          "priority": "normal",
+          "id": "314063",
+          "version": "1",
+          "type": "lineInfo",
+          "urlText": "",
+          "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314063",
+          "content": "<a href=\"https://www.rheinbahn.de/Sperrung_Loerick_Krefeld\">Hier alle Infos</a>",
+          "subtitle": "Änderungen für die Stadtbahnlinien U70 und U76",
+          "title": "Rheinbahn investiert in Barrierefreiheit und eine zukunftsfähige Infrastruktur:",
+          "properties": {
+            "infoType": "lineInfo",
+            "incidentDateTime": "02/11/2026 21:00 - 18/12/2026 04:00",
+            "wapText": "Wegen Fahrleitungsarbeiten zwischen den Haltestellen \"Lörick\" und \"Meerbusch, Haus Meer\" sind auf der Linie U76 im November und Dezember teilweise Busse statt Bahnen im Einsatz.",
+            "smsText": "Wegen Fahrleitungsarbeiten zwischen den Haltestellen \"Lörick\" und \"Meerbusch, Haus Meer\" sind auf der Linie U76 im November und Dezember teilweise Busse statt Bahnen im Einsatz."
+          }
+        }
+      ],
+      "properties": { "AVMSTripID": "RB_VIA.8900005" }
+    },
+    {
+      "realtimeStatus": ["MONITORED"],
+      "isRealtimeControlled": true,
+      "location": {
+        "id": "de:05111:18036:4:6",
+        "isGlobalId": true,
+        "name": "D-Heinrich-Heine-Allee U",
+        "disassembledName": "6",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.225655, 6.77751],
+        "properties": {
+          "stopId": "20018036",
+          "area": "4",
+          "platform": "6",
+          "platformName": "6",
+          "plannedPlatformName": "6"
+        },
+        "parent": {
+          "id": "de:05111:18036",
+          "isGlobalId": true,
+          "name": "D-Heinrich-Heine-Allee U",
+          "disassembledName": "Heinrich-Heine-Allee U",
+          "type": "stop",
+          "parent": { "name": "Düsseldorf", "type": "locality" },
+          "properties": { "stopId": "20018036" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:11:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:11:00Z",
+      "departureTimeEstimated": "2026-11-13T16:12:06Z",
+      "transportation": {
+        "id": "rbg:70072: :H:j26",
+        "name": "U-Bahn U72",
+        "disassembledName": "U72",
+        "number": "U72",
+        "description": "Ratingen Mitte - D-Oberrath - D-Wehrhahn  - Heinrich-Heine-Allee  - D-Bilk  - Uni-Kliniken - Holthausen - D-Benrath Btf",
+        "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+        "destination": { "id": "20018262", "name": "D-Benrath Btf", "type": "stop" },
+        "properties": {
+          "trainType": "Bahn",
+          "isSTT": true,
+          "tripCode": 115,
+          "lineDisplay": "LINE",
+          "globalId": "de:vrr:U72:RBG-70-72",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "20018213", "name": "Ratingen Mitte", "type": "stop" }
+      },
+      "properties": { "AVMSTripID": "RB_VIA.9640005" }
+    }
+  ]
+}

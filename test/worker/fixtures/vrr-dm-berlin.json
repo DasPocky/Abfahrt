@@ -1,0 +1,598 @@
+{
+  "serverInfo": {
+    "controllerVersion": "10.6.34.3",
+    "serverID": "EFA-X-DELFI03_",
+    "virtDir": "openservice",
+    "serverTime": "2026-11-13T17:09:00",
+    "calcTime": 177.899,
+    "logRequestId": "bdaa48c2a9c9c831"
+  },
+  "version": "10.4.18.18",
+  "systemMessages": [],
+  "locations": [
+    {
+      "id": "de:11000:900003201",
+      "isGlobalId": true,
+      "name": "Berlin, S+U Hauptbahnhof",
+      "disassembledName": "S+U Hauptbahnhof",
+      "coord": [52.525593, 13.369546],
+      "type": "stop",
+      "parent": { "id": "placeID:11000000:1", "name": "Berlin", "type": "locality" },
+      "assignedStops": [
+        {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "coord": [52.525593, 13.369546],
+          "parent": { "name": "Berlin", "type": "locality" },
+          "productClasses": [0, 1, 2, 4, 5, 6, 13, 17],
+          "connectingMode": 100,
+          "properties": { "stopId": "40003201" }
+        }
+      ],
+      "properties": {
+        "additionalTariffData": { "area": "", "zones": "", "layer1": "", "layer2": "" },
+        "stopId": "40003201"
+      }
+    }
+  ],
+  "stopEvents": [
+    {
+      "location": {
+        "id": "de:11000:900003201:3:55",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "disassembledName": "16",
+        "type": "platform",
+        "pointType": "TRACK",
+        "coord": [52.525199, 13.369303],
+        "properties": {
+          "stopId": "40003201",
+          "area": "1",
+          "platform": "6",
+          "platformName": "16",
+          "plannedPlatformName": "16"
+        },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:09:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:09:00Z",
+      "transportation": {
+        "id": "ddb:920S9: :H:j26",
+        "name": "S-Bahn S9",
+        "disassembledName": "S9",
+        "number": "S9",
+        "product": { "id": 3, "class": 1, "name": "S-Bahn", "iconId": 2 },
+        "operator": { "code": "S", "id": "08", "name": "S-Bahn Berlin" },
+        "destination": { "id": "40029101", "name": "S Spandau Bhf (Berlin)", "type": "stop" },
+        "properties": {
+          "trainName": "S-Bahn",
+          "trainType": "S",
+          "trainNumber": "9404",
+          "tripCode": 674,
+          "lineDisplay": "LINE",
+          "OperatorURL": "https://sbahn.berlin",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40005402", "name": "Flughafen BER", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie S9: Teilstrecke nur 2.Kl.",
+          "providerCode": "A___2",
+          "type": "Timetable",
+          "properties": { "subnet": "ddb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201:3:54",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "disassembledName": "15",
+        "type": "platform",
+        "pointType": "TRACK",
+        "coord": [52.525199, 13.369303],
+        "properties": {
+          "stopId": "40003201",
+          "area": "1",
+          "platform": "5",
+          "platformName": "15",
+          "plannedPlatformName": "15"
+        },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:11:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:11:00Z",
+      "transportation": {
+        "id": "ddb:920S5: :R:j26",
+        "name": "S-Bahn S5",
+        "disassembledName": "S5",
+        "number": "S5",
+        "product": { "id": 3, "class": 1, "name": "S-Bahn", "iconId": 2 },
+        "operator": { "code": "S", "id": "08", "name": "S-Bahn Berlin" },
+        "destination": { "id": "40006990", "name": "S Hoppegarten", "type": "stop" },
+        "properties": {
+          "trainName": "S-Bahn",
+          "trainType": "S",
+          "trainNumber": "5591",
+          "tripCode": 2142,
+          "lineDisplay": "LINE",
+          "OperatorURL": "https://sbahn.berlin",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40024102", "name": "S Westkreuz (Berlin)", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie S5: Teilstrecke nur 2.Kl.",
+          "providerCode": "A___2",
+          "type": "Timetable",
+          "properties": { "subnet": "ddb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201::2",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "type": "platform",
+        "coord": [52.525603, 13.369078],
+        "properties": { "stopId": "40003201", "area": "261", "platform": "8" },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:11:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:11:00Z",
+      "transportation": {
+        "id": "vbb:13808: :H:j26",
+        "name": "Tram M8",
+        "disassembledName": "M8",
+        "number": "M8",
+        "product": { "id": 3, "class": 4, "name": "Tram", "iconId": 4 },
+        "operator": { "code": "BVG", "id": "BVG", "name": "Berliner Verkehrsbetriebe" },
+        "destination": { "id": "40003104", "name": "U Turmstr.", "type": "stop" },
+        "properties": {
+          "trainType": "S",
+          "tripCode": 916,
+          "lineDisplay": "LINE",
+          "globalId": "de:VBB:11000000|Tram|M8:808",
+          "OperatorURL": "https://www.bvg.de/",
+          "FrequencyLine": "1"
+        },
+        "origin": {
+          "id": "40000536",
+          "name": "S+U Lichtenberg Bhf/Siegfriedstr. (Berlin)",
+          "type": "stop"
+        }
+      },
+      "hints": [
+        {
+          "content": "Linie M8: barrierefrei",
+          "providerCode": "6T",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        },
+        {
+          "content": "Linie M8: Fahrradmitnahme nicht möglich (Suchattribut)",
+          "providerCode": "8z",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201::9",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "type": "platform",
+        "coord": [52.525603, 13.369078],
+        "properties": { "stopId": "40003201", "area": "238", "platform": "15" },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:12:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:12:00Z",
+      "transportation": {
+        "id": "vbb:10147: :R:j26",
+        "name": "Bus 147",
+        "disassembledName": "147",
+        "number": "147",
+        "product": { "id": 1, "class": 5, "name": "Bus", "iconId": 3 },
+        "operator": { "code": "BVG", "id": "BVG", "name": "Berliner Verkehrsbetriebe" },
+        "destination": {
+          "id": "40000154",
+          "name": "S Ostbahnhof via Friedrichstr.",
+          "type": "stop"
+        },
+        "properties": {
+          "trainType": "S",
+          "tripCode": 381,
+          "lineDisplay": "LINE",
+          "globalId": "de:VBB:11000000|Bus|147:",
+          "OperatorURL": "https://www.bvg.de/",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40009102", "name": "U Leopoldplatz (Berlin)", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie 147: barrierefrei",
+          "providerCode": "6T",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        },
+        {
+          "content": "Linie 147: Fahrradmitnahme nicht möglich (Suchattribut)",
+          "providerCode": "8z",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201::3",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "type": "platform",
+        "coord": [52.525603, 13.369078],
+        "properties": { "stopId": "40003201", "area": "262", "platform": "9" },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:12:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:12:00Z",
+      "transportation": {
+        "id": "vbb:13808: :R:j26",
+        "name": "Tram M8",
+        "disassembledName": "M8",
+        "number": "M8",
+        "product": { "id": 3, "class": 4, "name": "Tram", "iconId": 4 },
+        "operator": { "code": "BVG", "id": "BVG", "name": "Berliner Verkehrsbetriebe" },
+        "destination": {
+          "id": "40000537",
+          "name": "Herzbergstraße/ Siegfriedstraße -> Bus",
+          "type": "stop"
+        },
+        "properties": {
+          "trainType": "S",
+          "tripCode": 385,
+          "lineDisplay": "LINE",
+          "globalId": "de:VBB:11000000|Tram|M8:808",
+          "OperatorURL": "https://www.bvg.de/",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40003104", "name": "U Turmstr. (Berlin)", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie M8: barrierefrei",
+          "providerCode": "6T",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        },
+        {
+          "content": "Linie M8: Fahrradmitnahme nicht möglich (Suchattribut)",
+          "providerCode": "8z",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201:3:55",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "disassembledName": "16",
+        "type": "platform",
+        "pointType": "TRACK",
+        "coord": [52.525199, 13.369303],
+        "properties": {
+          "stopId": "40003201",
+          "area": "1",
+          "platform": "6",
+          "platformName": "16",
+          "plannedPlatformName": "16"
+        },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:12:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:12:00Z",
+      "transportation": {
+        "id": "ddb:920S3: :H:j26",
+        "name": "S-Bahn S3",
+        "disassembledName": "S3",
+        "number": "S3",
+        "product": { "id": 3, "class": 1, "name": "S-Bahn", "iconId": 2 },
+        "operator": { "code": "S", "id": "08", "name": "S-Bahn Berlin" },
+        "destination": {
+          "id": "40024101",
+          "name": "S Charlottenburg Bhf (Berlin)",
+          "type": "stop"
+        },
+        "properties": {
+          "trainName": "S-Bahn",
+          "trainType": "S",
+          "trainNumber": "3786",
+          "tripCode": 1181,
+          "lineDisplay": "LINE",
+          "OperatorURL": "https://sbahn.berlin",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40006299", "name": "S Erkner Bhf", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie S3: Teilstrecke nur 2.Kl.",
+          "providerCode": "A___2",
+          "type": "Timetable",
+          "properties": { "subnet": "ddb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201:3:54",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "disassembledName": "15",
+        "type": "platform",
+        "pointType": "TRACK",
+        "coord": [52.525199, 13.369303],
+        "properties": {
+          "stopId": "40003201",
+          "area": "1",
+          "platform": "5",
+          "platformName": "15",
+          "plannedPlatformName": "15"
+        },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:13:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:13:00Z",
+      "transportation": {
+        "id": "ddb:920S3: :R:j26",
+        "name": "S-Bahn S3",
+        "disassembledName": "S3",
+        "number": "S3",
+        "product": { "id": 3, "class": 1, "name": "S-Bahn", "iconId": 2 },
+        "operator": { "code": "S", "id": "08", "name": "S-Bahn Berlin" },
+        "destination": { "id": "40006299", "name": "S Erkner Bhf", "type": "stop" },
+        "properties": {
+          "trainName": "S-Bahn",
+          "trainType": "S",
+          "trainNumber": "3793",
+          "tripCode": 3122,
+          "lineDisplay": "LINE",
+          "OperatorURL": "https://sbahn.berlin",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40024101", "name": "S Charlottenburg Bhf (Berlin)", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie S3: Teilstrecke nur 2.Kl.",
+          "providerCode": "A___2",
+          "type": "Timetable",
+          "properties": { "subnet": "ddb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201::10",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "type": "platform",
+        "coord": [52.525603, 13.369078],
+        "properties": { "stopId": "40003201", "area": "501", "platform": "16" },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:13:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:13:00Z",
+      "transportation": {
+        "id": "vbb:140U5: :R:j26",
+        "name": "U-Bahn U5",
+        "disassembledName": "U5",
+        "number": "U5",
+        "product": { "id": 7, "class": 2, "name": "U-Bahn", "iconId": 1 },
+        "operator": { "code": "BVG", "id": "BVG", "name": "Berliner Verkehrsbetriebe" },
+        "destination": { "id": "40000753", "name": "U Hönow (Berlin)", "type": "stop" },
+        "properties": {
+          "trainType": "S",
+          "tripCode": 443,
+          "lineDisplay": "LINE",
+          "globalId": "de:VBB:11000000|U-Bahn|U5:",
+          "OperatorURL": "https://www.bvg.de/",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40003201", "name": "S+U Berlin Hauptbahnhof", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie U5: Fahrradmitnahme möglich",
+          "providerCode": "3416",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201:3:55",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "disassembledName": "16",
+        "type": "platform",
+        "pointType": "TRACK",
+        "coord": [52.525199, 13.369303],
+        "properties": {
+          "stopId": "40003201",
+          "area": "1",
+          "platform": "6",
+          "platformName": "16",
+          "plannedPlatformName": "16"
+        },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:14:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:14:00Z",
+      "transportation": {
+        "id": "ddb:920S5: :H:j26",
+        "name": "S-Bahn S5",
+        "disassembledName": "S5",
+        "number": "S5",
+        "product": { "id": 3, "class": 1, "name": "S-Bahn", "iconId": 2 },
+        "operator": { "code": "S", "id": "08", "name": "S-Bahn Berlin" },
+        "destination": { "id": "40024102", "name": "S Westkreuz (Berlin)", "type": "stop" },
+        "properties": {
+          "trainName": "S-Bahn",
+          "trainType": "S",
+          "trainNumber": "5100",
+          "tripCode": 214,
+          "lineDisplay": "LINE",
+          "OperatorURL": "https://sbahn.berlin",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40006983", "name": "S Strausberg Nord", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie S5: Teilstrecke nur 2.Kl.",
+          "providerCode": "A___2",
+          "type": "Timetable",
+          "properties": { "subnet": "ddb" }
+        }
+      ]
+    },
+    {
+      "location": {
+        "id": "de:11000:900003201::4",
+        "isGlobalId": true,
+        "name": "S+U Berlin Hauptbahnhof",
+        "type": "platform",
+        "coord": [52.525603, 13.369078],
+        "properties": { "stopId": "40003201", "area": "240", "platform": "10" },
+        "parent": {
+          "id": "de:11000:900003201",
+          "isGlobalId": true,
+          "name": "S+U Berlin Hauptbahnhof",
+          "disassembledName": "S+U Hauptbahnhof",
+          "type": "stop",
+          "parent": { "name": "Berlin", "type": "locality" },
+          "properties": { "stopId": "40003201" }
+        }
+      },
+      "departureTimePlanned": "2026-11-13T16:14:00Z",
+      "departureTimeBaseTimetable": "2026-11-13T16:14:00Z",
+      "transportation": {
+        "id": "vbb:10M85: :R:j26",
+        "name": "Bus M85",
+        "disassembledName": "M85",
+        "number": "M85",
+        "product": { "id": 1, "class": 5, "name": "Bus", "iconId": 3 },
+        "operator": { "code": "BVG", "id": "BVG", "name": "Berliner Verkehrsbetriebe" },
+        "destination": { "id": "40064201", "name": "S Lichterfelde Süd", "type": "stop" },
+        "properties": {
+          "trainType": "S",
+          "tripCode": 220,
+          "lineDisplay": "LINE",
+          "globalId": "de:VBB:11000000|Bus|M85:",
+          "OperatorURL": "https://www.bvg.de/",
+          "FrequencyLine": "1"
+        },
+        "origin": { "id": "40003201", "name": "S+U Berlin Hauptbahnhof", "type": "stop" }
+      },
+      "hints": [
+        {
+          "content": "Linie M85: barrierefrei",
+          "providerCode": "6T",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        },
+        {
+          "content": "Linie M85: Fahrradmitnahme nicht möglich (Suchattribut)",
+          "providerCode": "8z",
+          "type": "Timetable",
+          "properties": { "subnet": "vbb" }
+        }
+      ]
+    }
+  ]
+}
