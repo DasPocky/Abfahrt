@@ -24,4 +24,4 @@ Echtzeit-ÖPNV-PWA mit Fokus Düsseldorf/Rheinland und Abdeckung von ganz Deutsc
 ## Offene Punkte
 
 1. **VRR-Produktivzugang:** Ich liefere in M0 den Mailtext an `opendata-oepnv@vrr.de`, du schickst ihn ab.
-2. **Cache auf `workers.dev`:** Wird beim ersten Deploy getestet (M0). Eine eigene Domain ist nicht nötig, solange das klappt.
+2. ~~**Cache auf `workers.dev`**~~: ✅ funktioniert (Test 13.11.2026), keine eigene Domain nötig.
