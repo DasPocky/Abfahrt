@@ -7,7 +7,7 @@
         │  gleiche Domain, kein CORS-Problem
         ▼
  Cloudflare Worker  ──── Static Assets (React-Build)
-   /api/*            ──── Cache (Cache API, 15–30 s)
+   /abfahrt/api/*          ──── Cache (Cache API, 15–30 s)
    │  Adapter + Normalisierung + Rate-Limit
    ├──► VRR OpenService (EFA)     Rheinland, sekundengenau
    ├──► Transitous (MOTIS 2)      Deutschland, Fallback
@@ -16,11 +16,19 @@
  D1 (M3)           ──► Push-Abos
 ```
 
-**Ein einziger Worker** liefert die App (Workers Static Assets) und die API unter `/api/*` aus:
+**Ein einziger Worker** liefert die App (Workers Static Assets) und die API unter `/abfahrt/api/*` aus:
 
 - **Gleiche Origin:** Es braucht kein CORS, und Security-Header lassen sich zentral setzen.
 - **Ein Deploy und eine Preview-URL** pro PR (`wrangler versions upload` → Preview-URL auf `workers.dev`)
 - **API-Keys und User-Agent** leben nur im Worker.
+
+## Unterpfad endlab.de/abfahrt
+
+Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` auf der gemeinsamen Domain `endlab.de`. Der Präfix steht zentral in `shared/base-path.ts`.
+
+- Assets werden nach `abfahrt/assets/` gebaut und kommen ohne Worker-Aufruf aus den Static Assets. `/abfahrt/` liefert über den SPA-Fallback die `index.html`.
+- Durch den Worker laufen nur `/abfahrt/api/*` und `/abfahrt` (301 auf `/abfahrt/`).
+- **Gemeinsame Origin mit anderen Apps:** Alle `localStorage`-Schlüssel bekommen das Präfix `abfahrt:`. Der Service Worker (M1) bekommt nur den Scope `/abfahrt/`, Cookies gibt es nicht. HSTS wird ohne `includeSubDomains` gesetzt, damit eine einzelne App keine Regel für die ganze Domain festlegt.
 
 ## Frontend
 
@@ -33,15 +41,15 @@
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
-| Endpunkt                                 | Zweck                        | Meilenstein |
-| ---------------------------------------- | ---------------------------- | ----------- |
-| `GET /api/stops/search?q=`               | Haltestellen/Adressen suchen | M1          |
-| `GET /api/stops/nearby?lat=&lon=`        | Haltestellen in der Nähe     | M1          |
-| `GET /api/departures?stop=&when=&modes=` | Abfahrten mit Echtzeit       | M1          |
-| `GET /api/journeys?from=&to=&…`          | Verbindungssuche             | M2          |
-| `GET /api/trips/:id`                     | Fahrtverlauf/Zwischenhalte   | M2          |
-| `GET /api/alerts?lines=&stop=`           | Störungen                    | M3          |
-| `POST /api/push/subscribe`               | Push-Abo                     | M3          |
+| Endpunkt                                         | Zweck                        | Meilenstein |
+| ------------------------------------------------ | ---------------------------- | ----------- |
+| `GET /abfahrt/api/stops/search?q=`               | Haltestellen/Adressen suchen | M1          |
+| `GET /abfahrt/api/stops/nearby?lat=&lon=`        | Haltestellen in der Nähe     | M1          |
+| `GET /abfahrt/api/departures?stop=&when=&modes=` | Abfahrten mit Echtzeit       | M1          |
+| `GET /abfahrt/api/journeys?from=&to=&…`          | Verbindungssuche             | M2          |
+| `GET /abfahrt/api/trips/:id`                     | Fahrtverlauf/Zwischenhalte   | M2          |
+| `GET /abfahrt/api/alerts?lines=&stop=`           | Störungen                    | M3          |
+| `POST /abfahrt/api/push/subscribe`               | Push-Abo                     | M3          |
 
 Haltestellen-IDs sind **global eindeutige DHID/IFOPT-Kennungen** (z. B. `de:05111:18036`). VRR und Transitous verwenden beide diese Kennungen. Darüber entscheidet der Worker, welche Quelle zuständig ist.
 

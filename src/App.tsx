@@ -3,6 +3,7 @@ import { Search, TramFront } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { API_PREFIX } from "../shared/base-path";
 
 type ApiStatus = "loading" | "ok" | "error";
 
@@ -23,7 +24,7 @@ export function App() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/health", { signal: controller.signal })
+    fetch(`${API_PREFIX}health`, { signal: controller.signal })
       .then((res) => setApiStatus(res.ok ? "ok" : "error"))
       .catch((err: unknown) => {
         if (!controller.signal.aborted) setApiStatus("error");

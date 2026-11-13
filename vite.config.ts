@@ -6,6 +6,10 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), cloudflare()],
+  build: {
+    // Assets liegen unter /abfahrt/assets/, passend zur Route endlab.de/abfahrt*
+    assetsDir: "abfahrt/assets",
+  },
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },

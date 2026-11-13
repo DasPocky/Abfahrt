@@ -1,3 +1,4 @@
+import { API_PREFIX, BASE_PATH } from "../shared/base-path";
 import { cacheProbe } from "./cache-probe";
 import { withSecurityHeaders } from "./security-headers";
 
@@ -15,10 +16,10 @@ async function handleApi(request: Request, ctx: ExecutionContext): Promise<Respo
   }
 
   const { pathname } = new URL(request.url);
-  switch (pathname) {
-    case "/api/health":
+  switch (pathname.slice(API_PREFIX.length)) {
+    case "health":
       return json({ status: "ok" });
-    case "/api/cache-probe":
+    case "cache-probe":
       return cacheProbe(request, ctx);
     default:
       return json({ error: "not_found" }, { status: 404 });
@@ -27,11 +28,16 @@ async function handleApi(request: Request, ctx: ExecutionContext): Promise<Respo
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {
-    const { pathname } = new URL(request.url);
-    if (pathname.startsWith("/api/")) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith(API_PREFIX)) {
       return withSecurityHeaders(await handleApi(request, ctx));
     }
-    // Wird nur erreicht, falls ein Nicht-API-Pfad den Worker trifft
+    // /abfahrt ohne Schrägstrich: auf /abfahrt/ weiterleiten, damit relative Pfade stimmen
+    if (url.pathname === BASE_PATH) {
+      url.pathname = `${BASE_PATH}/`;
+      return withSecurityHeaders(Response.redirect(url.toString(), 301));
+    }
+    // Wird nur erreicht, falls ein anderer Pfad den Worker trifft
     return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;

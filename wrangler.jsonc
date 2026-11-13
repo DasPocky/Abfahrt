@@ -5,15 +5,18 @@
   "account_id": "ef9cbceacd8be6cff839033e54c0cb6b",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
-  // Produktion unter abfahrt.<subdomain>.workers.dev, Previews pro PR
+  // Produktion unter endlab.de/abfahrt (Zone endlab.de, wie Spieltisch und Tasto).
+  // workers.dev bleibt aktiv für die Previews pro PR.
+  "routes": [{ "pattern": "endlab.de/abfahrt*", "zone_name": "endlab.de" }],
   "workers_dev": true,
   "preview_urls": true,
   "assets": {
     "binding": "ASSETS",
     // React-App (SPA): unbekannte Pfade liefern index.html
     "not_found_handling": "single-page-application",
-    // Nur /api/* läuft durch den Worker, alles andere direkt aus den Static Assets
-    "run_worker_first": ["/api/*"],
+    // Nur die API und die Weiterleitung /abfahrt -> /abfahrt/ laufen durch den Worker,
+    // alles andere kommt direkt aus den Static Assets (unter abfahrt/assets/)
+    "run_worker_first": ["/abfahrt/api/*", "/abfahrt"],
   },
   "observability": {
     "enabled": true,

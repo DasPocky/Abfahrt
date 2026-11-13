@@ -14,8 +14,11 @@ concurrency:
 
 jobs:
   preview:
-    # PRs aus Forks bekommen keine Secrets und werden nicht deployt
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    # PRs aus Forks und von Dependabot bekommen keine Actions-Secrets und werden nicht deployt
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     environment: preview
     permissions:
@@ -87,8 +90,8 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           npx wrangler deploy --tag "${COMMIT_SHA:0:7}" --message "main ${COMMIT_SHA:0:7}"
-          target=$(jq -r 'select(.type == "deploy") | .targets[]? | select(contains("workers.dev"))' "$OUTPUT" | head -n 1)
-          url="https://${target#https://}"
+          jq -c 'select(.type == "deploy") | .targets' "$OUTPUT"
+          url="https://endlab.de/abfahrt"
           echo "url=${url}" >> "$GITHUB_OUTPUT"
           echo "Produktion: $url" >> "$GITHUB_STEP_SUMMARY"
       - name: Smoke-Test
@@ -96,7 +99,9 @@ jobs:
           URL: ${{ steps.deploy.outputs.url }}
         run: |
           for i in 1 2 3 4 5; do
-            if curl -fsS "${URL}/api/health" | grep -q '"ok"'; then echo "API ok"; exit 0; fi
+            if curl -fsS "${URL}/api/health" | grep -q '"ok"' && curl -fsS -o /dev/null "${URL}/"; then
+              echo "App und API unter ${URL} ok"; exit 0
+            fi
             sleep 5
           done
           echo "::error::/api/health unter ${URL} nicht erreichbar"; exit 1
