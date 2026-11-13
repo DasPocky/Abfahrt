@@ -1,8 +1,13 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "abfahrt",
+  // Cloudflare-Konto "EndLab" (laut Cloudflare nicht geheim)
+  "account_id": "ef9cbceacd8be6cff839033e54c0cb6b",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
+  // Produktion unter abfahrt.<subdomain>.workers.dev, Previews pro PR
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "binding": "ASSETS",
     // React-App (SPA): unbekannte Pfade liefern index.html

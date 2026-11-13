@@ -9,6 +9,11 @@ Echtzeit-ÖPNV-Auskunft als Progressive Web App – Fokus Düsseldorf/Rheinland,
 
 Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`docs/`](docs/).
 
+## Live
+
+- App: https://abfahrt.bjoern-ef9.workers.dev
+- Jeder PR bekommt automatisch eine eigene Preview-URL (Kommentar im PR).
+
 ## Entwicklung
 
 Voraussetzung: Node.js 26 LTS (siehe `.nvmrc`)
