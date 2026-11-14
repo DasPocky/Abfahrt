@@ -27,6 +27,7 @@ import {
   swapJourneyQuery,
 } from "@/lib/journeys";
 import { toLocalInputValue } from "@/lib/time";
+import { stopLabel } from "@/lib/stop-label";
 
 type Slot = "from" | "to";
 
@@ -103,7 +104,7 @@ export function JourneyPage() {
               const q = journeyQueryFromParams(current);
               return journeyQueryToParams({
                 ...q,
-                [pending]: { id: nearest.id, name: nearest.name },
+                [pending]: { id: nearest.id, name: stopLabel(nearest) },
               });
             },
             { replace: true },
@@ -143,11 +144,11 @@ export function JourneyPage() {
   // Namen aus der Antwort ergänzen, falls der Link nur IDs enthält
   const fromStop: PickedStop | null = from && {
     id: from.id,
-    name: from.name || (data?.from.id === from.id ? data.from.name : "") || from.id,
+    name: from.name || (data?.from.id === from.id ? stopLabel(data.from) : "") || from.id,
   };
   const toStop: PickedStop | null = to && {
     id: to.id,
-    name: to.name || (data?.to.id === to.id ? data.to.name : "") || to.id,
+    name: to.name || (data?.to.id === to.id ? stopLabel(data.to) : "") || to.id,
   };
 
   const shift = (when: string) => update({ ...query, time: when, arrive: false });

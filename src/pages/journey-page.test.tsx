@@ -205,7 +205,7 @@ describe("Verbindungssuche", () => {
     mockApi();
     renderAt(`/verbindung?von=${HBF}&nach=${HHA}`);
     await waitFor(() => expect(combobox("Von")).toHaveValue("Düsseldorf Hbf"));
-    expect(combobox("Nach")).toHaveValue("Heinrich-Heine-Allee");
+    expect(combobox("Nach")).toHaveValue("Heinrich-Heine-Allee, Düsseldorf");
   });
 
   it("wählt Haltestellen über die Suche aus, auch per Tastatur", async () => {
@@ -235,7 +235,7 @@ describe("Verbindungssuche", () => {
     fireEvent.keyDown(nach, { key: "Enter" });
     const params = new URLSearchParams(router.state.location.search);
     expect(params.get("nach")).toBe(STOP_HHA.id);
-    expect(params.get("nachName")).toBe("Heinrich-Heine-Allee");
+    expect(params.get("nachName")).toBe("Heinrich-Heine-Allee, Düsseldorf");
     expect(await screen.findByRole("list", { name: "Verbindungen" })).toBeInTheDocument();
   });
 
@@ -274,7 +274,7 @@ describe("Verbindungssuche", () => {
     await waitFor(() =>
       expect(new URLSearchParams(router.state.location.search).get("von")).toBe(STOP_HHA.id),
     );
-    expect(combobox("Von")).toHaveValue("Heinrich-Heine-Allee");
+    expect(combobox("Von")).toHaveValue("Heinrich-Heine-Allee, Düsseldorf");
     const nearby = fetchMock.mock.calls
       .map((call) => requestUrl(call[0]))
       .find((url) => url.pathname.endsWith("/stops/nearby"));

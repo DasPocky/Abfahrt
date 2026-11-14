@@ -8,6 +8,7 @@ import type { LocationState } from "@/hooks/use-location";
 import { searchStops } from "@/lib/api";
 import { formatDistance, rankStops } from "@/lib/geo";
 import type { PickedStop } from "@/lib/journeys";
+import { stopLabel } from "@/lib/stop-label";
 
 interface Option {
   key: string;
@@ -69,7 +70,7 @@ export function StopPicker({
       label: stop.name,
       detail: stop.place,
       distance: distanceKm === null ? undefined : formatDistance(distanceKm),
-      stop: { id: stop.id, name: stop.name },
+      stop: { id: stop.id, name: stopLabel(stop) },
     })),
   ];
   const waiting = searching && (debounced !== query || isFetching);
