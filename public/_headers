@@ -1,6 +1,10 @@
 # Security-Header für alle Static Assets (siehe auch worker/security-headers.ts)
+# Karte (MapLibre + OpenFreeMap, siehe docs/02-architektur.md): connect-src für Stil, Kacheln,
+# Schriften und Sprites von tiles.openfreemap.org (MapLibre lädt alles per fetch), img-src blob:
+# für MapLibres Bild-Fallback ohne createImageBitmap. Der MapLibre-Worker ist eine eigene Datei
+# der App (worker-src 'self'), daher kein blob: für Worker und kein 'unsafe-eval'.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://tiles.openfreemap.org; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

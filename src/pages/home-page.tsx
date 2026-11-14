@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
 import { FavoriteCard } from "@/components/favorite-card";
+import { MapLink } from "@/components/map-link";
 import { StopSearch } from "@/components/stop-search";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -20,6 +21,7 @@ export function HomePage() {
           Abfahrten suchen
         </h1>
         <StopSearch />
+        <MapLink />
       </section>
 
       <section aria-labelledby="favorites-title" className="space-y-3">
