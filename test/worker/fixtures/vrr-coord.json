@@ -1,0 +1,227 @@
+{
+  "serverInfo": {
+    "controllerVersion": "10.6.34.3",
+    "serverID": "EFA-X-DELFI03_",
+    "virtDir": "openservice",
+    "serverTime": "2026-11-14T16:41:14",
+    "calcTime": 10.148,
+    "logRequestId": "775bd96a45d196d8"
+  },
+  "version": "10.4.18.18",
+  "locations": [
+    {
+      "id": "de:05111:18036",
+      "isGlobalId": true,
+      "name": "Heinrich-Heine-Allee U",
+      "type": "stop",
+      "coord": [51.226398, 6.776828],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [2, 5, 7],
+      "properties": {
+        "distance": 3,
+        "STOP_GLOBAL_ID": "de:05111:18036",
+        "STOP_NAME_WITH_PLACE": "D-Heinrich-Heine-Allee U",
+        "STOP_MAJOR_MEANS": "1",
+        "STOP_MEANS_LIST": "1,3",
+        "STOP_MOT_LIST": "2,5,7",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "STOP_SURROUNDING_MAP": "vrr/18036_D-Heinrich-Heine-Allee.pdf",
+        "stopId": "20018036"
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+          "priority": "normal",
+          "id": "VRR-de:05111:18036:65",
+          "version": "203",
+          "type": "infrastructure",
+          "urlText": "",
+          "url": "http://ems.vrr.de/info-link/b2864118-fc49-5cbf-b1c1-bdc0aa66cf4b",
+          "content": "An der Haltestelle D-Heinrich-Heine-Allee U ist die Rolltreppe von Zwischengeschoss nach Steig 5+6 bis auf Weiteres außer Betrieb.",
+          "subtitle": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+          "title": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+          "properties": {
+            "publisher": "ems.comm.addinfo",
+            "infoType": "infrastructure",
+            "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "de:05111:18287",
+      "isGlobalId": true,
+      "name": "Benrather Straße U",
+      "type": "stop",
+      "coord": [51.223062, 6.775588],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [2, 5, 7],
+      "properties": {
+        "distance": 608,
+        "STOP_GLOBAL_ID": "de:05111:18287",
+        "STOP_NAME_WITH_PLACE": "D-Benrather Straße U",
+        "STOP_MAJOR_MEANS": "1",
+        "STOP_MEANS_LIST": "1,3",
+        "STOP_MOT_LIST": "2,5,7",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "STOP_SURROUNDING_MAP": "vrr/18287_D-Benrather_Straße_U.pdf",
+        "stopId": "20018287"
+      }
+    },
+    {
+      "id": "de:05111:18145",
+      "isGlobalId": true,
+      "name": "Carlsplatz",
+      "type": "stop",
+      "coord": [51.223079, 6.77442],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [5],
+      "properties": {
+        "distance": 647,
+        "STOP_GLOBAL_ID": "de:05111:18145",
+        "STOP_NAME_WITH_PLACE": "D-Carlsplatz",
+        "STOP_MAJOR_MEANS": "3",
+        "STOP_MEANS_LIST": "3",
+        "STOP_MOT_LIST": "5",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "stopId": "20018145"
+      }
+    },
+    {
+      "id": "de:05111:18230",
+      "isGlobalId": true,
+      "name": "Schadowstraße U",
+      "type": "stop",
+      "coord": [51.226617, 6.783394],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [2, 4],
+      "properties": {
+        "distance": 735,
+        "STOP_GLOBAL_ID": "de:05111:18230",
+        "STOP_NAME_WITH_PLACE": "D-Schadowstraße U",
+        "STOP_MAJOR_MEANS": "1",
+        "STOP_MEANS_LIST": "1,4",
+        "STOP_MOT_LIST": "2,4",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "STOP_SURROUNDING_MAP": "vrr/18230_D-Schadowstraße_U.pdf",
+        "stopId": "20018230"
+      }
+    },
+    {
+      "id": "de:05111:18144",
+      "isGlobalId": true,
+      "name": "Maxplatz",
+      "type": "stop",
+      "coord": [51.223214, 6.771887],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [5],
+      "properties": {
+        "distance": 787,
+        "STOP_GLOBAL_ID": "de:05111:18144",
+        "STOP_NAME_WITH_PLACE": "D-Maxplatz",
+        "STOP_MAJOR_MEANS": "3",
+        "STOP_MEANS_LIST": "3",
+        "STOP_MOT_LIST": "5",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "stopId": "20018144"
+      }
+    },
+    {
+      "id": "de:05111:18126",
+      "isGlobalId": true,
+      "name": "Alter Hafen",
+      "type": "stop",
+      "coord": [51.224142, 6.769641],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [5],
+      "properties": {
+        "distance": 892,
+        "STOP_GLOBAL_ID": "de:05111:18126",
+        "STOP_NAME_WITH_PLACE": "D-Alter Hafen",
+        "STOP_MAJOR_MEANS": "3",
+        "STOP_MEANS_LIST": "3",
+        "STOP_MOT_LIST": "5",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "stopId": "20018126"
+      }
+    },
+    {
+      "id": "de:05111:18234",
+      "isGlobalId": true,
+      "name": "Steinstr./Königsallee",
+      "type": "stop",
+      "coord": [51.222966, 6.782694],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [2, 4, 5, 7],
+      "properties": {
+        "distance": 896,
+        "STOP_GLOBAL_ID": "de:05111:18234",
+        "STOP_NAME_WITH_PLACE": "D-Steinstr./Königsallee",
+        "STOP_MAJOR_MEANS": "1",
+        "STOP_MEANS_LIST": "1,4,3",
+        "STOP_MOT_LIST": "2,4,5,7",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "STOP_SURROUNDING_MAP": "vrr/18234_D-Steinstraße_U_Königsallee.pdf",
+        "stopId": "20018234"
+      },
+      "infos": [
+        {
+          "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+          "priority": "normal",
+          "id": "VRR-de:05111:18234:57",
+          "version": "38",
+          "type": "infrastructure",
+          "urlText": "",
+          "url": "http://ems.vrr.de/info-link/37a019cd-8f51-5d11-88b6-81c2ba90b5b9",
+          "content": "An der Haltestelle D-Steinstr./Königsallee ist die Rolltreppe Nr. 1 von Zwischengeschoss Eingang Berliner Allee nach Steig 2+4 bis auf Weiteres außer Betrieb.",
+          "subtitle": "Haltestelle D-Steinstr./Königsallee: Rolltreppe außer Betrieb.",
+          "title": "Haltestelle D-Steinstr./Königsallee: Rolltreppe außer Betrieb.",
+          "properties": {
+            "publisher": "ems.comm.addinfo",
+            "infoType": "infrastructure",
+            "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+          }
+        }
+      ]
+    },
+    {
+      "id": "de:05111:18300",
+      "isGlobalId": true,
+      "name": "Steinstraße/Berliner Allee",
+      "type": "stop",
+      "coord": [51.223022, 6.783295],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [2, 5],
+      "properties": {
+        "distance": 940,
+        "STOP_GLOBAL_ID": "de:05111:18300",
+        "STOP_NAME_WITH_PLACE": "D-Steinstraße/Berliner Allee",
+        "STOP_MAJOR_MEANS": "1",
+        "STOP_MEANS_LIST": "3",
+        "STOP_MOT_LIST": "2,5",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "stopId": "20018300"
+      }
+    },
+    {
+      "id": "de:05111:18565",
+      "isGlobalId": true,
+      "name": "Tonhalle/Ehrenhof",
+      "type": "stop",
+      "coord": [51.231646, 6.773666],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "productClasses": [2, 5, 7],
+      "properties": {
+        "distance": 996,
+        "STOP_GLOBAL_ID": "de:05111:18565",
+        "STOP_NAME_WITH_PLACE": "D-Tonhalle/Ehrenhof",
+        "STOP_MAJOR_MEANS": "1",
+        "STOP_MEANS_LIST": "1,3",
+        "STOP_MOT_LIST": "2,5,7",
+        "STOP_TARIFF_ZONES:vrr": "430",
+        "STOP_SURROUNDING_MAP": "vrr/18565_D_Tonhalle_Ehrenhof.pdf",
+        "stopId": "20018565"
+      }
+    }
+  ]
+}

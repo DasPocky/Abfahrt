@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
 import { FavoriteCard } from "@/components/favorite-card";
+import { NearbyStops } from "@/components/nearby-stops";
 import { StopSearch } from "@/components/stop-search";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useLocation } from "@/hooks/use-location";
 import { useNow } from "@/hooks/use-now";
 import { COUNTDOWN_TICK_MS } from "@/pages/stop-page";
 
@@ -11,6 +13,7 @@ export function HomePage() {
   const { favorites, move, remove, rename } = useFavorites();
   const [editing, setEditing] = useState(false);
   const now = useNow(COUNTDOWN_TICK_MS);
+  const location = useLocation();
   const isEditing = editing && favorites.length > 0;
 
   return (
@@ -19,7 +22,7 @@ export function HomePage() {
         <h1 id="home-title" className="sr-only">
           Abfahrten suchen
         </h1>
-        <StopSearch />
+        <StopSearch location={location} />
       </section>
 
       <section aria-labelledby="favorites-title" className="space-y-3">
@@ -65,6 +68,8 @@ export function HomePage() {
           </ul>
         )}
       </section>
+
+      <NearbyStops location={location} />
     </div>
   );
 }

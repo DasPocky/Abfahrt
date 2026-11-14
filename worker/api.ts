@@ -47,6 +47,45 @@ export async function searchStops(
   return json(body, { headers: { "Cache-Control": "public, max-age=300" } });
 }
 
+/** Umkreis für „In der Nähe“ in Metern */
+const NEARBY_RADIUS_M = 1000;
+const NEARBY_TTL = 24 * 60 * 60;
+
+/** Koordinate auf 3 Nachkommastellen (~100 m), Bereich grob Deutschland + Grenzgebiet */
+function parseCoord(value: string | null, min: number, max: number): number | null {
+  if (value === null || !/^-?\d{1,3}(\.\d+)?$/.test(value)) return null;
+  const n = Math.round(Number(value) * 1000) / 1000;
+  return n >= min && n <= max ? n : null;
+}
+
+/**
+ * Haltestellen in der Nähe. Die App schickt die Koordinate, der Worker rundet sie auf ~100 m,
+ * bevor sie Cache-Schlüssel und Datenquelle erreicht. Entfernung und Sortierung rechnet die
+ * App mit der genauen Position selbst.
+ */
+export async function nearbyStops(
+  request: Request,
+  ctx: ExecutionContext,
+  params: URLSearchParams,
+): Promise<Response> {
+  const lat = parseCoord(params.get("lat"), 47, 55.5);
+  const lon = parseCoord(params.get("lon"), 5.5, 15.5);
+  if (lat === null || lon === null) {
+    return apiError(400, "invalid_position", "Position innerhalb Deutschlands angeben");
+  }
+  const key = `near:${lat.toFixed(3)},${lon.toFixed(3)}`;
+  const stops = await cached<Stop[]>(request, ctx, key, NEARBY_TTL, async () => {
+    try {
+      return await vrr.nearbyStops(lat, lon, NEARBY_RADIUS_M);
+    } catch (err) {
+      if (!(err instanceof UpstreamError)) throw err;
+      return transitous.nearbyStops(lat, lon, NEARBY_RADIUS_M);
+    }
+  });
+  const body: StopSearchResponse = { stops };
+  return json(body, { headers: { "Cache-Control": "private, max-age=300" } });
+}
+
 async function transitousForStop(
   request: Request,
   ctx: ExecutionContext,
