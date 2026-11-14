@@ -1,5 +1,10 @@
 // Zugriff auf die Worker-API (Vertrag: shared/api-types.ts)
-import type { ApiError, DeparturesResponse, StopSearchResponse } from "../../shared/api-types";
+import type {
+  ApiError,
+  DeparturesResponse,
+  JourneysResponse,
+  StopSearchResponse,
+} from "../../shared/api-types";
 import { API_PREFIX } from "../../shared/base-path";
 
 export class ApiRequestError extends Error {
@@ -35,6 +40,26 @@ export function isDeparturesResponse(value: unknown): value is DeparturesRespons
     Array.isArray(value.departures) &&
     (value.source === "vrr" || value.source === "transitous") &&
     typeof value.generatedAt === "string"
+  );
+}
+
+function isNullableString(value: unknown): value is string | null {
+  return value === null || typeof value === "string";
+}
+
+export function isJourneysResponse(value: unknown): value is JourneysResponse {
+  return (
+    isObject(value) &&
+    isObject(value.from) &&
+    typeof value.from.name === "string" &&
+    isObject(value.to) &&
+    typeof value.to.name === "string" &&
+    Array.isArray(value.journeys) &&
+    value.journeys.every((j) => isObject(j) && Array.isArray(j.legs) && j.legs.length > 0) &&
+    (value.source === "vrr" || value.source === "transitous") &&
+    typeof value.generatedAt === "string" &&
+    isNullableString(value.earlier) &&
+    isNullableString(value.later)
   );
 }
 
@@ -84,6 +109,25 @@ export function fetchDepartures(
   const params = new URLSearchParams({ stop: stopId });
   if (when !== undefined) params.set("when", when);
   return getJson(`departures?${params.toString()}`, isDeparturesResponse, signal);
+}
+
+export interface JourneysParams {
+  from: string;
+  to: string;
+  /** ISO-8601; fehlt = jetzt */
+  when?: string;
+  /** `when` ist die gewünschte Ankunftszeit */
+  arrive?: boolean;
+}
+
+export function fetchJourneys(
+  { from, to, when, arrive = false }: JourneysParams,
+  signal?: AbortSignal,
+): Promise<JourneysResponse> {
+  const params = new URLSearchParams({ from, to });
+  if (when !== undefined) params.set("when", when);
+  params.set("arrive", arrive ? "1" : "0");
+  return getJson(`journeys?${params.toString()}`, isJourneysResponse, signal);
 }
 
 /** Pfad der Abfahrtsseite (relativ zum Router-basename) */

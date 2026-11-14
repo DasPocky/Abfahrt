@@ -12,20 +12,13 @@ import { platformLabel } from "@/lib/modes";
 import { summarizeNotices } from "@/lib/notices";
 import {
   delayMinutes,
+  DELAY_TONE_CLASS,
   delayTone,
   formatClock,
   formatCountdown,
   formatDelay,
-  type DelayTone,
 } from "@/lib/time";
 import type { Departure } from "../../shared/api-types";
-
-const DELAY_CLASS: Record<DelayTone, string> = {
-  unknown: "text-muted-foreground",
-  success: "text-success",
-  warning: "text-warning",
-  destructive: "text-destructive",
-};
 
 /** Kleines Kästchen in fester Spalte: „Gleis“/„Steig“ über der Nummer, Gleiswechsel in Orange */
 function Platform({ departure }: { departure: Departure }) {
@@ -189,7 +182,7 @@ function DepartureRow({
           </time>
           {delay !== null && !departure.cancelled && (
             <span
-              className={cn("ml-1.5", delay === 0 ? "" : "font-semibold", DELAY_CLASS[tone])}
+              className={cn("ml-1.5", delay === 0 ? "" : "font-semibold", DELAY_TONE_CLASS[tone])}
               data-tone={tone}
             >
               {formatDelay(delay)}

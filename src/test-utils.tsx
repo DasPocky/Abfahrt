@@ -5,7 +5,15 @@ import { createMemoryRouter } from "react-router";
 import { App } from "./App";
 import { routes } from "./routes";
 import { BASE_PATH } from "../shared/base-path";
-import type { Departure, DeparturesResponse, Stop } from "../shared/api-types";
+import type {
+  Departure,
+  DeparturesResponse,
+  Journey,
+  JourneyLeg,
+  JourneyStop,
+  JourneysResponse,
+  Stop,
+} from "../shared/api-types";
 
 export function renderAt(path: string) {
   const router = createMemoryRouter(routes, {
@@ -51,6 +59,79 @@ export function departuresResponse(
     departures,
     source: "vrr",
     generatedAt: "2026-11-13T12:00:00Z",
+    ...overrides,
+  };
+}
+
+export const STOP_HHA: Stop = {
+  id: "vrr:de:05111:18036",
+  name: "Heinrich-Heine-Allee",
+  place: "Düsseldorf",
+};
+
+export function journeyStop(
+  overrides: Partial<JourneyStop> & Pick<JourneyStop, "name">,
+): JourneyStop {
+  return {
+    id: null,
+    plannedArrival: null,
+    realtimeArrival: null,
+    plannedDeparture: null,
+    realtimeDeparture: null,
+    platform: null,
+    plannedPlatform: null,
+    cancelled: false,
+    ...overrides,
+  };
+}
+
+export function journeyLeg(overrides: Partial<JourneyLeg> = {}): JourneyLeg {
+  return {
+    kind: "transit",
+    origin: journeyStop({
+      ...STOP_HBF,
+      plannedDeparture: "2026-11-13T12:05:00Z",
+      realtimeDeparture: "2026-11-13T12:05:00Z",
+      platform: "2",
+      plannedPlatform: "2",
+    }),
+    destination: journeyStop({
+      ...STOP_HHA,
+      plannedArrival: "2026-11-13T12:12:00Z",
+      realtimeArrival: "2026-11-13T12:12:00Z",
+      platform: "1",
+      plannedPlatform: "1",
+    }),
+    durationMinutes: 7,
+    distanceMeters: null,
+    line: "U79",
+    mode: "subway",
+    direction: "Duisburg Meiderich Süd Bf",
+    lineColor: null,
+    lineTextColor: null,
+    intermediateStops: [],
+    cancelled: false,
+    notices: [],
+    ...overrides,
+  };
+}
+
+export function journey(overrides: Partial<Journey> & Pick<Journey, "id">): Journey {
+  return { legs: [journeyLeg()], transfers: 0, durationMinutes: 7, ...overrides };
+}
+
+export function journeysResponse(
+  journeys: Journey[],
+  overrides: Partial<JourneysResponse> = {},
+): JourneysResponse {
+  return {
+    from: STOP_HBF,
+    to: STOP_HHA,
+    journeys,
+    source: "vrr",
+    generatedAt: "2026-11-13T12:00:00Z",
+    earlier: "2026-11-13T11:40:00.000Z",
+    later: "2026-11-13T12:30:00.000Z",
     ...overrides,
   };
 }
