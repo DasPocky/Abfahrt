@@ -108,7 +108,7 @@ export async function departures(
   transitousId: string,
   when?: Date,
 ): Promise<{ stopName: string | null; departures: Departure[] }> {
-  let url = `${BASE}/v5/stoptimes?n=40&stopId=${encodeURIComponent(transitousId)}`;
+  let url = `${BASE}/v5/stoptimes?n=80&stopId=${encodeURIComponent(transitousId)}`;
   if (when) url += `&time=${encodeURIComponent(when.toISOString())}`;
   const data = await fetchJson<{ stopTimes?: TransitousStopTime[] }>("transitous", url);
   const stopTimes = data.stopTimes ?? [];
