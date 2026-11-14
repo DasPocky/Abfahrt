@@ -89,17 +89,19 @@ interface VrrStopEvent {
 }
 
 function toStop(loc: VrrLocation): Stop {
-  return {
+  const stop: Stop = {
     id: `vrr:${loc.id}`,
     name: loc.disassembledName ?? loc.name ?? loc.id,
     place: loc.parent?.name,
     lat: loc.coord?.[0],
     lon: loc.coord?.[1],
   };
+  if (loc.matchQuality !== undefined) stop.relevance = loc.matchQuality;
+  return stop;
 }
 
 export async function searchStops(query: string): Promise<Stop[]> {
-  const url = `${BASE}/XML_STOPFINDER_REQUEST?${COMMON}&type_sf=any&anyObjFilter_sf=2&anyMaxSizeHitList=10&name_sf=${encodeURIComponent(query)}`;
+  const url = `${BASE}/XML_STOPFINDER_REQUEST?${COMMON}&type_sf=any&anyObjFilter_sf=2&anyMaxSizeHitList=40&name_sf=${encodeURIComponent(query)}`;
   const data = await fetchJson<{ locations?: VrrLocation[] }>("vrr", url);
   return (data.locations ?? [])
     .filter((l) => l.type === "stop" && l.isGlobalId !== false && l.id.startsWith("de:"))

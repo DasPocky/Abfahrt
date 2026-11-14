@@ -1,9 +1,12 @@
 import { useId, useRef, useState, type KeyboardEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
-import { ChevronRight, LoaderCircle, MapPin, Search } from "lucide-react";
+import { ChevronRight, LoaderCircle, LocateFixed, LocateOff, MapPin, Search } from "lucide-react";
+import { cn } from "cn";
 import { Input } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { useLocation } from "@/hooks/use-location";
+import { formatDistance, rankStops } from "@/lib/geo";
 import { searchStops, stopPath } from "@/lib/api";
 
 export const SEARCH_DEBOUNCE_MS = 250;
@@ -28,7 +31,9 @@ export function StopSearch() {
   });
 
   const showResults = query.trim().length >= SEARCH_MIN_LENGTH;
-  const stops = enabled && showResults ? (data?.stops ?? []) : [];
+  const location = useLocation();
+  const ranked = enabled && showResults ? rankStops(data?.stops ?? [], location.position) : [];
+  const stops = ranked.map((r) => r.stop);
   const waiting = showResults && (debounced !== query.trim() || isFetching);
 
   function resultLinks(): HTMLAnchorElement[] {
@@ -75,7 +80,15 @@ export function StopSearch() {
     if (isError) status = "Suche gerade nicht möglich. Bitte später erneut versuchen.";
     else if (waiting && stops.length === 0) status = "Suche läuft …";
     else if (!waiting && stops.length === 0) status = "Keine Haltestelle gefunden.";
+    else if (location.status === "on") status = "Treffer in deiner Nähe zuerst.";
   }
+
+  const locationLabel =
+    location.status === "on"
+      ? "Standort wird für die Sortierung genutzt – ausschalten"
+      : location.status === "denied"
+        ? "Standort nicht erlaubt – in den Browser-Einstellungen freigeben"
+        : "Treffer nach Nähe zu meinem Standort sortieren";
 
   return (
     <div className="space-y-2">
@@ -96,18 +109,43 @@ export function StopSearch() {
           aria-label="Haltestelle suchen"
           aria-controls={listId}
           aria-describedby={statusId}
-          className="h-12 pr-10 pl-10 text-base md:text-base"
+          className="h-12 pr-20 pl-10 text-base md:text-base"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
+          onFocus={location.ensureAsked}
           onKeyDown={onInputKeyDown}
         />
         {waiting && (
           <LoaderCircle
-            className="absolute top-1/2 right-3 size-5 -translate-y-1/2 animate-spin text-muted-foreground"
+            className="absolute top-1/2 right-12 size-5 -translate-y-1/2 animate-spin text-muted-foreground"
             aria-label="Lädt"
             role="img"
           />
         )}
+        <button
+          type="button"
+          onClick={location.toggle}
+          aria-pressed={location.status === "on"}
+          aria-label={locationLabel}
+          title={locationLabel}
+          className={cn(
+            "absolute top-1/2 right-1.5 flex size-9 -translate-y-1/2 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            location.status === "on"
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {location.status === "locating" ? (
+            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+          ) : location.status === "denied" || location.status === "unavailable" ? (
+            <LocateOff className="size-5" aria-hidden="true" />
+          ) : (
+            <LocateFixed
+              className={cn("size-5", location.status === "on" && "fill-primary/15")}
+              aria-hidden="true"
+            />
+          )}
+        </button>
       </div>
 
       <p id={statusId} role="status" className="min-h-5 px-1 text-sm text-muted-foreground">
@@ -121,7 +159,7 @@ export function StopSearch() {
         className="divide-y overflow-hidden rounded-lg border empty:hidden"
         onKeyDown={onListKeyDown}
       >
-        {stops.map((stop) => (
+        {ranked.map(({ stop, distanceKm }) => (
           <li key={stop.id}>
             <Link
               to={stopPath(stop.id)}
@@ -135,6 +173,11 @@ export function StopSearch() {
                   <span className="block truncate text-sm text-muted-foreground">{stop.place}</span>
                 )}
               </span>
+              {distanceKm !== null && (
+                <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+                  {formatDistance(distanceKm)}
+                </span>
+              )}
               <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             </Link>
           </li>
