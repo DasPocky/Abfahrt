@@ -22,7 +22,7 @@ export const SEARCH_MIN_LENGTH = 2;
 
 /** Einheitliche Symbol-Schaltflächen im Suchfeld (Größe, Strichstärke und Farbe wie die Lupe) */
 const ICON_BUTTON =
-  "flex size-9 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  "flex size-8 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function StopSearch() {
   const [query, setQuery] = useState("");
@@ -106,7 +106,7 @@ export function StopSearch() {
     <div className="space-y-2">
       <div className="relative">
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground"
+          className="pointer-events-none absolute top-1/2 left-3.5 size-[1.125rem] -translate-y-1/2 text-muted-foreground"
           aria-hidden="true"
         />
         <Input
@@ -121,16 +121,16 @@ export function StopSearch() {
           aria-label="Haltestelle suchen"
           aria-controls={listId}
           aria-describedby={statusId}
-          className="h-12 pr-20 pl-10 text-base md:text-base"
+          className="h-12 pr-[5.25rem] pl-10 text-base md:text-base"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onFocus={location.ensureAsked}
           onKeyDown={onInputKeyDown}
         />
-        <div className="absolute top-1/2 right-1.5 flex -translate-y-1/2 items-center">
+        <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
           {waiting ? (
             <span className={ICON_BUTTON} role="img" aria-label="Lädt">
-              <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+              <LoaderCircle className="size-[1.125rem] animate-spin" aria-hidden="true" />
             </span>
           ) : (
             query !== "" && (
@@ -143,10 +143,12 @@ export function StopSearch() {
                   inputRef.current?.focus();
                 }}
               >
-                <X className="size-5" aria-hidden="true" />
+                <X className="size-[1.125rem]" aria-hidden="true" />
               </button>
             )
           )}
+          {/* feine Trennlinie: links Eingabe-Aktionen, rechts Standort */}
+          <span className="h-5 w-px bg-border" aria-hidden="true" />
           <button
             type="button"
             onClick={location.toggle}
@@ -161,11 +163,11 @@ export function StopSearch() {
             )}
           >
             {location.status === "locating" ? (
-              <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+              <LoaderCircle className="size-[1.125rem] animate-spin" aria-hidden="true" />
             ) : location.status === "denied" || location.status === "unavailable" ? (
-              <LocateOff className="size-5" aria-hidden="true" />
+              <LocateOff className="size-[1.125rem]" aria-hidden="true" />
             ) : (
-              <LocateFixed className="size-5" aria-hidden="true" />
+              <LocateFixed className="size-[1.125rem]" aria-hidden="true" />
             )}
           </button>
         </div>
