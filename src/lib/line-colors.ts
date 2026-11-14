@@ -5,7 +5,7 @@ import type { Departure, TransportMode } from "../../shared/api-types";
 export const MODE_BADGE_CLASS: Record<TransportMode, string> = {
   tram: "bg-red-600 text-white",
   subway: "bg-blue-700 text-white",
-  bus: "bg-violet-700 text-white",
+  bus: "bg-yellow-400 text-neutral-950",
   suburban: "bg-emerald-700 text-white",
   regional: "bg-neutral-600 text-white",
   longdistance: "bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900",

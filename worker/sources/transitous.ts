@@ -67,19 +67,54 @@ function distanceMeters(aLat: number, aLon: number, bLat: number, bLon: number):
   return Math.sqrt(x * x + y * y) * 6_371_000;
 }
 
+/** Abstand-Aufschlag für Treffer außerhalb des deutschlandweiten DELFI-Datensatzes (in m) */
+const NON_DELFI_PENALTY_M = 150;
+const MAX_MATCH_DISTANCE_M = 500;
+
+/**
+ * Wählt die Transitous-Haltestelle zu einer VRR-Haltestelle. Bevorzugt die exakte amtliche
+ * Haltestellen-ID (DHID, z. B. „de-DELFI_de:05111:18249“ zu „de:05111:18249“), danach einen
+ * Steig derselben Haltestelle, zuletzt den nächsten Treffer im Umkreis (DELFI bevorzugt).
+ * Hintergrund: Bei „Bilk S“ lag der Bahnhof aus einem anderen Datensatz näher, dort fehlen
+ * die Rheinbahn-Linien und damit die Linienfarben.
+ */
+export function pickMatchingStop(
+  candidates: readonly TransitousPlace[],
+  stop: { lat: number; lon: number },
+  dhid: string | null,
+): string | null {
+  if (dhid) {
+    const exact = candidates.find((c) => c.id === dhid || c.id.endsWith(`_${dhid}`));
+    if (exact) return exact.id;
+    const platform = candidates.find((c) => c.id.includes(`_${dhid}:`));
+    if (platform) return platform.id;
+  }
+  let best: { id: string; score: number } | null = null;
+  for (const c of candidates) {
+    const dist = distanceMeters(stop.lat, stop.lon, c.lat, c.lon);
+    if (dist > MAX_MATCH_DISTANCE_M) continue;
+    const score = dist + (c.id.startsWith("de-DELFI_") ? 0 : NON_DELFI_PENALTY_M);
+    if (!best || score < best.score) best = { id: c.id, score };
+  }
+  return best?.id ?? null;
+}
+
 /** Findet die Transitous-Haltestelle zu einer Haltestelle aus einer anderen Quelle. */
 export async function findMatchingStop(stop: Stop): Promise<string | null> {
   if (stop.lat === undefined || stop.lon === undefined) return null;
-  const text =
-    stop.place && !stop.name.includes(stop.place) ? `${stop.name} ${stop.place}` : stop.name;
-  const url = `${BASE}/v1/geocode?type=STOP&language=de&text=${encodeURIComponent(text)}&place=${stop.lat},${stop.lon}`;
-  const candidates = await fetchJson<TransitousPlace[]>("transitous", url);
-  let best: { id: string; dist: number } | null = null;
-  for (const c of candidates) {
-    const dist = distanceMeters(stop.lat, stop.lon, c.lat, c.lon);
-    if (dist <= 500 && (!best || dist < best.dist)) best = { id: c.id, dist };
+  const position = { lat: stop.lat, lon: stop.lon };
+  const dhid = stop.id.startsWith("vrr:") ? stop.id.slice("vrr:".length) : null;
+  // Erst nur der Name (findet die DHID am zuverlässigsten), dann mit Ort
+  const texts = [stop.name];
+  if (stop.place && !stop.name.includes(stop.place)) texts.push(`${stop.name} ${stop.place}`);
+  const seen: TransitousPlace[] = [];
+  for (const text of texts) {
+    const url = `${BASE}/v1/geocode?type=STOP&language=de&text=${encodeURIComponent(text)}&place=${stop.lat},${stop.lon}`;
+    seen.push(...(await fetchJson<TransitousPlace[]>("transitous", url)));
+    const exact = dhid ? pickMatchingStop(seen, position, dhid) : null;
+    if (exact && (exact.endsWith(`_${dhid}`) || exact.includes(`_${dhid}:`))) return exact;
   }
-  return best?.id ?? null;
+  return pickMatchingStop(seen, position, dhid);
 }
 
 export function toDeparture(st: TransitousStopTime, index: number): Departure | null {

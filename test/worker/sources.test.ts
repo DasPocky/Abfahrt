@@ -140,3 +140,39 @@ describe("Linienfarben", () => {
     );
   });
 });
+
+describe("Zuordnung VRR → Transitous", () => {
+  const BILK = { lat: 51.208195, lon: 6.776891 };
+  const candidates = [
+    { id: "de-VBN_000008001585", name: "Düsseldorf-Bilk", lat: 51.20904, lon: 6.77695 },
+    { id: "de-DELFI_de:05111:18249", name: "D-Bilk S", lat: 51.208195, lon: 6.776891 },
+    { id: "hu-bkk_042934", name: "Soroksár, BILK", lat: 47.4, lon: 19.1 },
+  ];
+
+  it("bevorzugt die exakte Haltestellen-ID statt des nächsten Treffers", () => {
+    expect(transitous.pickMatchingStop(candidates, BILK, "de:05111:18249")).toBe(
+      "de-DELFI_de:05111:18249",
+    );
+  });
+
+  it("nimmt sonst einen Steig derselben Haltestelle", () => {
+    const platforms = [
+      candidates[0]!,
+      { id: "at-Railway_de:05111:18249:93:16", name: "Bilk", lat: 51.2083, lon: 6.7769 },
+    ];
+    expect(transitous.pickMatchingStop(platforms, BILK, "de:05111:18249")).toBe(
+      "at-Railway_de:05111:18249:93:16",
+    );
+  });
+
+  it("bevorzugt ohne ID-Treffer DELFI im Umkreis, ignoriert Fernes", () => {
+    const near = [
+      { id: "de-VBN_1", name: "x", lat: 51.2082, lon: 6.7769 },
+      { id: "de-DELFI_de:05111:99999", name: "y", lat: 51.2088, lon: 6.7769 },
+    ];
+    expect(transitous.pickMatchingStop(near, BILK, "de:05111:18249")).toBe(
+      "de-DELFI_de:05111:99999",
+    );
+    expect(transitous.pickMatchingStop([candidates[2]!], BILK, null)).toBeNull();
+  });
+});

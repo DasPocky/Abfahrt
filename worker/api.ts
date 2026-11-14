@@ -52,7 +52,7 @@ async function transitousForStop(
   ctx: ExecutionContext,
   stop: Stop,
 ): Promise<string | null> {
-  return cached(request, ctx, `map:${stop.id}`, MAPPING_TTL, () =>
+  return cached(request, ctx, `map:v2:${stop.id}`, MAPPING_TTL, () =>
     transitous.findMatchingStop(stop),
   );
 }
@@ -68,7 +68,7 @@ async function lineColorsForStop(
   ctx: ExecutionContext,
   stop: Stop,
 ): Promise<LineColorMap> {
-  const lookup = cached(request, ctx, `colors:v1:${stop.id}`, LINE_COLORS_TTL, async () => {
+  const lookup = cached(request, ctx, `colors:v2:${stop.id}`, LINE_COLORS_TTL, async () => {
     const transitousId = await transitousForStop(request, ctx, stop);
     return transitousId ? transitous.lineColors(transitousId) : {};
   }).catch((err: unknown): LineColorMap => {
