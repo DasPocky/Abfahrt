@@ -1,0 +1,2168 @@
+{
+  "serverInfo": {
+    "controllerVersion": "10.6.34.3",
+    "serverID": "EFA-X-DELFI03_",
+    "virtDir": "openservice",
+    "serverTime": "2026-11-14T20:35:32",
+    "calcTime": 940.645,
+    "logRequestId": "775bd96a45d5c887"
+  },
+  "version": "10.4.18.18",
+  "systemMessages": [
+    {
+      "type": "warning",
+      "module": "BROKER",
+      "code": -10015,
+      "text": "itp",
+      "subType": "itp-monomodal"
+    }
+  ],
+  "journeys": [
+    {
+      "rating": 0,
+      "isAdditional": false,
+      "interchanges": 1,
+      "legs": [
+        {
+          "duration": 210,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED"],
+          "origin": {
+            "isGlobalId": true,
+            "id": "de:05111:18036:8:4",
+            "name": "D-Heinrich-Heine-Allee U",
+            "disassembledName": "4",
+            "type": "platform",
+            "pointType": "PLATFORM",
+            "coord": [51.226088, 6.776693],
+            "niveau": -2,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18036",
+              "name": "D-Heinrich-Heine-Allee U",
+              "disassembledName": "Heinrich-Heine-Allee U",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018036" },
+              "coord": [51.226398, 6.776828],
+              "niveau": 0
+            },
+            "productClasses": [2, 5, 7],
+            "departureTimeBaseTimetable": "2026-11-14T19:29:00Z",
+            "departureTimePlanned": "2026-11-14T19:29:00Z",
+            "departureTimeEstimated": "2026-11-14T19:29:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "-2",
+              "AREA_NIVEAU_GIS": "-2.00",
+              "stoppingPointPlanned": "4",
+              "areaGid": "de:05111:18036:8",
+              "area": "8",
+              "platform": "4",
+              "platformName": "4",
+              "plannedPlatformName": "4"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "de:05111:18235:7:4",
+            "name": "Düsseldorf Hbf",
+            "disassembledName": "4",
+            "type": "platform",
+            "pointType": "PLATFORM",
+            "coord": [51.219506, 6.793941],
+            "niveau": -1,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18235",
+              "name": "Düsseldorf Hbf",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018235" },
+              "coord": [51.220254, 6.792997],
+              "niveau": 0
+            },
+            "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+            "arrivalTimeBaseTimetable": "2026-11-14T19:32:30Z",
+            "arrivalTimePlanned": "2026-11-14T19:32:30Z",
+            "arrivalTimeEstimated": "2026-11-14T19:32:30Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "-1",
+              "stoppingPointPlanned": "4",
+              "areaGid": "de:05111:18235:2",
+              "area": "2",
+              "platform": "4",
+              "platformName": "4",
+              "plannedPlatformName": "4"
+            }
+          },
+          "transportation": {
+            "id": "rbg:70075: :H:j26",
+            "name": "U-Bahn U75",
+            "disassembledName": "U75",
+            "number": "U75",
+            "description": "Neuss Hbf - D-Heerdt - Heinr.-Heine-Allee  - Düsseldorf Hbf - D-Eller Mitte  - D-Eller, Vennhauser Allee",
+            "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+            "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+            "destination": { "id": "20018084", "name": "D-Lierenfeld Btf", "type": "stop" },
+            "properties": {
+              "isSTT": true,
+              "tripCode": 502,
+              "timetablePeriod": "Jahresfahrplan 2026 (07.01.2026 - 06.01.2027)",
+              "lineDisplay": "LINE",
+              "globalId": "de:vrr:U75:RBG-70-75",
+              "AVMSTripID": "RB_VIA.7319006",
+              "FrequencyLine": "1",
+              "attributes": ["PLAN_LOWFLOORVEHICLE"]
+            }
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18036:8:4",
+              "name": "D-Heinrich-Heine-Allee U",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.226088, 6.776693],
+              "niveau": -2,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18036",
+                "name": "D-Heinrich-Heine-Allee U",
+                "disassembledName": "Heinrich-Heine-Allee U",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018036" },
+                "coord": [51.226398, 6.776828],
+                "niveau": 0
+              },
+              "productClasses": [2, 5, 7],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-2",
+                "AREA_NIVEAU_GIS": "-2.00",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18036:8",
+                "area": "8",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "departureTimePlanned": "2026-11-14T19:29:00Z",
+              "departureTimeEstimated": "2026-11-14T19:29:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18234:1:4",
+              "name": "D-Steinstr./Königsallee",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.222949, 6.780978],
+              "niveau": -3,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18234",
+                "name": "D-Steinstr./Königsallee",
+                "disassembledName": "Steinstr./Königsallee",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018234" },
+                "coord": [51.222966, 6.782694],
+                "niveau": 0
+              },
+              "productClasses": [2, 4, 5, 7],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-3",
+                "AREA_NIVEAU_GIS": "-3.00",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18234:2",
+                "area": "2",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:30:00Z",
+              "departureTimePlanned": "2026-11-14T19:30:00Z",
+              "arrivalTimeEstimated": "2026-11-14T19:30:00Z",
+              "departureTimeEstimated": "2026-11-14T19:30:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18080:5:4",
+              "name": "D-Oststraße U",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.222477, 6.787095],
+              "niveau": -3,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18080",
+                "name": "D-Oststraße U",
+                "disassembledName": "Oststraße U",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018080" },
+                "coord": [51.222724, 6.786574],
+                "niveau": 0
+              },
+              "productClasses": [2, 5, 7],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-3",
+                "AREA_NIVEAU_GIS": "-3.00",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18080:5",
+                "area": "5",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:31:00Z",
+              "departureTimePlanned": "2026-11-14T19:31:00Z",
+              "arrivalTimeEstimated": "2026-11-14T19:31:00Z",
+              "departureTimeEstimated": "2026-11-14T19:31:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18235:7:4",
+              "name": "Düsseldorf Hbf",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.219506, 6.793941],
+              "niveau": -1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18235",
+                "name": "Düsseldorf Hbf",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018235" },
+                "coord": [51.220254, 6.792997],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-1",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18235:2",
+                "area": "2",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vgm:;vph:;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:32:30Z",
+              "arrivalTimeEstimated": "2026-11-14T19:32:30Z"
+            }
+          ],
+          "footPathInfo": [{ "position": "AFTER", "duration": 300 }],
+          "footPathInfoRedundant": true,
+          "infos": [
+            {
+              "timestamps": { "creation": "2026-11-06T06:38:00Z" },
+              "priority": "normal",
+              "id": "ems-56690",
+              "version": "325",
+              "type": "lineInfo",
+              "urlText": "Linien 701, 724, 731, 732, 735, 815, U75 - Haltestellenveränderungen - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+              "url": "http://ems.vrr.de/info-link/79657939-38b6-5f5c-95bd-2eef6ea1186d",
+              "content": "<div>Wegen Bauarbeiten kommt es zu Einschr&auml;nkungen auf den Linien 701, U75, 724, 731, 732, 735 und 815. <br />Die Bahnen der Linie U75 fahren nicht zwischen &bdquo;Lierenfeld Betriebshof&ldquo; und &bdquo;Vennhauser Allee&ldquo;. Es fahren Ersatzbusse.<br />Die Bahnen der Linie 701 fahren nicht wie gewohnt zwischen \"D-Oberbilk S\" und \"Vennhauser Allee\". Sie fahren ab der Haltestelle \"D-Oberbilk S\" eine Umleitung bis \"Lierenfeld Betriebshof S&uuml;d\" und wenden dort. Zwischen den Haltestellen \"Lierenfeld Betriebshof S&uuml;d\" und \"Vennhauser Allee\" fahren Ersatzbusse.</div>\n<div><br />Die Buslinien 724, 731, 732, 735 und 815 werden umgeleitet. Einzelne Haltestellen werden verlegt.</div>\n<div>&nbsp;</div>\n<div><img src=\"https://ems.vrr.de/s/QUZXR.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik Richtung Neuss bzw. PSD Bank DOME\" width=\"400\" height=\"671\" /><img src=\"https://ems.vrr.de/s/-IcAY.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik Richtung Vennhauser Allee\" width=\"400\" height=\"672\" /><img src=\"https://ems.vrr.de/s/h2A05.jpg\" alt=\"Vollansicht Zeppelinstr Sperrgrafik\" width=\"400\" height=\"672\" /></div>",
+              "subtitle": "U75, 701, 724, 731, 732, 735 und 815: Busse statt Bahnen, Umleitungen und Haltestellenverlegung",
+              "title": "U75, 701, 724, 731, 732, 735 und 815: Busse statt Bahnen, Umleitungen und Haltestellenverlegung",
+              "additionalText": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "lineInfo",
+                "incidentDateTime": "12/11/2026 04:00 - 15/11/2026 04:00",
+                "smsText": "Linien 701, 724, 731, 732, 735, 815, U75 - Haltestellenveränderungen - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+                "attachments": [
+                  {
+                    "ID": 0,
+                    "type": "image/jpeg",
+                    "path": "https://ems.vrr.de/s/QUZXR.jpg",
+                    "virtPath": "https://ems.vrr.de/s/QUZXR.jpg",
+                    "linkText": "Vollansicht Zeppelinstr Sperrgrafik Richtung Neuss bzw. PSD Bank DOME",
+                    "linkTarget": "_blank",
+                    "size": 175035
+                  },
+                  {
+                    "ID": 0,
+                    "type": "image/jpeg",
+                    "path": "https://ems.vrr.de/s/-IcAY.jpg",
+                    "virtPath": "https://ems.vrr.de/s/-IcAY.jpg",
+                    "linkText": "Vollansicht Zeppelinstr Sperrgrafik Richtung Vennhauser Allee",
+                    "linkTarget": "_blank",
+                    "size": 167863
+                  },
+                  {
+                    "ID": 0,
+                    "type": "image/jpeg",
+                    "path": "https://ems.vrr.de/s/h2A05.jpg",
+                    "virtPath": "https://ems.vrr.de/s/h2A05.jpg",
+                    "linkText": "Vollansicht Zeppelinstr Sperrgrafik",
+                    "linkTarget": "_blank",
+                    "size": 179999
+                  }
+                ]
+              }
+            },
+            {
+              "timestamps": { "creation": "2026-11-02T12:47:00Z" },
+              "priority": "normal",
+              "id": "314207",
+              "version": "1",
+              "type": "lineInfo",
+              "urlText": "",
+              "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314207",
+              "content": "<a href=\"https://www.rheinbahn.de/Zeppelinstrasse\">Hier alle Infos</a>",
+              "subtitle": "Gleisarbeiten bringen Änderungen auf den Linien U75, 701 und fünf Buslinien",
+              "title": "Rheinbahn investiert in zuverlässige Verbindungen und mehr Fahrkomfort auf der Zeppelinstraße:",
+              "properties": {
+                "infoType": "lineInfo",
+                "incidentDateTime": "12/11/2026 04:00 - 15/11/2026 04:00",
+                "wapText": "Wegen Gleisarbeiten auf der Zeppelinstraße kommt es zu Änderungen auf den Bahnlinien U75 und 701 sowie auf den Buslinien 724, 731, 732, 735 und 815 - von Donnerstag, 12. November, 4 Uhr, bis Sonntag, 15. November, 4 Uhr.",
+                "smsText": "Wegen Gleisarbeiten auf der Zeppelinstraße kommt es zu Änderungen auf den Bahnlinien U75 und 701 sowie auf den Buslinien 724, 731, 732, 735 und 815 - von Donnerstag, 12. November, 4 Uhr, bis Sonntag, 15. November, 4 Uhr."
+              }
+            },
+            {
+              "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+              "priority": "normal",
+              "id": "VRR-de:05111:18036:65",
+              "version": "203",
+              "type": "infrastructure",
+              "urlText": "",
+              "url": "http://ems.vrr.de/info-link/b2864118-fc49-5cbf-b1c1-bdc0aa66cf4b",
+              "content": "An der Haltestelle D-Heinrich-Heine-Allee U ist die Rolltreppe von Zwischengeschoss nach Steig 5+6 bis auf Weiteres außer Betrieb.",
+              "subtitle": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+              "title": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "infrastructure",
+                "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+              }
+            }
+          ],
+          "interchange": {
+            "desc": "Fussweg",
+            "type": 100,
+            "coords": [
+              [51.219527, 6.79396],
+              [51.219523, 6.793958],
+              [51.219579, 6.793851],
+              [51.219618, 6.793905],
+              [51.219613, 6.793923],
+              [51.219613, 6.793941],
+              [51.219579, 6.794012],
+              [51.219641, 6.794093],
+              [51.219433, 6.794533],
+              [51.219315, 6.794767],
+              [51.219348, 6.794812],
+              [51.219348, 6.79483],
+              [51.219399, 6.794884],
+              [51.219365, 6.794947],
+              [51.219433, 6.795027]
+            ]
+          }
+        },
+        {
+          "duration": 1440,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED"],
+          "origin": {
+            "isGlobalId": true,
+            "id": "de:05111:18235:94:18",
+            "name": "Düsseldorf Hbf",
+            "disassembledName": "18",
+            "type": "platform",
+            "pointType": "TRACK",
+            "coord": [51.219433, 6.795027],
+            "niveau": 1,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18235",
+              "name": "Düsseldorf Hbf",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018235" },
+              "coord": [51.220254, 6.792997],
+              "niveau": 0
+            },
+            "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+            "departureTimeBaseTimetable": "2026-11-14T19:38:00Z",
+            "departureTimePlanned": "2026-11-14T19:38:00Z",
+            "departureTimeEstimated": "2026-11-14T19:39:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "1",
+              "stoppingPointPlanned": "18",
+              "areaGid": "de:05111:18235:94",
+              "area": "94",
+              "platform": "18",
+              "platformName": "18",
+              "plannedPlatformName": "18"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "de:05113:9289:91:4",
+            "name": "Essen Hauptbahnhof",
+            "disassembledName": "4",
+            "type": "platform",
+            "pointType": "TRACK",
+            "coord": [51.451495, 7.013983],
+            "niveau": 2,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05113:9289",
+              "name": "Essen Hauptbahnhof",
+              "disassembledName": "Hauptbahnhof",
+              "type": "stop",
+              "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+              "properties": { "stopId": "20009289" },
+              "coord": [51.449732, 7.012213],
+              "niveau": 0
+            },
+            "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+            "arrivalTimeBaseTimetable": "2026-11-14T20:02:00Z",
+            "arrivalTimePlanned": "2026-11-14T20:02:00Z",
+            "arrivalTimeEstimated": "2026-11-14T20:03:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "2",
+              "stoppingPointPlanned": "4",
+              "areaGid": "de:05113:9289:91",
+              "area": "91",
+              "platform": "4",
+              "platformName": "4",
+              "plannedPlatformName": "4"
+            }
+          },
+          "transportation": {
+            "id": "ddb:98X41: :R:j26",
+            "name": "ICE 620 InterCityExpress",
+            "number": "620",
+            "description": "München - Nürnberg - Würzburg - Frankfurt - Köln - Essen - Dortmund",
+            "product": { "id": 0, "class": 16, "name": "Zug", "iconId": 6 },
+            "operator": { "code": "DBFV", "id": "80", "name": "DB Fernverkehr AG" },
+            "destination": { "id": "20000131", "name": "Dortmund Hbf", "type": "stop" },
+            "properties": {
+              "trainName": "InterCityExpress",
+              "trainType": "ICE",
+              "trainNumber": "620",
+              "tripCode": 435,
+              "timetablePeriod": "Jahresfahrplan 2026",
+              "specialFares": "ICE_ROUTE",
+              "lineDisplay": "TRAIN",
+              "AVMSTripID": "620-80-8000284-161300",
+              "FrequencyLine": "1",
+              "attributes": ["HIGHSPEEDTRAIN", "LONG_DISTANCE_TRAINS", "SUPPLEMENT"]
+            }
+          },
+          "hints": [
+            {
+              "content": ".",
+              "providerCode": "A__GD",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Bordrestaurant",
+              "providerCode": "A__BR",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Rollstuhl: Einstieg mit Zugpersonal",
+              "providerCode": "A__FH",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Fahrradmitnahme begrenzt möglich",
+              "providerCode": "A__FK",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Komfort Check-in verfügbar - wenn möglich bitte einchecken",
+              "providerCode": "A__CK",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Fahrradmitnahme reservierungspflichtig",
+              "providerCode": "A__FR",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            }
+          ],
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18235:94:18",
+              "name": "Düsseldorf Hbf",
+              "disassembledName": "18",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.219433, 6.795027],
+              "niveau": 1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18235",
+                "name": "Düsseldorf Hbf",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018235" },
+                "coord": [51.220254, 6.792997],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "1",
+                "stoppingPointPlanned": "18",
+                "areaGid": "de:05111:18235:94",
+                "area": "94",
+                "platform": "18",
+                "platformName": "18",
+                "plannedPlatformName": "18",
+                "zone": "aac:1430;vgm:;vph:;vrr:430;vrs:1430"
+              },
+              "departureTimePlanned": "2026-11-14T19:38:00Z",
+              "departureTimeEstimated": "2026-11-14T19:39:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18488",
+              "name": "D-Flughafen Bf",
+              "disassembledName": "Flughafen Bahnhof",
+              "type": "stop",
+              "coord": [51.291581, 6.787041],
+              "niveau": 0,
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "productClasses": [0, 1, 5, 7, 11, 13, 17],
+              "properties": {
+                "stopId": "20018488",
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "0",
+                "zone": "aac:1430;vgm:;vrr:430;vrs:1430"
+              }
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05112:16032:95:13",
+              "name": "Duisburg Hbf",
+              "disassembledName": "13",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.430235, 6.77725],
+              "niveau": 1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05112:16032",
+                "name": "Duisburg Hbf",
+                "type": "stop",
+                "parent": { "id": "placeID:5112000:20", "name": "Duisburg", "type": "locality" },
+                "properties": { "stopId": "20016032" },
+                "coord": [51.430453, 6.774528],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "1",
+                "stoppingPointPlanned": "13",
+                "areaGid": "de:05112:16032:95",
+                "area": "95",
+                "platform": "13",
+                "platformName": "13",
+                "plannedPlatformName": "13",
+                "zone": "vgm:;vph:;vrr:330"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:49:00Z",
+              "departureTimePlanned": "2026-11-14T19:51:00Z",
+              "arrivalTimeEstimated": "2026-11-14T19:50:00Z",
+              "departureTimeEstimated": "2026-11-14T19:52:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9289:91:4",
+              "name": "Essen Hauptbahnhof",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.451495, 7.013983],
+              "niveau": 2,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9289",
+                "name": "Essen Hauptbahnhof",
+                "disassembledName": "Hauptbahnhof",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009289" },
+                "coord": [51.449732, 7.012213],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "2",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05113:9289:91",
+                "area": "91",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "vgm:;vph:;vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:02:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:03:00Z"
+            }
+          ],
+          "infos": [
+            {
+              "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+              "priority": "normal",
+              "id": "VRR-de:05113:9289:32",
+              "version": "20",
+              "type": "infrastructure",
+              "urlText": "",
+              "url": "http://ems.vrr.de/info-link/21d409e6-66a1-57b9-8054-6b22d5365450",
+              "content": "An der Haltestelle Essen Hauptbahnhof ist der Aufzug von Verteilerebene zum Bahnsteig bis auf Weiteres außer Betrieb.",
+              "subtitle": "Haltestelle Essen Hauptbahnhof: Aufzug außer Betrieb.",
+              "title": "Haltestelle Essen Hauptbahnhof: Aufzug außer Betrieb.",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "infrastructure",
+                "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+              }
+            }
+          ]
+        }
+      ],
+      "daysOfService": { "rvb": "000000000000200000000000000000000000000000000000" }
+    },
+    {
+      "rating": 0,
+      "isAdditional": false,
+      "interchanges": 1,
+      "legs": [
+        {
+          "duration": 210,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED"],
+          "origin": {
+            "isGlobalId": true,
+            "id": "de:05111:18036:8:4",
+            "name": "D-Heinrich-Heine-Allee U",
+            "disassembledName": "4",
+            "type": "platform",
+            "pointType": "PLATFORM",
+            "coord": [51.226088, 6.776693],
+            "niveau": -2,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18036",
+              "name": "D-Heinrich-Heine-Allee U",
+              "disassembledName": "Heinrich-Heine-Allee U",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018036" },
+              "coord": [51.226398, 6.776828],
+              "niveau": 0
+            },
+            "productClasses": [2, 5, 7],
+            "departureTimeBaseTimetable": "2026-11-14T19:51:30Z",
+            "departureTimePlanned": "2026-11-14T19:51:30Z",
+            "departureTimeEstimated": "2026-11-14T19:51:30Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "-2",
+              "AREA_NIVEAU_GIS": "-2.00",
+              "stoppingPointPlanned": "4",
+              "areaGid": "de:05111:18036:8",
+              "area": "8",
+              "platform": "4",
+              "platformName": "4",
+              "plannedPlatformName": "4"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "de:05111:18235:7:4",
+            "name": "Düsseldorf Hbf",
+            "disassembledName": "4",
+            "type": "platform",
+            "pointType": "PLATFORM",
+            "coord": [51.219506, 6.793941],
+            "niveau": -1,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18235",
+              "name": "Düsseldorf Hbf",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018235" },
+              "coord": [51.220254, 6.792997],
+              "niveau": 0
+            },
+            "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+            "arrivalTimeBaseTimetable": "2026-11-14T19:55:00Z",
+            "arrivalTimePlanned": "2026-11-14T19:55:00Z",
+            "arrivalTimeEstimated": "2026-11-14T19:55:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "-1",
+              "stoppingPointPlanned": "4",
+              "areaGid": "de:05111:18235:2",
+              "area": "2",
+              "platform": "4",
+              "platformName": "4",
+              "plannedPlatformName": "4"
+            }
+          },
+          "transportation": {
+            "id": "rbg:70077: :H:j26",
+            "name": "U-Bahn U77",
+            "disassembledName": "U77",
+            "number": "U77",
+            "description": "D-Am Seestern - Oberkassel - Heinr.-Heine-Allee  - Düsseldorf Hbf - D-Lierenfeld Btf",
+            "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+            "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+            "destination": { "id": "20018084", "name": "D-Lierenfeld Btf", "type": "stop" },
+            "properties": {
+              "isSTT": true,
+              "tripCode": 189,
+              "timetablePeriod": "Jahresfahrplan 2026 (07.01.2026 - 06.01.2027)",
+              "lineDisplay": "LINE",
+              "globalId": "de:vrr:U77:RBG-70-77",
+              "AVMSTripID": "RB_VIA.6109006",
+              "FrequencyLine": "1",
+              "attributes": ["PLAN_LOWFLOORVEHICLE"]
+            }
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18036:8:4",
+              "name": "D-Heinrich-Heine-Allee U",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.226088, 6.776693],
+              "niveau": -2,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18036",
+                "name": "D-Heinrich-Heine-Allee U",
+                "disassembledName": "Heinrich-Heine-Allee U",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018036" },
+                "coord": [51.226398, 6.776828],
+                "niveau": 0
+              },
+              "productClasses": [2, 5, 7],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-2",
+                "AREA_NIVEAU_GIS": "-2.00",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18036:8",
+                "area": "8",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "departureTimePlanned": "2026-11-14T19:51:30Z",
+              "departureTimeEstimated": "2026-11-14T19:51:30Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18234:1:4",
+              "name": "D-Steinstr./Königsallee",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.222949, 6.780978],
+              "niveau": -3,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18234",
+                "name": "D-Steinstr./Königsallee",
+                "disassembledName": "Steinstr./Königsallee",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018234" },
+                "coord": [51.222966, 6.782694],
+                "niveau": 0
+              },
+              "productClasses": [2, 4, 5, 7],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-3",
+                "AREA_NIVEAU_GIS": "-3.00",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18234:2",
+                "area": "2",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:52:30Z",
+              "departureTimePlanned": "2026-11-14T19:52:30Z",
+              "arrivalTimeEstimated": "2026-11-14T19:52:30Z",
+              "departureTimeEstimated": "2026-11-14T19:52:30Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18080:5:4",
+              "name": "D-Oststraße U",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.222477, 6.787095],
+              "niveau": -3,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18080",
+                "name": "D-Oststraße U",
+                "disassembledName": "Oststraße U",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018080" },
+                "coord": [51.222724, 6.786574],
+                "niveau": 0
+              },
+              "productClasses": [2, 5, 7],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-3",
+                "AREA_NIVEAU_GIS": "-3.00",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18080:5",
+                "area": "5",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:53:30Z",
+              "departureTimePlanned": "2026-11-14T19:53:30Z",
+              "arrivalTimeEstimated": "2026-11-14T19:53:30Z",
+              "departureTimeEstimated": "2026-11-14T19:53:30Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18235:7:4",
+              "name": "Düsseldorf Hbf",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.219506, 6.793941],
+              "niveau": -1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18235",
+                "name": "Düsseldorf Hbf",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018235" },
+                "coord": [51.220254, 6.792997],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-1",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05111:18235:2",
+                "area": "2",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "aac:1430;vgm:;vph:;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:55:00Z",
+              "arrivalTimeEstimated": "2026-11-14T19:55:00Z"
+            }
+          ],
+          "footPathInfo": [{ "position": "AFTER", "duration": 300 }],
+          "footPathInfoRedundant": true,
+          "infos": [
+            {
+              "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+              "priority": "normal",
+              "id": "VRR-de:05111:18036:65",
+              "version": "203",
+              "type": "infrastructure",
+              "urlText": "",
+              "url": "http://ems.vrr.de/info-link/b2864118-fc49-5cbf-b1c1-bdc0aa66cf4b",
+              "content": "An der Haltestelle D-Heinrich-Heine-Allee U ist die Rolltreppe von Zwischengeschoss nach Steig 5+6 bis auf Weiteres außer Betrieb.",
+              "subtitle": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+              "title": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "infrastructure",
+                "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+              }
+            }
+          ],
+          "interchange": {
+            "desc": "Fussweg",
+            "type": 100,
+            "coords": [
+              [51.219527, 6.79396],
+              [51.219523, 6.793958],
+              [51.219579, 6.793851],
+              [51.219618, 6.793905],
+              [51.219613, 6.793923],
+              [51.219613, 6.793941],
+              [51.219579, 6.794012],
+              [51.219641, 6.794093],
+              [51.219433, 6.794533],
+              [51.219315, 6.794767],
+              [51.219348, 6.794812],
+              [51.219348, 6.79483],
+              [51.219399, 6.794884],
+              [51.219405, 6.794866],
+              [51.219433, 6.794812],
+              [51.219489, 6.794884],
+              [51.219491, 6.794888]
+            ]
+          }
+        },
+        {
+          "duration": 1440,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED"],
+          "origin": {
+            "isGlobalId": true,
+            "id": "de:05111:18235:94:17",
+            "name": "Düsseldorf Hbf",
+            "disassembledName": "17",
+            "type": "platform",
+            "pointType": "TRACK",
+            "coord": [51.219506, 6.794866],
+            "niveau": 1,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18235",
+              "name": "Düsseldorf Hbf",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018235" },
+              "coord": [51.220254, 6.792997],
+              "niveau": 0
+            },
+            "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+            "departureTimeBaseTimetable": "2026-11-14T19:55:00Z",
+            "departureTimePlanned": "2026-11-14T19:55:00Z",
+            "departureTimeEstimated": "2026-11-14T20:01:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "1",
+              "stoppingPointPlanned": "17",
+              "areaGid": "de:05111:18235:94",
+              "area": "94",
+              "platform": "17",
+              "platformName": "17",
+              "plannedPlatformName": "17"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "de:05113:9289:91:4",
+            "name": "Essen Hauptbahnhof",
+            "disassembledName": "4",
+            "type": "platform",
+            "pointType": "TRACK",
+            "coord": [51.451495, 7.013983],
+            "niveau": 2,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05113:9289",
+              "name": "Essen Hauptbahnhof",
+              "disassembledName": "Hauptbahnhof",
+              "type": "stop",
+              "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+              "properties": { "stopId": "20009289" },
+              "coord": [51.449732, 7.012213],
+              "niveau": 0
+            },
+            "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+            "arrivalTimeBaseTimetable": "2026-11-14T20:22:00Z",
+            "arrivalTimePlanned": "2026-11-14T20:22:00Z",
+            "arrivalTimeEstimated": "2026-11-14T20:25:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "2",
+              "stoppingPointPlanned": "4",
+              "areaGid": "de:05113:9289:91",
+              "area": "91",
+              "platform": "4",
+              "platformName": "4",
+              "plannedPlatformName": "4"
+            }
+          },
+          "transportation": {
+            "id": "ddb:98X47:P:R:j26",
+            "name": "ICE 912 InterCityExpress",
+            "number": "912",
+            "description": "München - Stuttgart - Mannheim - Siegburg - Köln - Duisburg - Norddeich",
+            "product": { "id": 0, "class": 16, "name": "Zug", "iconId": 6 },
+            "operator": { "code": "DBFV", "id": "80", "name": "DB Fernverkehr AG" },
+            "destination": { "id": "20000131", "name": "Dortmund Hbf", "type": "stop" },
+            "properties": {
+              "trainName": "InterCityExpress",
+              "trainType": "ICE",
+              "trainNumber": "912",
+              "tripCode": 131,
+              "timetablePeriod": "Jahresfahrplan 2026",
+              "specialFares": "ICE_ROUTE",
+              "lineDisplay": "TRAIN",
+              "AVMSTripID": "912-80-8000261-162000",
+              "FrequencyLine": "1",
+              "attributes": ["HIGHSPEEDTRAIN", "LONG_DISTANCE_TRAINS", "SUPPLEMENT"]
+            }
+          },
+          "hints": [
+            {
+              "content": ".",
+              "providerCode": "A__GD",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Rollstuhl: Einstieg mit Zugpersonal",
+              "providerCode": "A__FH",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Bordrestaurant",
+              "providerCode": "A__BR",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Fahrradmitnahme begrenzt möglich",
+              "providerCode": "A__FK",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Fahrradmitnahme reservierungspflichtig",
+              "providerCode": "A__FR",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Komfort Check-in verfügbar - wenn möglich bitte einchecken",
+              "providerCode": "A__CK",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            }
+          ],
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18235:94:17",
+              "name": "Düsseldorf Hbf",
+              "disassembledName": "17",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.219506, 6.794866],
+              "niveau": 1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18235",
+                "name": "Düsseldorf Hbf",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018235" },
+                "coord": [51.220254, 6.792997],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "1",
+                "stoppingPointPlanned": "17",
+                "areaGid": "de:05111:18235:94",
+                "area": "94",
+                "platform": "17",
+                "platformName": "17",
+                "plannedPlatformName": "17",
+                "zone": "aac:1430;vgm:;vph:;vrr:430;vrs:1430"
+              },
+              "departureTimePlanned": "2026-11-14T19:55:00Z",
+              "departureTimeEstimated": "2026-11-14T20:01:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18488",
+              "name": "D-Flughafen Bf",
+              "disassembledName": "Flughafen Bahnhof",
+              "type": "stop",
+              "coord": [51.291581, 6.787041],
+              "niveau": 0,
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "productClasses": [0, 1, 5, 7, 11, 13, 17],
+              "properties": {
+                "stopId": "20018488",
+                "AREA_NIVEAU_DIVA": "0",
+                "area": "0",
+                "zone": "aac:1430;vgm:;vrr:430;vrs:1430"
+              }
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05112:16032:95:13",
+              "name": "Duisburg Hbf",
+              "disassembledName": "13",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.430235, 6.77725],
+              "niveau": 1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05112:16032",
+                "name": "Duisburg Hbf",
+                "type": "stop",
+                "parent": { "id": "placeID:5112000:20", "name": "Duisburg", "type": "locality" },
+                "properties": { "stopId": "20016032" },
+                "coord": [51.430453, 6.774528],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "1",
+                "stoppingPointPlanned": "13",
+                "areaGid": "de:05112:16032:95",
+                "area": "95",
+                "platform": "13",
+                "platformName": "13",
+                "plannedPlatformName": "13",
+                "zone": "vgm:;vph:;vrr:330"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:09:00Z",
+              "departureTimePlanned": "2026-11-14T20:10:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:12:00Z",
+              "departureTimeEstimated": "2026-11-14T20:14:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9289:91:4",
+              "name": "Essen Hauptbahnhof",
+              "disassembledName": "4",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.451495, 7.013983],
+              "niveau": 2,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9289",
+                "name": "Essen Hauptbahnhof",
+                "disassembledName": "Hauptbahnhof",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009289" },
+                "coord": [51.449732, 7.012213],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "2",
+                "stoppingPointPlanned": "4",
+                "areaGid": "de:05113:9289:91",
+                "area": "91",
+                "platform": "4",
+                "platformName": "4",
+                "plannedPlatformName": "4",
+                "zone": "vgm:;vph:;vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:22:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:25:00Z"
+            }
+          ],
+          "infos": [
+            {
+              "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+              "priority": "normal",
+              "id": "VRR-de:05113:9289:32",
+              "version": "20",
+              "type": "infrastructure",
+              "urlText": "",
+              "url": "http://ems.vrr.de/info-link/21d409e6-66a1-57b9-8054-6b22d5365450",
+              "content": "An der Haltestelle Essen Hauptbahnhof ist der Aufzug von Verteilerebene zum Bahnsteig bis auf Weiteres außer Betrieb.",
+              "subtitle": "Haltestelle Essen Hauptbahnhof: Aufzug außer Betrieb.",
+              "title": "Haltestelle Essen Hauptbahnhof: Aufzug außer Betrieb.",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "infrastructure",
+                "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+              }
+            }
+          ]
+        }
+      ],
+      "daysOfService": { "rvb": "000000000000200000000000000000000000000000000000" }
+    },
+    {
+      "rating": 0,
+      "isAdditional": false,
+      "interchanges": 1,
+      "legs": [
+        {
+          "duration": 240,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED"],
+          "origin": {
+            "isGlobalId": true,
+            "id": "de:05111:18036:4:5",
+            "name": "D-Heinrich-Heine-Allee U",
+            "disassembledName": "5",
+            "type": "platform",
+            "pointType": "PLATFORM",
+            "coord": [51.225695, 6.778283],
+            "niveau": -3,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18036",
+              "name": "D-Heinrich-Heine-Allee U",
+              "disassembledName": "Heinrich-Heine-Allee U",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018036" },
+              "coord": [51.226398, 6.776828],
+              "niveau": 0
+            },
+            "productClasses": [2, 5, 7],
+            "departureTimeBaseTimetable": "2026-11-14T19:52:00Z",
+            "departureTimePlanned": "2026-11-14T19:52:00Z",
+            "departureTimeEstimated": "2026-11-14T19:52:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "-3",
+              "AREA_NIVEAU_GIS": "-3.00",
+              "stoppingPointPlanned": "5",
+              "areaGid": "de:05111:18036:4",
+              "area": "4",
+              "platform": "5",
+              "platformName": "5",
+              "plannedPlatformName": "5"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "de:05111:18019:2:2",
+            "name": "D-Wehrhahn S",
+            "disassembledName": "2",
+            "type": "platform",
+            "pointType": "PLATFORM",
+            "coord": [51.230037, 6.798621],
+            "niveau": 0,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18019",
+              "name": "D-Wehrhahn S",
+              "disassembledName": "Wehrhahn S",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018019" },
+              "coord": [51.229846, 6.797803],
+              "niveau": 0
+            },
+            "productClasses": [1, 2, 5, 17],
+            "arrivalTimeBaseTimetable": "2026-11-14T19:56:00Z",
+            "arrivalTimePlanned": "2026-11-14T19:56:00Z",
+            "arrivalTimeEstimated": "2026-11-14T19:56:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "0",
+              "AREA_NIVEAU_GIS": "0.00",
+              "stoppingPointPlanned": "2",
+              "areaGid": "de:05111:18019:2",
+              "area": "2",
+              "platform": "2",
+              "platformName": "2",
+              "plannedPlatformName": "2"
+            }
+          },
+          "transportation": {
+            "id": "rbg:70073: :R:j26",
+            "name": "U-Bahn U73",
+            "disassembledName": "U73",
+            "number": "U73",
+            "description": "D-Universität Ost - Uni-Kliniken - D-Bilk  - Heinr.-Heine-Allee  - Grafenberg - D-Gerresheim ",
+            "product": { "id": 0, "class": 2, "name": "U-Bahn", "iconId": 1 },
+            "operator": { "code": "RBG", "id": "70", "name": "Rheinbahn" },
+            "destination": { "id": "20018217", "name": "D-Gerresheim S", "type": "stop" },
+            "properties": {
+              "isSTT": true,
+              "tripCode": 446,
+              "timetablePeriod": "Jahresfahrplan 2026 (07.01.2026 - 06.01.2027)",
+              "lineDisplay": "LINE",
+              "globalId": "de:vrr:U73:RBG-70-73",
+              "AVMSTripID": "RB_VIA.6939006",
+              "FrequencyLine": "1",
+              "attributes": ["PLAN_LOWFLOORVEHICLE"]
+            }
+          },
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18036:4:5",
+              "name": "D-Heinrich-Heine-Allee U",
+              "disassembledName": "5",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.225695, 6.778283],
+              "niveau": -3,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18036",
+                "name": "D-Heinrich-Heine-Allee U",
+                "disassembledName": "Heinrich-Heine-Allee U",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018036" },
+                "coord": [51.226398, 6.776828],
+                "niveau": 0
+              },
+              "productClasses": [2, 5, 7],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-3",
+                "AREA_NIVEAU_GIS": "-3.00",
+                "stoppingPointPlanned": "5",
+                "areaGid": "de:05111:18036:4",
+                "area": "4",
+                "platform": "5",
+                "platformName": "5",
+                "plannedPlatformName": "5",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "departureTimePlanned": "2026-11-14T19:52:00Z",
+              "departureTimeEstimated": "2026-11-14T19:52:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18230:1:1",
+              "name": "D-Schadowstraße U",
+              "disassembledName": "1",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.226634, 6.78361],
+              "niveau": -3,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18230",
+                "name": "D-Schadowstraße U",
+                "disassembledName": "Schadowstraße U",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018230" },
+                "coord": [51.226617, 6.783394],
+                "niveau": 0
+              },
+              "productClasses": [2, 4],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-3",
+                "stoppingPointPlanned": "1",
+                "areaGid": "de:05111:18230:1",
+                "area": "1",
+                "platform": "1",
+                "platformName": "1",
+                "plannedPlatformName": "1",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:53:00Z",
+              "departureTimePlanned": "2026-11-14T19:53:00Z",
+              "arrivalTimeEstimated": "2026-11-14T19:53:00Z",
+              "departureTimeEstimated": "2026-11-14T19:53:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18227:1:1",
+              "name": "D-Pempelforter Straße U",
+              "disassembledName": "1",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.228175, 6.790563],
+              "niveau": -2,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18227",
+                "name": "D-Pempelforter Straße U",
+                "disassembledName": "Pempelforter Straße U",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018227" },
+                "coord": [51.228485, 6.791677],
+                "niveau": 0
+              },
+              "productClasses": [2, 4, 5],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-2",
+                "AREA_NIVEAU_GIS": "-2.00",
+                "stoppingPointPlanned": "1",
+                "areaGid": "de:05111:18227:1",
+                "area": "1",
+                "platform": "1",
+                "platformName": "1",
+                "plannedPlatformName": "1",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:54:30Z",
+              "departureTimePlanned": "2026-11-14T19:54:30Z",
+              "arrivalTimeEstimated": "2026-11-14T19:54:30Z",
+              "departureTimeEstimated": "2026-11-14T19:54:30Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18019:2:2",
+              "name": "D-Wehrhahn S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "PLATFORM",
+              "coord": [51.230037, 6.798621],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18019",
+                "name": "D-Wehrhahn S",
+                "disassembledName": "Wehrhahn S",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018019" },
+                "coord": [51.229846, 6.797803],
+                "niveau": 0
+              },
+              "productClasses": [1, 2, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "AREA_NIVEAU_GIS": "0.00",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05111:18019:2",
+                "area": "2",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "aac:1430;vgm:;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T19:56:00Z",
+              "arrivalTimeEstimated": "2026-11-14T19:56:00Z"
+            }
+          ],
+          "footPathInfo": [{ "position": "AFTER", "duration": 180 }],
+          "footPathInfoRedundant": true,
+          "infos": [
+            {
+              "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+              "priority": "normal",
+              "id": "VRR-de:05111:18036:65",
+              "version": "203",
+              "type": "infrastructure",
+              "urlText": "",
+              "url": "http://ems.vrr.de/info-link/b2864118-fc49-5cbf-b1c1-bdc0aa66cf4b",
+              "content": "An der Haltestelle D-Heinrich-Heine-Allee U ist die Rolltreppe von Zwischengeschoss nach Steig 5+6 bis auf Weiteres außer Betrieb.",
+              "subtitle": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+              "title": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "infrastructure",
+                "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+              }
+            }
+          ],
+          "interchange": {
+            "desc": "Fussweg",
+            "type": 100,
+            "coords": [
+              [51.230031, 6.798631],
+              [51.230026, 6.798621],
+              [51.230021, 6.798576],
+              [51.22997, 6.798315],
+              [51.229908, 6.798064],
+              [51.229874, 6.797938],
+              [51.229835, 6.797776],
+              [51.229818, 6.797794],
+              [51.229784, 6.797695],
+              [51.229779, 6.797695],
+              [51.229751, 6.797713],
+              [51.229722, 6.797722],
+              [51.229706, 6.797731],
+              [51.2297, 6.797704],
+              [51.229627, 6.797731],
+              [51.229565, 6.797758],
+              [51.229542, 6.797776],
+              [51.229407, 6.797821],
+              [51.229402, 6.797785],
+              [51.229379, 6.797794],
+              [51.22925, 6.797839],
+              [51.229233, 6.797848],
+              [51.229239, 6.797893],
+              [51.229244, 6.797911],
+              [51.228648, 6.798118],
+              [51.228652, 6.798124]
+            ]
+          },
+          "fare": {
+            "zones": [
+              {
+                "net": "",
+                "toLeg": 0,
+                "fromLeg": 0,
+                "neutralZone": "",
+                "zones": [],
+                "zonesUnited": [["43"]]
+              }
+            ]
+          }
+        },
+        {
+          "duration": 2340,
+          "isRealtimeControlled": true,
+          "realtimeStatus": ["MONITORED"],
+          "origin": {
+            "isGlobalId": true,
+            "id": "de:05111:18019:98:2",
+            "name": "D-Wehrhahn S",
+            "disassembledName": "2",
+            "type": "platform",
+            "pointType": "TRACK",
+            "coord": [51.228654, 6.798127],
+            "niveau": -1,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05111:18019",
+              "name": "D-Wehrhahn S",
+              "disassembledName": "Wehrhahn S",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018019" },
+              "coord": [51.229846, 6.797803],
+              "niveau": 0
+            },
+            "productClasses": [1, 2, 5, 17],
+            "departureTimeBaseTimetable": "2026-11-14T20:02:00Z",
+            "departureTimePlanned": "2026-11-14T20:02:00Z",
+            "departureTimeEstimated": "2026-11-14T20:03:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "-1",
+              "stoppingPointPlanned": "2",
+              "areaGid": "de:05111:18019:98",
+              "area": "98",
+              "platform": "2",
+              "platformName": "2",
+              "plannedPlatformName": "2"
+            }
+          },
+          "destination": {
+            "isGlobalId": true,
+            "id": "de:05113:9289:97:12",
+            "name": "Essen Hauptbahnhof",
+            "disassembledName": "12",
+            "type": "platform",
+            "pointType": "TRACK",
+            "coord": [51.451115, 7.014037],
+            "niveau": 2,
+            "parent": {
+              "isGlobalId": true,
+              "id": "de:05113:9289",
+              "name": "Essen Hauptbahnhof",
+              "disassembledName": "Hauptbahnhof",
+              "type": "stop",
+              "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+              "properties": { "stopId": "20009289" },
+              "coord": [51.449732, 7.012213],
+              "niveau": 0
+            },
+            "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+            "arrivalTimeBaseTimetable": "2026-11-14T20:42:00Z",
+            "arrivalTimePlanned": "2026-11-14T20:42:00Z",
+            "arrivalTimeEstimated": "2026-11-14T20:42:00Z",
+            "properties": {
+              "AREA_NIVEAU_DIVA": "2",
+              "stoppingPointPlanned": "12",
+              "areaGid": "de:05113:9289:97",
+              "area": "97",
+              "platform": "12",
+              "platformName": "12",
+              "plannedPlatformName": "12"
+            }
+          },
+          "transportation": {
+            "id": "ddb:920S6:B:R:j26",
+            "name": "S-Bahn S 6",
+            "disassembledName": "S6",
+            "number": "S 6",
+            "product": { "id": 3, "class": 1, "name": "S-Bahn", "iconId": 2 },
+            "operator": { "code": "DB", "id": "00", "name": "DB AG" },
+            "destination": { "id": "20009289", "name": "Essen Hauptbahnhof", "type": "stop" },
+            "properties": {
+              "trainName": "S-Bahn",
+              "trainType": "S",
+              "trainNumber": "31699",
+              "tripCode": 1351,
+              "timetablePeriod": "Jahresfahrplan 2026",
+              "lineDisplay": "LINE",
+              "globalId": "de:nrw:s6:",
+              "AVMSTripID": "31699-8003S-8000085-210000",
+              "OperatorURL": "https://www.bahn.de",
+              "FrequencyLine": "1",
+              "attributes": ["PLAN_LOWFLOORVEHICLE", "PLAN_WHEELCHAIRACCESS"]
+            }
+          },
+          "hints": [
+            {
+              "content": "Linie S6: Rollstuhl: Einstieg mit Bahnhofs-/Zugpersonal, Anmeldung empfohlen",
+              "providerCode": "A__EH",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            },
+            {
+              "content": "Linie S6: Fahrradmitnahme begrenzt möglich",
+              "providerCode": "A__FK",
+              "type": "Timetable",
+              "properties": { "subnet": "ddb" }
+            }
+          ],
+          "stopSequence": [
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18019:98:2",
+              "name": "D-Wehrhahn S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.228654, 6.798127],
+              "niveau": -1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18019",
+                "name": "D-Wehrhahn S",
+                "disassembledName": "Wehrhahn S",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018019" },
+                "coord": [51.229846, 6.797803],
+                "niveau": 0
+              },
+              "productClasses": [1, 2, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "-1",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05111:18019:98",
+                "area": "98",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "aac:1430;vgm:;vrr:430;vrs:1430"
+              },
+              "departureTimePlanned": "2026-11-14T20:02:00Z",
+              "departureTimeEstimated": "2026-11-14T20:03:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18012:98:2",
+              "name": "D-Zoo S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.236933, 6.796869],
+              "niveau": -1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18012",
+                "name": "D-Zoo S",
+                "disassembledName": "Zoo S",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018012" },
+                "coord": [51.236275, 6.797174],
+                "niveau": 0
+              },
+              "productClasses": [1, 4, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "AREA_NIVEAU_GIS": "-1.00",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05111:18012:98",
+                "area": "98",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "aac:1430;vgm:;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:04:00Z",
+              "departureTimePlanned": "2026-11-14T20:04:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:05:00Z",
+              "departureTimeEstimated": "2026-11-14T20:05:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18285:98:98g",
+              "name": "D-Derendorf S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.24768, 6.794605],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18285",
+                "name": "D-Derendorf S",
+                "disassembledName": "Derendorf S",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018285" },
+                "coord": [51.247371, 6.79465],
+                "niveau": 0
+              },
+              "productClasses": [1, 4, 5, 7, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "AREA_NIVEAU_GIS": "0.00",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05111:18285:98",
+                "area": "98",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "aac:1430;vgm:;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:06:00Z",
+              "departureTimePlanned": "2026-11-14T20:06:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:06:00Z",
+              "departureTimeEstimated": "2026-11-14T20:06:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18210:99:2",
+              "name": "D-Rath Mitte S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.261146, 6.808143],
+              "niveau": 1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18210",
+                "name": "D-Rath Mitte S",
+                "disassembledName": "Rath Mitte S",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018210" },
+                "coord": [51.262191, 6.810586],
+                "niveau": 0
+              },
+              "productClasses": [1, 2, 4, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "1",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05111:18210:99",
+                "area": "99",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:09:00Z",
+              "departureTimePlanned": "2026-11-14T20:09:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:09:00Z",
+              "departureTimeEstimated": "2026-11-14T20:09:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05111:18209:98:2",
+              "name": "D-Rath S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.264906, 6.8216],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05111:18209",
+                "name": "D-Rath S",
+                "disassembledName": "Rath S",
+                "type": "stop",
+                "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+                "properties": { "stopId": "20018209" },
+                "coord": [51.263563, 6.820064],
+                "niveau": 0
+              },
+              "productClasses": [1, 2, 4, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05111:18209:98",
+                "area": "98",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "aac:1430;vrr:430;vrs:1430"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:11:00Z",
+              "departureTimePlanned": "2026-11-14T20:11:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:11:00Z",
+              "departureTimeEstimated": "2026-11-14T20:11:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05158:18634",
+              "name": "Ratingen Ost S",
+              "type": "stop",
+              "pointType": "TRACK",
+              "coord": [51.295777, 6.863515],
+              "niveau": 0,
+              "parent": { "id": "placeID:5158028:15", "name": "Ratingen", "type": "locality" },
+              "productClasses": [1, 5, 17],
+              "properties": {
+                "stopId": "20018634",
+                "AREA_NIVEAU_DIVA": "0",
+                "stoppingPointPlanned": "2",
+                "area": "0",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "vrr:440"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:15:00Z",
+              "departureTimePlanned": "2026-11-14T20:16:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:15:00Z",
+              "departureTimeEstimated": "2026-11-14T20:16:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05158:19528:97:1",
+              "name": "Ratingen Hösel S",
+              "disassembledName": "1",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.341422, 6.893159],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05158:19528",
+                "name": "Ratingen Hösel S",
+                "disassembledName": "Hösel S",
+                "type": "stop",
+                "parent": { "id": "placeID:5158028:15", "name": "Ratingen", "type": "locality" },
+                "properties": { "stopId": "20019528" },
+                "coord": [51.341635, 6.893932],
+                "niveau": 0
+              },
+              "productClasses": [1, 5, 11, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "stoppingPointPlanned": "1",
+                "areaGid": "de:05158:19528:97",
+                "area": "97",
+                "platform": "1",
+                "platformName": "1",
+                "plannedPlatformName": "1",
+                "zone": "vrr:440"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:20:00Z",
+              "departureTimePlanned": "2026-11-14T20:20:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:20:00Z",
+              "departureTimeEstimated": "2026-11-14T20:20:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9385:98:2",
+              "name": "Essen Kettwig Stausee S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.356537, 6.939117],
+              "niveau": 1,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9385",
+                "name": "Essen Kettwig Stausee S",
+                "disassembledName": "Kettwig Stausee S",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009385" },
+                "coord": [51.357205, 6.940573],
+                "niveau": 0
+              },
+              "productClasses": [1, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "1",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05113:9385:98",
+                "area": "98",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:23:00Z",
+              "departureTimePlanned": "2026-11-14T20:24:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:23:00Z",
+              "departureTimeEstimated": "2026-11-14T20:24:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9383:98:2",
+              "name": "Essen Kettwig S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.363577, 6.9542],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9383",
+                "name": "Essen Kettwig S",
+                "disassembledName": "Kettwig S",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009383" },
+                "coord": [51.363829, 6.953589],
+                "niveau": 0
+              },
+              "productClasses": [1, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05113:9383:98",
+                "area": "98",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:26:00Z",
+              "departureTimePlanned": "2026-11-14T20:26:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:26:00Z",
+              "departureTimeEstimated": "2026-11-14T20:26:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9640:97:1",
+              "name": "Essen Werden S",
+              "disassembledName": "1",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.386612, 6.997849],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9640",
+                "name": "Essen Werden S",
+                "disassembledName": "Werden S",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009640" },
+                "coord": [51.386926, 6.99811],
+                "niveau": 0
+              },
+              "productClasses": [1, 5, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "stoppingPointPlanned": "1",
+                "areaGid": "de:05113:9640:97",
+                "area": "97",
+                "platform": "1",
+                "platformName": "1",
+                "plannedPlatformName": "1",
+                "zone": "vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:30:00Z",
+              "departureTimePlanned": "2026-11-14T20:30:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:30:00Z",
+              "departureTimeEstimated": "2026-11-14T20:30:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9074:97:1",
+              "name": "Essen Hügel S",
+              "disassembledName": "1",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.404402, 7.008252],
+              "niveau": 2,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9074",
+                "name": "Essen Hügel S",
+                "disassembledName": "Hügel S",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009074" },
+                "coord": [51.404475, 7.009114],
+                "niveau": 0
+              },
+              "productClasses": [1, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "2",
+                "stoppingPointPlanned": "1",
+                "areaGid": "de:05113:9074:97",
+                "area": "97",
+                "platform": "1",
+                "platformName": "1",
+                "plannedPlatformName": "1",
+                "zone": "vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:33:00Z",
+              "departureTimePlanned": "2026-11-14T20:33:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:33:00Z",
+              "departureTimeEstimated": "2026-11-14T20:33:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9578:97:1",
+              "name": "Essen Stadtwald S",
+              "disassembledName": "1",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.422679, 7.023325],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9578",
+                "name": "Essen Stadtwald S",
+                "disassembledName": "Stadtwald S",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009578" },
+                "coord": [51.422522, 7.023164],
+                "niveau": 0
+              },
+              "productClasses": [1],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "stoppingPointPlanned": "1",
+                "areaGid": "de:05113:9578:97",
+                "area": "97",
+                "platform": "1",
+                "platformName": "1",
+                "plannedPlatformName": "1",
+                "zone": "vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:36:00Z",
+              "departureTimePlanned": "2026-11-14T20:36:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:36:00Z",
+              "departureTimeEstimated": "2026-11-14T20:36:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9590:98:2",
+              "name": "Essen Süd S",
+              "disassembledName": "2",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.439576, 7.023119],
+              "niveau": 0,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9590",
+                "name": "Essen Süd S",
+                "disassembledName": "Süd S",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009590" },
+                "coord": [51.439749, 7.023083],
+                "niveau": 0
+              },
+              "productClasses": [1, 4, 5, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "0",
+                "stoppingPointPlanned": "2",
+                "areaGid": "de:05113:9590:98",
+                "area": "98",
+                "platform": "2",
+                "platformName": "2",
+                "plannedPlatformName": "2",
+                "zone": "vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:38:00Z",
+              "departureTimePlanned": "2026-11-14T20:39:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:38:00Z",
+              "departureTimeEstimated": "2026-11-14T20:39:00Z"
+            },
+            {
+              "isGlobalId": true,
+              "id": "de:05113:9289:97:12",
+              "name": "Essen Hauptbahnhof",
+              "disassembledName": "12",
+              "type": "platform",
+              "pointType": "TRACK",
+              "coord": [51.451115, 7.014037],
+              "niveau": 2,
+              "parent": {
+                "isGlobalId": true,
+                "id": "de:05113:9289",
+                "name": "Essen Hauptbahnhof",
+                "disassembledName": "Hauptbahnhof",
+                "type": "stop",
+                "parent": { "id": "placeID:5113000:18", "name": "Essen", "type": "locality" },
+                "properties": { "stopId": "20009289" },
+                "coord": [51.449732, 7.012213],
+                "niveau": 0
+              },
+              "productClasses": [0, 1, 2, 4, 5, 7, 10, 13, 17],
+              "properties": {
+                "AREA_NIVEAU_DIVA": "2",
+                "stoppingPointPlanned": "12",
+                "areaGid": "de:05113:9289:97",
+                "area": "97",
+                "platform": "12",
+                "platformName": "12",
+                "plannedPlatformName": "12",
+                "zone": "vgm:;vph:;vrr:450"
+              },
+              "arrivalTimePlanned": "2026-11-14T20:42:00Z",
+              "arrivalTimeEstimated": "2026-11-14T20:42:00Z"
+            }
+          ],
+          "infos": [
+            {
+              "timestamps": { "creation": "2026-11-14T17:43:00Z" },
+              "priority": "normal",
+              "id": "ZTP-PROD-141208",
+              "version": "6",
+              "type": "tripMessage",
+              "urlText": "",
+              "url": "http://ems.vrr.de/info-link/4729a22b-13f7-5aaf-8025-754befd83a34",
+              "content": "Region Essen-Werden aktuell beeinträchtigt. Das Ende können wir leider noch nicht abschätzen. Grund: Reparatur an einem Bahnübergang. Die Züge fahren im betroffenen Bereich langsamer. Es kommt zu Verspätungen und Teilausfällen. Bitte Reiseverbindung vor Abfahrt prüfen.",
+              "subtitle": "Region Essen-Werden beeinträchtigt - Reparatur an einem Bahnübergang",
+              "title": "Region Essen-Werden beeinträchtigt - Reparatur an einem Bahnübergang",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "tripMessage",
+                "incidentDateTime": "14/11/2026 18:00 - 14/11/2026 21:30"
+              }
+            },
+            {
+              "timestamps": { "creation": "2026-11-14T01:07:00Z" },
+              "priority": "normal",
+              "id": "VRR-de:05113:9289:32",
+              "version": "20",
+              "type": "infrastructure",
+              "urlText": "",
+              "url": "http://ems.vrr.de/info-link/21d409e6-66a1-57b9-8054-6b22d5365450",
+              "content": "An der Haltestelle Essen Hauptbahnhof ist der Aufzug von Verteilerebene zum Bahnsteig bis auf Weiteres außer Betrieb.",
+              "subtitle": "Haltestelle Essen Hauptbahnhof: Aufzug außer Betrieb.",
+              "title": "Haltestelle Essen Hauptbahnhof: Aufzug außer Betrieb.",
+              "properties": {
+                "publisher": "ems.comm.addinfo",
+                "infoType": "infrastructure",
+                "incidentDateTime": "14/11/2026 02:07 - 15/11/2026 02:00"
+              }
+            }
+          ],
+          "fare": {
+            "zones": [
+              {
+                "net": "",
+                "toLeg": 1,
+                "fromLeg": 1,
+                "neutralZone": "",
+                "zones": [],
+                "zonesUnited": [["43"], ["44"], ["45"]]
+              }
+            ]
+          }
+        }
+      ],
+      "daysOfService": { "rvb": "000000000000200000000000000000000000000000000000" }
+    }
+  ]
+}
