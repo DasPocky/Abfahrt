@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { ArrowLeft, LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react";
-import { DepartureList } from "@/components/departure-list";
+import { DepartureList, StopNoticesBanner } from "@/components/departure-list";
 import { FavoriteButton } from "@/components/favorite-button";
 import { FilterBar } from "@/components/filter-bar";
 import { SourceAttribution } from "@/components/source-attribution";
@@ -104,6 +104,8 @@ export function StopPage() {
       </div>
 
       {data && <FilterBar departures={data.departures} filter={filter} onChange={setFilter} />}
+
+      {data && visible.length > 0 && <StopNoticesBanner departures={visible} now={now} />}
 
       <Card className="py-0">
         <CardContent className="px-4">

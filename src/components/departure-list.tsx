@@ -78,14 +78,25 @@ function noticeCount(count: number): string {
   return count === 1 ? "1 Hinweis" : `${count} Hinweise`;
 }
 
-/** Sammelhinweis über der Liste: Hinweise, die mehrere Fahrten betreffen */
-function StopNotices({ notices }: { notices: readonly string[] }) {
+/**
+ * Sammelhinweis: Hinweise, die mehrere Fahrten betreffen. Steht als eigener Kasten über der
+ * Abfahrtsliste (nicht in der Karte); die Liste blendet diese Hinweise in den Zeilen aus.
+ */
+export function StopNoticesBanner({
+  departures,
+  now,
+}: {
+  departures: readonly Departure[];
+  now: Date;
+}) {
+  const visible = upcomingDepartures(sortDepartures(departures), now);
+  const notices = summarizeNotices(visible).stopNotices;
   if (notices.length === 0) return null;
   return (
     <BottomSheet
       title="Hinweise für diese Haltestelle"
       description="Betreffen mehrere Abfahrten"
-      triggerClassName="mb-1 flex w-full items-center gap-2 rounded-md bg-warning/10 px-3 py-2 text-left text-sm font-medium outline-none hover:bg-warning/15 focus-visible:ring-2 focus-visible:ring-ring"
+      triggerClassName="flex w-full items-center gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-2.5 text-left text-sm font-medium outline-none hover:bg-warning/15 focus-visible:ring-2 focus-visible:ring-ring"
       trigger={
         <>
           <TriangleAlert className="size-4 shrink-0 text-warning" aria-hidden="true" />
@@ -231,15 +242,13 @@ export function DepartureList({
     );
   }
 
-  const summary = summarizeNotices(visible);
-  const stopNotices = compact ? [] : summary.stopNotices;
+  // Ohne compact stehen Sammelhinweise im StopNoticesBanner über der Liste
   const departureNotices = compact
     ? new Map(visible.map((d) => [d.id, d.notices]))
-    : summary.departureNotices;
+    : summarizeNotices(visible).departureNotices;
 
   return (
     <>
-      <StopNotices notices={stopNotices} />
       <ul aria-label="Abfahrten" className="divide-y">
         {visible.map((departure) => (
           <DepartureRow

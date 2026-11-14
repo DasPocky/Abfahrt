@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { departure } from "../test-utils";
-import { DepartureList } from "./departure-list";
+import { DepartureList, StopNoticesBanner } from "./departure-list";
 
 const NOW = new Date("2026-11-13T12:00:00Z");
 
@@ -191,20 +191,21 @@ describe("DepartureList", () => {
 
   it("fasst Hinweise mehrerer Fahrten oben für die Haltestelle zusammen", () => {
     const shared = "Aufzug zu Gleis 3 außer Betrieb";
+    const deps = [
+      departure({ id: "a", line: "U79", notices: [shared] }),
+      departure({
+        id: "b",
+        line: "U78",
+        plannedTime: "2026-11-13T12:06:00Z",
+        notices: [shared, "Kurzzug"],
+      }),
+      departure({ id: "c", line: "U75", plannedTime: "2026-11-13T12:07:00Z" }),
+    ];
     render(
-      <DepartureList
-        now={NOW}
-        departures={[
-          departure({ id: "a", line: "U79", notices: [shared] }),
-          departure({
-            id: "b",
-            line: "U78",
-            plannedTime: "2026-11-13T12:06:00Z",
-            notices: [shared, "Kurzzug"],
-          }),
-          departure({ id: "c", line: "U75", plannedTime: "2026-11-13T12:07:00Z" }),
-        ]}
-      />,
+      <>
+        <StopNoticesBanner now={NOW} departures={deps} />
+        <DepartureList now={NOW} departures={deps} />
+      </>,
     );
     // Sammelhinweis nur oben, in den Zeilen nicht noch einmal gezählt
     expect(within(rowAt(rows(), 0)).queryByRole("button")).toBeNull();
