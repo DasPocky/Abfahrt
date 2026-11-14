@@ -1,5 +1,13 @@
 // Verbindungssuche: URL-Parameter und Anzeige-Hilfen (reine Funktionen, getestet)
-import type { Journey, JourneyLeg } from "../../shared/api-types";
+import type { Journey, JourneyLeg, TransportMode } from "../../shared/api-types";
+import {
+  DEFAULT_JOURNEY_OPTIONS,
+  EXCLUDABLE_MODES,
+  MAX_TRANSFERS_LIMIT,
+  type JourneyOptions,
+  type TransferSpeed,
+} from "../../shared/journey-options";
+import { MODE_LABEL } from "./modes";
 
 /** Gewählte Haltestelle (ID für die API, Name für die Anzeige) */
 export interface PickedStop {
@@ -14,9 +22,16 @@ export interface JourneyQuery {
   time?: string;
   /** true = `time` ist die gewünschte Ankunftszeit */
   arrive: boolean;
+  /** Verkehrsmittel, Umstiege, Umstiegszeit, barrierefrei */
+  options: JourneyOptions;
 }
 
-export const EMPTY_JOURNEY_QUERY: JourneyQuery = { from: null, to: null, arrive: false };
+export const EMPTY_JOURNEY_QUERY: JourneyQuery = {
+  from: null,
+  to: null,
+  arrive: false,
+  options: DEFAULT_JOURNEY_OPTIONS,
+};
 
 /** Namen der URL-Parameter (deutsch, teilbar) */
 const PARAM = {
@@ -26,7 +41,75 @@ const PARAM = {
   toName: "nachName",
   time: "zeit",
   arrive: "ankunft",
+  exclude: "ohne",
+  maxTransfers: "umstiege",
+  transferSpeed: "umstiegszeit",
+  accessible: "barrierefrei",
 } as const;
+
+/** Umstiegszeit in der URL auf Deutsch */
+const SPEED_PARAM: Record<TransferSpeed, string> = { fast: "kurz", normal: "", slow: "mehr" };
+
+/** Optionen aus der URL; Ungültiges wird still ignoriert (geteilte Links bleiben nutzbar) */
+export function journeyOptionsFromUrl(params: URLSearchParams): JourneyOptions {
+  const exclude = (params.get(PARAM.exclude) ?? "")
+    .split(",")
+    .filter((m): m is TransportMode => EXCLUDABLE_MODES.some((e) => e === m));
+  const max = params.get(PARAM.maxTransfers);
+  const maxTransfers =
+    max !== null && /^\d$/.test(max) && Number(max) <= MAX_TRANSFERS_LIMIT ? Number(max) : null;
+  const speed = params.get(PARAM.transferSpeed);
+  const transferSpeed: TransferSpeed =
+    speed === SPEED_PARAM.fast ? "fast" : speed === SPEED_PARAM.slow ? "slow" : "normal";
+  return {
+    // nicht alles ausschließen, sonst gibt es keine Verbindung
+    exclude: exclude.length < EXCLUDABLE_MODES.length ? [...new Set(exclude)] : [],
+    maxTransfers,
+    transferSpeed,
+    accessible: params.get(PARAM.accessible) === "1",
+  };
+}
+
+function journeyOptionsToUrl(options: JourneyOptions, params: URLSearchParams): void {
+  const exclude = EXCLUDABLE_MODES.filter((m) => options.exclude.includes(m));
+  if (exclude.length > 0) params.set(PARAM.exclude, exclude.join(","));
+  if (options.maxTransfers !== null) params.set(PARAM.maxTransfers, String(options.maxTransfers));
+  if (options.transferSpeed !== "normal") {
+    params.set(PARAM.transferSpeed, SPEED_PARAM[options.transferSpeed]);
+  }
+  if (options.accessible) params.set(PARAM.accessible, "1");
+}
+
+/** Anzahl abweichender Optionen (für das Symbol am Optionen-Knopf) */
+export function countJourneyOptions(options: JourneyOptions): number {
+  return (
+    (options.exclude.length > 0 ? 1 : 0) +
+    (options.maxTransfers !== null ? 1 : 0) +
+    (options.transferSpeed !== "normal" ? 1 : 0) +
+    (options.accessible ? 1 : 0)
+  );
+}
+
+/** Kurze Beschreibung, z. B. „ohne Fernzug, Bus · max. 1 Umstieg · barrierefrei“ */
+export function describeJourneyOptions(options: JourneyOptions): string {
+  const parts: string[] = [];
+  if (options.exclude.length > 0) {
+    const names = EXCLUDABLE_MODES.filter((m) => options.exclude.includes(m)).map(
+      (m) => MODE_LABEL[m],
+    );
+    parts.push(`ohne ${names.join(", ")}`);
+  }
+  if (options.maxTransfers === 0) parts.push("nur direkt");
+  else if (options.maxTransfers !== null) {
+    parts.push(
+      `max. ${options.maxTransfers} ${options.maxTransfers === 1 ? "Umstieg" : "Umstiege"}`,
+    );
+  }
+  if (options.transferSpeed === "fast") parts.push("kurze Umstiege");
+  if (options.transferSpeed === "slow") parts.push("mehr Umstiegszeit");
+  if (options.accessible) parts.push("barrierefrei");
+  return parts.join(" · ");
+}
 
 function stopFromParams(params: URLSearchParams, idKey: string, nameKey: string) {
   const id = params.get(idKey)?.trim();
@@ -43,6 +126,7 @@ export function journeyQueryFromParams(params: URLSearchParams): JourneyQuery {
     ...(parsed ? { time: parsed } : {}),
     // Ankunft ohne Zeitpunkt ergibt keinen Sinn, dann gilt „ab jetzt“
     arrive: parsed !== undefined && params.get(PARAM.arrive) === "1",
+    options: journeyOptionsFromUrl(params),
   };
 }
 
@@ -60,6 +144,7 @@ export function journeyQueryToParams(query: JourneyQuery): URLSearchParams {
     params.set(PARAM.time, query.time);
     if (query.arrive) params.set(PARAM.arrive, "1");
   }
+  journeyOptionsToUrl(query.options, params);
   return params;
 }
 

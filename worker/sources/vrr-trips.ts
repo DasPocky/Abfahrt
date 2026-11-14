@@ -1,4 +1,5 @@
-import type { Journey, JourneyLeg, JourneyStop, Stop } from "../../shared/api-types";
+import type { Journey, JourneyLeg, JourneyStop, Stop, TransportMode } from "../../shared/api-types";
+import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
 import { fetchJson } from "../http";
 import { stripCityPrefix } from "./transitous-map";
 import { efaDateTime, MODE_BY_CLASS } from "./vrr";
@@ -162,6 +163,34 @@ function isUnknownPoint(messages: { type?: string; text?: string }[]): boolean {
   return messages.some((m) => m.type === "error" && /^(origin|destination)\b/.test(m.text ?? ""));
 }
 
+/** EFA-Produktklassen je Verkehrsmittel der App (Gegenstück zu MODE_BY_CLASS) */
+const CLASSES_BY_MODE: Record<TransportMode, number[]> = {
+  regional: [0, 13],
+  suburban: [1],
+  subway: [2, 3],
+  tram: [4],
+  bus: [5, 6, 7, 10, 17, 19],
+  ferry: [9],
+  longdistance: [14, 15, 16],
+  other: [8, 11],
+};
+
+/** Optionen als EFA-Parameter */
+export function optionParams(options: JourneyOptions): string {
+  let params = "";
+  const classes = options.exclude.flatMap((m) => CLASSES_BY_MODE[m]);
+  if (classes.length > 0) {
+    params += "&excludedMeans=checkbox" + classes.map((c) => `&exclMOT_${c}=1`).join("");
+  }
+  if (options.maxTransfers !== null) params += `&maxChanges=${options.maxTransfers}`;
+  if (options.transferSpeed !== "normal") params += `&changeSpeed=${options.transferSpeed}`;
+  if (options.accessible) {
+    params +=
+      "&imparedOptionsActive=1&wheelchair=on&noSolidStairs=on&noEscalators=on&lowPlatformVhcl=on";
+  }
+  return params;
+}
+
 /** DHID aus einer App-ID („vrr:de:05111:18036“ → „de:05111:18036“) */
 function dhid(appId: string): string {
   return appId.startsWith("vrr:") ? appId.slice("vrr:".length) : appId;
@@ -173,11 +202,13 @@ export async function trips(
   toId: string,
   when: Date | undefined,
   arrive: boolean,
+  options: JourneyOptions = DEFAULT_JOURNEY_OPTIONS,
 ): Promise<VrrTripResult> {
   let url =
     `${BASE}/XML_TRIP_REQUEST2?${COMMON}&useRealtime=1&calcNumberOfTrips=5` +
     `&type_origin=any&name_origin=${encodeURIComponent(dhid(fromId))}` +
-    `&type_destination=any&name_destination=${encodeURIComponent(dhid(toId))}`;
+    `&type_destination=any&name_destination=${encodeURIComponent(dhid(toId))}` +
+    optionParams(options);
   if (when) {
     const { date, time } = efaDateTime(when);
     url += `&itdDate=${date}&itdTime=${time}&itdTripDateTimeDepArr=${arrive ? "arr" : "dep"}`;

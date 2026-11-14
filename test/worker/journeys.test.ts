@@ -268,3 +268,46 @@ describe("Quellenwahl", () => {
     expect(calls.every((u) => !u.includes("openservice.vrr.de"))).toBe(true);
   });
 });
+
+describe("Optionen", () => {
+  const options = "exclude=longdistance,bus&maxTransfers=1&transfer=slow&accessible=1";
+
+  it("gibt die Optionen an den VRR weiter", async () => {
+    const calls = mockUpstream({
+      XML_TRIP_REQUEST2: { journeys: [] },
+      "v5/plan": { itineraries: [] },
+    });
+    await get(`from=${HHA}&to=${ESSEN}&${options}`);
+    const url = calls.find((u) => u.includes("XML_TRIP_REQUEST2")) ?? "";
+    expect(url).toContain("&excludedMeans=checkbox");
+    for (const cls of [14, 15, 16, 5, 6, 7, 10, 17, 19]) expect(url).toContain(`&exclMOT_${cls}=1`);
+    expect(url).not.toContain("exclMOT_2=");
+    expect(url).toContain("&maxChanges=1");
+    expect(url).toContain("&changeSpeed=slow");
+    expect(url).toContain("&wheelchair=on");
+  });
+
+  it("gibt die Optionen an Transitous weiter", async () => {
+    const calls = mockUpstream({ "v5/plan": { itineraries: [] } });
+    await get(`from=${HHA}&to=${BERLIN}&${options}`);
+    const url = new URL(calls.find((u) => u.includes("v5/plan")) ?? "https://x");
+    const modes = url.searchParams.get("transitModes")?.split(",") ?? [];
+    expect(modes).toContain("SUBWAY");
+    expect(modes).toContain("REGIONAL_RAIL");
+    for (const m of ["HIGHSPEED_RAIL", "LONG_DISTANCE", "BUS", "COACH", "RAIL"]) {
+      expect(modes).not.toContain(m);
+    }
+    expect(url.searchParams.get("maxTransfers")).toBe("1");
+    expect(url.searchParams.get("minTransferTime")).toBe("5");
+    expect(url.searchParams.get("pedestrianProfile")).toBe("WHEELCHAIR");
+  });
+
+  it.each(["exclude=auto", "maxTransfers=9", "transfer=turbo", "accessible=ja"])(
+    "lehnt ungültige Optionen ab (%s)",
+    async (query) => {
+      const res = await get(`from=${HHA}&to=${ESSEN}&${query}`);
+      expect(res.status).toBe(400);
+      expect(await res.json()).toMatchObject({ error: "invalid_options" });
+    },
+  );
+});
