@@ -166,7 +166,7 @@ describe("DepartureList", () => {
 
     const platform = moved.querySelector("[data-platform-change]");
     // Kästchen: Bezeichnung, Nummer, „statt“ bei Gleiswechsel
-    expect(platform).toHaveTextContent("Gl.Gleis 11statt 9");
+    expect(platform).toHaveTextContent("Gleis11statt 9");
     // Ausfall: kein Gleis-Kästchen
     expect(cancelled.querySelector("[data-platform-change]")).toBeNull();
   });
@@ -246,7 +246,7 @@ describe("DepartureList", () => {
     expect(screen.getByText("Zurzeit keine Abfahrten an dieser Haltestelle.")).toBeInTheDocument();
   });
 
-  it("kennzeichnet Halteplätze eindeutig: Gleis, U-Bahn-Gleis, Steig", () => {
+  it("benennt Halteplätze: Gleis für Schienenverkehr, Steig für Bus und Tram", () => {
     render(
       <DepartureList
         now={NOW}
@@ -271,9 +271,8 @@ describe("DepartureList", () => {
         ]}
       />,
     );
-    // sichtbar: „Gl.“, U-Schild, H-Schild; für Screenreader ausgeschrieben
-    expect(rowAt(rows(), 0)).toHaveTextContent("Gl.Gleis 2");
-    expect(rowAt(rows(), 1)).toHaveTextContent("UU-Bahn-Gleis 2");
-    expect(rowAt(rows(), 2)).toHaveTextContent("HSteig 14");
+    expect(rowAt(rows(), 0)).toHaveTextContent("Gleis2");
+    expect(rowAt(rows(), 1)).toHaveTextContent("Gleis2");
+    expect(rowAt(rows(), 2)).toHaveTextContent("Steig14");
   });
 });
