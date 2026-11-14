@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useParams } from "react-router";
 import { ArrowLeft, LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react";
 import { DepartureList } from "@/components/departure-list";
+import { FavoriteButton } from "@/components/favorite-button";
 import { SourceAttribution } from "@/components/source-attribution";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,7 +40,8 @@ export function StopPage() {
     refetchInterval: DEPARTURES_REFETCH_MS,
   });
 
-  const title = data?.stop.name ?? stopNameFromState(location.state) ?? "Haltestelle";
+  const knownName = data?.stop.name ?? stopNameFromState(location.state);
+  const title = knownName ?? "Haltestelle";
 
   return (
     <section aria-labelledby="stop-title" className="space-y-4">
@@ -65,6 +67,9 @@ export function StopPage() {
             </p>
           )}
         </div>
+        {knownName && (
+          <FavoriteButton stop={{ id: stopId, name: knownName, place: data?.stop.place }} />
+        )}
         <Button
           variant="outline"
           size="icon"
