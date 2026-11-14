@@ -78,20 +78,29 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
-| Endpunkt                                         | Zweck                        | Meilenstein |
-| ------------------------------------------------ | ---------------------------- | ----------- |
-| `GET /abfahrt/api/stops/search?q=`               | Haltestellen/Adressen suchen | M1          |
-| `GET /abfahrt/api/stops/nearby?lat=&lon=`        | Haltestellen in der Nähe     | M1          |
-| `GET /abfahrt/api/stops/area?min=&max=`          | Haltestellen im Ausschnitt   | M1          |
-| `GET /abfahrt/api/departures?stop=&when=&modes=` | Abfahrten mit Echtzeit       | M1          |
-| `GET /abfahrt/api/journeys?from=&to=&…`          | Verbindungssuche             | M2          |
-| `GET /abfahrt/api/trips/:id`                     | Fahrtverlauf/Zwischenhalte   | M2          |
-| `GET /abfahrt/api/alerts?lines=&stop=`           | Störungen                    | M3          |
-| `POST /abfahrt/api/push/subscribe`               | Push-Abo                     | M3          |
+| Endpunkt                                            | Zweck                        | Meilenstein |
+| --------------------------------------------------- | ---------------------------- | ----------- |
+| `GET /abfahrt/api/stops/search?q=`                  | Haltestellen/Adressen suchen | M1          |
+| `GET /abfahrt/api/stops/nearby?lat=&lon=`           | Haltestellen in der Nähe     | M1          |
+| `GET /abfahrt/api/stops/area?min=&max=`             | Haltestellen im Ausschnitt   | M1          |
+| `GET /abfahrt/api/departures?stop=&when=&modes=`    | Abfahrten mit Echtzeit       | M1          |
+| `GET /abfahrt/api/journeys?from=&to=&when=&arrive=` | Verbindungssuche             | M2          |
+| `GET /abfahrt/api/trips/:id`                        | Fahrtverlauf/Zwischenhalte   | M2          |
+| `GET /abfahrt/api/alerts?lines=&stop=`              | Störungen                    | M3          |
+| `POST /abfahrt/api/push/subscribe`                  | Push-Abo                     | M3          |
 
 Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und wird von App und Worker gemeinsam genutzt.
 
 **Haltestellen-IDs** tragen die Quelle als Präfix: `vrr:de:05111:18036` (DHID/IFOPT) oder `transitous:<id>`.
+
+**Verbindungen** (`worker/journeys.ts`, `worker/sources/vrr-trips.ts`, `worker/sources/transitous-trips.ts`):
+
+- `from`/`to` sind Haltestellen-IDs der App, `when` (ISO, höchstens 7 Tage entfernt) und `arrive=1` für eine Ankunftszeit. Antwort `JourneysResponse` mit `Journey` → `JourneyLeg` (`transit`/`walk`) → `JourneyStop` (Plan- und Echtzeit, Gleis inkl. Gleiswechsel, Zwischenhalte).
+- **Quelle:** Liegen Start und Ziel im VRR-Gebiet, fragt der Worker den VRR (`XML_TRIP_REQUEST2`, 5 Verbindungen, Echtzeit). Sonst fragt er Transitous `v5/plan`, VRR-IDs gehen dabei als `de-DELFI_<DHID>` hinein. Liefert die erste Quelle nichts oder fällt sie aus, kommt die andere dran. Haltestellen im VRR-Gebiet tragen auch in Transitous-Antworten die `vrr:`-ID. Städtekürzel („D-“) entfernt der Worker.
+- **Cache:** 60 s, Schlüssel je Strecke, Richtung (Ab/An) und Minute. So teilen sich alle Nutzer eine Abfrage, was das Transitous-Limit (< 720 `/plan` pro Tag) schont.
+- **Früher/Später:** `earlier`/`later` sind Abfahrtszeiten für die nächste Abfrage. Später ist 1 Minute nach der letzten Abfahrt, früher eine Listenlänge (mindestens 20 Minuten) vor der ersten.
+- **Fehler:** Unbekannte Haltestellen meldet die EFA nur als Systemmeldung („origin: multiple matches“), daraus wird `404 stop_not_found`. Start gleich Ziel ergibt `400 same_stop`.
+- **Noch offen:** Linienfarben für VRR-Verbindungen (die App nutzt bis dahin die Fallback-Farben je Verkehrsmittel).
 
 **Quellenwahl für Abfahrten** (`worker/api.ts`):
 

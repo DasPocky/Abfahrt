@@ -5,7 +5,7 @@ import { normalizeHex, normalizeLineName, type LineColorMap } from "../line-colo
 // Transitous (MOTIS 2), siehe docs/01-datenquellen.md – nur leichte, gecachte Nutzung.
 const BASE = "https://api.transitous.org/api";
 
-const MODE_MAP: Record<string, TransportMode> = {
+export const MODE_MAP: Record<string, TransportMode> = {
   TRAM: "tram",
   SUBWAY: "subway",
   BUS: "bus",

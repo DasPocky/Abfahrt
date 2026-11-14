@@ -41,7 +41,7 @@ export function isVrrArea(globalId: string): boolean {
 }
 
 // EFA-Produktklassen
-const MODE_BY_CLASS: Record<number, TransportMode> = {
+export const MODE_BY_CLASS: Record<number, TransportMode> = {
   0: "regional",
   1: "suburban",
   2: "subway",
@@ -122,7 +122,7 @@ export async function nearbyStops(lat: number, lon: number, radius: number): Pro
 }
 
 /** Datum/Uhrzeit für die EFA in Europe/Berlin. */
-function efaDateTime(when: Date): { date: string; time: string } {
+export function efaDateTime(when: Date): { date: string; time: string } {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat("de-DE", {
       timeZone: "Europe/Berlin",
