@@ -102,7 +102,7 @@ async function transitousForStop(
  * Abfrage läuft notfalls im Hintergrund weiter und füllt den Cache für den nächsten Abruf.
  * Fällt Transitous aus, bleibt es ohne Farben und ohne Cache-Eintrag.
  */
-async function lineColorsForStop(
+export async function lineColorsForStop(
   request: Request,
   ctx: ExecutionContext,
   stop: Stop,

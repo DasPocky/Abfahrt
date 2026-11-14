@@ -1,6 +1,6 @@
 // Linienfarben für Quellen ohne Farbangabe (VRR-EFA). Die Farben stammen aus Transitous
 // (routeColor/routeTextColor aus den offenen GTFS-Daten), siehe docs/01-datenquellen.md.
-import type { Departure } from "../shared/api-types";
+import type { Departure, Journey } from "../shared/api-types";
 
 export interface LineColor {
   color: string;
@@ -37,4 +37,16 @@ export function applyLineColors(departures: Departure[], colors: LineColorMap): 
     const match = colors[normalizeLineName(d.line)];
     return match ? { ...d, lineColor: match.color, lineTextColor: match.textColor } : d;
   });
+}
+
+/** Ergänzt fehlende Linienfarben in den Fahrt-Abschnitten von Verbindungen. */
+export function applyJourneyLineColors(journeys: Journey[], colors: LineColorMap): Journey[] {
+  return journeys.map((j) => ({
+    ...j,
+    legs: j.legs.map((leg) => {
+      if (leg.kind !== "transit" || leg.line === null || leg.lineColor !== null) return leg;
+      const match = colors[normalizeLineName(leg.line)];
+      return match ? { ...leg, lineColor: match.color, lineTextColor: match.textColor } : leg;
+    }),
+  }));
 }
