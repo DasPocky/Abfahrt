@@ -72,6 +72,14 @@ function transitousIdOf(group: Group, preferred: readonly TransitousMapStop[]): 
 
 type AreaStop = Stop & { lat: number; lon: number; importance: number };
 
+/**
+ * Entfernt das Städtekürzel aus DELFI-Namen („D-Heinrich-Heine-Allee U“ → „Heinrich-Heine-Allee U“,
+ * „DU-Meiderich Süd Bf“ → „Meiderich Süd Bf“). „S-Bahnhof …“ und ähnliche bleiben unverändert.
+ */
+export function stripCityPrefix(name: string): string {
+  return name.replace(/^[A-ZÄÖÜ]{1,3}-(?!Bahn)(?=[A-ZÄÖÜ0-9])/u, "");
+}
+
 function toStop(group: Group): AreaStop {
   const delfi = group.members.filter((m) => m.stopId.startsWith("de-DELFI_"));
   const preferred = delfi.length > 0 ? delfi : group.members;
@@ -84,7 +92,7 @@ function toStop(group: Group): AreaStop {
       : `transitous:${transitousIdOf(group, preferred)}`;
   return {
     id,
-    name: mostCommon(preferred.map((m) => m.name)),
+    name: stripCityPrefix(mostCommon(preferred.map((m) => m.name))),
     lat: Math.round(lat * 1e6) / 1e6,
     lon: Math.round(lon * 1e6) / 1e6,
     importance: Math.max(0, ...group.members.map((m) => m.importance ?? 0)),

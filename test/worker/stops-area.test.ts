@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StopSearchResponse } from "../../shared/api-types";
 import { API_PREFIX } from "../../shared/base-path";
 import { resetRateLimit } from "../../worker/rate-limit";
-import { dhidOf, groupMapStops } from "../../worker/sources/transitous-map";
+import { dhidOf, groupMapStops, stripCityPrefix } from "../../worker/sources/transitous-map";
 import { parseArea } from "../../worker/stops-area";
 // Aufgezeichnet am 14.11.2026: v1/map/stops?min=51.220,6.770&max=51.230,6.785 (Düsseldorf)
 import duesseldorf from "./fixtures/transitous-map-stops-duesseldorf.json";
@@ -71,11 +71,11 @@ describe("Transitous-Haltestellen zusammenfassen", () => {
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids.every((id) => id.startsWith("vrr:de:05111:"))).toBe(true);
     const hha = stops.find((s) => s.id === "vrr:de:05111:18036");
-    expect(hha).toMatchObject({ name: "D-Heinrich-Heine-Allee U" });
+    expect(hha).toMatchObject({ name: "Heinrich-Heine-Allee U" });
     expect(hha?.lat).toBeCloseTo(51.2261, 2);
     expect(hha?.lon).toBeCloseTo(6.7767, 2);
     // Schadowstraße: Steige mit und ohne Eltern-ID ergeben eine Haltestelle
-    expect(stops.filter((s) => s.name === "D-Schadowstraße U")).toHaveLength(1);
+    expect(stops.filter((s) => s.name === "Schadowstraße U")).toHaveLength(1);
   });
 
   it("nutzt außerhalb des VRR die Transitous-ID und lässt Dubletten anderer Datensätze weg", () => {
@@ -130,5 +130,18 @@ describe("GET stops/area", () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("kaputt", { status: 503 }));
     const res = await get("stops/area?min=48.1,11.5&max=48.11,11.51");
     expect(res.status).toBe(502);
+  });
+});
+
+describe("Haltestellennamen", () => {
+  it.each([
+    ["D-Heinrich-Heine-Allee U", "Heinrich-Heine-Allee U"],
+    ["DU-Meiderich Süd Bf", "Meiderich Süd Bf"],
+    ["E-Hauptbahnhof", "Hauptbahnhof"],
+    ["S-Bahnhof Kalk", "S-Bahnhof Kalk"],
+    ["Köln Hbf", "Köln Hbf"],
+    ["Bad Neuenahr-Ahrweiler", "Bad Neuenahr-Ahrweiler"],
+  ])("entfernt das Städtekürzel: %s", (raw, expected) => {
+    expect(stripCityPrefix(raw)).toBe(expected);
   });
 });

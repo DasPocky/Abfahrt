@@ -50,7 +50,7 @@ export async function getStopsInArea(
       `Ausschnitt als min=<lat,lon>&max=<lat,lon>, höchstens ${MAX_AREA_LAT}° × ${MAX_AREA_LON}°`,
     );
   }
-  const key = `area:v1:${[area.minLat, area.minLon, area.maxLat, area.maxLon].map((v) => v.toFixed(3)).join(",")}`;
+  const key = `area:v2:${[area.minLat, area.minLon, area.maxLat, area.maxLon].map((v) => v.toFixed(3)).join(",")}`;
   const stops = await cached<Stop[]>(request, ctx, key, AREA_TTL, () => stopsInArea(area));
   const body: StopSearchResponse = { stops };
   return json(body, { headers: { "Cache-Control": "public, max-age=3600" } });
