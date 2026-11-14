@@ -1,68 +1,86 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { EMPTY_FILTER } from "./filters";
 import {
   addFavorite,
   FAVORITES_KEY,
+  favoriteKey,
   getFavorites,
   moveFavorite,
   parseFavorites,
   removeFavorite,
+  renameFavorite,
   serializeFavorites,
   setFavorites,
   toFavorite,
 } from "./favorites";
 
-const A = { id: "vrr:a", name: "A" };
-const B = { id: "vrr:b", name: "B", place: "Düsseldorf" };
-const C = { id: "vrr:c", name: "C" };
+const HBF = { id: "vrr:de:05111:18235", name: "Düsseldorf Hbf", place: "Düsseldorf" };
+const A = toFavorite(HBF);
+const A_SBAHN = toFavorite(HBF, { ...EMPTY_FILTER, modes: ["suburban"] });
+const B = toFavorite({ id: "vrr:b", name: "B" });
 
 beforeEach(() => localStorage.clear());
 
-describe("parseFavorites", () => {
-  it("liest gültige Daten", () => {
-    expect(parseFavorites(serializeFavorites([A, B]))).toEqual([A, B]);
+describe("Format v2", () => {
+  it("speichert und liest Haltestelle mit Filter", () => {
+    const back = parseFavorites(serializeFavorites([A, A_SBAHN]));
+    expect(back).toEqual([A, A_SBAHN]);
+    expect(back[1]?.filter.modes).toEqual(["suburban"]);
   });
 
-  it("ignoriert kaputte, fremde oder unbekannte Versionen", () => {
+  it("erlaubt dieselbe Haltestelle mehrfach mit verschiedenen Filtern", () => {
+    expect(A.key).not.toBe(A_SBAHN.key);
+    expect(addFavorite([A], A_SBAHN)).toHaveLength(2);
+    expect(addFavorite([A], toFavorite(HBF))).toHaveLength(1);
+  });
+
+  it("speichert keinen Zeitpunkt im Favoriten", () => {
+    const f = toFavorite(HBF, {
+      ...EMPTY_FILTER,
+      modes: ["bus"],
+      time: "2026-11-14T07:00:00.000Z",
+    });
+    expect(f.filter.time).toBeUndefined();
+    expect(f.key).toBe(favoriteKey(HBF.id, { ...EMPTY_FILTER, modes: ["bus"] }));
+  });
+});
+
+describe("Migration", () => {
+  it("übernimmt Favoriten aus Version 1", () => {
+    const v1 = JSON.stringify({
+      version: 1,
+      items: [{ id: HBF.id, name: HBF.name, place: HBF.place }],
+    });
+    expect(parseFavorites(v1)).toEqual([A]);
+  });
+
+  it("ignoriert kaputte, fremde oder unbekannte Daten", () => {
     expect(parseFavorites(null)).toEqual([]);
     expect(parseFavorites("{kaputt")).toEqual([]);
     expect(parseFavorites(JSON.stringify([A]))).toEqual([]);
-    expect(parseFavorites(JSON.stringify({ version: 99, items: [A] }))).toEqual([]);
-  });
-
-  it("verwirft ungültige Einträge und Doppelte", () => {
-    const raw = JSON.stringify({ version: 1, items: [A, { id: 1 }, A, B] });
-    expect(parseFavorites(raw)).toEqual([A, B]);
+    expect(parseFavorites(JSON.stringify({ version: 99, items: [] }))).toEqual([]);
+    expect(parseFavorites(JSON.stringify({ version: 2, items: [{ stopId: 1 }, A] }))).toEqual([]);
   });
 });
 
 describe("Listenoperationen", () => {
-  it("fügt ohne Doppelte hinzu und entfernt", () => {
-    expect(addFavorite([A], A)).toEqual([A]);
-    expect(addFavorite([A], B)).toEqual([A, B]);
-    expect(removeFavorite([A, B], "vrr:a")).toEqual([B]);
-  });
-
-  it("verschiebt innerhalb der Grenzen", () => {
-    expect(moveFavorite([A, B, C], "vrr:c", -1)).toEqual([A, C, B]);
-    expect(moveFavorite([A, B, C], "vrr:a", -1)).toEqual([A, B, C]);
-    expect(moveFavorite([A, B, C], "vrr:a", 2)).toEqual([B, C, A]);
-  });
-
-  it("übernimmt den Ort nur, wenn vorhanden", () => {
-    expect(toFavorite({ id: "x", name: "X" })).toEqual({ id: "x", name: "X" });
-    expect(toFavorite({ id: "x", name: "X", place: "Köln" })).toEqual({
-      id: "x",
-      name: "X",
-      place: "Köln",
-    });
+  it("entfernt, verschiebt und benennt um", () => {
+    expect(removeFavorite([A, B], A.key)).toEqual([B]);
+    expect(moveFavorite([A, B], B.key, -1)).toEqual([B, A]);
+    expect(moveFavorite([A, B], A.key, -1)).toEqual([A, B]);
+    expect(renameFavorite([A], A.key, "  Arbeit  ")[0]?.label).toBe("Arbeit");
+    expect(renameFavorite([A], A.key, "")[0]?.label).toBeUndefined();
   });
 });
 
 describe("Speicher", () => {
   it("speichert versioniert unter dem App-Präfix", () => {
-    setFavorites([A]);
-    expect(localStorage.getItem(FAVORITES_KEY)).toBe(JSON.stringify({ version: 1, items: [A] }));
-    expect(FAVORITES_KEY.startsWith("abfahrt:")).toBe(true);
-    expect(getFavorites()).toEqual([A]);
+    setFavorites([A_SBAHN]);
+    const stored = JSON.parse(localStorage.getItem(FAVORITES_KEY) ?? "{}");
+    expect(stored).toEqual({
+      version: 2,
+      items: [{ stopId: HBF.id, name: HBF.name, place: HBF.place, filter: "vm=suburban" }],
+    });
+    expect(getFavorites()).toEqual([A_SBAHN]);
   });
 });

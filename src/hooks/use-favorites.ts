@@ -5,6 +5,7 @@ import {
   getFavorites,
   moveFavorite,
   removeFavorite,
+  renameFavorite,
   setFavorites,
   subscribeFavorites,
 } from "@/lib/favorites";
@@ -12,16 +13,26 @@ import {
 export function useFavorites() {
   const favorites = useSyncExternalStore(subscribeFavorites, getFavorites, () => []);
 
-  const isFavorite = useCallback((id: string) => favorites.some((f) => f.id === id), [favorites]);
+  const isFavorite = useCallback(
+    (key: string) => favorites.some((f) => f.key === key),
+    [favorites],
+  );
   const add = useCallback(
     (favorite: Favorite) => setFavorites(addFavorite(getFavorites(), favorite)),
     [],
   );
-  const remove = useCallback((id: string) => setFavorites(removeFavorite(getFavorites(), id)), []);
+  const remove = useCallback(
+    (key: string) => setFavorites(removeFavorite(getFavorites(), key)),
+    [],
+  );
   const move = useCallback(
-    (id: string, delta: number) => setFavorites(moveFavorite(getFavorites(), id, delta)),
+    (key: string, delta: number) => setFavorites(moveFavorite(getFavorites(), key, delta)),
+    [],
+  );
+  const rename = useCallback(
+    (key: string, label: string) => setFavorites(renameFavorite(getFavorites(), key, label)),
     [],
   );
 
-  return { favorites, isFavorite, add, remove, move };
+  return { favorites, isFavorite, add, remove, move, rename };
 }
