@@ -11,7 +11,7 @@ Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`do
 
 ## Bedienung
 
-1. Auf der Startseite den Namen einer Haltestelle eingeben (ab 2 Zeichen erscheinen Vorschläge).
+1. Auf der Startseite den Namen einer Haltestelle eingeben (ab 2 Zeichen erscheinen Vorschläge). Beim ersten Antippen fragt die App einmal nach dem **Standort**: Mit Erlaubnis stehen Treffer in deiner Nähe oben (z. B. „Holthausen“ in Düsseldorf vor Essen), jeweils mit Entfernung. Das 📍-Symbol im Suchfeld schaltet das an und aus. Der Standort wird nur im Gerät verwendet und nicht gesendet.
 2. Treffer antippen – oder per Tastatur: Pfeil runter/hoch wählt, Enter öffnet, Esc leert die Suche.
 3. Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen weiter. Der Link lässt sich als Lesezeichen speichern.
 4. **Filtern:** Über der Liste stehen die Verkehrsmittel, die an der Haltestelle fahren (z. B. S-Bahn, U-Bahn, Bus). Antippen filtert, mehrere sind möglich. Unter **Mehr** gibt es Linien, Gleis/Steig und „Abfahrten ab“ (Uhrzeit). Der Filter steht in der Adresse, der Link lässt sich also teilen.

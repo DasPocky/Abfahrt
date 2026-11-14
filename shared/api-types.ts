@@ -13,6 +13,8 @@ export interface Stop {
   place?: string;
   lat?: number;
   lon?: number;
+  /** Nur Suche: Passgenauigkeit 0–1000 (höher = besser), für das Ranking nach Nähe in der App */
+  relevance?: number;
 }
 
 export interface Departure {
