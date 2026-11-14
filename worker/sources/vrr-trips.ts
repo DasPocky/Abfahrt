@@ -7,6 +7,11 @@ import { efaDateTime, MODE_BY_CLASS } from "./vrr";
 // VRR OpenService, Verbindungen (XML_TRIP_REQUEST2), siehe docs/01-datenquellen.md
 const BASE = "https://openservice.vrr.de/openservice";
 const COMMON = "outputFormat=rapidJSON&version=10.4.18.18&coordOutputFormat=WGS84%5Bdd.ddddd%5D";
+/**
+ * Verbindungen rechnet die EFA deutlich länger als Abfahrten (barrierefrei gemessen knapp 9 s),
+ * daher ein eigenes, großzügigeres Zeitlimit.
+ */
+const TRIP_TIMEOUT_MS = 15_000;
 /** EFA-Produktklassen für Fußwege */
 const WALK_CLASSES = new Set([97, 98, 99, 100]);
 
@@ -216,7 +221,7 @@ export async function trips(
   const data = await fetchJson<{
     journeys?: VrrJourney[];
     systemMessages?: { type?: string; text?: string }[];
-  }>("vrr", url);
+  }>("vrr", url, TRIP_TIMEOUT_MS);
   const raw = data.journeys ?? [];
   if (raw.length === 0 && isUnknownPoint(data.systemMessages ?? [])) {
     throw new Error("not_found");
