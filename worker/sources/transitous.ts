@@ -1,5 +1,6 @@
 import type { Departure, Stop, TransportMode } from "../../shared/api-types";
 import { fetchJson } from "../http";
+import { normalizeHex, normalizeLineName, type LineColorMap } from "../line-colors";
 
 // Transitous (MOTIS 2), siehe docs/01-datenquellen.md – nur leichte, gecachte Nutzung.
 const BASE = "https://api.transitous.org/api";
@@ -115,4 +116,43 @@ export async function departures(
     stopName: stopTimes[0]?.place.name ?? null,
     departures: stopTimes.map(toDeparture).filter((d): d is Departure => d !== null),
   };
+}
+
+/**
+ * Stichzeitpunkt für die Farbzuordnung: der nächste Werktag um 11:00 UTC (Mittag in Berlin).
+ * So fahren möglichst alle Linien, auch wenn die Zuordnung nachts oder am Wochenende entsteht.
+ */
+export function colorSampleTime(now: Date): Date {
+  const t = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 11));
+  while (t.getTime() <= now.getTime() || t.getUTCDay() === 0 || t.getUTCDay() === 6) {
+    t.setUTCDate(t.getUTCDate() + 1);
+  }
+  return t;
+}
+
+/** Linie → Farbe aus Transitous-Abfahrten; nur Einträge mit gültiger Farbe, erster Treffer gilt. */
+export function lineColorsFromStopTimes(stopTimes: readonly TransitousStopTime[]): LineColorMap {
+  const colors: LineColorMap = {};
+  for (const st of stopTimes) {
+    const color = normalizeHex(st.routeColor);
+    if (color === null) continue;
+    const entry = { color, textColor: normalizeHex(st.routeTextColor) };
+    for (const name of [st.routeShortName, st.displayName]) {
+      if (!name) continue;
+      const key = normalizeLineName(name);
+      if (key && !(key in colors)) colors[key] = entry;
+    }
+  }
+  return colors;
+}
+
+/**
+ * Farbzuordnung der Linien an einer Transitous-Haltestelle. Eine Abfrage (ca. 30 min Fahrplan um
+ * die Mittagszeit), das Ergebnis cached der Aufrufer lange.
+ */
+export async function lineColors(transitousId: string, now = new Date()): Promise<LineColorMap> {
+  const time = colorSampleTime(now).toISOString();
+  const url = `${BASE}/v5/stoptimes?n=40&window=1800&stopId=${encodeURIComponent(transitousId)}&time=${encodeURIComponent(time)}`;
+  const data = await fetchJson<{ stopTimes?: TransitousStopTime[] }>("transitous", url);
+  return lineColorsFromStopTimes(data.stopTimes ?? []);
 }

@@ -4,6 +4,8 @@ import type { DeparturesResponse, StopSearchResponse } from "../../shared/api-ty
 import { API_PREFIX } from "../../shared/base-path";
 import { resetRateLimit } from "../../worker/rate-limit";
 import transitousGeocode from "./fixtures/transitous-geocode.json";
+import transitousGeocodeHha from "./fixtures/transitous-geocode-hha.json";
+import transitousColors from "./fixtures/transitous-stoptimes-colors.json";
 import transitousStopTimes from "./fixtures/transitous-stoptimes.json";
 import vrrDmBerlin from "./fixtures/vrr-dm-berlin.json";
 import vrrDm from "./fixtures/vrr-dm.json";
@@ -105,7 +107,59 @@ describe("Abfahrten", () => {
     const res = await get(`departures?stop=vrr:de:05111:18036&when=${tomorrow}`);
     const body = await res.json<DeparturesResponse>();
     expect(body.source).toBe("vrr");
-    expect(calls.some((u) => u.includes("transitous"))).toBe(false);
+    // Transitous nur für die Linienfarben, nicht für die Abfahrten
+    expect(calls.some((u) => u.includes("v5/stoptimes") && !u.includes("window=1800"))).toBe(false);
+  });
+
+  it("ergänzt VRR-Abfahrten um Linienfarben aus Transitous und cached die Zuordnung", async () => {
+    // eigene Haltestellen-ID, damit kein Cache-Eintrag anderer Tests greift
+    const dm = shiftTimes(
+      { ...vrrDm, locations: [{ ...vrrDm.locations[0], id: "de:05111:18036:test-farben" }] },
+      vrrDm.stopEvents[0]!.departureTimePlanned,
+    );
+    const calls = mockUpstream({
+      XML_DM_REQUEST: dm,
+      "v1/geocode": transitousGeocodeHha,
+      "v5/stoptimes": transitousColors,
+    });
+    const res = await get("departures?stop=vrr:de:05111:18036.farben");
+    const body = await res.json<DeparturesResponse>();
+    expect(body.source).toBe("vrr");
+    const byLine = new Map(body.departures.map((d) => [d.line, d]));
+    expect(byLine.get("U79")).toMatchObject({ lineColor: "009a93", lineTextColor: "ffffff" });
+    expect(byLine.get("U71")).toMatchObject({ lineColor: "59c6f2", lineTextColor: "000000" });
+    const subwayColors = new Set(
+      body.departures.filter((d) => d.mode === "subway").map((d) => d.lineColor),
+    );
+    expect(subwayColors.size).toBeGreaterThan(5);
+    expect(subwayColors.has(null)).toBe(false);
+    const colorCall = calls.find((u) => u.includes("v5/stoptimes"));
+    expect(colorCall).toContain("stopId=de-DELFI_de%3A05111%3A18036");
+    expect(colorCall).toContain("window=1800");
+
+    // zweiter Abruf (andere Minute) nutzt die gecachte Zuordnung
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    const before = calls.length;
+    const soon = new Date(Date.now() + 90_000).toISOString();
+    const again = await get(`departures?stop=vrr:de:05111:18036.farben&when=${soon}`);
+    const againBody = await again.json<DeparturesResponse>();
+    expect(againBody.departures.some((d) => d.lineColor === "009a93")).toBe(true);
+    expect(calls.slice(before).some((u) => u.includes("transitous"))).toBe(false);
+  });
+
+  it("liefert VRR-Abfahrten ohne Farben, wenn Transitous ausfällt", async () => {
+    const dm = shiftTimes(
+      { ...vrrDm, locations: [{ ...vrrDm.locations[0], id: "de:05111:18036:test-ausfall" }] },
+      vrrDm.stopEvents[0]!.departureTimePlanned,
+    );
+    const calls = mockUpstream({ XML_DM_REQUEST: dm });
+    const res = await get("departures?stop=vrr:de:05111:18036.ausfall");
+    expect(res.status).toBe(200);
+    const body = await res.json<DeparturesResponse>();
+    expect(body.source).toBe("vrr");
+    expect(body.departures.length).toBeGreaterThan(0);
+    expect(body.departures.every((d) => d.lineColor === null)).toBe(true);
+    expect(calls.some((u) => u.includes("transitous"))).toBe(true);
   });
 
   it("validiert die Haltestellen-ID", async () => {

@@ -38,7 +38,7 @@ Stand: 30.10.2026. Alle Quellen wurden an diesem Tag live angetestet, die Testan
 **Besonderheiten:**
 
 - Die Ergebnisse sind nach **Planzeit** sortiert. Stark verspätete Fahrten erscheinen deshalb oben, wir sortieren nach Echtzeit neu.
-- Linienfarben liefert die EFA nicht. Wir pflegen sie als statische Tabelle bzw. übernehmen sie aus Transitous (`routeColor`).
+- Linienfarben liefert die EFA nicht (`lineColor` bleibt leer). Wir übernehmen sie aus Transitous, siehe [Linienfarben für VRR-Abfahrten](#linienfarben-für-vrr-abfahrten).
 
 ### Nutzungsvereinbarung API (v1.0, 16.04.2018), Kernpunkte
 
@@ -80,6 +80,16 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - 125 davon mit Echtzeit
 - je Abschnitt: Streckenverlauf (`polyline`), Plan- und Echtzeit für Abfahrt/Ankunft, Linie (`trips`)
 - Antwortgröße ca. 275 kB. Die Position wird im Browser entlang der Polyline interpoliert, der Worker cached pro Kachel. So entsteht eine flüssige Karte wie bei TRAVIC, aber mit eigenen Mitteln und offenen Daten.
+
+### Linienfarben für VRR-Abfahrten
+
+Transitous liefert pro Fahrt `routeColor`/`routeTextColor` aus den offenen GTFS-Daten (für den VRR der DELFI-Datensatz, Haltestellen-IDs `de-DELFI_…`). Der Worker übernimmt diese Farben für VRR-Abfahrten (`worker/line-colors.ts`, `transitous.lineColors`):
+
+- **Eine Abfrage pro Haltestelle und Woche:** passende Transitous-Haltestelle über die vorhandene Zuordnung (Geocoding im Umkreis von 500 m, 7 Tage gecacht), dann einmal `v5/stoptimes?n=40&window=1800` zum Stichzeitpunkt „nächster Werktag 11:00 UTC“ (Mittag, möglichst alle Linien unterwegs). Daraus entsteht eine Zuordnung Linie → Farbe, die 7 Tage in der Cache API liegt (`colors:v1:<Haltestelle>`).
+- **Abgleich der Linien:** Bezeichnungen werden normalisiert (Klammerzusatz und Leerzeichen weg, Großbuchstaben), damit z. B. „RE 5 (RRX)“ (VRR) und „RE5 (28512)“ (Transitous) zusammenpassen. Es zählen nur gültige 6-stellige Hex-Farben.
+- **Ausfallsicher:** Fällt Transitous aus oder antwortet nicht binnen 2,5 s, kommen die Abfahrten ohne Farben (App-Fallback nach Verkehrsmittel). Ein Fehler wird nicht gecacht, eine langsame Abfrage läuft im Hintergrund weiter und füllt den Cache für den nächsten Abruf.
+
+**Test 14.11.2026**, Heinrich-Heine-Allee (`de:05111:18036` → `de-DELFI_de:05111:18036`): alle 10 U-Bahn-Linien mit eigener Farbe, z. B. U71 `59c6f2`, U72 `25b8c5`, U73 `4465ad`, U75 `008fc2`, U76 `0063af`, U77 `7197cf`, U78 `009adf`, U79 `009a93`, U80 `006163`, U83 `1d3a8f`; Rheinbahn-Busse `f1db68` mit schwarzer Schrift, SB50 `40909c`. Düsseldorf Hbf: auch S-Bahn (S1 `0cb14b`, S8 `b23815` …), RE (RE5 `ff6418` …) und Straßenbahn (704 `bd1616`, 709 `e94190` …); Fernzüge haben dort keine Farbe.
 
 **Nutzungsbedingungen**, alle Punkte müssen zutreffen:
 

@@ -1,0 +1,182 @@
+[
+  {
+    "type": "STOP",
+    "tokens": [
+      [0.0, 20.0],
+      [21.0, 1.0],
+      [23.0, 11.0]
+    ],
+    "name": "D-Heinrich-Heine-Allee U",
+    "id": "de-DELFI_de:05111:18036",
+    "lat": 51.226400000000005,
+    "lon": 6.776828000000001,
+    "level": -2.0,
+    "country": "DE",
+    "zip": "40213",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Düsseldorf",
+        "adminLevel": 6.0,
+        "matched": true,
+        "unique": true,
+        "default": true
+      },
+      {
+        "name": "Stadtbezirk 1",
+        "adminLevel": 9.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Altstadt",
+        "adminLevel": 10.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      }
+    ],
+    "score": -44.75155258178711,
+    "modes": ["SUBWAY", "BUS"],
+    "importance": 0.004871835932135582
+  },
+  {
+    "type": "STOP",
+    "tokens": [
+      [0.0, 20.0],
+      [21.0, 1.0],
+      [23.0, 11.0]
+    ],
+    "name": "Wülfrath Heinrich-Heine-Straße",
+    "id": "de-DELFI_de:05158:11740:0:1",
+    "lat": 51.278366000000005,
+    "lon": 7.02002,
+    "country": "DE",
+    "zip": "42489",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5.0,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Kreis Mettmann",
+        "adminLevel": 6.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Wülfrath",
+        "adminLevel": 8.0,
+        "matched": false,
+        "unique": true,
+        "default": true
+      }
+    ],
+    "score": -16.599998474121094,
+    "modes": ["BUS"],
+    "importance": 1.595103867657599e-6
+  },
+  {
+    "type": "STOP",
+    "tokens": [
+      [0.0, 20.0],
+      [21.0, 1.0],
+      [23.0, 11.0]
+    ],
+    "name": "D-Heinrich-Könn-Straße",
+    "id": "de-DELFI_de:05111:18290:0:1",
+    "lat": 51.242783,
+    "lon": 6.849411,
+    "country": "DE",
+    "zip": "40629",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5.0,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Düsseldorf",
+        "adminLevel": 6.0,
+        "matched": false,
+        "unique": true,
+        "default": true
+      },
+      {
+        "name": "Stadtbezirk 7",
+        "adminLevel": 9.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Ludenberg",
+        "adminLevel": 10.0,
+        "matched": false,
+        "unique": false,
+        "default": false
+      }
+    ],
+    "score": -6.52628755569458,
+    "modes": ["SUBWAY", "TRAM", "BUS"],
+    "importance": 0.0002988731721416116
+  }
+]
