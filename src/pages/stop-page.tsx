@@ -1,13 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation, useParams } from "react-router";
+import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { ArrowLeft, LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react";
 import { DepartureList } from "@/components/departure-list";
 import { FavoriteButton } from "@/components/favorite-button";
+import { FilterBar } from "@/components/filter-bar";
 import { SourceAttribution } from "@/components/source-attribution";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNow } from "@/hooks/use-now";
 import { ApiRequestError, fetchDepartures } from "@/lib/api";
+import {
+  type DepartureFilter,
+  describeFilter,
+  filterDepartures,
+  filterFromParams,
+  filterToParams,
+  isEmptyFilter,
+} from "@/lib/filters";
 import { formatClockWithSeconds } from "@/lib/time";
 
 /** Abruf der Abfahrten */
@@ -31,14 +40,21 @@ function errorMessage(error: unknown): string {
 export function StopPage() {
   const { stopId = "" } = useParams();
   const location = useLocation();
-  const now = useNow(COUNTDOWN_TICK_MS);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filter = filterFromParams(searchParams);
+  const setFilter = (next: DepartureFilter) =>
+    setSearchParams(filterToParams(next), { replace: true });
+  const liveNow = useNow(COUNTDOWN_TICK_MS);
+  // Bei gewähltem Zeitpunkt zählt der Countdown ab diesem Zeitpunkt
+  const now = filter.time ? new Date(filter.time) : liveNow;
 
   const { data, error, isPending, isError, isFetching, refetch } = useQuery({
-    queryKey: ["departures", stopId],
-    queryFn: ({ signal }) => fetchDepartures(stopId, signal),
+    queryKey: ["departures", stopId, filter.time ?? "now"],
+    queryFn: ({ signal }) => fetchDepartures(stopId, signal, filter.time),
     enabled: stopId !== "",
-    refetchInterval: DEPARTURES_REFETCH_MS,
+    refetchInterval: filter.time ? false : DEPARTURES_REFETCH_MS,
   });
+  const visible = data ? filterDepartures(data.departures, filter) : [];
 
   const knownName = data?.stop.name ?? stopNameFromState(location.state);
   const title = knownName ?? "Haltestelle";
@@ -58,6 +74,9 @@ export function StopPage() {
             {title}
           </h1>
           {data?.stop.place && <p className="text-sm text-muted-foreground">{data.stop.place}</p>}
+          {!isEmptyFilter(filter) && (
+            <p className="text-sm font-medium">Ansicht: {describeFilter(filter)}</p>
+          )}
           {data && (
             <p className="text-xs text-muted-foreground" aria-live="polite">
               Stand{" "}
@@ -68,7 +87,10 @@ export function StopPage() {
           )}
         </div>
         {knownName && (
-          <FavoriteButton stop={{ id: stopId, name: knownName, place: data?.stop.place }} />
+          <FavoriteButton
+            stop={{ id: stopId, name: knownName, place: data?.stop.place }}
+            filter={filter}
+          />
         )}
         <Button
           variant="outline"
@@ -80,6 +102,8 @@ export function StopPage() {
           <RefreshCw className={isFetching ? "animate-spin" : undefined} aria-hidden="true" />
         </Button>
       </div>
+
+      {data && <FilterBar departures={data.departures} filter={filter} onChange={setFilter} />}
 
       <Card className="py-0">
         <CardContent className="px-4">
@@ -101,7 +125,20 @@ export function StopPage() {
               </Button>
             </div>
           )}
-          {data && <DepartureList departures={data.departures} now={now} />}
+          {data && data.departures.length > 0 && visible.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 py-6 text-center text-sm">
+              <p className="text-muted-foreground">Keine Abfahrten für diese Auswahl.</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setFilter({ ...filter, modes: [], lines: [], platforms: [] })}
+              >
+                Filter zurücksetzen
+              </Button>
+            </div>
+          ) : (
+            data && <DepartureList departures={visible} now={now} />
+          )}
         </CardContent>
       </Card>
 

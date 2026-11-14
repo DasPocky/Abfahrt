@@ -158,7 +158,7 @@ export async function departures(
   globalId: string,
   when?: Date,
 ): Promise<{ stop: Stop; departures: Departure[]; hasRealtime: boolean }> {
-  let url = `${BASE}/XML_DM_REQUEST?${COMMON}&type_dm=stop&mode=direct&useRealtime=1&limit=40&name_dm=${encodeURIComponent(globalId)}`;
+  let url = `${BASE}/XML_DM_REQUEST?${COMMON}&type_dm=stop&mode=direct&useRealtime=1&limit=80&name_dm=${encodeURIComponent(globalId)}`;
   if (when) {
     const { date, time } = efaDateTime(when);
     url += `&itdDate=${date}&itdTime=${time}`;
