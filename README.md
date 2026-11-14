@@ -14,6 +14,7 @@ Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`do
 1. Auf der Startseite den Namen einer Haltestelle eingeben (ab 2 Zeichen erscheinen Vorschläge).
 2. Treffer antippen – oder per Tastatur: Pfeil runter/hoch wählt, Enter öffnet, Esc leert die Suche.
 3. Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen weiter. Der Link lässt sich als Lesezeichen speichern.
+4. Mit dem **Stern** wird die Haltestelle zum Favoriten. Favoriten erscheinen auf der Startseite unter „Meine Haltestellen“ mit den nächsten Abfahrten, lassen sich verschieben und entfernen. Sie werden nur im eigenen Browser gespeichert.
 
 ## Live
 

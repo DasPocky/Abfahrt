@@ -42,7 +42,7 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
   - Abfahrten: `refetchInterval: 30_000`. Ein lokaler Ticker (15 s) aktualisiert nur den Countdown, ohne neuen Abruf.
 - **Anzeige-Logik** als reine, getestete Module in `src/lib/`: `time.ts` (Countdown „jetzt“/„in N Min“/ab 60 Min Uhrzeit, Verspätung +N mit Farbton, Zeitzone Europe/Berlin), `departures.ts` (Sortierung nach tatsächlicher Abfahrtszeit, Gleiswechsel), `line-colors.ts` (Linienfarbe aus der API, sonst Fallback nach Verkehrsmittel). Linienfarben setzt React per CSSOM (`style`-Prop), das ist mit `style-src 'self'` erlaubt.
 - **Karte:** MapLibre GL JS + OpenFreeMap
-- **Speicher:** Favoriten und Einstellungen in `localStorage`, versioniert. Export/Import per Link bzw. QR kommt später.
+- **Speicher:** Favoriten in `localStorage` unter `abfahrt:favorites`, versioniert (`{ version: 1, items }`), robust gegen kaputte Daten, höchstens 20 Einträge, Abgleich zwischen Tabs über das `storage`-Ereignis (`src/lib/favorites.ts`, `src/hooks/use-favorites.ts`). Die Startseite teilt sich den Abfrage-Cache mit der Haltestellenseite (gleicher Query-Schlüssel). Export/Import per Link bzw. QR kommt später.
 - **UI:** Tailwind CSS v4 + [shadcn/ui](https://ui.shadcn.com) (Preset „Vega“, Radix, Lucide-Icons, Schrift Inter lokal gebündelt). Komponenten liegen als Code in `src/components/ui/` und kommen per `npx shadcn@<version> add <name>` hinzu. Das CLI ist bewusst kein Projekt-Paket (bekannte Lücke in `deepmerge`), `src/styles/shadcn.css` ist lokal eingebunden.
 - **Design:** klar und modern, große Countdown-Zahlen, Linienfarben als Akzent, Hell/Dunkel automatisch per `prefers-color-scheme`. Farb-Tokens in `src/index.css`, inkl. `success`/`warning` für pünktlich/verspätet.
 
