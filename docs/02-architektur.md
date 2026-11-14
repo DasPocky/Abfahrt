@@ -28,14 +28,15 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 
 - Assets werden nach `abfahrt/assets/` gebaut und kommen ohne Worker-Aufruf aus den Static Assets. `/abfahrt/` liefert über den SPA-Fallback die `index.html`.
 - Durch den Worker laufen nur `/abfahrt/api/*` und `/abfahrt` (301 auf `/abfahrt/`).
-- **Gemeinsame Origin mit anderen Apps:** Alle `localStorage`-Schlüssel bekommen das Präfix `abfahrt:`. Der Service Worker (M1) bekommt nur den Scope `/abfahrt/`, Cookies gibt es nicht. HSTS wird ohne `includeSubDomains` gesetzt, damit eine einzelne App keine Regel für die ganze Domain festlegt.
+- **Gemeinsame Origin mit anderen Apps:** Alle `localStorage`-Schlüssel bekommen das Präfix `abfahrt:`. Der Service Worker liegt unter `/abfahrt/sw.js` und hat nur den Scope `/abfahrt/`, seine Caches heißen `abfahrt-shell-<version>`. Cookies gibt es nicht. HSTS wird ohne `includeSubDomains` gesetzt, damit eine einzelne App keine Regel für die ganze Domain festlegt.
 
 ## Frontend
 
-- **React + Vite + TypeScript**, PWA über `vite-plugin-pwa` (Manifest, Service Worker, Offline-Shell)
+- **React + Vite + TypeScript**, PWA mit eigenem kleinen Service Worker (ohne Zusatzpaket), siehe [PWA und Service Worker](#pwa-und-service-worker)
 - **Routing:** React Router (`createBrowserRouter`, `basename` = `BASE_PATH` aus `shared/base-path.ts`). Routen in `src/routes.tsx`:
   - `/abfahrt/` – Startseite mit Haltestellensuche
   - `/abfahrt/haltestelle/:stopId` – Live-Abfahrten; `stopId` ist die quellen-präfixierte ID aus der API, URL-kodiert (`vrr%3Ade%3A05111%3A18235`)
+  - `/abfahrt/ueber` – Über die App: Zweck, Pflicht-Quellhinweise, Datenschutz, Quellcode (verlinkt im Fußbereich jeder Seite)
   - alles andere – „Seite nicht gefunden“. Direktaufrufe und Reloads funktionieren über den SPA-Fallback der Static Assets (lokal, in Produktion und auf `workers.dev`).
 - **Datenabruf:** TanStack Query, Zugriff auf die API nur über `src/lib/api.ts` (Vertrag `shared/api-types.ts`, Antworten werden grob auf ihre Form geprüft). 4xx-Fehler werden nicht wiederholt, andere höchstens zweimal.
   - Suche: Debounce 250 ms, ab 2 Zeichen, Treffer 5 min gecacht
@@ -48,6 +49,21 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 - **Speicher:** Favoriten in `localStorage` unter `abfahrt:favorites`, Format **Version 2**: `{ version: 2, items: [{ stopId, name, place?, label?, filter }] }`. Ein Favorit ist Haltestelle + Filter (ohne Zeitpunkt), dieselbe Haltestelle darf mehrfach vorkommen. Version 1 (ohne Filter) wird beim Lesen automatisch übernommen. Robust gegen kaputte Daten, höchstens 20 Einträge, Abgleich zwischen Tabs über das `storage`-Ereignis (`src/lib/favorites.ts`, `src/hooks/use-favorites.ts`). Export/Import per Link bzw. QR kommt später.
 - **UI:** Tailwind CSS v4 + [shadcn/ui](https://ui.shadcn.com) (Preset „Vega“, Radix, Lucide-Icons, Schrift Inter lokal gebündelt). Komponenten liegen als Code in `src/components/ui/` und kommen per `npx shadcn@<version> add <name>` hinzu. Das CLI ist bewusst kein Projekt-Paket (bekannte Lücke in `deepmerge`), `src/styles/shadcn.css` ist lokal eingebunden.
 - **Design:** klar und modern, große Countdown-Zahlen, Linienfarben als Akzent, Hell/Dunkel automatisch per `prefers-color-scheme`. Farb-Tokens in `src/index.css`, inkl. `success`/`warning` für pünktlich/verspätet.
+- **Abfahrtszeile (Variante A, Standard):** Linienfeld in Linienfarbe mit Verkehrsmittel-Symbol, Ziel, darunter einzeilig Planzeit · Verspätung/„pünktlich“ · Gleis-Kästchen · ⓘ, Countdown rechts gestapelt (Zahl + „Min“). Varianten B (Countdown links) und C (Karten mit Farbstreifen) sind für die Einstellungen vorgemerkt (#37).
+- **Panels** (Hinweise, Filter) nutzen das native `<dialog>` (`src/components/bottom-sheet.tsx`), weil Radix-Dialoge `<style>`-Elemente einfügen, die die CSP blockiert.
+
+## PWA und Service Worker
+
+- **Manifest** `public/abfahrt/manifest.webmanifest` (→ `/abfahrt/manifest.webmanifest`): `start_url`, `scope` und `id` `/abfahrt/`, `display: standalone`, `lang: de`. Icons in `public/abfahrt/icons/`: `icon.svg` (Quelle), PNG 192/512, maskierbar 192/512 (`icon-maskable.svg`, Symbol auf 80 % für die Safe Zone) und `apple-touch-icon.png` (180 px). Die PNGs sind aus den SVGs gerendert (Chromium). `index.html` verlinkt Manifest, Favicon und Apple-Touch-Icon und setzt `theme-color` getrennt für Hell (`#ffffff`) und Dunkel (`#0a0a0a`).
+- **Service Worker** ohne Zusatzpaket: Vorlage `src/pwa/service-worker.js`. Ein kleines Vite-Plugin in `vite.config.ts` erzeugt daraus beim Build `dist/client/abfahrt/sw.js` und setzt die Dateiliste der App-Hülle und eine Version ein (`src/pwa/precache.ts`, getestet). Die Version ist ein Hash über alle gebauten Dateien, `public/` und die Vorlage. Jeder Build mit Änderungen ergibt also einen neuen Service Worker.
+- **Registrierung** nur im Produktions-Build nach dem `load`-Ereignis (`src/pwa/register-service-worker.ts`) mit Scope `/abfahrt/`. Andere Pfade auf `endlab.de` bleiben unberührt.
+- **Strategie:**
+  - Beim Installieren landen `/abfahrt/` (die `index.html` über den SPA-Fallback), JS, CSS, die Schrift im Zeichensatz „latin“, Manifest und Icons im Cache `abfahrt-shell-<version>`.
+  - Seitenaufrufe unter `/abfahrt/` gehen zuerst ans Netz. Offline liefert der Service Worker die gespeicherte `index.html`, die App startet und zeigt ihre Fehlermeldung.
+  - Gebaute Dateien (Hash im Namen) kommen aus dem Cache, sonst aus dem Netz. Beim Abgleich wird `Vary: Origin` der Static Assets ignoriert.
+  - `/abfahrt/api/*` wird nie angefasst und nie gecacht.
+  - Ein neuer Service Worker übernimmt sofort (`skipWaiting`, `clients.claim`) und löscht nur ältere `abfahrt-shell-*`-Caches. Caches anderer Apps derselben Origin bleiben.
+- **CSP:** `public/_headers` enthält zusätzlich `worker-src 'self'`. Ohne die Direktive griffe die Rückfallkette über `script-src` auf `'self'`. Ausdrücklich gesetzt ist klar, dass Worker nur von der eigenen Origin kommen dürfen, auch wenn `script-src` später einmal erweitert wird. Inline-Skripte braucht die PWA nicht.
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
@@ -98,7 +114,7 @@ Limits laut offizieller Doku (Stand 30.10.2026):
 ## Sicherheit in der App
 
 - **Security-Header** im Worker:
-  - strikte `Content-Security-Policy` (nur eigene Origin + OpenFreeMap)
+  - strikte `Content-Security-Policy` (nur eigene Origin + OpenFreeMap; `worker-src 'self'` für den Service Worker)
   - `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` (Geolocation nur self)
 - **Eingabevalidierung** aller `/api`-Parameter, z. B. mit `zod`. Keine Weiterleitung beliebiger URLs, der Worker ist kein offener Proxy.
 - **Rate-Limit** pro IP im Worker (60 Anfragen/Minute je Isolate, `worker/rate-limit.ts`), Pflicht laut VRR-§6.2
