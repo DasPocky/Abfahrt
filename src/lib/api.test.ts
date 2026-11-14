@@ -1,6 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
-import { departuresResponse, requestUrl } from "../test-utils";
-import { ApiRequestError, fetchDepartures, searchStops, shouldRetry, stopPath } from "./api";
+import { departuresResponse, journey, journeysResponse, requestUrl } from "../test-utils";
+import {
+  ApiRequestError,
+  fetchDepartures,
+  fetchJourneys,
+  searchStops,
+  shouldRetry,
+  stopPath,
+} from "./api";
 
 describe("searchStops", () => {
   it("fragt den Suchendpunkt mit kodiertem Suchtext ab", async () => {
@@ -40,6 +47,42 @@ describe("fetchDepartures", () => {
   it("wirft ApiRequestError auch ohne JSON-Antwort", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("Bad Gateway", { status: 502 }));
     await expect(fetchDepartures("x")).rejects.toMatchObject({ status: 502, code: "http_error" });
+  });
+});
+
+describe("fetchJourneys", () => {
+  it("übergibt Start, Ziel, Zeitpunkt und Ankunft", async () => {
+    const body = journeysResponse([journey({ id: "j1" })]);
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json(body));
+    await expect(
+      fetchJourneys({ from: "vrr:a", to: "vrr:b", when: "2026-11-13T12:00:00Z", arrive: true }),
+    ).resolves.toEqual(body);
+    const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
+    expect(url.pathname).toBe("/abfahrt/api/journeys");
+    expect(Object.fromEntries(url.searchParams)).toEqual({
+      from: "vrr:a",
+      to: "vrr:b",
+      when: "2026-11-13T12:00:00Z",
+      arrive: "1",
+    });
+  });
+
+  it("lässt den Zeitpunkt ohne Angabe weg und fragt nach Abfahrt", async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(Response.json(journeysResponse([])));
+    await fetchJourneys({ from: "vrr:a", to: "vrr:b" });
+    const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
+    expect(url.searchParams.has("when")).toBe(false);
+    expect(url.searchParams.get("arrive")).toBe("0");
+  });
+
+  it("lehnt Antworten ohne Früher/Später-Angaben ab", async () => {
+    const { earlier: _earlier, ...rest } = journeysResponse([]);
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json(rest));
+    await expect(fetchJourneys({ from: "a", to: "b" })).rejects.toMatchObject({
+      code: "invalid_response",
+    });
   });
 });
 

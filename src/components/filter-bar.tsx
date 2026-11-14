@@ -11,6 +11,7 @@ import {
   toggle,
 } from "@/lib/filters";
 import { MODE_LABEL, MODE_SHORT } from "@/lib/modes";
+import { toLocalInputValue } from "@/lib/time";
 import type { Departure } from "../../shared/api-types";
 
 const CHIP_BASE =
@@ -40,14 +41,6 @@ function Chip({
       {children}
     </button>
   );
-}
-
-const pad = (n: number) => String(n).padStart(2, "0");
-
-/** <input type="datetime-local"> erwartet lokale Zeit ohne Zone */
-function toLocalInput(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function withoutTime(filter: DepartureFilter): DepartureFilter {
@@ -163,7 +156,7 @@ export function FilterBar({
                 id={timeId}
                 type="datetime-local"
                 className="h-9 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm"
-                value={filter.time ? toLocalInput(filter.time) : ""}
+                value={filter.time ? toLocalInputValue(filter.time) : ""}
                 onChange={(e) => {
                   const value = e.target.value;
                   onChange(

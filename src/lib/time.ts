@@ -61,9 +61,25 @@ export function delayTone(delay: number | null): DelayTone {
   return "destructive";
 }
 
+/** Textfarbe je Farbton (Tailwind-Klassen, Tokens in src/index.css) */
+export const DELAY_TONE_CLASS: Record<DelayTone, string> = {
+  unknown: "text-muted-foreground",
+  success: "text-success",
+  warning: "text-warning",
+  destructive: "text-destructive",
+};
+
 /** Verspätungstext: „+2“, „-1“, „pünktlich“ statt „+0“; leer ohne Echtzeit */
 export function formatDelay(delay: number | null): string {
   if (delay === null) return "";
   if (delay === 0) return "pünktlich";
   return delay < 0 ? `${delay}` : `+${delay}`;
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+/** Wert für <input type="datetime-local">: lokale Zeit des Geräts ohne Zone */
+export function toLocalInputValue(iso: string): string {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
