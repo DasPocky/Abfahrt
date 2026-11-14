@@ -1,5 +1,6 @@
-import { TriangleAlert } from "lucide-react";
+import { ChevronRight, Info, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
+import { BottomSheet } from "@/components/bottom-sheet";
 import { LineBadge } from "@/components/line-badge";
 import { ModeIcon } from "@/components/mode-icon";
 import {
@@ -8,6 +9,7 @@ import {
   sortDepartures,
   upcomingDepartures,
 } from "@/lib/departures";
+import { summarizeNotices } from "@/lib/notices";
 import {
   delayMinutes,
   delayTone,
@@ -52,7 +54,86 @@ function Platform({ departure }: { departure: Departure }) {
   );
 }
 
-function DepartureRow({ departure, now }: { departure: Departure; now: Date }) {
+/** Liste der Hinweise im Panel */
+function NoticeList({ notices }: { notices: readonly string[] }) {
+  return (
+    <ul className="space-y-3">
+      {notices.map((notice) => (
+        <li key={notice} className="flex gap-2">
+          <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
+          <span className="leading-relaxed">{notice}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function noticeCount(count: number): string {
+  return count === 1 ? "1 Hinweis" : `${count} Hinweise`;
+}
+
+/** Sammelhinweis über der Liste: Hinweise, die mehrere Fahrten betreffen */
+function StopNotices({ notices }: { notices: readonly string[] }) {
+  if (notices.length === 0) return null;
+  return (
+    <BottomSheet
+      title="Hinweise für diese Haltestelle"
+      description="Betreffen mehrere Abfahrten"
+      triggerClassName="mb-1 flex w-full items-center gap-2 rounded-md bg-warning/10 px-3 py-2 text-left text-sm font-medium outline-none hover:bg-warning/15 focus-visible:ring-2 focus-visible:ring-ring"
+      trigger={
+        <>
+          <TriangleAlert className="size-4 shrink-0 text-warning" aria-hidden="true" />
+          <span className="flex-1">{noticeCount(notices.length)} für diese Haltestelle</span>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        </>
+      }
+    >
+      <NoticeList notices={notices} />
+    </BottomSheet>
+  );
+}
+
+/** ⓘ-Button in der Zeile, öffnet die Hinweise zu dieser Fahrt */
+function DepartureNotices({
+  departure,
+  notices,
+}: {
+  departure: Departure;
+  notices: readonly string[];
+}) {
+  if (notices.length === 0) return null;
+  return (
+    <BottomSheet
+      title={`Hinweise zu ${departure.line}`}
+      description={`${departure.direction}, ${formatClock(new Date(departure.plannedTime))}`}
+      triggerLabel={`${notices.length > 1 ? `${notices.length} ` : ""}Hinweise zu ${departure.line} anzeigen`}
+      triggerClassName="-m-1.5 inline-flex min-h-8 min-w-8 items-center justify-center gap-0.5 rounded-full p-1.5 text-warning outline-none hover:bg-warning/10 focus-visible:ring-2 focus-visible:ring-ring"
+      trigger={
+        <>
+          <Info className="size-4" aria-hidden="true" />
+          {notices.length > 1 && (
+            <span className="text-xs font-semibold" aria-hidden="true">
+              {notices.length}
+            </span>
+          )}
+        </>
+      }
+    >
+      <NoticeList notices={notices} />
+    </BottomSheet>
+  );
+}
+
+function DepartureRow({
+  departure,
+  notices,
+  now,
+}: {
+  departure: Departure;
+  /** Hinweise nur zu dieser Fahrt (ohne Sammelhinweise der Haltestelle) */
+  notices: readonly string[];
+  now: Date;
+}) {
   const planned = new Date(departure.plannedTime);
   const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
   const tone = delayTone(delay);
@@ -74,7 +155,7 @@ function DepartureRow({ departure, now }: { departure: Departure; now: Date }) {
         >
           {departure.direction}
         </p>
-        <p className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
           <span className="tabular-nums">
             <time
               dateTime={departure.plannedTime}
@@ -83,24 +164,22 @@ function DepartureRow({ departure, now }: { departure: Departure; now: Date }) {
               {formatClock(planned)}
             </time>
             {delay !== null && !departure.cancelled && (
-              <span className={cn("ml-1 font-semibold", DELAY_CLASS[tone])} data-tone={tone}>
+              <span
+                className={cn(
+                  "ml-1",
+                  delay === 0 ? "font-normal" : "font-semibold",
+                  DELAY_CLASS[tone],
+                )}
+                data-tone={tone}
+              >
                 {formatDelay(delay)}
               </span>
             )}
           </span>
           <Platform departure={departure} />
           {departure.cancelled && <span className="font-semibold text-destructive">fällt aus</span>}
-        </p>
-        {departure.notices.length > 0 && (
-          <ul className="mt-1 space-y-0.5 text-xs text-muted-foreground">
-            {departure.notices.map((notice) => (
-              <li key={notice} className="flex gap-1">
-                <TriangleAlert className="mt-px size-3 shrink-0 text-warning" aria-hidden="true" />
-                <span className="line-clamp-2">{notice}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+          <DepartureNotices departure={departure} notices={notices} />
+        </div>
       </div>
 
       <div
@@ -132,11 +211,21 @@ export function DepartureList({
     );
   }
 
+  const { stopNotices, departureNotices } = summarizeNotices(visible);
+
   return (
-    <ul aria-label="Abfahrten" className="divide-y">
-      {visible.map((departure) => (
-        <DepartureRow key={departure.id} departure={departure} now={now} />
-      ))}
-    </ul>
+    <>
+      <StopNotices notices={stopNotices} />
+      <ul aria-label="Abfahrten" className="divide-y">
+        {visible.map((departure) => (
+          <DepartureRow
+            key={departure.id}
+            departure={departure}
+            notices={departureNotices.get(departure.id) ?? []}
+            now={now}
+          />
+        ))}
+      </ul>
+    </>
   );
 }

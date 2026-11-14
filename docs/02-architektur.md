@@ -40,7 +40,8 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 - **Datenabruf:** TanStack Query, Zugriff auf die API nur über `src/lib/api.ts` (Vertrag `shared/api-types.ts`, Antworten werden grob auf ihre Form geprüft). 4xx-Fehler werden nicht wiederholt, andere höchstens zweimal.
   - Suche: Debounce 250 ms, ab 2 Zeichen, Treffer 5 min gecacht
   - Abfahrten: `refetchInterval: 30_000`. Ein lokaler Ticker (15 s) aktualisiert nur den Countdown, ohne neuen Abruf.
-- **Anzeige-Logik** als reine, getestete Module in `src/lib/`: `time.ts` (Countdown „jetzt“/„in N Min“/ab 60 Min Uhrzeit, Verspätung +N mit Farbton, Zeitzone Europe/Berlin), `departures.ts` (Sortierung nach tatsächlicher Abfahrtszeit, Gleiswechsel), `line-colors.ts` (Linienfarbe aus der API, sonst Fallback nach Verkehrsmittel). Linienfarben setzt React per CSSOM (`style`-Prop), das ist mit `style-src 'self'` erlaubt.
+- **Anzeige-Logik** als reine, getestete Module in `src/lib/`: `time.ts` (Countdown „jetzt“/„in N Min“/ab 60 Min Uhrzeit, Verspätung +N mit Farbton, „pünktlich“ statt „+0“, Zeitzone Europe/Berlin), `departures.ts` (Sortierung nach tatsächlicher Abfahrtszeit, Gleiswechsel), `line-colors.ts` (Linienfarbe aus der API, sonst Fallback nach Verkehrsmittel), `notices.ts` (Hinweise aufteilen: gleicher Text bei mindestens zwei Abfahrten wird zum Sammelhinweis der Haltestelle). Linienfarben setzt React per CSSOM (`style`-Prop), das ist mit `style-src 'self'` erlaubt.
+- **Hinweise:** In der Abfahrtszeile steht nur ein ⓘ-Button (mit Anzahl ab zwei Hinweisen), Sammelhinweise einmal über der Liste („N Hinweise für diese Haltestelle“). Beide öffnen ein Panel von unten (shadcn `Sheet` auf Basis des Radix-Dialogs) mit dem vollen Text; Sammelhinweise zählen in den Zeilen nicht mit.
 - **Karte:** MapLibre GL JS + OpenFreeMap
 - **Filter:** Verkehrsmittel, Linien, Gleise und Zeitpunkt (`src/lib/filters.ts`) stehen in der URL (`?vm=suburban,subway&linie=S6&gleis=13&zeit=<ISO>`), dadurch sind sie teilbar und als Lesezeichen nutzbar. Die Auswahl der Chips wird aus den aktuellen Abfahrten abgeleitet. Gefiltert wird in der App, der Worker liefert immer alle Abfahrten der Haltestelle (ein gemeinsamer Cache-Eintrag für alle Nutzer).
 - **Speicher:** Favoriten in `localStorage` unter `abfahrt:favorites`, Format **Version 2**: `{ version: 2, items: [{ stopId, name, place?, label?, filter }] }`. Ein Favorit ist Haltestelle + Filter (ohne Zeitpunkt), dieselbe Haltestelle darf mehrfach vorkommen. Version 1 (ohne Filter) wird beim Lesen automatisch übernommen. Robust gegen kaputte Daten, höchstens 20 Einträge, Abgleich zwischen Tabs über das `storage`-Ereignis (`src/lib/favorites.ts`, `src/hooks/use-favorites.ts`). Export/Import per Link bzw. QR kommt später.
@@ -70,24 +71,26 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 3. `vrr:`-IDs außerhalb des VRR (dort liefert der VRR keine Echtzeit) → passende Transitous-Haltestelle per Geocoding im Umkreis von 500 m (Zuordnung 7 Tage gecacht), dann Transitous-Abfahrten
 4. Notfalls Fahrplandaten vom VRR ohne Echtzeit
 
-Die Suche nutzt den VRR-Stopfinder (deutschlandweit) und weicht bei Ausfall auf Transitous aus. Linienfarben liefert nur Transitous. Für VRR-Linien kommen sie in der App über eine Farbtabelle hinzu (Folge-Issue).
+Die Suche nutzt den VRR-Stopfinder (deutschlandweit) und weicht bei Ausfall auf Transitous aus.
+
+**Linienfarben** liefert nur Transitous. Für VRR-Abfahrten ergänzt der Worker sie aus einer Zuordnung Linie → Farbe je Haltestelle, gewonnen aus einer einzigen Transitous-Abfrage und 7 Tage gecacht (`worker/line-colors.ts`, Details in [`01-datenquellen.md`](01-datenquellen.md#linienfarben-für-vrr-abfahrten)). Die Abfahrten warten höchstens 2,5 s darauf; ohne Farben greift in der App der Fallback nach Verkehrsmittel.
 
 ## Cloudflare-Free-Budget
 
 Limits laut offizieller Doku (Stand 30.10.2026):
 
-| Ressource                | Free-Limit                          | Unser Verbrauch (Schätzung)                                                 |
-| ------------------------ | ----------------------------------- | --------------------------------------------------------------------------- |
-| Worker-Requests          | 100.000/Tag                         | 1 offene App = 120 Req./h. 20 Nutzer × 1 h/Tag ≈ 2.400/Tag ✅               |
-| CPU pro Request          | 10 ms                               | JSON-Umbau kleiner Antworten < 2 ms ✅. Antworten per `limit` klein halten. |
-| Subrequests pro Aufruf   | 50                                  | 1–2 pro API-Aufruf ✅                                                       |
-| Cron-Trigger             | 5 pro Account                       | 1–2 (Störungs-Check/Push) ✅                                                |
-| KV                       | 100.000 Reads, **1.000 Writes**/Tag | ungeeignet als Cache, nur für seltene Daten                                 |
-| D1                       | 5 GB, 500 MB/DB                     | Push-Abos (M3) ✅                                                           |
-| Durable Objects (SQLite) | 100.000 Req./Tag                    | Reserve, z. B. für Rate-Limit-Zähler                                        |
-| Static Assets            | 20.000 Dateien, 25 MiB/Datei        | ✅                                                                          |
+| Ressource                | Free-Limit                          | Unser Verbrauch (Schätzung)                                                   |
+| ------------------------ | ----------------------------------- | ----------------------------------------------------------------------------- |
+| Worker-Requests          | 100.000/Tag                         | 1 offene App = 120 Req./h. 20 Nutzer × 1 h/Tag ≈ 2.400/Tag ✅                 |
+| CPU pro Request          | 10 ms                               | JSON-Umbau kleiner Antworten < 2 ms ✅. Antworten per `limit` klein halten.   |
+| Subrequests pro Aufruf   | 50                                  | 1–2 pro API-Aufruf, beim ersten Abruf einer Haltestelle pro Woche bis zu 4 ✅ |
+| Cron-Trigger             | 5 pro Account                       | 1–2 (Störungs-Check/Push) ✅                                                  |
+| KV                       | 100.000 Reads, **1.000 Writes**/Tag | ungeeignet als Cache, nur für seltene Daten                                   |
+| D1                       | 5 GB, 500 MB/DB                     | Push-Abos (M3) ✅                                                             |
+| Durable Objects (SQLite) | 100.000 Req./Tag                    | Reserve, z. B. für Rate-Limit-Zähler                                          |
+| Static Assets            | 20.000 Dateien, 25 MiB/Datei        | ✅                                                                            |
 
-**Caching:** Die Cache API (`caches.default`) hält Abfahrten 30 s (Schlüssel auf die Minute gerundet), Haltestellensuchen 24 h und die VRR→Transitous-Zuordnung 7 Tage. Die Cache API greift auch auf `*.workers.dev`. Getestet am 13.11.2026 in Produktion mit dem Diagnose-Endpunkt `/api/cache-probe`: erster Aufruf `miss`, danach `hit`. Eine eigene Domain ist dafür nicht nötig.
+**Caching:** Die Cache API (`caches.default`) hält Abfahrten 30 s (Schlüssel auf die Minute gerundet), Haltestellensuchen 24 h, die VRR→Transitous-Zuordnung und die Linienfarben je Haltestelle 7 Tage. Die Cache API greift auch auf `*.workers.dev`. Getestet am 13.11.2026 in Produktion mit dem Diagnose-Endpunkt `/api/cache-probe`: erster Aufruf `miss`, danach `hit`. Eine eigene Domain ist dafür nicht nötig.
 
 **Transitous `/plan`:** Ein Zähler im Worker sorgt dafür, dass wir unter 720 Anfragen/24 h bleiben. Darüber nutzen wir nur VRR bzw. sprechen uns vorher mit Transitous ab.
 

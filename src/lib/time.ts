@@ -61,8 +61,9 @@ export function delayTone(delay: number | null): DelayTone {
   return "destructive";
 }
 
-/** Verspätungstext: „+2“, „-1“, „+0“; leer ohne Echtzeit */
+/** Verspätungstext: „+2“, „-1“, „pünktlich“ statt „+0“; leer ohne Echtzeit */
 export function formatDelay(delay: number | null): string {
   if (delay === null) return "";
+  if (delay === 0) return "pünktlich";
   return delay < 0 ? `${delay}` : `+${delay}`;
 }

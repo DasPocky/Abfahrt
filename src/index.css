@@ -136,4 +136,8 @@
   html {
     @apply font-sans;
   }
+  /* Hintergrund nicht scrollen, solange ein Panel (modaler <dialog>) offen ist */
+  html:has(dialog[open]:modal) {
+    overflow: hidden;
+  }
 }

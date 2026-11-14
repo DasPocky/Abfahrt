@@ -1,6 +1,7 @@
 import type { Departure, DeparturesResponse, Stop, StopSearchResponse } from "../shared/api-types";
 import { cached } from "./cache";
 import { apiError, json, UpstreamError } from "./http";
+import { applyLineColors, type LineColorMap } from "./line-colors";
 import * as transitous from "./sources/transitous";
 import * as vrr from "./sources/vrr";
 
@@ -8,6 +9,9 @@ const STOP_ID = /^(vrr|transitous):[A-Za-z0-9:_.-]{1,160}$/;
 const SEARCH_TTL = 24 * 60 * 60;
 const DEPARTURES_TTL = 30;
 const MAPPING_TTL = 7 * 24 * 60 * 60;
+const LINE_COLORS_TTL = 7 * 24 * 60 * 60;
+/** So lange warten VRR-Abfahrten höchstens auf die Linienfarben */
+const LINE_COLORS_WAIT_MS = 2500;
 /** Bereits abgefahrene Fahrten bis zu dieser Zeit noch zeigen (z. B. „jetzt“) */
 const PAST_TOLERANCE_MS = 60_000;
 
@@ -53,6 +57,36 @@ async function transitousForStop(
   );
 }
 
+/**
+ * Linienfarben einer VRR-Haltestelle aus Transitous, 7 Tage gecacht (eine Transitous-Abfrage
+ * pro Haltestelle und Woche). Die Abfahrten warten höchstens LINE_COLORS_WAIT_MS darauf, die
+ * Abfrage läuft notfalls im Hintergrund weiter und füllt den Cache für den nächsten Abruf.
+ * Fällt Transitous aus, bleibt es ohne Farben und ohne Cache-Eintrag.
+ */
+async function lineColorsForStop(
+  request: Request,
+  ctx: ExecutionContext,
+  stop: Stop,
+): Promise<LineColorMap> {
+  const lookup = cached(request, ctx, `colors:v1:${stop.id}`, LINE_COLORS_TTL, async () => {
+    const transitousId = await transitousForStop(request, ctx, stop);
+    return transitousId ? transitous.lineColors(transitousId) : {};
+  }).catch((err: unknown): LineColorMap => {
+    if (!(err instanceof UpstreamError)) console.error("Linienfarben", err);
+    return {};
+  });
+  ctx.waitUntil(lookup);
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const timeout = new Promise<LineColorMap>((resolve) => {
+    timer = setTimeout(() => resolve({}), LINE_COLORS_WAIT_MS);
+  });
+  try {
+    return await Promise.race([lookup, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function loadDepartures(
   request: Request,
   ctx: ExecutionContext,
@@ -79,9 +113,16 @@ async function loadDepartures(
   // Echtzeit, dann trotzdem VRR), sonst über Transitous
   const fromVrr = await vrr.departures(rawId, when);
   const isFuture = when !== undefined && when.getTime() - Date.now() > 60 * 60 * 1000;
-  if (vrr.isVrrArea(rawId) && (fromVrr.hasRealtime || isFuture)) {
-    return { stop: fromVrr.stop, departures: fromVrr.departures, source: "vrr", generatedAt };
-  }
+  const vrrResult = async (): Promise<DeparturesResponse> => ({
+    stop: fromVrr.stop,
+    departures: applyLineColors(
+      fromVrr.departures,
+      await lineColorsForStop(request, ctx, fromVrr.stop),
+    ),
+    source: "vrr",
+    generatedAt,
+  });
+  if (vrr.isVrrArea(rawId) && (fromVrr.hasRealtime || isFuture)) return vrrResult();
   const transitousId = await transitousForStop(request, ctx, fromVrr.stop);
   if (transitousId) {
     try {
@@ -99,7 +140,7 @@ async function loadDepartures(
     }
   }
   // Fallback: Fahrplandaten vom VRR (ohne Echtzeit)
-  return { stop: fromVrr.stop, departures: fromVrr.departures, source: "vrr", generatedAt };
+  return vrrResult();
 }
 
 export async function getDepartures(
