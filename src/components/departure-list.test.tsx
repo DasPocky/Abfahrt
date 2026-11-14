@@ -83,7 +83,7 @@ describe("DepartureList", () => {
     // pünktlich: kein „+0“, nur Planzeit und dezent „pünktlich“
     expect(within(onTime).queryByText("+0")).toBeNull();
     expect(within(onTime).getByText("pünktlich")).toHaveAttribute("data-tone", "success");
-    expect(within(onTime).getByText("pünktlich")).toHaveClass("font-normal");
+    expect(within(onTime).getByText("pünktlich")).not.toHaveClass("font-semibold");
     expect(within(slight).getByText("+2")).toHaveAttribute("data-tone", "warning");
     expect(within(slight).getByText("+2")).toHaveClass("text-warning");
     expect(within(late).getByText("+6")).toHaveClass("text-destructive");
@@ -91,6 +91,19 @@ describe("DepartureList", () => {
     expect(within(far).getAllByText("14:15")).toHaveLength(2);
     expect(within(far).queryByText(/^[+-]\d+$/)).toBeNull();
     expect(within(far).getByRole("img", { name: "Regionalzug" })).toBeInTheDocument();
+  });
+
+  it("zeigt lange Linienbezeichnungen ohne Symbol, aber mit Verkehrsmittel für Screenreader", () => {
+    render(
+      <DepartureList
+        now={NOW}
+        departures={[departure({ id: "ice", line: "ICE 1023", mode: "longdistance" })]}
+      />,
+    );
+    const row = rowAt(rows(), 0);
+    expect(within(row).queryByRole("img")).toBeNull();
+    expect(within(row).getByText("ICE 1023")).toBeInTheDocument();
+    expect(within(row).getByText("Fernzug", { exact: false })).toHaveClass("sr-only");
   });
 
   it("färbt Linien-Badges in Linienfarbe mit Fallback nach Verkehrsmittel", () => {
@@ -143,18 +156,19 @@ describe("DepartureList", () => {
     expect(cancelled).toHaveAttribute("data-cancelled", "true");
     expect(within(cancelled).getByText("fällt aus")).toHaveClass("text-destructive");
     expect(within(cancelled).getByText("Solingen Hbf")).toHaveClass("line-through");
-    // Hinweistext nicht in der Zeile, nur der ⓘ-Button
-    expect(within(cancelled).queryByText("Bauarbeiten zwischen Hilden und Solingen")).toBeNull();
+    // Hinweis als schlanke, gekürzte Zeile unter der Fahrt
+    expect(within(cancelled).getByText("Bauarbeiten zwischen Hilden und Solingen")).toHaveClass(
+      "truncate",
+    );
     expect(
-      within(cancelled).getByRole("button", { name: "Hinweise zu S1 anzeigen" }),
+      within(cancelled).getByRole("button", { name: /^Hinweise zu S1 anzeigen/ }),
     ).toBeInTheDocument();
 
     const platform = moved.querySelector("[data-platform-change]");
-    // Sichtbar „Gl. 11“, für Screenreader „Gleis 11“
-    expect(platform).toHaveTextContent("Gleis Gl. 11 statt 9");
-    expect(
-      within(moved).getByText("Gleis", { exact: false, selector: ".sr-only" }),
-    ).toBeInTheDocument();
+    // Kästchen: Bezeichnung, Nummer, „statt“ bei Gleiswechsel
+    expect(platform).toHaveTextContent("Gleis11statt 9");
+    // Ausfall: kein Gleis-Kästchen
+    expect(cancelled.querySelector("[data-platform-change]")).toBeNull();
   });
 
   it("öffnet die Hinweise einer Fahrt per ⓘ-Button in einem Panel", () => {
@@ -171,11 +185,13 @@ describe("DepartureList", () => {
     );
     const [first, second] = [rowAt(rows(), 0), rowAt(rows(), 1)];
     expect(within(second).queryByRole("button")).toBeNull();
-    expect(screen.queryByText(long)).toBeNull();
+    // in der Zeile nur gekürzt (erste Meldung + Anzahl weiterer)
+    expect(within(first).getByText(long)).toHaveClass("truncate");
+    expect(within(first).getByText("+1")).toBeInTheDocument();
     // ohne Sammelhinweise kein Hinweis über der Liste
     expect(screen.queryByRole("button", { name: /für diese Haltestelle/ })).toBeNull();
 
-    const button = within(first).getByRole("button", { name: "2 Hinweise zu S1 anzeigen" });
+    const button = within(first).getByRole("button", { name: /^2 Hinweise zu S1 anzeigen/ });
     expect(button).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(button);
 
@@ -210,10 +226,10 @@ describe("DepartureList", () => {
     // Sammelhinweis nur oben, in den Zeilen nicht noch einmal gezählt
     expect(within(rowAt(rows(), 0)).queryByRole("button")).toBeNull();
     expect(
-      within(rowAt(rows(), 1)).getByRole("button", { name: "Hinweise zu U78 anzeigen" }),
+      within(rowAt(rows(), 1)).getByRole("button", { name: /^Hinweise zu U78 anzeigen/ }),
     ).toBeInTheDocument();
 
-    const summary = screen.getByRole("button", { name: "1 Hinweis für diese Haltestelle" });
+    const summary = screen.getByRole("button", { name: /^1 Hinweis für diese Haltestelle/ });
     fireEvent.click(summary);
     const dialog = screen.getByRole("dialog", { name: "Hinweise für diese Haltestelle" });
     expect(within(dialog).getByText(shared)).toBeVisible();
@@ -228,5 +244,35 @@ describe("DepartureList", () => {
       />,
     );
     expect(screen.getByText("Zurzeit keine Abfahrten an dieser Haltestelle.")).toBeInTheDocument();
+  });
+
+  it("benennt Halteplätze eindeutig: Gleis, U-Gleis, Steig", () => {
+    render(
+      <DepartureList
+        now={NOW}
+        departures={[
+          departure({ id: "s", line: "S6", mode: "suburban", platform: "2", plannedPlatform: "2" }),
+          departure({
+            id: "u",
+            line: "U79",
+            mode: "subway",
+            platform: "2",
+            plannedPlatform: "2",
+            plannedTime: "2026-11-13T12:06:00Z",
+          }),
+          departure({
+            id: "b",
+            line: "721",
+            mode: "bus",
+            platform: "14",
+            plannedPlatform: "14",
+            plannedTime: "2026-11-13T12:07:00Z",
+          }),
+        ]}
+      />,
+    );
+    expect(rowAt(rows(), 0)).toHaveTextContent("Gleis2");
+    expect(rowAt(rows(), 1)).toHaveTextContent("U-Gleis2");
+    expect(rowAt(rows(), 2)).toHaveTextContent("Steig14");
   });
 });

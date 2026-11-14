@@ -1,7 +1,15 @@
 import { useId, useRef, useState, type KeyboardEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
-import { ChevronRight, LoaderCircle, LocateFixed, LocateOff, MapPin, Search } from "lucide-react";
+import {
+  ChevronRight,
+  LoaderCircle,
+  LocateFixed,
+  LocateOff,
+  MapPin,
+  Search,
+  X,
+} from "lucide-react";
 import { cn } from "cn";
 import { Input } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
@@ -11,6 +19,10 @@ import { searchStops, stopPath } from "@/lib/api";
 
 export const SEARCH_DEBOUNCE_MS = 250;
 export const SEARCH_MIN_LENGTH = 2;
+
+/** Einheitliche Symbol-Schaltflächen im Suchfeld (Größe, Strichstärke und Farbe wie die Lupe) */
+const ICON_BUTTON =
+  "flex size-9 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function StopSearch() {
   const [query, setQuery] = useState("");
@@ -115,37 +127,48 @@ export function StopSearch() {
           onFocus={location.ensureAsked}
           onKeyDown={onInputKeyDown}
         />
-        {waiting && (
-          <LoaderCircle
-            className="absolute top-1/2 right-12 size-5 -translate-y-1/2 animate-spin text-muted-foreground"
-            aria-label="Lädt"
-            role="img"
-          />
-        )}
-        <button
-          type="button"
-          onClick={location.toggle}
-          aria-pressed={location.status === "on"}
-          aria-label={locationLabel}
-          title={locationLabel}
-          className={cn(
-            "absolute top-1/2 right-1.5 flex size-9 -translate-y-1/2 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            location.status === "on"
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-        >
-          {location.status === "locating" ? (
-            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
-          ) : location.status === "denied" || location.status === "unavailable" ? (
-            <LocateOff className="size-5" aria-hidden="true" />
+        <div className="absolute top-1/2 right-1.5 flex -translate-y-1/2 items-center">
+          {waiting ? (
+            <span className={ICON_BUTTON} role="img" aria-label="Lädt">
+              <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+            </span>
           ) : (
-            <LocateFixed
-              className={cn("size-5", location.status === "on" && "fill-primary/15")}
-              aria-hidden="true"
-            />
+            query !== "" && (
+              <button
+                type="button"
+                className={cn(ICON_BUTTON, "text-muted-foreground hover:text-foreground")}
+                aria-label="Suche leeren"
+                onClick={() => {
+                  setQuery("");
+                  inputRef.current?.focus();
+                }}
+              >
+                <X className="size-5" aria-hidden="true" />
+              </button>
+            )
           )}
-        </button>
+          <button
+            type="button"
+            onClick={location.toggle}
+            aria-pressed={location.status === "on"}
+            aria-label={locationLabel}
+            title={locationLabel}
+            className={cn(
+              ICON_BUTTON,
+              location.status === "on"
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {location.status === "locating" ? (
+              <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+            ) : location.status === "denied" || location.status === "unavailable" ? (
+              <LocateOff className="size-5" aria-hidden="true" />
+            ) : (
+              <LocateFixed className="size-5" aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </div>
 
       <p id={statusId} role="status" className="min-h-5 px-1 text-sm text-muted-foreground">

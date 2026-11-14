@@ -23,3 +23,22 @@ export const MODE_LABEL: Record<TransportMode, string> = {
   ferry: "Fähre",
   other: "Sonstiges",
 };
+
+/**
+ * Bezeichnung des Halteplatzes je Verkehrsmittel. An Knoten wie dem Hbf gibt es „Gleis 2“
+ * der Bahn und „Gleis 2“ der U-Bahn, daher für U-Bahn/Stadtbahn ausdrücklich „U-Gleis“.
+ */
+export function platformLabel(mode: TransportMode): string {
+  switch (mode) {
+    case "suburban":
+    case "regional":
+    case "longdistance":
+      return "Gleis";
+    case "subway":
+      return "U-Gleis";
+    case "ferry":
+      return "Anleger";
+    default:
+      return "Steig";
+  }
+}
