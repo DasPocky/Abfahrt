@@ -97,6 +97,7 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 
 - `from`/`to` sind Haltestellen-IDs der App, `when` (ISO, höchstens 7 Tage entfernt) und `arrive=1` für eine Ankunftszeit. Antwort `JourneysResponse` mit `Journey` → `JourneyLeg` (`transit`/`walk`) → `JourneyStop` (Plan- und Echtzeit, Gleis inkl. Gleiswechsel, Zwischenhalte).
 - **Quelle:** Liegen Start und Ziel im VRR-Gebiet, fragt der Worker den VRR (`XML_TRIP_REQUEST2`, 5 Verbindungen, Echtzeit). Sonst fragt er Transitous `v5/plan`, VRR-IDs gehen dabei als `de-DELFI_<DHID>` hinein. Liefert die erste Quelle nichts oder fällt sie aus, kommt die andere dran. Haltestellen im VRR-Gebiet tragen auch in Transitous-Antworten die `vrr:`-ID. Städtekürzel („D-“) entfernt der Worker.
+- **Zeitpunkt:** Beide Quellen bekommen immer einen festen Zeitpunkt (ohne `when` die aktuelle Zeit). Bei der Suche nach Abfahrtszeit fallen Verbindungen weg, die mehr als 1 Minute vor dem Zeitpunkt abfahren, denn die EFA liefert oft eine schon abgefahrene mit.
 - **Cache:** 60 s, Schlüssel je Strecke, Richtung (Ab/An) und Minute. So teilen sich alle Nutzer eine Abfrage, was das Transitous-Limit (< 720 `/plan` pro Tag) schont.
 - **Früher/Später:** `earlier`/`later` sind Abfahrtszeiten für die nächste Abfrage. Später ist 1 Minute nach der letzten Abfahrt, früher eine Listenlänge (mindestens 20 Minuten) vor der ersten.
 - **Fehler:** Unbekannte Haltestellen meldet die EFA nur als Systemmeldung („origin: multiple matches“), daraus wird `404 stop_not_found`. Start gleich Ziel ergibt `400 same_stop`.

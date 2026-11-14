@@ -27,6 +27,20 @@ function departureOf(j: Journey): number {
   return Date.parse(o?.plannedDeparture ?? o?.plannedArrival ?? "");
 }
 
+/** Tatsächliche Abfahrt am Start (Echtzeit, sonst Plan) */
+function actualDepartureOf(j: Journey): number {
+  const o = j.legs[0]?.origin;
+  return Date.parse(o?.realtimeDeparture ?? o?.plannedDeparture ?? o?.plannedArrival ?? "");
+}
+
+/**
+ * Bereits abgefahrene Verbindungen weglassen (die EFA liefert oft eine vor dem Suchzeitpunkt mit).
+ * Gilt nur für die Suche nach Abfahrtszeit.
+ */
+export function dropDeparted(journeys: readonly Journey[], from: number): Journey[] {
+  return journeys.filter((j) => !(actualDepartureOf(j) < from - 60_000));
+}
+
 /**
  * Zeitpunkte für „Früher“/„Später“ (immer als Abfahrtszeit): später = 1 Minute nach der letzten
  * Abfahrt, früher = so weit vor der ersten Abfahrt, wie die Liste lang ist (mind. 20 Minuten).
@@ -113,19 +127,21 @@ export async function getJourneys(
     if (Number.isNaN(diff) || Math.abs(diff) > MAX_OFFSET_MS) {
       return apiError(400, "invalid_when", "Zeitpunkt im ISO-Format, höchstens 7 Tage entfernt");
     }
-  } else if (arrive) {
-    when = new Date();
   }
+  // Immer mit festem Zeitpunkt abfragen, passend zum Cache-Schlüssel und zum Filter unten
+  const at = when ?? new Date();
 
   // Minutengenauer Schlüssel: alle, die dieselbe Strecke zur selben Minute suchen, teilen sich
   // eine Abfrage (wichtig für das Transitous-Limit)
-  const minute = Math.floor((when ?? new Date()).getTime() / 60_000);
+  const minute = Math.floor(at.getTime() / 60_000);
   const key = `jrn:v1:${from}>${to}:${arrive ? "arr" : "dep"}:${minute}`;
-  const loaded = await cached(request, ctx, key, JOURNEYS_TTL, () => load(from, to, when, arrive));
+  const loaded = await cached(request, ctx, key, JOURNEYS_TTL, () => load(from, to, at, arrive));
+  const journeys = arrive ? loaded.journeys : dropDeparted(loaded.journeys, at.getTime());
   const body: JourneysResponse = {
     ...loaded,
+    journeys,
     generatedAt: new Date().toISOString(),
-    ...paging(loaded.journeys),
+    ...paging(journeys),
   };
   return json(body);
 }

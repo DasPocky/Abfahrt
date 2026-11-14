@@ -2,7 +2,7 @@ import { exports } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Journey, JourneysResponse } from "../../shared/api-types";
 import { API_PREFIX } from "../../shared/base-path";
-import { paging } from "../../worker/journeys";
+import { dropDeparted, paging } from "../../worker/journeys";
 import { resetRateLimit } from "../../worker/rate-limit";
 import * as transitousTrips from "../../worker/sources/transitous-trips";
 import * as vrrTrips from "../../worker/sources/vrr-trips";
@@ -35,6 +35,16 @@ function get(query: string) {
   return exports.default.fetch(`${API}journeys?${query}&when=${encodeURIComponent(when)}`, {
     headers: { "CF-Connecting-IP": `10.1.0.${++ipCounter}` },
   });
+}
+
+/** Beispieldaten so verschieben, dass die erste Abfahrt in 2 Minuten liegt */
+function shiftTimes(data: unknown, firstIso: string): unknown {
+  const offset = Date.now() + 2 * 60_000 - Date.parse(firstIso);
+  const text = JSON.stringify(data).replace(
+    /"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)"/g,
+    (_, iso: string) => JSON.stringify(new Date(Date.parse(iso) + offset).toISOString()),
+  );
+  return JSON.parse(text);
 }
 
 beforeEach(() => resetRateLimit());
@@ -147,6 +157,15 @@ describe("Früher/Später", () => {
     });
   });
 
+  it("lässt abgefahrene Verbindungen weg, mit 1 Minute Toleranz", () => {
+    const now = Date.parse("2026-11-14T20:00:00Z");
+    const kept = dropDeparted(
+      [at("2026-11-14T19:50:00Z"), at("2026-11-14T19:59:30Z"), at("2026-11-14T20:10:00Z")],
+      now,
+    );
+    expect(kept.map((j) => j.id)).toEqual(["2026-11-14T19:59:30Z", "2026-11-14T20:10:00Z"]);
+  });
+
   it("geht mindestens 20 Minuten zurück und liefert ohne Verbindungen null", () => {
     expect(paging([at("2026-11-14T20:00:00Z")]).earlier).toBe("2026-11-14T19:40:00.000Z");
     expect(paging([])).toEqual({ earlier: null, later: null });
@@ -155,8 +174,11 @@ describe("Früher/Später", () => {
 
 describe("API journeys", () => {
   it("nutzt im VRR-Gebiet den VRR", async () => {
-    const calls = mockUpstream({ XML_TRIP_REQUEST2: vrrTrip });
-    const res = await get(`from=${HHA}&to=${ESSEN}`);
+    // Fixture beginnt 19:29 (eine Verbindung liegt vor dem Suchzeitpunkt und fällt weg)
+    const calls = mockUpstream({ XML_TRIP_REQUEST2: shiftTimes(vrrTrip, "2026-11-14T19:29:00Z") });
+    const res = await exports.default.fetch(`${API}journeys?from=${HHA}&to=${ESSEN}`, {
+      headers: { "CF-Connecting-IP": "10.1.2.1" },
+    });
     expect(res.status).toBe(200);
     const body = await res.json<JourneysResponse>();
     expect(body.source).toBe("vrr");
@@ -170,14 +192,19 @@ describe("API journeys", () => {
     expect(body.later).not.toBeNull();
     expect(calls).toHaveLength(1);
     expect(calls[0]).toContain("itdTripDateTimeDepArr=dep");
+    expect(calls[0]).toContain("itdDate=");
     // DHID ohne App-Präfix an den VRR
     expect(calls[0]).toContain("name_origin=de%3A05111%3A18036&");
     expect(calls[0]).toContain("name_destination=de%3A05113%3A9289");
   });
 
   it("nutzt außerhalb des VRR Transitous", async () => {
-    const calls = mockUpstream({ "transitous.org/api/v5/plan": transitousPlan });
-    const res = await get(`from=${HHA}&to=${BERLIN}`);
+    const calls = mockUpstream({
+      "transitous.org/api/v5/plan": shiftTimes(transitousPlan, "2026-11-14T22:29:00Z"),
+    });
+    const res = await exports.default.fetch(`${API}journeys?from=${HHA}&to=${BERLIN}`, {
+      headers: { "CF-Connecting-IP": "10.1.2.2" },
+    });
     const body = await res.json<JourneysResponse>();
     expect(body.source).toBe("transitous");
     expect(body.journeys.length).toBeGreaterThan(0);
