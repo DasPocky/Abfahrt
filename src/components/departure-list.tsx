@@ -2,7 +2,6 @@ import { ChevronRight, Info, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { LineBadge } from "@/components/line-badge";
-import { ModeIcon } from "@/components/mode-icon";
 import {
   effectiveTime,
   hasPlatformChange,
@@ -36,20 +35,27 @@ function platformLabel(mode: TransportMode): string {
 function Platform({ departure }: { departure: Departure }) {
   if (departure.platform === null) return null;
   const label = platformLabel(departure.mode);
+  const short = label === "Gleis" ? "Gl." : "Stg.";
   if (!hasPlatformChange(departure)) {
     return (
-      <span>
-        {label} {departure.platform}
+      <span
+        className="rounded border px-1 text-xs leading-5 text-foreground/80"
+        title={`${label} ${departure.platform}`}
+      >
+        <span className="sr-only">{label} </span>
+        <span aria-hidden="true">{short} </span>
+        {departure.platform}
       </span>
     );
   }
   return (
     <span
-      className="rounded-sm bg-warning/15 px-1 font-semibold text-warning"
+      className="rounded border border-warning/40 bg-warning/15 px-1 text-xs leading-5 font-semibold text-warning"
       data-platform-change="true"
     >
-      {label} {departure.platform}{" "}
-      <span className="font-normal">(statt {departure.plannedPlatform})</span>
+      <span className="sr-only">{label} </span>
+      <span aria-hidden="true">{short} </span>
+      {departure.platform} <span className="font-normal">statt {departure.plannedPlatform}</span>
     </span>
   );
 }
@@ -138,13 +144,15 @@ function DepartureRow({
   const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
   const tone = delayTone(delay);
   const countdown = formatCountdown(effectiveTime(departure), now);
+  // „in 7 Min“ gestapelt als große Zahl + „Min“, spart Breite für die Meta-Zeile
+  const minutes = /^in (\d+) Min$/.exec(countdown)?.[1];
 
   return (
-    <li className="flex items-start gap-3 py-3" data-cancelled={departure.cancelled || undefined}>
-      <div className="flex w-18 shrink-0 flex-col items-start gap-1">
-        <LineBadge departure={departure} />
-        <ModeIcon mode={departure.mode} className="size-4 text-muted-foreground" />
-      </div>
+    <li
+      className="flex items-center gap-3 py-2.5"
+      data-cancelled={departure.cancelled || undefined}
+    >
+      <LineBadge departure={departure} />
 
       <div className="min-w-0 flex-1">
         <p
@@ -155,7 +163,7 @@ function DepartureRow({
         >
           {departure.direction}
         </p>
-        <div className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+        <div className="mt-0.5 flex items-center gap-x-2 overflow-hidden text-sm whitespace-nowrap text-muted-foreground">
           <span className="tabular-nums">
             <time
               dateTime={departure.plannedTime}
@@ -176,7 +184,7 @@ function DepartureRow({
               </span>
             )}
           </span>
-          <Platform departure={departure} />
+          {!departure.cancelled && <Platform departure={departure} />}
           {departure.cancelled && <span className="font-semibold text-destructive">fällt aus</span>}
           <DepartureNotices departure={departure} notices={notices} />
         </div>
@@ -184,11 +192,20 @@ function DepartureRow({
 
       <div
         className={cn(
-          "shrink-0 text-right text-lg font-semibold tabular-nums",
+          "min-w-10 shrink-0 text-right text-base leading-tight font-bold tabular-nums",
           departure.cancelled && "text-muted-foreground line-through",
         )}
       >
-        {countdown}
+        {minutes ? (
+          <span className="flex flex-col items-end leading-none" aria-label={countdown}>
+            <span className="text-xl">{minutes}</span>
+            <span className="text-[0.7rem] font-medium text-muted-foreground" aria-hidden="true">
+              Min
+            </span>
+          </span>
+        ) : (
+          countdown
+        )}
       </div>
     </li>
   );
@@ -197,9 +214,12 @@ function DepartureRow({
 export function DepartureList({
   departures,
   now,
+  compact = false,
 }: {
   departures: readonly Departure[];
   now: Date;
+  /** Kompakte Vorschau (Favoriten): Hinweise nur per ⓘ, kein Sammelhinweis */
+  compact?: boolean;
 }) {
   const visible = upcomingDepartures(sortDepartures(departures), now);
 
@@ -211,7 +231,11 @@ export function DepartureList({
     );
   }
 
-  const { stopNotices, departureNotices } = summarizeNotices(visible);
+  const summary = summarizeNotices(visible);
+  const stopNotices = compact ? [] : summary.stopNotices;
+  const departureNotices = compact
+    ? new Map(visible.map((d) => [d.id, d.notices]))
+    : summary.departureNotices;
 
   return (
     <>

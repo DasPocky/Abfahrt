@@ -61,10 +61,10 @@ export function StopPage() {
 
   return (
     <section aria-labelledby="stop-title" className="space-y-4">
-      <Button asChild variant="ghost" size="sm" className="-ml-2">
-        <Link to="/">
+      <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
+        <Link to="/" aria-label="Zurück zur Suche">
           <ArrowLeft aria-hidden="true" />
-          Zurück zur Suche
+          Suche
         </Link>
       </Button>
 

@@ -78,7 +78,7 @@ describe("DepartureList", () => {
     const late = rowAt(list, 3);
     const far = rowAt(list, 4);
     expect(within(now).getByText("jetzt")).toBeInTheDocument();
-    expect(within(onTime).getByText("in 3 Min")).toBeInTheDocument();
+    expect(within(onTime).getByLabelText("in 3 Min")).toHaveTextContent("3Min");
     expect(within(onTime).getByText("13:03")).toBeInTheDocument();
     // pünktlich: kein „+0“, nur Planzeit und dezent „pünktlich“
     expect(within(onTime).queryByText("+0")).toBeNull();
@@ -103,11 +103,12 @@ describe("DepartureList", () => {
         ]}
       />,
     );
-    expect(screen.getByText("U79")).toHaveStyle({
+    // Farbe sitzt am Linienfeld, der Text in einem inneren Element
+    expect(screen.getByText("U79").parentElement).toHaveStyle({
       backgroundColor: "rgb(0, 143, 194)",
       color: "rgb(255, 255, 255)",
     });
-    expect(screen.getByText("708")).toHaveClass("bg-red-600");
+    expect(screen.getByText("708").parentElement).toHaveClass("bg-red-600");
   });
 
   it("markiert Ausfälle, Gleiswechsel und Hinweise", () => {
@@ -148,9 +149,12 @@ describe("DepartureList", () => {
       within(cancelled).getByRole("button", { name: "Hinweise zu S1 anzeigen" }),
     ).toBeInTheDocument();
 
-    const platform = within(moved).getByText(/Gleis 11/);
-    expect(platform).toHaveAttribute("data-platform-change", "true");
-    expect(platform).toHaveTextContent("Gleis 11 (statt 9)");
+    const platform = moved.querySelector("[data-platform-change]");
+    // Sichtbar „Gl. 11“, für Screenreader „Gleis 11“
+    expect(platform).toHaveTextContent("Gleis Gl. 11 statt 9");
+    expect(
+      within(moved).getByText("Gleis", { exact: false, selector: ".sr-only" }),
+    ).toBeInTheDocument();
   });
 
   it("öffnet die Hinweise einer Fahrt per ⓘ-Button in einem Panel", () => {
