@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>Abfahrt</title>
+  <rect width="512" height="512" rx="112" fill="#1d4ed8"/>
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M200 76h112M216 112l40-36 40 36" stroke-width="16"/>
+    <rect x="136" y="112" width="240" height="288" rx="56" fill="#fff" stroke="none"/>
+    <rect x="164" y="148" width="184" height="148" rx="24" fill="#1d4ed8" stroke="none"/>
+    <path d="M214 276l42-106 42 106M232 238h48" stroke-width="22"/>
+    <circle cx="184" cy="348" r="16" fill="#1d4ed8" stroke="none"/>
+    <circle cx="328" cy="348" r="16" fill="#1d4ed8" stroke="none"/>
+    <path d="M168 400l-20 36M344 400l20 36M120 436h272" stroke-width="16"/>
+  </g>
+</svg>

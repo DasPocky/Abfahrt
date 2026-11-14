@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter } from "react-router";
 import { createQueryClient } from "@/lib/query-client";
+import { registerServiceWorker } from "@/pwa/register-service-worker";
 import { App } from "./App";
 import { routes } from "./routes";
 import { BASE_PATH } from "../shared/base-path";
@@ -18,3 +19,5 @@ createRoot(root).render(
     <App router={router} queryClient={queryClient} />
   </StrictMode>,
 );
+
+registerServiceWorker();
