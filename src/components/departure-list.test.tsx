@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { departure } from "../test-utils";
 import { DepartureList } from "./departure-list";
@@ -80,7 +80,10 @@ describe("DepartureList", () => {
     expect(within(now).getByText("jetzt")).toBeInTheDocument();
     expect(within(onTime).getByText("in 3 Min")).toBeInTheDocument();
     expect(within(onTime).getByText("13:03")).toBeInTheDocument();
-    expect(within(onTime).getByText("+0")).toHaveAttribute("data-tone", "success");
+    // pünktlich: kein „+0“, nur Planzeit und dezent „pünktlich“
+    expect(within(onTime).queryByText("+0")).toBeNull();
+    expect(within(onTime).getByText("pünktlich")).toHaveAttribute("data-tone", "success");
+    expect(within(onTime).getByText("pünktlich")).toHaveClass("font-normal");
     expect(within(slight).getByText("+2")).toHaveAttribute("data-tone", "warning");
     expect(within(slight).getByText("+2")).toHaveClass("text-warning");
     expect(within(late).getByText("+6")).toHaveClass("text-destructive");
@@ -139,13 +142,77 @@ describe("DepartureList", () => {
     expect(cancelled).toHaveAttribute("data-cancelled", "true");
     expect(within(cancelled).getByText("fällt aus")).toHaveClass("text-destructive");
     expect(within(cancelled).getByText("Solingen Hbf")).toHaveClass("line-through");
+    // Hinweistext nicht in der Zeile, nur der ⓘ-Button
+    expect(within(cancelled).queryByText("Bauarbeiten zwischen Hilden und Solingen")).toBeNull();
     expect(
-      within(cancelled).getByText("Bauarbeiten zwischen Hilden und Solingen"),
+      within(cancelled).getByRole("button", { name: "Hinweise zu S1 anzeigen" }),
     ).toBeInTheDocument();
 
     const platform = within(moved).getByText(/Gleis 11/);
     expect(platform).toHaveAttribute("data-platform-change", "true");
     expect(platform).toHaveTextContent("Gleis 11 (statt 9)");
+  });
+
+  it("öffnet die Hinweise einer Fahrt per ⓘ-Button in einem Panel", () => {
+    const long =
+      "Wegen Bauarbeiten zwischen Hilden und Solingen fahren Ersatzbusse, bitte längere Fahrzeit einplanen";
+    render(
+      <DepartureList
+        now={NOW}
+        departures={[
+          departure({ id: "a", line: "S1", direction: "Solingen Hbf", notices: [long, "Kurzzug"] }),
+          departure({ id: "b", line: "U79", plannedTime: "2026-11-13T12:06:00Z" }),
+        ]}
+      />,
+    );
+    const [first, second] = [rowAt(rows(), 0), rowAt(rows(), 1)];
+    expect(within(second).queryByRole("button")).toBeNull();
+    expect(screen.queryByText(long)).toBeNull();
+    // ohne Sammelhinweise kein Hinweis über der Liste
+    expect(screen.queryByRole("button", { name: /für diese Haltestelle/ })).toBeNull();
+
+    const button = within(first).getByRole("button", { name: "2 Hinweise zu S1 anzeigen" });
+    expect(button).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(button);
+
+    const dialog = screen.getByRole("dialog", { name: "Hinweise zu S1" });
+    expect(within(dialog).getByText(long)).toBeVisible();
+    expect(within(dialog).getByText("Kurzzug")).toBeVisible();
+    expect(within(dialog).getByText(/Solingen Hbf/)).toBeInTheDocument();
+    expect(button).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "Schließen" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("fasst Hinweise mehrerer Fahrten oben für die Haltestelle zusammen", () => {
+    const shared = "Aufzug zu Gleis 3 außer Betrieb";
+    render(
+      <DepartureList
+        now={NOW}
+        departures={[
+          departure({ id: "a", line: "U79", notices: [shared] }),
+          departure({
+            id: "b",
+            line: "U78",
+            plannedTime: "2026-11-13T12:06:00Z",
+            notices: [shared, "Kurzzug"],
+          }),
+          departure({ id: "c", line: "U75", plannedTime: "2026-11-13T12:07:00Z" }),
+        ]}
+      />,
+    );
+    // Sammelhinweis nur oben, in den Zeilen nicht noch einmal gezählt
+    expect(within(rowAt(rows(), 0)).queryByRole("button")).toBeNull();
+    expect(
+      within(rowAt(rows(), 1)).getByRole("button", { name: "Hinweise zu U78 anzeigen" }),
+    ).toBeInTheDocument();
+
+    const summary = screen.getByRole("button", { name: "1 Hinweis für diese Haltestelle" });
+    fireEvent.click(summary);
+    const dialog = screen.getByRole("dialog", { name: "Hinweise für diese Haltestelle" });
+    expect(within(dialog).getByText(shared)).toBeVisible();
+    expect(within(dialog).queryByText("Kurzzug")).toBeNull();
   });
 
   it("blendet abgefahrene Fahrten aus und meldet eine leere Liste", () => {
