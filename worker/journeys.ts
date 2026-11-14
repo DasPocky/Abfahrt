@@ -1,6 +1,8 @@
 import type { Journey, JourneysResponse, Stop } from "../shared/api-types";
+import { lineColorsForStop } from "./api";
 import { cached } from "./cache";
 import { apiError, json, UpstreamError } from "./http";
+import { applyJourneyLineColors, type LineColorMap } from "./line-colors";
 import * as transitousTrips from "./sources/transitous-trips";
 import { isVrrArea } from "./sources/vrr";
 import * as vrrTrips from "./sources/vrr-trips";
@@ -57,6 +59,31 @@ export function paging(journeys: readonly Journey[]): {
     earlier: new Date(first - Math.max(MIN_EARLIER_MS, last - first)).toISOString(),
     later: new Date(last + 60_000).toISOString(),
   };
+}
+
+/** Höchstens so viele Haltestellen je Antwort nach Linienfarben fragen */
+const MAX_COLOR_STOPS = 6;
+
+/**
+ * Linienfarben für VRR-Verbindungen (die EFA liefert keine): je Einstiegshaltestelle die Farben
+ * aus Transitous, 7 Tage gecacht und wie bei den Abfahrten höchstens 2,5 s abgewartet.
+ */
+async function withLineColors(
+  request: Request,
+  ctx: ExecutionContext,
+  journeys: Journey[],
+): Promise<Journey[]> {
+  const stops = new Map<string, Stop>();
+  for (const leg of journeys.flatMap((j) => j.legs)) {
+    const o = leg.origin;
+    if (leg.kind !== "transit" || leg.lineColor !== null || !o.id?.startsWith("vrr:")) continue;
+    if (!stops.has(o.id)) stops.set(o.id, { id: o.id, name: o.name, lat: o.lat, lon: o.lon });
+  }
+  const maps = await Promise.all(
+    [...stops.values()].slice(0, MAX_COLOR_STOPS).map((s) => lineColorsForStop(request, ctx, s)),
+  );
+  const colors: LineColorMap = Object.assign({}, ...maps.toReversed());
+  return applyJourneyLineColors(journeys, colors);
 }
 
 async function load(
@@ -135,7 +162,12 @@ export async function getJourneys(
   // eine Abfrage (wichtig für das Transitous-Limit)
   const minute = Math.floor(at.getTime() / 60_000);
   const key = `jrn:v1:${from}>${to}:${arrive ? "arr" : "dep"}:${minute}`;
-  const loaded = await cached(request, ctx, key, JOURNEYS_TTL, () => load(from, to, at, arrive));
+  const loaded = await cached(request, ctx, key, JOURNEYS_TTL, async () => {
+    const result = await load(from, to, at, arrive);
+    return result.source === "vrr"
+      ? { ...result, journeys: await withLineColors(request, ctx, result.journeys) }
+      : result;
+  });
   const journeys = arrive ? loaded.journeys : dropDeparted(loaded.journeys, at.getTime());
   const body: JourneysResponse = {
     ...loaded,

@@ -6,7 +6,9 @@ import { dropDeparted, paging } from "../../worker/journeys";
 import { resetRateLimit } from "../../worker/rate-limit";
 import * as transitousTrips from "../../worker/sources/transitous-trips";
 import * as vrrTrips from "../../worker/sources/vrr-trips";
+import transitousGeocodeHha from "./fixtures/transitous-geocode-hha.json";
 import transitousPlan from "./fixtures/transitous-plan.json";
+import transitousColors from "./fixtures/transitous-stoptimes-colors.json";
 import vrrTrip from "./fixtures/vrr-trip.json";
 
 const API = `https://endlab.test${API_PREFIX}`;
@@ -175,7 +177,12 @@ describe("Früher/Später", () => {
 describe("API journeys", () => {
   it("nutzt im VRR-Gebiet den VRR", async () => {
     // Fixture beginnt 19:29 (eine Verbindung liegt vor dem Suchzeitpunkt und fällt weg)
-    const calls = mockUpstream({ XML_TRIP_REQUEST2: shiftTimes(vrrTrip, "2026-11-14T19:29:00Z") });
+    const calls = mockUpstream({
+      XML_TRIP_REQUEST2: shiftTimes(vrrTrip, "2026-11-14T19:29:00Z"),
+      // Linienfarben je Einstiegshaltestelle aus Transitous
+      "v1/geocode": transitousGeocodeHha,
+      "v5/stoptimes": transitousColors,
+    });
     const res = await exports.default.fetch(`${API}journeys?from=${HHA}&to=${ESSEN}`, {
       headers: { "CF-Connecting-IP": "10.1.2.1" },
     });
@@ -190,7 +197,10 @@ describe("API journeys", () => {
     });
     expect(body.to).toMatchObject({ id: ESSEN, name: "Essen Hauptbahnhof" });
     expect(body.later).not.toBeNull();
-    expect(calls).toHaveLength(1);
+    expect(calls.filter((u) => u.includes("openservice.vrr.de"))).toHaveLength(1);
+    expect(calls.some((u) => u.includes("v5/plan"))).toBe(false);
+    const subway = body.journeys.flatMap((j) => j.legs).find((l) => l.mode === "subway");
+    expect(subway?.lineColor).toMatch(/^[0-9a-f]{6}$/);
     expect(calls[0]).toContain("itdTripDateTimeDepArr=dep");
     expect(calls[0]).toContain("itdDate=");
     // DHID ohne App-Präfix an den VRR

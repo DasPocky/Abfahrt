@@ -103,7 +103,7 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 - **Cache:** 60 s, Schlüssel je Strecke, Richtung (Ab/An) und Minute. So teilen sich alle Nutzer eine Abfrage, was das Transitous-Limit (< 720 `/plan` pro Tag) schont.
 - **Früher/Später:** `earlier`/`later` sind Abfahrtszeiten für die nächste Abfrage. Später ist 1 Minute nach der letzten Abfahrt, früher eine Listenlänge (mindestens 20 Minuten) vor der ersten.
 - **Fehler:** Unbekannte Haltestellen meldet die EFA nur als Systemmeldung („origin: multiple matches“), daraus wird `404 stop_not_found`. Start gleich Ziel ergibt `400 same_stop`.
-- **Noch offen:** Linienfarben für VRR-Verbindungen (die App nutzt bis dahin die Fallback-Farben je Verkehrsmittel).
+- **Linienfarben:** Für VRR-Verbindungen kommen sie wie bei den Abfahrten aus Transitous, je Einstiegshaltestelle (höchstens 6 pro Antwort), 7 Tage gecacht und höchstens 2,5 s abgewartet.
 
 **Quellenwahl für Abfahrten** (`worker/api.ts`):
 
