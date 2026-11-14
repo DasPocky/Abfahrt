@@ -21,6 +21,11 @@ export function Layout() {
       <main className="mx-auto max-w-2xl px-4 pt-4 pb-10">
         <Outlet />
       </main>
+      <footer className="mx-auto max-w-2xl px-4 pt-2 pb-8 text-xs text-muted-foreground">
+        <Link to="/ueber" className="rounded-sm underline-offset-2 hover:underline">
+          Über Abfahrt · Datenquellen · Datenschutz
+        </Link>
+      </footer>
     </div>
   );
 }

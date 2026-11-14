@@ -17,6 +17,15 @@ Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`do
 4. **Filtern:** Über der Liste stehen die Verkehrsmittel, die an der Haltestelle fahren (z. B. S-Bahn, U-Bahn, Bus). Antippen filtert, mehrere sind möglich. Über das **Filter-Symbol** rechts gibt es Linien, Gleis/Steig und „Abfahrten ab“ (Uhrzeit). Der Filter steht in der Adresse, der Link lässt sich also teilen.
 5. Mit dem **Stern** wird die aktuelle Ansicht zum Favoriten, inklusive Filter. Dieselbe Haltestelle kann mehrfach gespeichert werden (z. B. „Hbf · S-Bahn“ und „Hbf · U-Bahn“). Favoriten erscheinen auf der Startseite unter „Meine Haltestellen“ mit den nächsten Abfahrten. Über **Bearbeiten** lassen sie sich umbenennen, verschieben und entfernen. Sie werden nur im eigenen Browser gespeichert.
 
+## Auf dem Homescreen installieren
+
+Abfahrt ist eine Progressive Web App und lässt sich wie eine normale App starten:
+
+- **iPhone/iPad (Safari):** https://endlab.de/abfahrt öffnen → Teilen-Symbol → **Zum Home-Bildschirm**.
+- **Android (Chrome):** https://endlab.de/abfahrt öffnen → Menü **⋮** → **App installieren** (bzw. **Zum Startbildschirm hinzufügen**).
+
+Die App-Hülle startet danach auch ohne Netz. Abfahrten brauchen immer eine Verbindung, offline erscheint eine Fehlermeldung. Quellen, Datenschutz und Lizenz stehen unter [Über Abfahrt](https://endlab.de/abfahrt/ueber).
+
 ## Live
 
 - App: https://endlab.de/abfahrt (Cloudflare-Worker-Route, wie die anderen EndLab-Apps)
@@ -36,12 +45,12 @@ npm run build       # Produktions-Build nach dist/
 npm run preview     # Build lokal wie in Produktion testen
 ```
 
-| Ordner         | Inhalt                                                |
-| -------------- | ----------------------------------------------------- |
-| `src/`         | React-App (PWA), reine Logik mit Tests in `src/lib/`  |
-| `worker/`      | Cloudflare Worker, API unter `/abfahrt/api/*`         |
-| `public/`      | statische Dateien, u. a. `_headers` (Security-Header) |
-| `test/worker/` | Worker-Tests                                          |
+| Ordner         | Inhalt                                                                        |
+| -------------- | ----------------------------------------------------------------------------- |
+| `src/`         | React-App (PWA), reine Logik mit Tests in `src/lib/`                          |
+| `worker/`      | Cloudflare Worker, API unter `/abfahrt/api/*`                                 |
+| `public/`      | statische Dateien: `_headers` (Security-Header), `abfahrt/` (Manifest, Icons) |
+| `test/worker/` | Worker-Tests                                                                  |
 
 ## Mitmachen & Sicherheit
 
