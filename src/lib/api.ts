@@ -62,6 +62,20 @@ export function searchStops(query: string, signal?: AbortSignal): Promise<StopSe
   return getJson(`stops/search?${params.toString()}`, isStopSearchResponse, signal);
 }
 
+/** Auf 3 Nachkommastellen (~100 m) gerundet: genauer verlässt der Standort das Gerät nicht */
+export function roundCoord(value: number): string {
+  return (Math.round(value * 1000) / 1000).toFixed(3);
+}
+
+export function nearbyStops(
+  lat: number,
+  lon: number,
+  signal?: AbortSignal,
+): Promise<StopSearchResponse> {
+  const params = new URLSearchParams({ lat: roundCoord(lat), lon: roundCoord(lon) });
+  return getJson(`stops/nearby?${params.toString()}`, isStopSearchResponse, signal);
+}
+
 export function fetchDepartures(
   stopId: string,
   signal?: AbortSignal,

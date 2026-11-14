@@ -1,5 +1,5 @@
 import { API_PREFIX, BASE_PATH } from "../shared/base-path";
-import { getDepartures, searchStops } from "./api";
+import { getDepartures, nearbyStops, searchStops } from "./api";
 import { cacheProbe } from "./cache-probe";
 import { apiError, json, UpstreamError } from "./http";
 import { isRateLimited } from "./rate-limit";
@@ -28,6 +28,8 @@ async function handleApi(request: Request, ctx: ExecutionContext): Promise<Respo
         return await searchStops(request, ctx, url.searchParams);
       case "stops/area":
         return await getStopsInArea(request, ctx, url.searchParams);
+      case "stops/nearby":
+        return await nearbyStops(request, ctx, url.searchParams);
       case "departures":
         return await getDepartures(request, ctx, url.searchParams);
       case "cache-probe":

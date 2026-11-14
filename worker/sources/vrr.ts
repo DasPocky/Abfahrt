@@ -69,6 +69,7 @@ interface VrrLocation {
   coord?: [number, number];
   parent?: { name?: string };
   matchQuality?: number;
+  properties?: { distance?: number };
 }
 
 interface VrrStopEvent {
@@ -106,6 +107,17 @@ export async function searchStops(query: string): Promise<Stop[]> {
   return (data.locations ?? [])
     .filter((l) => l.type === "stop" && l.isGlobalId !== false && l.id.startsWith("de:"))
     .toSorted((a, b) => (b.matchQuality ?? 0) - (a.matchQuality ?? 0))
+    .map(toStop);
+}
+
+/** Haltestellen im Umkreis (m) um eine Koordinate, nächste zuerst. */
+export async function nearbyStops(lat: number, lon: number, radius: number): Promise<Stop[]> {
+  const coord = `${lon}:${lat}:WGS84%5Bdd.ddddd%5D`;
+  const url = `${BASE}/XML_COORD_REQUEST?${COMMON}&coord=${coord}&inclFilter=1&type_1=STOP&radius_1=${radius}&max=12`;
+  const data = await fetchJson<{ locations?: VrrLocation[] }>("vrr", url);
+  return (data.locations ?? [])
+    .filter((l) => l.type === "stop" && l.isGlobalId !== false && l.id.startsWith("de:"))
+    .toSorted((a, b) => (a.properties?.distance ?? 0) - (b.properties?.distance ?? 0))
     .map(toStop);
 }
 

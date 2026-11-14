@@ -5,8 +5,10 @@ import { API_PREFIX } from "../../shared/base-path";
 import { resetRateLimit } from "../../worker/rate-limit";
 import transitousGeocode from "./fixtures/transitous-geocode.json";
 import transitousGeocodeHha from "./fixtures/transitous-geocode-hha.json";
+import transitousReverse from "./fixtures/transitous-reverse.json";
 import transitousColors from "./fixtures/transitous-stoptimes-colors.json";
 import transitousStopTimes from "./fixtures/transitous-stoptimes.json";
+import vrrCoord from "./fixtures/vrr-coord.json";
 import vrrDmBerlin from "./fixtures/vrr-dm-berlin.json";
 import vrrDm from "./fixtures/vrr-dm.json";
 import vrrStopfinder from "./fixtures/vrr-stopfinder.json";
@@ -46,6 +48,41 @@ function get(path: string) {
 
 beforeEach(() => resetRateLimit());
 afterEach(() => vi.restoreAllMocks());
+
+describe("Haltestellen in der Nähe", () => {
+  it("liefert VRR-Haltestellen im Umkreis, nächste zuerst", async () => {
+    const calls = mockUpstream({ XML_COORD_REQUEST: vrrCoord });
+    const res = await get("stops/nearby?lat=51.22641&lon=6.77682");
+    expect(res.status).toBe(200);
+    const body = await res.json<StopSearchResponse>();
+    expect(body.stops[0]).toMatchObject({
+      id: "vrr:de:05111:18036",
+      name: "Heinrich-Heine-Allee U",
+      place: "Düsseldorf",
+    });
+    expect(body.stops.length).toBeGreaterThan(3);
+    expect(body.stops.every((s) => s.id.startsWith("vrr:de:"))).toBe(true);
+    // genauer als ~100 m verlässt die Position den Worker nicht
+    expect(calls[0]).toContain("coord=6.777:51.226:");
+    expect(res.headers.get("Cache-Control")).toBe("private, max-age=300");
+  });
+
+  it("weicht auf Transitous aus, wenn der VRR nicht antwortet", async () => {
+    mockUpstream({ "transitous.org/api/v1/reverse-geocode": transitousReverse });
+    const res = await get("stops/nearby?lat=51.2251&lon=6.7752");
+    const body = await res.json<StopSearchResponse>();
+    expect(body.stops[0]?.id).toBe("transitous:de-DELFI_de:05111:18036");
+  });
+
+  it.each(["lat=51.2", "lat=abc&lon=6.7", "lat=40.1&lon=6.7", "lat=51.2&lon=6.7e1"])(
+    "lehnt ungültige Positionen ab (%s)",
+    async (query) => {
+      const res = await get(`stops/nearby?${query}`);
+      expect(res.status).toBe(400);
+      expect(await res.json()).toMatchObject({ error: "invalid_position" });
+    },
+  );
+});
 
 describe("Haltestellensuche", () => {
   it("liefert VRR-Haltestellen", async () => {
