@@ -85,9 +85,9 @@ describe("delayTone", () => {
 });
 
 describe("formatDelay", () => {
-  it("formatiert mit Vorzeichen", () => {
+  it("formatiert mit Vorzeichen, pünktlich ohne „+0“", () => {
     expect(formatDelay(null)).toBe("");
-    expect(formatDelay(0)).toBe("+0");
+    expect(formatDelay(0)).toBe("pünktlich");
     expect(formatDelay(2)).toBe("+2");
     expect(formatDelay(-1)).toBe("-1");
   });
