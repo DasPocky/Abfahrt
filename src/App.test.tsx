@@ -9,8 +9,11 @@ describe("App", () => {
 
   it("zeigt auf der Startseite die Haltestellensuche", () => {
     renderAt("/");
-    expect(screen.getByRole("link", { name: "Abfahrt" })).toHaveAttribute("href", "/abfahrt");
-    expect(screen.getByRole("heading", { name: "Abfahrten" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Abfahrt – Startseite" })).toHaveAttribute(
+      "href",
+      "/abfahrt",
+    );
+    expect(screen.getByRole("heading", { name: "Abfahrten suchen" })).toBeInTheDocument();
     expect(screen.getByRole("searchbox", { name: "Haltestelle suchen" })).toBeInTheDocument();
   });
 
@@ -34,7 +37,7 @@ describe("App", () => {
 
     expect(await screen.findByRole("heading", { name: "Düsseldorf Hbf" })).toBeInTheDocument();
     expect(screen.getByText("Duisburg Meiderich Süd Bf")).toBeInTheDocument();
-    expect(screen.getByText("in 5 Min")).toBeInTheDocument();
+    expect(screen.getByLabelText("in 5 Min")).toBeInTheDocument();
     expect(screen.getByText("+2")).toBeInTheDocument();
     expect(screen.getByText(/^Stand/)).toHaveTextContent("Stand 13:00:00");
     expect(screen.getByRole("link", { name: "Zurück zur Suche" })).toHaveAttribute(

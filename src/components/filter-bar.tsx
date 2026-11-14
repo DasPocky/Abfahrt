@@ -1,6 +1,7 @@
-import { useId, useState } from "react";
+import { useId } from "react";
 import { Clock, SlidersHorizontal, X } from "lucide-react";
-import { ModeIcon } from "@/components/mode-icon";
+import { cn } from "cn";
+import { BottomSheet } from "@/components/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import {
   availableLines,
@@ -9,9 +10,13 @@ import {
   type DepartureFilter,
   toggle,
 } from "@/lib/filters";
-import { MODE_LABEL } from "@/lib/modes";
-import { cn } from "@/lib/utils";
+import { MODE_LABEL, MODE_SHORT } from "@/lib/modes";
 import type { Departure } from "../../shared/api-types";
+
+const CHIP_BASE =
+  "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
+const CHIP_ON = "bg-foreground text-background";
+const CHIP_OFF = "bg-muted text-foreground hover:bg-accent";
 
 function Chip({
   active,
@@ -30,13 +35,7 @@ function Chip({
       aria-pressed={active}
       aria-label={label}
       onClick={onClick}
-      className={cn(
-        "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-sm transition-colors",
-        "focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none",
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "bg-background hover:bg-accent hover:text-accent-foreground",
-      )}
+      className={cn(CHIP_BASE, active ? CHIP_ON : CHIP_OFF)}
     >
       {children}
     </button>
@@ -51,6 +50,11 @@ function toLocalInput(iso: string): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
+function withoutTime(filter: DepartureFilter): DepartureFilter {
+  const { time: _time, ...rest } = filter;
+  return rest;
+}
+
 export function FilterBar({
   departures,
   filter,
@@ -60,10 +64,6 @@ export function FilterBar({
   filter: DepartureFilter;
   onChange: (filter: DepartureFilter) => void;
 }) {
-  const [expanded, setExpanded] = useState(
-    filter.lines.length > 0 || filter.platforms.length > 0 || filter.time !== undefined,
-  );
-  const panelId = useId();
   const timeId = useId();
   // Auswahl auch zeigen, wenn sie gerade nicht in den Abfahrten vorkommt
   const modes = [...new Set([...availableModes(departures), ...filter.modes])];
@@ -74,11 +74,11 @@ export function FilterBar({
   const moreCount = filter.lines.length + filter.platforms.length + (filter.time ? 1 : 0);
 
   return (
-    <div className="space-y-3">
+    <div className="flex items-center gap-2">
       <div
         role="group"
         aria-label="Verkehrsmittel filtern"
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1"
+        className="-ml-4 flex min-w-0 flex-1 gap-1.5 overflow-x-auto py-0.5 pl-4 [scrollbar-width:none]"
       >
         <Chip active={filter.modes.length === 0} onClick={() => onChange({ ...filter, modes: [] })}>
           Alle
@@ -87,34 +87,35 @@ export function FilterBar({
           <Chip
             key={mode}
             active={filter.modes.includes(mode)}
+            label={MODE_LABEL[mode]}
             onClick={() =>
               onChange({ ...filter, modes: toggle(filter.modes, mode), lines: [], platforms: [] })
             }
           >
-            <ModeIcon mode={mode} className="size-4" aria-hidden="true" />
-            {MODE_LABEL[mode]}
+            {MODE_SHORT[mode]}
           </Chip>
         ))}
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-8 shrink-0 rounded-full"
-          aria-expanded={expanded}
-          aria-controls={panelId}
-          onClick={() => setExpanded((v) => !v)}
-        >
-          <SlidersHorizontal aria-hidden="true" />
-          Mehr{moreCount > 0 ? ` (${moreCount})` : ""}
-        </Button>
       </div>
 
-      {expanded && (
-        <div id={panelId} className="space-y-3 rounded-xl border p-3">
+      <BottomSheet
+        title="Filter"
+        description="Linien, Gleis/Steig und Zeitpunkt"
+        triggerLabel={moreCount > 0 ? `Weitere Filter (${moreCount} aktiv)` : "Weitere Filter"}
+        triggerClassName={cn(CHIP_BASE, "relative px-2.5", moreCount > 0 ? CHIP_ON : CHIP_OFF)}
+        trigger={
+          <>
+            <SlidersHorizontal className="size-4" aria-hidden="true" />
+            {moreCount > 0 && <span aria-hidden="true">{moreCount}</span>}
+          </>
+        }
+      >
+        <div className="space-y-5">
           {lines.length > 0 && (
-            <div role="group" aria-label="Linien filtern" className="space-y-1.5">
-              <p className="text-xs font-medium text-muted-foreground">Linien</p>
-              <div className="flex flex-wrap gap-2">
+            <div role="group" aria-label="Linien filtern" className="space-y-2">
+              <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Linien
+              </p>
+              <div className="flex flex-wrap gap-1.5">
                 {lines.map((line) => (
                   <Chip
                     key={line}
@@ -129,9 +130,11 @@ export function FilterBar({
             </div>
           )}
           {platforms.length > 0 && (
-            <div role="group" aria-label="Gleis oder Steig filtern" className="space-y-1.5">
-              <p className="text-xs font-medium text-muted-foreground">Gleis / Steig</p>
-              <div className="flex flex-wrap gap-2">
+            <div role="group" aria-label="Gleis oder Steig filtern" className="space-y-2">
+              <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Gleis / Steig
+              </p>
+              <div className="flex flex-wrap gap-1.5">
                 {platforms.map((platform) => (
                   <Chip
                     key={platform}
@@ -147,8 +150,11 @@ export function FilterBar({
               </div>
             </div>
           )}
-          <div className="space-y-1.5">
-            <label htmlFor={timeId} className="text-xs font-medium text-muted-foreground">
+          <div className="space-y-2">
+            <label
+              htmlFor={timeId}
+              className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+            >
               Abfahrten ab
             </label>
             <div className="flex items-center gap-2">
@@ -160,8 +166,11 @@ export function FilterBar({
                 value={filter.time ? toLocalInput(filter.time) : ""}
                 onChange={(e) => {
                   const value = e.target.value;
-                  const { time: _time, ...rest } = filter;
-                  onChange(value ? { ...rest, time: new Date(value).toISOString() } : rest);
+                  onChange(
+                    value
+                      ? { ...withoutTime(filter), time: new Date(value).toISOString() }
+                      : withoutTime(filter),
+                  );
                 }}
               />
               {filter.time && (
@@ -169,10 +178,7 @@ export function FilterBar({
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    const { time: _time, ...rest } = filter;
-                    onChange(rest);
-                  }}
+                  onClick={() => onChange(withoutTime(filter))}
                 >
                   <X aria-hidden="true" />
                   Jetzt
@@ -180,8 +186,18 @@ export function FilterBar({
               )}
             </div>
           </div>
+          {moreCount > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onChange({ ...withoutTime(filter), lines: [], platforms: [] })}
+            >
+              Zusätzliche Filter zurücksetzen
+            </Button>
+          )}
         </div>
-      )}
+      </BottomSheet>
     </div>
   );
 }
