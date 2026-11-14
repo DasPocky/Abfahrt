@@ -49,8 +49,8 @@ function Platform({ departure }: { departure: Departure }) {
   );
 }
 
-/** Liste der Hinweise im Panel */
-function NoticeList({ notices }: { notices: readonly string[] }) {
+/** Liste der Hinweise im Panel (auch in den Verbindungsdetails) */
+export function NoticeList({ notices }: { notices: readonly string[] }) {
   return (
     <ul className="space-y-3">
       {notices.map((notice) => (
@@ -67,8 +67,8 @@ function noticeCount(count: number): string {
   return count === 1 ? "1 Hinweis" : `${count} Hinweise`;
 }
 
-/** Gemeinsamer Stil für Hinweis-Auslöser (Haltestelle und Fahrt) */
-const NOTICE_CLASS =
+/** Gemeinsamer Stil für Hinweis-Auslöser (Haltestelle, Fahrt, Verbindungsabschnitt) */
+export const NOTICE_CLASS =
   "flex w-full items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 px-2.5 py-1.5 text-left text-sm outline-none hover:bg-warning/15 focus-visible:ring-2 focus-visible:ring-ring";
 
 /**
