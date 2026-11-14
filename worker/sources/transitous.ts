@@ -60,6 +60,17 @@ export async function searchStops(query: string): Promise<Stop[]> {
   return data.slice(0, 10).map(toStop);
 }
 
+/** Haltestellen rund um eine Koordinate (Fallback, wenn der VRR nicht antwortet). */
+export async function nearbyStops(lat: number, lon: number, radius: number): Promise<Stop[]> {
+  const url = `${BASE}/v1/reverse-geocode?type=STOP&place=${lat},${lon}`;
+  const data = await fetchJson<TransitousPlace[]>("transitous", url);
+  return data
+    .map((p) => ({ p, dist: distanceMeters(lat, lon, p.lat, p.lon) }))
+    .filter(({ dist }) => dist <= radius)
+    .toSorted((a, b) => a.dist - b.dist)
+    .map(({ p }) => toStop(p));
+}
+
 function distanceMeters(aLat: number, aLon: number, bLat: number, bLon: number): number {
   const rad = Math.PI / 180;
   const x = (bLon - aLon) * rad * Math.cos(((aLat + bLat) / 2) * rad);

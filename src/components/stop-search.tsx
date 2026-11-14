@@ -1,20 +1,13 @@
 import { useId, useRef, useState, type KeyboardEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router";
-import {
-  ChevronRight,
-  LoaderCircle,
-  LocateFixed,
-  LocateOff,
-  MapPin,
-  Search,
-  X,
-} from "lucide-react";
+import { useNavigate } from "react-router";
+import { LoaderCircle, LocateFixed, LocateOff, Search, X } from "lucide-react";
 import { cn } from "cn";
 import { Input } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { useLocation } from "@/hooks/use-location";
-import { formatDistance, rankStops } from "@/lib/geo";
+import { StopRow } from "@/components/stop-row";
+import type { LocationState } from "@/hooks/use-location";
+import { rankStops } from "@/lib/geo";
 import { searchStops, stopPath } from "@/lib/api";
 
 export const SEARCH_DEBOUNCE_MS = 250;
@@ -24,7 +17,7 @@ export const SEARCH_MIN_LENGTH = 2;
 const ICON_BUTTON =
   "flex size-8 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
-export function StopSearch() {
+export function StopSearch({ location }: { location: LocationState }) {
   const [query, setQuery] = useState("");
   const debounced = useDebouncedValue(query.trim(), SEARCH_DEBOUNCE_MS);
   const enabled = debounced.length >= SEARCH_MIN_LENGTH;
@@ -43,7 +36,6 @@ export function StopSearch() {
   });
 
   const showResults = query.trim().length >= SEARCH_MIN_LENGTH;
-  const location = useLocation();
   const ranked = enabled && showResults ? rankStops(data?.stops ?? [], location.position) : [];
   const stops = ranked.map((r) => r.stop);
   const waiting = showResults && (debounced !== query.trim() || isFetching);
@@ -186,25 +178,7 @@ export function StopSearch() {
       >
         {ranked.map(({ stop, distanceKm }) => (
           <li key={stop.id}>
-            <Link
-              to={stopPath(stop.id)}
-              state={{ stopName: stop.name }}
-              className="flex min-h-12 items-center gap-3 px-3 py-2 outline-none hover:bg-muted focus-visible:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-            >
-              <MapPin className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate font-medium">{stop.name}</span>
-                {stop.place && (
-                  <span className="block truncate text-sm text-muted-foreground">{stop.place}</span>
-                )}
-              </span>
-              {distanceKm !== null && (
-                <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
-                  {formatDistance(distanceKm)}
-                </span>
-              )}
-              <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-            </Link>
+            <StopRow stop={stop} distanceKm={distanceKm} />
           </li>
         ))}
       </ul>

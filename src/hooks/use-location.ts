@@ -32,7 +32,8 @@ const GEO_OPTIONS: PositionOptions = {
 };
 
 /**
- * Standort für die Suche. Wird nur im Browser verwendet und nie gesendet.
+ * Standort für Suche und „In der Nähe“. Die Suche sortiert nur im Browser; für „In der Nähe“
+ * geht die auf ~100 m gerundete Position an den eigenen Worker (siehe nearbyStops in lib/api).
  * `ensureAsked` fragt einmalig (z. B. beim ersten Antippen der Suche), `toggle` schaltet um.
  */
 export function useLocation() {
@@ -94,3 +95,5 @@ export function useLocation() {
 
   return { status, position, ensureAsked, toggle };
 }
+
+export type LocationState = ReturnType<typeof useLocation>;

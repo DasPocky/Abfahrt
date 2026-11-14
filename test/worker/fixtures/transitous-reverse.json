@@ -1,0 +1,241 @@
+[
+  {
+    "type": "STOP",
+    "tokens": [],
+    "name": "D-Heinrich-Heine-Allee U",
+    "id": "de-DELFI_de:05111:18036",
+    "lat": 5.1226400000000005e1,
+    "lon": 6.776828000000001,
+    "level": -2,
+    "country": "DE",
+    "zip": "40213",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Düsseldorf", "adminLevel": 6, "matched": true, "unique": true, "default": true },
+      {
+        "name": "Stadtbezirk 1",
+        "adminLevel": 9,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Altstadt", "adminLevel": 1e1, "matched": true, "unique": false, "default": false }
+    ],
+    "score": 3.606241226196289e1,
+    "modes": ["SUBWAY", "BUS"],
+    "importance": 4.871835932135582e-3
+  },
+  {
+    "type": "STOP",
+    "tokens": [],
+    "name": "D-Benrather Straße U",
+    "id": "de-DELFI_de:05111:18287",
+    "lat": 5.1223060000000004e1,
+    "lon": 6.775588,
+    "level": -2,
+    "country": "DE",
+    "zip": "40213",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Düsseldorf", "adminLevel": 6, "matched": true, "unique": true, "default": true },
+      {
+        "name": "Stadtbezirk 1",
+        "adminLevel": 9,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Carlstadt", "adminLevel": 1e1, "matched": true, "unique": false, "default": false }
+    ],
+    "score": 3.313806457519531e2,
+    "modes": ["SUBWAY", "BUS"],
+    "importance": 1.8172903219237924e-3
+  },
+  {
+    "type": "STOP",
+    "tokens": [],
+    "name": "D-Carlsplatz",
+    "id": "de-DELFI_de:05111:18145:0:1",
+    "lat": 5.122307200000001e1,
+    "lon": 6.774447,
+    "country": "DE",
+    "zip": "40213",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Düsseldorf", "adminLevel": 6, "matched": true, "unique": true, "default": true },
+      {
+        "name": "Stadtbezirk 1",
+        "adminLevel": 9,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Carlstadt", "adminLevel": 1e1, "matched": true, "unique": false, "default": false }
+    ],
+    "score": 3.609573669433594e2,
+    "modes": ["BUS"],
+    "importance": 1.544350652693538e-6
+  },
+  {
+    "type": "STOP",
+    "tokens": [],
+    "name": "D-Schadowstraße U",
+    "id": "de-DELFI_de:05111:18230",
+    "lat": 5.122661600000001e1,
+    "lon": 6.783394,
+    "level": -3,
+    "country": "DE",
+    "zip": "40212",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Düsseldorf", "adminLevel": 6, "matched": true, "unique": true, "default": true },
+      {
+        "name": "Stadtbezirk 1",
+        "adminLevel": 9,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Stadtmitte",
+        "adminLevel": 1e1,
+        "matched": true,
+        "unique": false,
+        "default": false
+      }
+    ],
+    "score": 4.4048638916015625e2,
+    "modes": ["SUBWAY", "TRAM"],
+    "importance": 1.8639651825651526e-3
+  },
+  {
+    "type": "STOP",
+    "tokens": [],
+    "name": "D-Maxplatz",
+    "id": "de-DELFI_de:05111:18144:1:1",
+    "lat": 5.122323600000001e1,
+    "lon": 6.771878000000001,
+    "country": "DE",
+    "zip": "40213",
+    "tz": "Europe/Berlin",
+    "areas": [
+      {
+        "name": "Deutschland",
+        "adminLevel": 2,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Nordrhein-Westfalen",
+        "adminLevel": 4,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      {
+        "name": "Regierungsbezirk Düsseldorf",
+        "adminLevel": 5,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Düsseldorf", "adminLevel": 6, "matched": true, "unique": true, "default": true },
+      {
+        "name": "Stadtbezirk 1",
+        "adminLevel": 9,
+        "matched": true,
+        "unique": false,
+        "default": false
+      },
+      { "name": "Carlstadt", "adminLevel": 1e1, "matched": true, "unique": false, "default": false }
+    ],
+    "score": 4.608334045410156e2,
+    "modes": ["BUS"],
+    "importance": 3.2018085676099872e-6
+  }
+]
