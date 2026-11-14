@@ -170,6 +170,9 @@ describe("API journeys", () => {
     expect(body.later).not.toBeNull();
     expect(calls).toHaveLength(1);
     expect(calls[0]).toContain("itdTripDateTimeDepArr=dep");
+    // DHID ohne App-Präfix an den VRR
+    expect(calls[0]).toContain("name_origin=de%3A05111%3A18036&");
+    expect(calls[0]).toContain("name_destination=de%3A05113%3A9289");
   });
 
   it("nutzt außerhalb des VRR Transitous", async () => {
@@ -216,5 +219,15 @@ describe("API journeys", () => {
     );
     expect(res.status).toBe(400);
     expect(await res.json()).toMatchObject({ error: "invalid_when" });
+  });
+});
+
+describe("Quellenwahl", () => {
+  it("fragt mit Transitous-IDs nie den VRR", async () => {
+    const calls = mockUpstream({ "transitous.org/api/v5/plan": { itineraries: [] } });
+    const res = await get(`from=${BERLIN}&to=transitous:de-DELFI_de:11000:900100003`);
+    expect(res.status).toBe(200);
+    expect((await res.json<JourneysResponse>()).journeys).toEqual([]);
+    expect(calls.every((u) => !u.includes("openservice.vrr.de"))).toBe(true);
   });
 });

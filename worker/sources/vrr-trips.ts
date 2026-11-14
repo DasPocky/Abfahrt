@@ -162,6 +162,12 @@ function isUnknownPoint(messages: { type?: string; text?: string }[]): boolean {
   return messages.some((m) => m.type === "error" && /^(origin|destination)\b/.test(m.text ?? ""));
 }
 
+/** DHID aus einer App-ID („vrr:de:05111:18036“ → „de:05111:18036“) */
+function dhid(appId: string): string {
+  return appId.startsWith("vrr:") ? appId.slice("vrr:".length) : appId;
+}
+
+/** `fromId`/`toId` sind App-IDs mit Präfix `vrr:` */
 export async function trips(
   fromId: string,
   toId: string,
@@ -170,8 +176,8 @@ export async function trips(
 ): Promise<VrrTripResult> {
   let url =
     `${BASE}/XML_TRIP_REQUEST2?${COMMON}&useRealtime=1&calcNumberOfTrips=5` +
-    `&type_origin=any&name_origin=${encodeURIComponent(fromId)}` +
-    `&type_destination=any&name_destination=${encodeURIComponent(toId)}`;
+    `&type_origin=any&name_origin=${encodeURIComponent(dhid(fromId))}` +
+    `&type_destination=any&name_destination=${encodeURIComponent(dhid(toId))}`;
   if (when) {
     const { date, time } = efaDateTime(when);
     url += `&itdDate=${date}&itdTime=${time}&itdTripDateTimeDepArr=${arrive ? "arr" : "dep"}`;

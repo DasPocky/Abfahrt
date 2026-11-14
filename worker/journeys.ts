@@ -71,8 +71,11 @@ async function load(
   };
 
   // Im VRR (beide Enden) mit VRR-Echtzeit, sonst Transitous; die jeweils andere Quelle ist Fallback
+  // Der VRR kennt nur eigene IDs (DHID); mit Transitous-IDs bleibt Transitous allein zuständig
+  const vrrPossible = from.startsWith("vrr:") && to.startsWith("vrr:");
   const primary = inVrr(from) && inVrr(to) ? viaVrr : viaTransitous;
-  const secondary = primary === viaVrr ? viaTransitous : viaVrr;
+  const secondary = primary === viaVrr ? viaTransitous : vrrPossible ? viaVrr : null;
+  if (!secondary) return primary();
   try {
     const result = await primary();
     if (result.journeys.length > 0) return result;
