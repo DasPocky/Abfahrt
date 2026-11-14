@@ -24,21 +24,30 @@ export const MODE_LABEL: Record<TransportMode, string> = {
   other: "Sonstiges",
 };
 
-/**
- * Bezeichnung des Halteplatzes je Verkehrsmittel. An Knoten wie dem Hbf gibt es „Gleis 2“
- * der Bahn und „Gleis 2“ der U-Bahn, daher für U-Bahn/Stadtbahn ausdrücklich „U-Gleis“.
- */
-export function platformLabel(mode: TransportMode): string {
+/** Art des Halteplatz-Piktogramms (wie auf den Schildern vor Ort) */
+export type PlatformKind = "track" | "subway" | "stop" | "pier";
+
+export function platformKind(mode: TransportMode): PlatformKind {
   switch (mode) {
     case "suburban":
     case "regional":
     case "longdistance":
-      return "Gleis";
+      return "track";
     case "subway":
-      return "U-Gleis";
+      return "subway";
     case "ferry":
-      return "Anleger";
+      return "pier";
     default:
-      return "Steig";
+      return "stop";
   }
+}
+
+/**
+ * Ausgeschriebene Bezeichnung des Halteplatzes (für Screenreader und Tooltips). An Knoten wie
+ * dem Hbf gibt es „Gleis 2“ der Bahn und „Gleis 2“ der U-Bahn, daher „U-Bahn-Gleis“.
+ */
+export function platformLabel(mode: TransportMode): string {
+  return { track: "Gleis", subway: "U-Bahn-Gleis", stop: "Steig", pier: "Anleger" }[
+    platformKind(mode)
+  ];
 }

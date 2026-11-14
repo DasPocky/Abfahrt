@@ -8,7 +8,7 @@ import {
   sortDepartures,
   upcomingDepartures,
 } from "@/lib/departures";
-import { platformLabel } from "@/lib/modes";
+import { type PlatformKind, platformKind, platformLabel } from "@/lib/modes";
 import { summarizeNotices } from "@/lib/notices";
 import {
   delayMinutes,
@@ -27,30 +27,63 @@ const DELAY_CLASS: Record<DelayTone, string> = {
   destructive: "text-destructive",
 };
 
-/** Kleines Kästchen in fester Spalte: Bezeichnung über der Nummer, Gleiswechsel in Orange */
+/** Piktogramm vor der Nummer, angelehnt an die Beschilderung vor Ort */
+function PlatformSign({ kind }: { kind: PlatformKind }) {
+  switch (kind) {
+    case "subway":
+      // weißes U auf blauem Quadrat (U-Bahn-Schild)
+      return (
+        <span className="flex size-4 items-center justify-center rounded-[3px] bg-[#0065ae] text-[0.65rem] font-bold text-white">
+          U
+        </span>
+      );
+    case "stop":
+      // grünes H auf gelbem Kreis (Haltestellen-Schild)
+      return (
+        <span className="flex size-4 items-center justify-center rounded-full border-[1.5px] border-[#00843d] bg-[#ffd500] text-[0.55rem] font-extrabold text-[#00843d]">
+          H
+        </span>
+      );
+    case "pier":
+      return <span className="text-[0.65rem] font-medium text-muted-foreground">Anl.</span>;
+    default:
+      return <span className="text-[0.65rem] font-medium text-muted-foreground">Gl.</span>;
+  }
+}
+
+/** Halteplatz in fester Spalte: Piktogramm + Nummer, Gleiswechsel in Orange */
 function Platform({ departure }: { departure: Departure }) {
   if (departure.platform === null || departure.cancelled) return <span aria-hidden="true" />;
   const label = platformLabel(departure.mode);
   const changed = hasPlatformChange(departure);
   return (
     <span
-      className={cn(
-        "flex w-12 flex-col items-center rounded-md border px-0.5 py-0.5 leading-none",
-        changed && "border-warning/40 bg-warning/10 text-warning",
-      )}
+      className="flex min-w-11 flex-col items-end leading-none"
       data-platform-change={changed || undefined}
+      title={
+        changed
+          ? `${label} ${departure.platform} statt ${departure.plannedPlatform}`
+          : `${label} ${departure.platform}`
+      }
     >
-      <span
-        className={cn(
-          "text-[0.55rem] font-medium tracking-wide uppercase",
-          changed ? "text-warning" : "text-muted-foreground",
-        )}
-      >
-        {label}
+      <span className="flex items-center gap-1">
+        <span aria-hidden="true">
+          <PlatformSign kind={platformKind(departure.mode)} />
+        </span>
+        <span className="sr-only">{label} </span>
+        <span
+          className={cn(
+            "text-sm font-semibold tabular-nums",
+            changed && "rounded-sm bg-warning/15 px-0.5 text-warning",
+          )}
+        >
+          {departure.platform}
+        </span>
       </span>
-      <span className="text-sm font-semibold tabular-nums">{departure.platform}</span>
       {changed && (
-        <span className="text-[0.55rem] font-semibold">statt {departure.plannedPlatform}</span>
+        <span className="mt-0.5 text-[0.6rem] font-semibold text-warning">
+          statt {departure.plannedPlatform}
+        </span>
       )}
     </span>
   );
