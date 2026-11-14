@@ -14,8 +14,8 @@ Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`do
 1. Auf der Startseite den Namen einer Haltestelle eingeben (ab 2 Zeichen erscheinen Vorschläge).
 2. Treffer antippen – oder per Tastatur: Pfeil runter/hoch wählt, Enter öffnet, Esc leert die Suche.
 3. Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen weiter. Der Link lässt sich als Lesezeichen speichern.
-4. **Filtern:** Über der Liste stehen die Verkehrsmittel, die an der Haltestelle fahren (z. B. S-Bahn, U-Bahn, Bus). Antippen filtert, mehrere sind möglich. Unter **Mehr** gibt es Linien, Gleis/Steig und „Abfahrten ab“ (Uhrzeit). Der Filter steht in der Adresse, der Link lässt sich also teilen.
-5. Mit dem **Stern** wird die aktuelle Ansicht zum Favoriten, inklusive Filter. Dieselbe Haltestelle kann mehrfach gespeichert werden (z. B. „Hbf · S-Bahn“ und „Hbf · U-Bahn“). Favoriten erscheinen auf der Startseite unter „Meine Haltestellen“ mit den nächsten Abfahrten und lassen sich umbenennen, verschieben und entfernen. Sie werden nur im eigenen Browser gespeichert.
+4. **Filtern:** Über der Liste stehen die Verkehrsmittel, die an der Haltestelle fahren (z. B. S-Bahn, U-Bahn, Bus). Antippen filtert, mehrere sind möglich. Über das **Filter-Symbol** rechts gibt es Linien, Gleis/Steig und „Abfahrten ab“ (Uhrzeit). Der Filter steht in der Adresse, der Link lässt sich also teilen.
+5. Mit dem **Stern** wird die aktuelle Ansicht zum Favoriten, inklusive Filter. Dieselbe Haltestelle kann mehrfach gespeichert werden (z. B. „Hbf · S-Bahn“ und „Hbf · U-Bahn“). Favoriten erscheinen auf der Startseite unter „Meine Haltestellen“ mit den nächsten Abfahrten. Über **Bearbeiten** lassen sie sich umbenennen, verschieben und entfernen. Sie werden nur im eigenen Browser gespeichert.
 
 ## Live
 

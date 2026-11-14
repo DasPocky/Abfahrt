@@ -22,10 +22,11 @@ function mixedDepartures(prefix: string) {
   );
 }
 
+/** Titel der Favoriten (erste Zeile im Link) */
 function favoriteLinks() {
   return within(screen.getByRole("list", { name: "Favoriten" }))
     .getAllByRole("link")
-    .map((l) => l.textContent);
+    .map((l) => l.querySelector("span > span")?.textContent);
 }
 
 beforeEach(() => localStorage.clear());
@@ -67,6 +68,7 @@ describe("Favoriten auf der Startseite", () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json(departuresResponse([])));
     renderAt("/");
 
+    fireEvent.click(screen.getByRole("button", { name: "Bearbeiten" }));
     fireEvent.click(screen.getByRole("button", { name: "Heinrich-Heine-Allee U nach oben" }));
     expect(favoriteLinks()).toEqual(["Heinrich-Heine-Allee U", "Düsseldorf Hbf"]);
 

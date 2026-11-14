@@ -47,6 +47,8 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 - **Speicher:** Favoriten in `localStorage` unter `abfahrt:favorites`, Format **Version 2**: `{ version: 2, items: [{ stopId, name, place?, label?, filter }] }`. Ein Favorit ist Haltestelle + Filter (ohne Zeitpunkt), dieselbe Haltestelle darf mehrfach vorkommen. Version 1 (ohne Filter) wird beim Lesen automatisch übernommen. Robust gegen kaputte Daten, höchstens 20 Einträge, Abgleich zwischen Tabs über das `storage`-Ereignis (`src/lib/favorites.ts`, `src/hooks/use-favorites.ts`). Export/Import per Link bzw. QR kommt später.
 - **UI:** Tailwind CSS v4 + [shadcn/ui](https://ui.shadcn.com) (Preset „Vega“, Radix, Lucide-Icons, Schrift Inter lokal gebündelt). Komponenten liegen als Code in `src/components/ui/` und kommen per `npx shadcn@<version> add <name>` hinzu. Das CLI ist bewusst kein Projekt-Paket (bekannte Lücke in `deepmerge`), `src/styles/shadcn.css` ist lokal eingebunden.
 - **Design:** klar und modern, große Countdown-Zahlen, Linienfarben als Akzent, Hell/Dunkel automatisch per `prefers-color-scheme`. Farb-Tokens in `src/index.css`, inkl. `success`/`warning` für pünktlich/verspätet.
+- **Abfahrtszeile (Variante A, Standard):** Linienfeld in Linienfarbe mit Verkehrsmittel-Symbol, Ziel, darunter einzeilig Planzeit · Verspätung/„pünktlich“ · Gleis-Kästchen · ⓘ, Countdown rechts gestapelt (Zahl + „Min“). Varianten B (Countdown links) und C (Karten mit Farbstreifen) sind für die Einstellungen vorgemerkt (#37).
+- **Panels** (Hinweise, Filter) nutzen das native `<dialog>` (`src/components/bottom-sheet.tsx`), weil Radix-Dialoge `<style>`-Elemente einfügen, die die CSP blockiert.
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
