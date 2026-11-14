@@ -4,6 +4,7 @@ import { cacheProbe } from "./cache-probe";
 import { apiError, json, UpstreamError } from "./http";
 import { isRateLimited } from "./rate-limit";
 import { withSecurityHeaders } from "./security-headers";
+import { getStopsInArea } from "./stops-area";
 
 const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
 
@@ -25,6 +26,8 @@ async function handleApi(request: Request, ctx: ExecutionContext): Promise<Respo
     switch (route) {
       case "stops/search":
         return await searchStops(request, ctx, url.searchParams);
+      case "stops/area":
+        return await getStopsInArea(request, ctx, url.searchParams);
       case "stops/nearby":
         return await nearbyStops(request, ctx, url.searchParams);
       case "departures":

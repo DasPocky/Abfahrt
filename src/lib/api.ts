@@ -38,7 +38,7 @@ export function isDeparturesResponse(value: unknown): value is DeparturesRespons
   );
 }
 
-async function getJson<T>(
+export async function getJson<T>(
   path: string,
   guard: (value: unknown) => value is T,
   signal?: AbortSignal,

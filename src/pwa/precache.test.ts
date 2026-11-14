@@ -29,6 +29,16 @@ describe("precacheUrls", () => {
     ]);
   });
 
+  it("lässt die lazy geladene Karte samt MapLibre-Worker weg", () => {
+    expect(
+      precacheUrls([
+        "abfahrt/assets/map-page-CX_qZUJr.js",
+        "abfahrt/assets/map-page-qvkd0SPb.css",
+        "abfahrt/assets/maplibre-gl-worker-CMkqA50c.mjs",
+      ]),
+    ).toEqual(["/abfahrt/"]);
+  });
+
   it("versteht Windows-Pfade und entfernt Doppelte", () => {
     expect(precacheUrls(["abfahrt\\icons\\icon.svg", "abfahrt/icons/icon.svg"])).toEqual([
       "/abfahrt/",

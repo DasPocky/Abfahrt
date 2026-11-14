@@ -66,6 +66,7 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
   - `v5/plan`: Verbindungen
   - `trip`: Fahrtverlauf
   - `map/trips`: Fahrzeugpositionen
+  - `v1/map/stops`: Haltestellen (Steige) im Rechteck `min=<lat,lon>&max=<lat,lon>`, für die Karte
 - **CORS:** ✅ `Access-Control-Allow-Origin: *`
 
 **Test 30.10.2026:**
@@ -80,6 +81,14 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - 125 davon mit Echtzeit
 - je Abschnitt: Streckenverlauf (`polyline`), Plan- und Echtzeit für Abfahrt/Ankunft, Linie (`trips`)
 - Antwortgröße ca. 275 kB. Die Position wird im Browser entlang der Polyline interpoliert, der Worker cached pro Kachel. So entsteht eine flüssige Karte wie bei TRAVIC, aber mit eigenen Mitteln und offenen Daten.
+
+**Test 14.11.2026, Haltestellen für die Karte** (`v1/map/stops`):
+
+- Düsseldorf Innenstadt `min=51.220,6.770&max=51.230,6.785` (ca. 1,1 × 1 km): 30 Einträge, 9 kB, ca. 0,6 s. Jeder Eintrag ist ein Steig (`stopId` z. B. `de-DELFI_de:05111:18036:8:4`), nur manche haben `parentId` (`de-DELFI_de:05111:18036`). Zusammengefasst nach DHID: 20 Haltestellen, alle im VRR.
+- Größter erlaubter Ausschnitt `min=51.200,6.750&max=51.250,6.830`: 652 Einträge, 186 kB, ca. 0,9 s → 180 Haltestellen. Darunter Dubletten aus anderen Datensätzen (`nl-OpenOV_…`, `eu-flixbus_…`, `at-Railway-…_de:05111:18235:…`).
+- Köln `min=50.935,6.950&max=50.945,6.965`: 65 Einträge, darunter Köln Hbf aus 8 Datensätzen; nach DHID und Dublettenfilter bleibt einmal `de-DELFI_de:05315:11201`.
+- `v5/stoptimes` mit einem Steig liefert die Abfahrten der ganzen Haltestelle; eine konstruierte Eltern-ID ohne Eintrag (`de-DELFI_de:05111:18694`) ergibt dagegen 404. Der Worker nimmt deshalb nur IDs, die Transitous selbst geliefert hat.
+- Ergebnis 24 h gecacht (Schlüssel: Ausschnitt auf 3 Nachkommastellen nach außen gerundet). Fixtures: `test/worker/fixtures/transitous-map-stops-*.json`.
 
 ### Linienfarben für VRR-Abfahrten
 
@@ -104,9 +113,10 @@ Wir rufen Transitous deshalb ebenfalls nur über den Worker auf: wegen User-Agen
 
 ## OpenFreeMap (Karte)
 
-- Kostenlose Vektorkacheln auf OSM-Basis, ohne Key: `https://tiles.openfreemap.org/styles/liberty` (getestet ✅)
+- Kostenlose Vektorkacheln auf OSM-Basis, ohne Key: `https://tiles.openfreemap.org/styles/liberty` (getestet ✅), für den Dunkelmodus `…/styles/dark` (getestet 14.11.2026 ✅). Stil, TileJSON (`/planet`), Kacheln, Schriften (`/fonts/…`) und Sprites (`/sprites/…`) kommen alle von `tiles.openfreemap.org`.
 - Darstellung mit **MapLibre GL JS**
-- Pflicht: OSM-Attribution („© OpenStreetMap contributors“)
+- Pflicht: OSM-Attribution („© OpenStreetMap contributors“), bei uns „© OpenStreetMap-Mitwirkende, OpenFreeMap · OpenMapTiles“ immer sichtbar auf der Karte
+- Die Kacheln lädt der Browser direkt (nicht über den Worker); OpenFreeMap sieht dabei die IP-Adresse, steht auf der Über-Seite.
 
 ## VRR Mobilitäts- und Infrastruktur-Plattform (MIP)
 
