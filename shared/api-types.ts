@@ -53,6 +53,74 @@ export interface DeparturesResponse {
   generatedAt: string;
 }
 
+// ---- Verbindungssuche (M2) ----
+
+/** Halt innerhalb einer Verbindung (Start, Ziel, Umstieg oder Zwischenhalt) */
+export interface JourneyStop {
+  /** Haltestellen-ID wie in `Stop.id`, null bei Adressen/Koordinaten */
+  id: string | null;
+  name: string;
+  place?: string;
+  lat?: number;
+  lon?: number;
+  /** ISO-8601; null am Start (Ankunft) bzw. am Ziel (Abfahrt) */
+  plannedArrival: string | null;
+  realtimeArrival: string | null;
+  plannedDeparture: string | null;
+  realtimeDeparture: string | null;
+  /** Gleis/Steig laut Echtzeit bzw. Plan */
+  platform: string | null;
+  /** Geplantes Gleis, falls abweichend (Gleiswechsel) */
+  plannedPlatform: string | null;
+  /** Halt fällt aus */
+  cancelled: boolean;
+}
+
+export type JourneyLegKind = "transit" | "walk";
+
+export interface JourneyLeg {
+  kind: JourneyLegKind;
+  origin: JourneyStop;
+  destination: JourneyStop;
+  /** Dauer laut Plan in Minuten */
+  durationMinutes: number;
+  /** Nur Fußwege: Länge in Metern, falls bekannt */
+  distanceMeters: number | null;
+  /** Nur Fahrten (bei Fußwegen null bzw. leer) */
+  line: string | null;
+  mode: TransportMode | null;
+  direction: string | null;
+  lineColor: string | null;
+  lineTextColor: string | null;
+  /** Zwischenhalte ohne Start und Ziel des Abschnitts */
+  intermediateStops: JourneyStop[];
+  /** Fahrt fällt (teilweise) aus */
+  cancelled: boolean;
+  notices: string[];
+}
+
+export interface Journey {
+  /** Stabil innerhalb einer Antwort, z. B. für React-Keys */
+  id: string;
+  legs: JourneyLeg[];
+  /** Anzahl Umstiege (Fahrten − 1, Fußwege zählen nicht) */
+  transfers: number;
+  /** Gesamtdauer laut Plan in Minuten */
+  durationMinutes: number;
+}
+
+export interface JourneysResponse {
+  from: Stop;
+  to: Stop;
+  journeys: Journey[];
+  source: DataSource;
+  /** ISO-8601, Zeitpunkt der Datenabfrage */
+  generatedAt: string;
+  /** Für „Früher“/„Später“: Zeitpunkt (ISO) für die nächste Abfrage mit `arrive=0` */
+  earlier: string | null;
+  later: string | null;
+}
+
 export interface ApiError {
   error: string;
   message?: string;
