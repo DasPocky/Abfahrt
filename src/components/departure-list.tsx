@@ -1,4 +1,4 @@
-import { ChevronRight, Info, TriangleAlert } from "lucide-react";
+import { ChevronRight, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { LineBadge } from "@/components/line-badge";
@@ -8,6 +8,7 @@ import {
   sortDepartures,
   upcomingDepartures,
 } from "@/lib/departures";
+import { platformLabel } from "@/lib/modes";
 import { summarizeNotices } from "@/lib/notices";
 import {
   delayMinutes,
@@ -17,7 +18,7 @@ import {
   formatDelay,
   type DelayTone,
 } from "@/lib/time";
-import type { Departure, TransportMode } from "../../shared/api-types";
+import type { Departure } from "../../shared/api-types";
 
 const DELAY_CLASS: Record<DelayTone, string> = {
   unknown: "text-muted-foreground",
@@ -26,36 +27,31 @@ const DELAY_CLASS: Record<DelayTone, string> = {
   destructive: "text-destructive",
 };
 
-const TRACK_MODES = new Set<TransportMode>(["subway", "suburban", "regional", "longdistance"]);
-
-function platformLabel(mode: TransportMode): string {
-  return TRACK_MODES.has(mode) ? "Gleis" : "Steig";
-}
-
+/** Kleines Kästchen in fester Spalte: „Gleis“/„Steig“ über der Nummer, Gleiswechsel in Orange */
 function Platform({ departure }: { departure: Departure }) {
-  if (departure.platform === null) return null;
+  if (departure.platform === null || departure.cancelled) return <span aria-hidden="true" />;
   const label = platformLabel(departure.mode);
-  const short = label === "Gleis" ? "Gl." : "Stg.";
-  if (!hasPlatformChange(departure)) {
-    return (
-      <span
-        className="rounded border px-1 text-xs leading-5 text-foreground/80"
-        title={`${label} ${departure.platform}`}
-      >
-        <span className="sr-only">{label} </span>
-        <span aria-hidden="true">{short} </span>
-        {departure.platform}
-      </span>
-    );
-  }
+  const changed = hasPlatformChange(departure);
   return (
     <span
-      className="rounded border border-warning/40 bg-warning/15 px-1 text-xs leading-5 font-semibold text-warning"
-      data-platform-change="true"
+      className={cn(
+        "flex w-12 flex-col items-center rounded-md border px-0.5 py-0.5 leading-none",
+        changed && "border-warning/40 bg-warning/10 text-warning",
+      )}
+      data-platform-change={changed || undefined}
     >
-      <span className="sr-only">{label} </span>
-      <span aria-hidden="true">{short} </span>
-      {departure.platform} <span className="font-normal">statt {departure.plannedPlatform}</span>
+      <span
+        className={cn(
+          "text-[0.55rem] font-medium tracking-wide uppercase",
+          changed ? "text-warning" : "text-muted-foreground",
+        )}
+      >
+        {label}
+      </span>
+      <span className="text-sm font-semibold tabular-nums">{departure.platform}</span>
+      {changed && (
+        <span className="text-[0.55rem] font-semibold">statt {departure.plannedPlatform}</span>
+      )}
     </span>
   );
 }
@@ -78,6 +74,10 @@ function noticeCount(count: number): string {
   return count === 1 ? "1 Hinweis" : `${count} Hinweise`;
 }
 
+/** Gemeinsamer Stil für Hinweis-Auslöser (Haltestelle und Fahrt) */
+const NOTICE_CLASS =
+  "flex w-full items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 px-2.5 py-1.5 text-left text-sm outline-none hover:bg-warning/15 focus-visible:ring-2 focus-visible:ring-ring";
+
 /**
  * Sammelhinweis: Hinweise, die mehrere Fahrten betreffen. Steht als eigener Kasten über der
  * Abfahrtsliste (nicht in der Karte); die Liste blendet diese Hinweise in den Zeilen aus.
@@ -96,11 +96,16 @@ export function StopNoticesBanner({
     <BottomSheet
       title="Hinweise für diese Haltestelle"
       description="Betreffen mehrere Abfahrten"
-      triggerClassName="flex w-full items-center gap-2 rounded-xl border border-warning/30 bg-warning/10 px-4 py-2.5 text-left text-sm font-medium outline-none hover:bg-warning/15 focus-visible:ring-2 focus-visible:ring-ring"
+      triggerClassName={NOTICE_CLASS}
       trigger={
         <>
           <TriangleAlert className="size-4 shrink-0 text-warning" aria-hidden="true" />
-          <span className="flex-1">{noticeCount(notices.length)} für diese Haltestelle</span>
+          <span className="min-w-0 flex-1 truncate">
+            <span className="font-medium">
+              {noticeCount(notices.length)} für diese Haltestelle:
+            </span>{" "}
+            {notices[0]}
+          </span>
           <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         </>
       }
@@ -110,7 +115,7 @@ export function StopNoticesBanner({
   );
 }
 
-/** ⓘ-Button in der Zeile, öffnet die Hinweise zu dieser Fahrt */
+/** Schlanke Hinweiszeile unter der Fahrt, öffnet alle Hinweise im Panel */
 function DepartureNotices({
   departure,
   notices,
@@ -123,16 +128,16 @@ function DepartureNotices({
     <BottomSheet
       title={`Hinweise zu ${departure.line}`}
       description={`${departure.direction}, ${formatClock(new Date(departure.plannedTime))}`}
-      triggerLabel={`${notices.length > 1 ? `${notices.length} ` : ""}Hinweise zu ${departure.line} anzeigen`}
-      triggerClassName="-m-1.5 inline-flex min-h-8 min-w-8 items-center justify-center gap-0.5 rounded-full p-1.5 text-warning outline-none hover:bg-warning/10 focus-visible:ring-2 focus-visible:ring-ring"
+      triggerLabel={`${notices.length > 1 ? `${notices.length} ` : ""}Hinweise zu ${departure.line} anzeigen: ${notices[0]}`}
+      triggerClassName={cn(NOTICE_CLASS, "py-1 text-xs")}
       trigger={
         <>
-          <Info className="size-4" aria-hidden="true" />
+          <TriangleAlert className="size-3.5 shrink-0 text-warning" aria-hidden="true" />
+          <span className="min-w-0 flex-1 truncate">{notices[0]}</span>
           {notices.length > 1 && (
-            <span className="text-xs font-semibold" aria-hidden="true">
-              {notices.length}
-            </span>
+            <span className="shrink-0 text-muted-foreground">+{notices.length - 1}</span>
           )}
+          <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
         </>
       }
     >
@@ -160,64 +165,67 @@ function DepartureRow({
 
   return (
     <li
-      className="flex items-center gap-3 py-2.5"
+      className="grid grid-cols-[auto_minmax(0,1fr)_auto_2.75rem] items-center gap-x-2.5 gap-y-1 py-2"
       data-cancelled={departure.cancelled || undefined}
     >
       <LineBadge departure={departure} />
 
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0">
         <p
           className={cn(
-            "truncate font-medium",
+            "truncate leading-tight font-medium",
             departure.cancelled && "text-muted-foreground line-through",
           )}
         >
           {departure.direction}
         </p>
-        <div className="mt-0.5 flex items-center gap-x-2 overflow-hidden text-sm whitespace-nowrap text-muted-foreground">
-          <span className="tabular-nums">
-            <time
-              dateTime={departure.plannedTime}
-              className={cn(departure.cancelled && "line-through")}
+        <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums">
+          ab{" "}
+          <time
+            dateTime={departure.plannedTime}
+            className={cn("text-foreground", departure.cancelled && "line-through")}
+          >
+            {formatClock(planned)}
+          </time>
+          {delay !== null && !departure.cancelled && (
+            <span
+              className={cn("ml-1.5", delay === 0 ? "" : "font-semibold", DELAY_CLASS[tone])}
+              data-tone={tone}
             >
-              {formatClock(planned)}
-            </time>
-            {delay !== null && !departure.cancelled && (
-              <span
-                className={cn(
-                  "ml-1",
-                  delay === 0 ? "font-normal" : "font-semibold",
-                  DELAY_CLASS[tone],
-                )}
-                data-tone={tone}
-              >
-                {formatDelay(delay)}
-              </span>
-            )}
-          </span>
-          {!departure.cancelled && <Platform departure={departure} />}
-          {departure.cancelled && <span className="font-semibold text-destructive">fällt aus</span>}
-          <DepartureNotices departure={departure} notices={notices} />
-        </div>
+              {formatDelay(delay)}
+            </span>
+          )}
+          {departure.cancelled && (
+            <span className="ml-1.5 font-semibold text-destructive">fällt aus</span>
+          )}
+        </p>
       </div>
+
+      <Platform departure={departure} />
 
       <div
         className={cn(
-          "min-w-10 shrink-0 text-right text-base leading-tight font-bold tabular-nums",
+          "text-right leading-none font-bold tabular-nums",
           departure.cancelled && "text-muted-foreground line-through",
         )}
       >
         {minutes ? (
-          <span className="flex flex-col items-end leading-none" aria-label={countdown}>
-            <span className="text-xl">{minutes}</span>
-            <span className="text-[0.7rem] font-medium text-muted-foreground" aria-hidden="true">
+          <span className="flex flex-col items-end" aria-label={countdown}>
+            <span className="text-lg leading-none">{minutes}</span>
+            <span className="text-[0.65rem] font-medium text-muted-foreground" aria-hidden="true">
               Min
             </span>
           </span>
         ) : (
-          countdown
+          <span className="text-sm">{countdown}</span>
         )}
       </div>
+
+      {notices.length > 0 && (
+        <div className="col-span-3 col-start-2">
+          <DepartureNotices departure={departure} notices={notices} />
+        </div>
+      )}
     </li>
   );
 }

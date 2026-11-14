@@ -23,3 +23,21 @@ export const MODE_LABEL: Record<TransportMode, string> = {
   ferry: "Fähre",
   other: "Sonstiges",
 };
+
+/**
+ * Bezeichnung des Halteplatzes: Schienenverkehr (auch U-Bahn) „Gleis“, Bus/Tram „Steig“.
+ * Welches Gleis gemeint ist (Bahn oder U-Bahn), zeigt die Linie davor.
+ */
+export function platformLabel(mode: TransportMode): string {
+  switch (mode) {
+    case "suburban":
+    case "regional":
+    case "longdistance":
+    case "subway":
+      return "Gleis";
+    case "ferry":
+      return "Anleger";
+    default:
+      return "Steig";
+  }
+}

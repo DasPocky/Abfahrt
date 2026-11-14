@@ -1,7 +1,15 @@
 import { useId, useRef, useState, type KeyboardEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
-import { ChevronRight, LoaderCircle, LocateFixed, LocateOff, MapPin, Search } from "lucide-react";
+import {
+  ChevronRight,
+  LoaderCircle,
+  LocateFixed,
+  LocateOff,
+  MapPin,
+  Search,
+  X,
+} from "lucide-react";
 import { cn } from "cn";
 import { Input } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
@@ -11,6 +19,10 @@ import { searchStops, stopPath } from "@/lib/api";
 
 export const SEARCH_DEBOUNCE_MS = 250;
 export const SEARCH_MIN_LENGTH = 2;
+
+/** Einheitliche Symbol-Schaltflächen im Suchfeld (Größe, Strichstärke und Farbe wie die Lupe) */
+const ICON_BUTTON =
+  "flex size-8 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function StopSearch() {
   const [query, setQuery] = useState("");
@@ -94,7 +106,7 @@ export function StopSearch() {
     <div className="space-y-2">
       <div className="relative">
         <Search
-          className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground"
+          className="pointer-events-none absolute top-1/2 left-3.5 size-[1.125rem] -translate-y-1/2 text-muted-foreground"
           aria-hidden="true"
         />
         <Input
@@ -109,43 +121,56 @@ export function StopSearch() {
           aria-label="Haltestelle suchen"
           aria-controls={listId}
           aria-describedby={statusId}
-          className="h-12 pr-20 pl-10 text-base md:text-base"
+          className="h-12 pr-[5.25rem] pl-10 text-base md:text-base"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onFocus={location.ensureAsked}
           onKeyDown={onInputKeyDown}
         />
-        {waiting && (
-          <LoaderCircle
-            className="absolute top-1/2 right-12 size-5 -translate-y-1/2 animate-spin text-muted-foreground"
-            aria-label="Lädt"
-            role="img"
-          />
-        )}
-        <button
-          type="button"
-          onClick={location.toggle}
-          aria-pressed={location.status === "on"}
-          aria-label={locationLabel}
-          title={locationLabel}
-          className={cn(
-            "absolute top-1/2 right-1.5 flex size-9 -translate-y-1/2 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            location.status === "on"
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-        >
-          {location.status === "locating" ? (
-            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
-          ) : location.status === "denied" || location.status === "unavailable" ? (
-            <LocateOff className="size-5" aria-hidden="true" />
+        <div className="absolute top-1/2 right-2 flex -translate-y-1/2 items-center gap-1">
+          {waiting ? (
+            <span className={ICON_BUTTON} role="img" aria-label="Lädt">
+              <LoaderCircle className="size-[1.125rem] animate-spin" aria-hidden="true" />
+            </span>
           ) : (
-            <LocateFixed
-              className={cn("size-5", location.status === "on" && "fill-primary/15")}
-              aria-hidden="true"
-            />
+            query !== "" && (
+              <button
+                type="button"
+                className={cn(ICON_BUTTON, "text-muted-foreground hover:text-foreground")}
+                aria-label="Suche leeren"
+                onClick={() => {
+                  setQuery("");
+                  inputRef.current?.focus();
+                }}
+              >
+                <X className="size-[1.125rem]" aria-hidden="true" />
+              </button>
+            )
           )}
-        </button>
+          {/* feine Trennlinie: links Eingabe-Aktionen, rechts Standort */}
+          <span className="h-5 w-px bg-border" aria-hidden="true" />
+          <button
+            type="button"
+            onClick={location.toggle}
+            aria-pressed={location.status === "on"}
+            aria-label={locationLabel}
+            title={locationLabel}
+            className={cn(
+              ICON_BUTTON,
+              location.status === "on"
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {location.status === "locating" ? (
+              <LoaderCircle className="size-[1.125rem] animate-spin" aria-hidden="true" />
+            ) : location.status === "denied" || location.status === "unavailable" ? (
+              <LocateOff className="size-[1.125rem]" aria-hidden="true" />
+            ) : (
+              <LocateFixed className="size-[1.125rem]" aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </div>
 
       <p id={statusId} role="status" className="min-h-5 px-1 text-sm text-muted-foreground">
