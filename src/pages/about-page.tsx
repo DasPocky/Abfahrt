@@ -88,6 +88,11 @@ export function AboutPage() {
             Suchbegriffe und Haltestellen gehen über unseren Server bei Cloudflare an die genannten
             Datenquellen, ohne Bezug zu deiner Person.
           </li>
+          <li>
+            Karte: Für die Haltestellen geht nur der sichtbare Kartenausschnitt an unseren Server,
+            nicht dein Standort. Die Kartenkacheln lädt dein Browser direkt von OpenFreeMap, dabei
+            sieht OpenFreeMap deine IP-Adresse.
+          </li>
         </ul>
       </Section>
 

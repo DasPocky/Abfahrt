@@ -62,6 +62,8 @@ export default defineConfig({
   build: {
     // Assets liegen unter /abfahrt/assets/, passend zur Route endlab.de/abfahrt*
     assetsDir: "abfahrt/assets",
+    // Die Karte (lazy, mit MapLibre) ist bewusst ein großer eigener Chunk, siehe src/routes.tsx
+    chunkSizeWarningLimit: 1200,
   },
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },

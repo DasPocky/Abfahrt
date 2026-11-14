@@ -37,6 +37,7 @@ describe("Über-Seite", () => {
     ).toBeVisible();
     expect(within(privacy).getByText(/Favoriten werden nur lokal/)).toBeVisible();
     expect(within(privacy).getByText(/Standort wird nur auf deinen Wunsch/)).toBeVisible();
+    expect(within(privacy).getByText(/nur der sichtbare Kartenausschnitt/)).toBeVisible();
   });
 
   it("öffnet externe Links in neuem Tab ohne Referrer-Zugriff", () => {

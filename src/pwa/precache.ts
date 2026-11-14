@@ -5,6 +5,8 @@ import { BASE_PATH } from "../../shared/base-path";
 export const BUILD_PLACEHOLDER = 'const BUILD = { version: "dev", base: "/abfahrt", urls: [] };';
 
 const FONT_FILE = /\.woff2?$/;
+/** Karte samt MapLibre (ca. 1,6 MB): nur bei Bedarf aus dem Netz, nicht in der Offline-Hülle */
+const ON_DEMAND_FILE = /^(map-page|maplibre-gl-worker)-/;
 
 /**
  * Welche Ausgabedateien gehören zur Offline-Hülle?
@@ -12,8 +14,9 @@ const FONT_FILE = /\.woff2?$/;
  * `fileNames` sind Pfade relativ zu dist/client (Bundle + public/). Es zählen nur Dateien unter
  * dem App-Präfix (abfahrt/…), ohne versteckte Dateien, Source Maps und den Service Worker selbst.
  * Schriften nur im Zeichensatz „latin“ (enthält Umlaute und ß), die übrigen Teilmengen lädt der
- * Browser nur bei Bedarf über das Netz. Statt index.html steht die Start-URL „/abfahrt/“ in der Liste, denn
- * /index.html liegt in Produktion außerhalb der Route endlab.de/abfahrt*.
+ * Browser nur bei Bedarf über das Netz. Ebenso die Karte, die ohne Netz ohnehin nichts zeigt.
+ * Statt index.html steht die Start-URL „/abfahrt/“ in der Liste, denn /index.html liegt in
+ * Produktion außerhalb der Route endlab.de/abfahrt*.
  */
 export function precacheUrls(fileNames: Iterable<string>, base: string = BASE_PATH): string[] {
   const prefix = `${base.slice(1)}/`;
@@ -26,6 +29,7 @@ export function precacheUrls(fileNames: Iterable<string>, base: string = BASE_PA
     if (segments.some((segment) => segment.startsWith("."))) continue; // z. B. .vite/
     if (file.endsWith(".map") || file === "sw.js") continue;
     if (FONT_FILE.test(file) && !/-latin-(?!ext)/.test(file)) continue;
+    if (ON_DEMAND_FILE.test(file)) continue;
     urls.add(`/${name}`);
   }
   return [...urls].toSorted();
