@@ -38,7 +38,7 @@ describe("Über-Seite", () => {
     expect(
       within(privacy).getByText(/Favoriten und die gemerkte Verbindung werden nur lokal/),
     ).toBeVisible();
-    expect(within(privacy).getByText(/Standort wird nur auf deinen Wunsch/)).toBeVisible();
+    expect(within(privacy).getByText(/Standort wird beim Öffnen angefragt/)).toBeVisible();
     expect(within(privacy).getByText(/nur der sichtbare Kartenausschnitt/)).toBeVisible();
   });
 

@@ -4,7 +4,7 @@ export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Strict-Transport-Security": "max-age=31536000",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "geolocation=(self), camera=(), microphone=()",
+  "Permissions-Policy": "camera=(), microphone=()",
   "Cross-Origin-Opener-Policy": "same-origin",
 };
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { LocationProbe } from "@/components/location-probe";
 
 const REPO_URL = "https://github.com/DasPocky/Abfahrt";
 
@@ -82,9 +83,11 @@ export function AboutPage() {
             Favoriten und die gemerkte Verbindung werden nur lokal in deinem Browser gespeichert.
           </li>
           <li>
-            Dein Standort wird nur auf deinen Wunsch abgefragt. Die Suche sortiert damit nur auf
-            deinem Gerät. Für „In der Nähe“ geht er auf etwa 100 m gerundet an unseren Server, wird
-            dort nicht gespeichert oder protokolliert und erreicht die Datenquelle nur gerundet.
+            Dein Standort wird beim Öffnen angefragt, dein Browser fragt dich vorher um Erlaubnis.
+            Über das Standort-Symbol in der Suche schaltest du ihn dauerhaft aus. Die Suche sortiert
+            damit nur auf deinem Gerät. Für „In der Nähe“ geht er auf etwa 100 m gerundet an unseren
+            Server, wird dort nicht gespeichert oder protokolliert und erreicht die Datenquelle nur
+            gerundet.
           </li>
           <li>
             Suchbegriffe und Haltestellen gehen über unseren Server bei Cloudflare an die genannten
@@ -96,6 +99,13 @@ export function AboutPage() {
             sieht OpenFreeMap deine IP-Adresse.
           </li>
         </ul>
+      </Section>
+
+      <Section id="about-location" title="Standort testen">
+        <p className="text-muted-foreground">
+          Fordert den Standort sofort an und zeigt, was der Browser antwortet.
+        </p>
+        <LocationProbe />
       </Section>
 
       <Section id="about-code" title="Quellcode">
