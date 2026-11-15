@@ -2,6 +2,7 @@
 import type {
   ApiError,
   DeparturesResponse,
+  Journey,
   JourneysResponse,
   StopSearchResponse,
 } from "../../shared/api-types";
@@ -52,6 +53,17 @@ function isNullableString(value: unknown): value is string | null {
   return value === null || typeof value === "string";
 }
 
+/** Grobe Prüfung einer Verbindung (Antwort der API oder gespeicherte Fahrt) */
+export function isJourney(value: unknown): value is Journey {
+  return (
+    isObject(value) &&
+    typeof value.id === "string" &&
+    Array.isArray(value.legs) &&
+    value.legs.length > 0 &&
+    value.legs.every((l) => isObject(l) && isObject(l.origin) && isObject(l.destination))
+  );
+}
+
 export function isJourneysResponse(value: unknown): value is JourneysResponse {
   return (
     isObject(value) &&
@@ -60,7 +72,7 @@ export function isJourneysResponse(value: unknown): value is JourneysResponse {
     isObject(value.to) &&
     typeof value.to.name === "string" &&
     Array.isArray(value.journeys) &&
-    value.journeys.every((j) => isObject(j) && Array.isArray(j.legs) && j.legs.length > 0) &&
+    value.journeys.every(isJourney) &&
     (value.source === "vrr" || value.source === "transitous") &&
     typeof value.generatedAt === "string" &&
     isNullableString(value.earlier) &&

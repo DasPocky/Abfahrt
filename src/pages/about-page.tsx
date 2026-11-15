@@ -79,7 +79,9 @@ export function AboutPage() {
       <Section id="about-privacy" title="Datenschutz">
         <ul className="list-disc space-y-1 pl-5">
           <li>Keine Accounts, kein Tracking, keine Cookies.</li>
-          <li>Favoriten werden nur lokal in deinem Browser gespeichert.</li>
+          <li>
+            Favoriten und die gemerkte Verbindung werden nur lokal in deinem Browser gespeichert.
+          </li>
           <li>
             Dein Standort wird beim Öffnen angefragt, dein Browser fragt dich vorher um Erlaubnis.
             Über das Standort-Symbol in der Suche schaltest du ihn dauerhaft aus. Die Suche sortiert

@@ -34,7 +34,7 @@ Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
 - Ab-/An-Zeit, Datum, Verkehrsmittel ausschließen (z. B. ohne Fernverkehr), maximale Umstiege, Umstiegszeit, Barrierefreiheit
 - Echtzeit pro Abschnitt, Warnung bei gefährdetem Anschluss
 - Zwischenhalte, Routenkarte
-- Live-Begleitung einer gemerkten Verbindung
+- Live-Begleitung einer gemerkten Verbindung (ohne Push, der kommt mit M3)
 
 ## M3 – Störungen & Push
 
