@@ -80,9 +80,11 @@ export function AboutPage() {
           <li>Keine Accounts, kein Tracking, keine Cookies.</li>
           <li>Favoriten werden nur lokal in deinem Browser gespeichert.</li>
           <li>
-            Dein Standort wird nur auf deinen Wunsch abgefragt. Die Suche sortiert damit nur auf
-            deinem Gerät. Für „In der Nähe“ geht er auf etwa 100 m gerundet an unseren Server, wird
-            dort nicht gespeichert oder protokolliert und erreicht die Datenquelle nur gerundet.
+            Dein Standort wird beim Öffnen angefragt, dein Browser fragt dich vorher um Erlaubnis.
+            Über das Standort-Symbol in der Suche schaltest du ihn dauerhaft aus. Die Suche sortiert
+            damit nur auf deinem Gerät. Für „In der Nähe“ geht er auf etwa 100 m gerundet an unseren
+            Server, wird dort nicht gespeichert oder protokolliert und erreicht die Datenquelle nur
+            gerundet.
           </li>
           <li>
             Suchbegriffe und Haltestellen gehen über unseren Server bei Cloudflare an die genannten

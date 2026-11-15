@@ -31,15 +31,23 @@ const GEO_OPTIONS: PositionOptions = {
   timeout: 10_000,
 };
 
+function hasGeolocation(): boolean {
+  return typeof navigator !== "undefined" && "geolocation" in navigator;
+}
+
 /**
- * Standort für Suche und „In der Nähe“. Die Suche sortiert nur im Browser; für „In der Nähe“
- * geht die auf ~100 m gerundete Position an den eigenen Worker (siehe nearbyStops in lib/api).
- * `ensureAsked` fragt einmalig (z. B. beim ersten Antippen der Suche), `toggle` schaltet um.
+ * Standort für Suche, „In der Nähe“, Verbindungssuche und Karte. Die Suche sortiert nur im
+ * Browser; für „In der Nähe“ geht die auf ~100 m gerundete Position an den eigenen Worker.
+ *
+ * Seiten mit diesem Hook fordern den Standort beim Öffnen an (wie andere Websites auch), außer
+ * man hat das Standort-Symbol selbst ausgeschaltet („off“ gemerkt). Eine Ablehnung durch den
+ * Browser wird nicht dauerhaft gemerkt: Beim nächsten Öffnen wird erneut gefragt. Über die
+ * Permissions API erkennt der Hook eine Sperre sofort und holt den Standort automatisch, sobald
+ * er in den Einstellungen freigegeben wird.
  */
 export function useLocation() {
-  // Früher erlaubt: gleich beim Start (ohne Rückfrage des Browsers) den Standort holen
   const [status, setStatus] = useState<LocationStatus>(() =>
-    readPref() === "on" && "geolocation" in navigator ? "locating" : "off",
+    readPref() !== "off" && hasGeolocation() ? "locating" : "off",
   );
   const [position, setPosition] = useState<Position | null>(null);
   const requested = useRef(false);
@@ -55,19 +63,15 @@ export function useLocation() {
       },
       (err) => {
         setPosition(null);
-        if (err.code === err.PERMISSION_DENIED) {
-          setStatus("denied");
-          writePref("off");
-        } else {
-          setStatus("unavailable");
-        }
+        // Ablehnung nicht merken: beim nächsten Öffnen wieder fragen
+        setStatus(err.code === err.PERMISSION_DENIED ? "denied" : "unavailable");
       },
       GEO_OPTIONS,
     );
   }, []);
 
   const locate = useCallback(() => {
-    if (!("geolocation" in navigator)) {
+    if (!hasGeolocation()) {
       setStatus("unavailable");
       return;
     }
@@ -75,12 +79,38 @@ export function useLocation() {
     lookup();
   }, [lookup]);
 
+  // Beim Öffnen anfordern und auf Änderungen der Freigabe (Einstellungen) reagieren
   useEffect(() => {
-    if (readPref() === "on" && "geolocation" in navigator) lookup();
+    if (readPref() === "off" || !hasGeolocation()) return undefined;
+    lookup();
+    let permission: PermissionStatus | null = null;
+    let active = true;
+    const onChange = () => {
+      if (!permission || readPref() === "off") return;
+      if (permission.state === "granted") lookup();
+      else if (permission.state === "denied") {
+        setPosition(null);
+        setStatus("denied");
+      }
+    };
+    navigator.permissions
+      ?.query({ name: "geolocation" })
+      .then((result) => {
+        if (!active) return;
+        permission = result;
+        result.addEventListener("change", onChange);
+      })
+      .catch(() => {
+        // Permissions API fehlt oder kennt „geolocation“ nicht: dann nur die Abfrage oben
+      });
+    return () => {
+      active = false;
+      permission?.removeEventListener("change", onChange);
+    };
   }, [lookup]);
 
   const ensureAsked = useCallback(() => {
-    if (!requested.current && readPref() === null) locate();
+    if (!requested.current && readPref() !== "off") locate();
   }, [locate]);
 
   const toggle = useCallback(() => {
