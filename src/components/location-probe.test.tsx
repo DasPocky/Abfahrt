@@ -25,6 +25,6 @@ describe("Standort testen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Standort jetzt anfordern" }));
     expect(
       await screen.findByText(/Fehler 1 nach \d+ ms: User denied Geolocation/),
-    ).toHaveTextContent("sofort abgelehnt");
+    ).toHaveTextContent("Sofort abgelehnt");
   });
 });

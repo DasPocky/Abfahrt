@@ -1,77 +1,105 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LocateFixed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /** Unter dieser Zeit kam die Ablehnung ohne sichtbare Abfrage (Browser hat selbst gesperrt) */
 const INSTANT_MS = 400;
+const TIMEOUT_MS = 20_000;
 
-type Probe =
-  { state: "idle" } | { state: "running" } | { state: "done"; text: string; ok: boolean };
+interface Probe {
+  state: "idle" | "running" | "done";
+  ok: boolean;
+  text: string;
+  permission: string;
+  elapsed: number;
+}
 
-async function permissionState(): Promise<string> {
-  try {
-    const result = await navigator.permissions?.query({ name: "geolocation" });
-    return result ? result.state : "unbekannt";
-  } catch {
-    return "nicht abfragbar";
-  }
+/** Umgebung, die für den Standort zählt (für Rückmeldungen) */
+function environment(): string {
+  const parts = [
+    window.isSecureContext ? "https ✓" : "kein https",
+    "geolocation" in navigator ? "Standort-API ✓" : "keine Standort-API",
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(display-mode: standalone)").matches
+      ? "als App"
+      : "im Browser",
+  ];
+  return parts.join(" · ");
 }
 
 /**
- * Knopf „Standort jetzt anfordern“: fordert per Antippen an (zählt als Nutzeraktion) und zeigt
- * die rohe Antwort des Browsers, damit man sieht, ob er gefragt oder sofort gesperrt hat.
+ * Knopf „Standort jetzt anfordern“: fordert direkt beim Antippen an (zählt als Nutzeraktion),
+ * zählt die Sekunden mit und zeigt die rohe Antwort des Browsers.
  */
 export function LocationProbe() {
-  const [probe, setProbe] = useState<Probe>({ state: "idle" });
+  const [probe, setProbe] = useState<Probe>({
+    state: "idle",
+    ok: false,
+    text: "",
+    permission: "",
+    elapsed: 0,
+  });
+  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  async function run() {
+  useEffect(
+    () => () => {
+      if (timer.current) clearInterval(timer.current);
+    },
+    [],
+  );
+
+  function finish(ok: boolean, text: string) {
+    if (timer.current) clearInterval(timer.current);
+    setProbe((p) => ({ ...p, state: "done", ok, text }));
+  }
+
+  function run() {
     if (!("geolocation" in navigator)) {
-      setProbe({ state: "done", ok: false, text: "Dieser Browser kennt keinen Standort." });
+      finish(false, "Dieser Browser kennt keinen Standort.");
       return;
     }
-    setProbe({ state: "running" });
-    const before = await permissionState();
     const start = performance.now();
+    setProbe({ state: "running", ok: false, text: "", permission: "…", elapsed: 0 });
+    // Zuerst und ohne Umweg anfordern, damit es als Folge des Antippens gilt
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setProbe({
-          state: "done",
-          ok: true,
-          text: `Erlaubt ✓ Genauigkeit ca. ${Math.round(pos.coords.accuracy)} m (Freigabe vorher: ${before})`,
-        });
-      },
+      (pos) => finish(true, `Erlaubt ✓ Genauigkeit ca. ${Math.round(pos.coords.accuracy)} m`),
       (err) => {
         const ms = Math.round(performance.now() - start);
         const instant = err.code === err.PERMISSION_DENIED && ms < INSTANT_MS;
-        setProbe({
-          state: "done",
-          ok: false,
-          text:
-            `Fehler ${err.code} nach ${ms} ms: ${err.message || "ohne Text"} (Freigabe vorher: ${before}).` +
-            (instant
-              ? " Der Browser hat sofort abgelehnt, ohne zu fragen – er sperrt den Standort für diese Seite."
-              : ""),
-        });
+        finish(
+          false,
+          `Fehler ${err.code} nach ${ms} ms: ${err.message || "ohne Text"}.` +
+            (instant ? " Sofort abgelehnt, ohne zu fragen." : ""),
+        );
       },
-      { enableHighAccuracy: false, maximumAge: 0, timeout: 15_000 },
+      { enableHighAccuracy: false, maximumAge: 0, timeout: TIMEOUT_MS },
     );
+    timer.current = setInterval(() => {
+      setProbe((p) => ({ ...p, elapsed: Math.round((performance.now() - start) / 1000) }));
+    }, 1000);
+    navigator.permissions
+      ?.query({ name: "geolocation" })
+      .then((r) => setProbe((p) => ({ ...p, permission: r.state })))
+      .catch(() => setProbe((p) => ({ ...p, permission: "nicht abfragbar" })));
   }
 
   return (
     <div className="space-y-2">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => void run()}
-        disabled={probe.state === "running"}
-      >
+      <Button variant="outline" size="sm" onClick={run} disabled={probe.state === "running"}>
         <LocateFixed aria-hidden="true" />
-        {probe.state === "running" ? "Wird angefordert …" : "Standort jetzt anfordern"}
+        {probe.state === "running"
+          ? `Wartet auf den Browser … ${probe.elapsed} s`
+          : "Standort jetzt anfordern"}
       </Button>
-      {probe.state === "done" && (
-        <p role="status" className={probe.ok ? "text-sm text-success" : "text-sm text-destructive"}>
-          {probe.text}
-        </p>
+      {probe.state !== "idle" && (
+        <div role="status" className="space-y-0.5 text-sm">
+          {probe.state === "done" && (
+            <p className={probe.ok ? "text-success" : "text-destructive"}>{probe.text}</p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Freigabe laut Browser: {probe.permission || "–"} · {environment()}
+          </p>
+        </div>
       )}
     </div>
   );
