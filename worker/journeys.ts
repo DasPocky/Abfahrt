@@ -224,7 +224,8 @@ export async function getJourneys(
       ? { ...result, journeys: await withLineColors(request, ctx, result.journeys) }
       : result;
   });
-  const journeys = arrive ? loaded.journeys : dropDeparted(loaded.journeys, at.getTime());
+  const unique = dedupeJourneys(loaded.journeys);
+  const journeys = arrive ? unique : dropDeparted(unique, at.getTime());
   const body: JourneysResponse = {
     ...loaded,
     journeys,

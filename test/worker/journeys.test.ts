@@ -2,7 +2,7 @@ import { exports } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Journey, JourneysResponse } from "../../shared/api-types";
 import { API_PREFIX } from "../../shared/base-path";
-import { dropDeparted, paging } from "../../worker/journeys";
+import { dedupeJourneys, dropDeparted, paging } from "../../worker/journeys";
 import { resetRateLimit } from "../../worker/rate-limit";
 import * as transitousTrips from "../../worker/sources/transitous-trips";
 import * as vrrTrips from "../../worker/sources/vrr-trips";
@@ -167,6 +167,13 @@ describe("Früher/Später", () => {
       now,
     );
     expect(kept.map((j) => j.id)).toEqual(["2026-11-14T19:59:30Z", "2026-11-14T20:10:00Z"]);
+  });
+
+  it("entfernt doppelte Verbindungen", () => {
+    const twin = { ...at("2026-11-14T20:00:00Z"), id: "anders" };
+    expect(
+      dedupeJourneys([at("2026-11-14T20:00:00Z"), twin, at("2026-11-14T20:10:00Z")]),
+    ).toHaveLength(2);
   });
 
   it("geht mindestens 20 Minuten zurück und liefert ohne Verbindungen null", () => {
