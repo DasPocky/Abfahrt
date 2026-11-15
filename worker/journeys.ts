@@ -76,6 +76,23 @@ export function dropDeparted(journeys: readonly Journey[], from: number): Journe
   return journeys.filter((j) => !(actualDepartureOf(j) < from - 60_000));
 }
 
+/** Gleiche Verbindung (Abschnitte mit Linie, Start und Zeiten) nur einmal; die Quellen liefern
+ * gelegentlich Doppelte */
+export function dedupeJourneys(journeys: readonly Journey[]): Journey[] {
+  const seen = new Set<string>();
+  return journeys.filter((j) => {
+    const key = j.legs
+      .map(
+        (l) =>
+          `${l.line ?? "walk"}@${l.origin.plannedDeparture ?? ""}>${l.destination.plannedArrival ?? ""}`,
+      )
+      .join("|");
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 /**
  * Zeitpunkte für „Früher“/„Später“ (immer als Abfahrtszeit): später = 1 Minute nach der letzten
  * Abfahrt, früher = so weit vor der ersten Abfahrt, wie die Liste lang ist (mind. 20 Minuten).
