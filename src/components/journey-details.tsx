@@ -1,7 +1,9 @@
 // Aufgeklappte Verbindung: Abschnitte mit Gleis, Zwischenhalten, Fußwegen, Umstiegen und Hinweisen
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import {
   ArrowLeftRight,
+  Bookmark,
+  BookmarkCheck,
   ChevronDown,
   ChevronRight,
   Footprints,
@@ -285,27 +287,33 @@ function TransferRow({ transfer }: { transfer: Transfer }) {
   );
 }
 
-/** Knopf „Karte“ und darunter die lazy geladene Routenkarte */
-function RouteMapToggle({ journey }: { journey: Journey }) {
+/** Knopf „Karte“ (darunter die lazy geladene Routenkarte), daneben optional „Merken“ */
+function RouteMapToggle({ journey, action }: { journey: Journey; action?: ReactNode }) {
   const [open, setOpen] = useState(false);
   const id = useId();
-  if (!hasRoute(journey)) return null;
+  const route = hasRoute(journey);
+  if (!route && !action) return null;
   return (
     <div className="space-y-2">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <MapIcon className="size-3.5 shrink-0" aria-hidden="true" />
-        Karte
-        <ChevronDown
-          className={cn("size-3.5 shrink-0 transition-transform", open && "rotate-180")}
-          aria-hidden="true"
-        />
-      </button>
+      <div className="flex flex-wrap items-center gap-1.5">
+        {route && (
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls={id}
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <MapIcon className="size-3.5 shrink-0" aria-hidden="true" />
+            Karte
+            <ChevronDown
+              className={cn("size-3.5 shrink-0 transition-transform", open && "rotate-180")}
+              aria-hidden="true"
+            />
+          </button>
+        )}
+        {action}
+      </div>
       {open && (
         <div id={id}>
           <LazyRouteMap journey={journey} />
@@ -316,12 +324,42 @@ function RouteMapToggle({ journey }: { journey: Journey }) {
 }
 
 /** Zeitleiste der Abschnitte; Umstiege stehen direkt vor der Anschlussfahrt, oben die Karte */
-export function JourneyDetails({ id, journey }: { id: string; journey: Journey }) {
+export function JourneyDetails({
+  id,
+  journey,
+  onSave,
+  saved = false,
+}: {
+  id: string;
+  journey: Journey;
+  /** „Merken“ für die Live-Begleitung; ohne Rückruf kein Knopf (z. B. in der Live-Ansicht) */
+  onSave?: () => void;
+  saved?: boolean;
+}) {
   const transfers = new Map(journeyTransfers(journey).map((t) => [t.toLeg, t]));
   const last = journey.legs.length - 1;
   return (
     <div id={id} className="space-y-2 border-t bg-muted/40 px-3 py-2.5 text-xs">
-      <RouteMapToggle journey={journey} />
+      <RouteMapToggle
+        journey={journey}
+        action={
+          onSave && (
+            <button
+              type="button"
+              onClick={onSave}
+              aria-pressed={saved}
+              className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-foreground"
+            >
+              {saved ? (
+                <BookmarkCheck className="size-3.5 shrink-0" aria-hidden="true" />
+              ) : (
+                <Bookmark className="size-3.5 shrink-0" aria-hidden="true" />
+              )}
+              {saved ? "Gemerkt · live ansehen" : "Merken & live verfolgen"}
+            </button>
+          )
+        }
+      />
       <ol aria-label="Abschnitte" className="space-y-2">
         {journey.legs.map((leg, index) => {
           const transfer = transfers.get(index);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import {
   ArrowLeft,
   ArrowUpDown,
@@ -31,6 +31,8 @@ import {
 } from "@/lib/journeys";
 import { stopLabel } from "@/lib/stop-label";
 import { LocationHelp } from "@/components/location-help";
+import { useSavedTrip } from "@/hooks/use-saved-trip";
+import { journeySignature, setSavedTrip } from "@/lib/saved-trip";
 
 type Slot = "from" | "to";
 
@@ -51,6 +53,8 @@ export function JourneyPage() {
     setSearchParams(journeyQueryToParams(next), { replace: true });
   const location = useLocation();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const savedTrip = useSavedTrip();
   const now = useNow(30_000);
 
   // „Mein Standort“: wartet ggf. auf die Position, dann nächste Haltestelle übernehmen
@@ -292,7 +296,25 @@ export function JourneyPage() {
                 </p>
               ) : (
                 <div className={cn(isPlaceholderData && "opacity-60")}>
-                  <JourneyList journeys={data.journeys} />
+                  <JourneyList
+                    journeys={data.journeys}
+                    savedSignature={savedTrip?.signature ?? null}
+                    onSave={(journey) => {
+                      if (!fromStop || !toStop) return;
+                      const signature = journeySignature(journey);
+                      if (savedTrip?.signature !== signature) {
+                        setSavedTrip({
+                          from: fromStop,
+                          to: toStop,
+                          options: query.options,
+                          signature,
+                          journey,
+                          savedAt: new Date().toISOString(),
+                        });
+                      }
+                      void navigate("/fahrt");
+                    }}
+                  />
                 </div>
               )}
               {data.later !== null && (

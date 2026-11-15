@@ -11,6 +11,7 @@ import {
   journeyTimes,
 } from "@/lib/journeys";
 import { lineBadgeColors } from "@/lib/line-colors";
+import { journeySignature } from "@/lib/saved-trip";
 import { MODE_LABEL, platformLabel } from "@/lib/modes";
 import { formatClock } from "@/lib/time";
 import type { Journey, JourneyLeg } from "../../shared/api-types";
@@ -99,7 +100,15 @@ function Boarding({ journey }: { journey: Journey }) {
   );
 }
 
-function JourneyRow({ journey }: { journey: Journey }) {
+function JourneyRow({
+  journey,
+  onSave,
+  saved,
+}: {
+  journey: Journey;
+  onSave?: () => void;
+  saved: boolean;
+}) {
   const [expanded, setExpanded] = useState(false);
   const legsId = useId();
   const times = journeyTimes(journey);
@@ -177,16 +186,31 @@ function JourneyRow({ journey }: { journey: Journey }) {
           )}
         </span>
       </button>
-      {expanded && <JourneyDetails id={legsId} journey={journey} />}
+      {expanded && <JourneyDetails id={legsId} journey={journey} onSave={onSave} saved={saved} />}
     </li>
   );
 }
 
-export function JourneyList({ journeys }: { journeys: readonly Journey[] }) {
+export function JourneyList({
+  journeys,
+  onSave,
+  savedSignature,
+}: {
+  journeys: readonly Journey[];
+  /** Verbindung für die Live-Begleitung merken */
+  onSave?: (journey: Journey) => void;
+  /** Signatur der gemerkten Verbindung (zeigt „Gemerkt“) */
+  savedSignature?: string | null;
+}) {
   return (
     <ul aria-label="Verbindungen" className="divide-y">
       {journeys.map((journey) => (
-        <JourneyRow key={journey.id} journey={journey} />
+        <JourneyRow
+          key={journey.id}
+          journey={journey}
+          onSave={onSave && (() => onSave(journey))}
+          saved={savedSignature === journeySignature(journey)}
+        />
       ))}
     </ul>
   );

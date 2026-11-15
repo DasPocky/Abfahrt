@@ -3,6 +3,7 @@ import { Star } from "lucide-react";
 import { FavoriteCard } from "@/components/favorite-card";
 import { MapLink } from "@/components/map-link";
 import { NearbyStops } from "@/components/nearby-stops";
+import { SavedTripCard } from "@/components/saved-trip-card";
 import { StopSearch } from "@/components/stop-search";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -26,6 +27,8 @@ export function HomePage() {
         <StopSearch location={location} />
         <MapLink />
       </section>
+
+      <SavedTripCard />
 
       <section aria-labelledby="favorites-title" className="space-y-3">
         <div className="flex items-center justify-between">
