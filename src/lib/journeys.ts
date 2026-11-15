@@ -8,6 +8,7 @@ import {
   type TransferSpeed,
 } from "../../shared/journey-options";
 import { MODE_LABEL } from "./modes";
+import { DISPLAY_TIME_ZONE, formatClock } from "./time";
 
 /** Gewählte Haltestelle (ID für die API, Name für die Anzeige) */
 export interface PickedStop {
@@ -199,4 +200,25 @@ export function isLegCancelled(leg: JourneyLeg): boolean {
 
 export function isJourneyCancelled(journey: Journey): boolean {
   return journey.legs.some((leg) => leg.kind === "transit" && isLegCancelled(leg));
+}
+
+const DAY_KEY = new Intl.DateTimeFormat("en-CA", { timeZone: DISPLAY_TIME_ZONE });
+const WEEKDAY_DATE = new Intl.DateTimeFormat("de-DE", {
+  timeZone: DISPLAY_TIME_ZONE,
+  weekday: "short",
+  day: "2-digit",
+  month: "2-digit",
+});
+
+/** Beschriftung des Zeit-Chips: „Ab jetzt“, „Ab 08:15“, „An morgen 08:15“, „Ab Mo., 17.11. 08:15“ */
+export function timeChipLabel(time: string | undefined, arrive: boolean, now: Date): string {
+  if (time === undefined) return "Ab jetzt";
+  const date = new Date(time);
+  const prefix = arrive ? "An" : "Ab";
+  const day = DAY_KEY.format(date);
+  const today = DAY_KEY.format(now);
+  const tomorrow = DAY_KEY.format(new Date(now.getTime() + 24 * 60 * 60_000));
+  const dayText =
+    day === today ? "" : day === tomorrow ? "morgen " : `${WEEKDAY_DATE.format(date)} `;
+  return `${prefix} ${dayText}${formatClock(date)}`;
 }

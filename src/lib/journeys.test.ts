@@ -13,6 +13,7 @@ import {
   journeyQueryToParams,
   journeyTimes,
   swapJourneyQuery,
+  timeChipLabel,
 } from "./journeys";
 
 const FROM = { id: "vrr:de:05111:18235", name: "Düsseldorf Hbf" };
@@ -138,5 +139,16 @@ describe("Anzeige-Hilfen", () => {
       destination: journeyStop({ name: "Ziel", cancelled: true }),
     });
     expect(isJourneyCancelled(journey({ id: "c", legs: [stopCancelled] }))).toBe(true);
+  });
+});
+
+describe("Zeit-Chip", () => {
+  const now = new Date("2026-11-15T10:00:00Z"); // 11:00 in Berlin
+
+  it("zeigt jetzt, heute, morgen und spätere Tage", () => {
+    expect(timeChipLabel(undefined, false, now)).toBe("Ab jetzt");
+    expect(timeChipLabel("2026-11-15T14:30:00Z", false, now)).toBe("Ab 15:30");
+    expect(timeChipLabel("2026-11-16T07:15:00Z", true, now)).toBe("An morgen 08:15");
+    expect(timeChipLabel("2026-11-18T07:15:00Z", false, now)).toBe("Ab Mi., 18.11. 08:15");
   });
 });

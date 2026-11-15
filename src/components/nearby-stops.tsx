@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { LocationState } from "@/hooks/use-location";
 import { nearbyStops, roundCoord } from "@/lib/api";
 import { distanceKm } from "@/lib/geo";
+import { LocationHelp } from "@/components/location-help";
 
 /** So viele Haltestellen zeigt die Startseite, der Rest steckt hinter „Alle anzeigen“ */
 export const NEARBY_VISIBLE = 4;
@@ -36,7 +37,7 @@ export function NearbyStops({ location }: { location: LocationState }) {
   const visible = expanded ? ranked : ranked.slice(0, NEARBY_VISIBLE);
 
   let message: string | null = null;
-  if (status === "denied") message = "Standort nicht freigegeben (Browser-Einstellungen).";
+  if (status === "denied") message = "Standort nicht freigegeben.";
   else if (status === "unavailable") message = "Standort gerade nicht verfügbar.";
   else if (status === "locating") message = "Standort wird ermittelt …";
   else if (status === "on" && isPending) message = "Haltestellen werden geladen …";
@@ -56,7 +57,7 @@ export function NearbyStops({ location }: { location: LocationState }) {
         </Button>
       ) : message ? (
         <p role="status" className="px-1 text-sm text-muted-foreground">
-          {message}
+          {message} {status === "denied" && <LocationHelp />}
         </p>
       ) : (
         <>

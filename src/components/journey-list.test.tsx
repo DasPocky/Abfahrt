@@ -138,7 +138,7 @@ describe("JourneyList", () => {
     render(<JourneyList journeys={[TIGHT]} />);
     const legs = expand(rows()[0]!);
     const toggle = within(legs).getByRole("button", { name: /2 Zwischenhalte/ });
-    expect(toggle).toHaveTextContent(/^2 Zwischenhalte\W+1 entfällt$/);
+    expect(toggle).toHaveTextContent(/^\W*2 Zwischenhalte\W+1 entfällt$/);
     expect(toggle).toHaveAttribute("aria-expanded", "false");
     expect(within(legs).queryByRole("list", { name: "Zwischenhalte S6" })).toBeNull();
 

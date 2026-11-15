@@ -106,6 +106,8 @@ describe("Verbindungssuche", () => {
 
     expect(combobox("Von")).toHaveValue("Düsseldorf Hbf");
     expect(combobox("Nach")).toHaveValue("Heinrich-Heine-Allee");
+    // Zeit-Chip zeigt Ankunft mit Datum; im Panel ist „Ankunft“ gewählt
+    fireEvent.click(screen.getByRole("button", { name: /^Zeitpunkt: An / }));
     expect(screen.getByRole("button", { name: "Ankunft" })).toHaveAttribute("aria-pressed", "true");
 
     const list = await screen.findByRole("list", { name: "Verbindungen" });
@@ -129,7 +131,8 @@ describe("Verbindungssuche", () => {
     expect(rows[1]?.querySelector("[data-tone=warning]")).toHaveTextContent("+3");
     expect(rows[1]).toHaveTextContent("1 Std 5 Min");
     expect(rows[1]).toHaveTextContent("1 Umstieg");
-    expect(within(rows[1]!).getByRole("img", { name: "Fußweg 4 Min · 250 m" })).toBeInTheDocument();
+    // Balken mit Text für Screenreader, Fußweg dazwischen
+    expect(rows[1]).toHaveTextContent("S-Bahn S6, Fußweg, Straßenbahn 706.");
     expect(rows[1]?.textContent?.indexOf("S6")).toBeLessThan(
       rows[1]?.textContent?.indexOf("706") ?? 0,
     );
@@ -301,11 +304,15 @@ describe("Verbindungssuche", () => {
     fireEvent.focus(combobox("Von"));
     fireEvent.click(screen.getByRole("option", { name: /Mein Standort/ }));
     expect(await screen.findByText(/Standort nicht freigegeben/)).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("button", { name: "So gibst du ihn frei" })[0]!);
+    const help = screen.getByRole("dialog", { name: "Standort freigeben" });
+    expect(within(help).getByText(/Safari-Websites/)).toBeInTheDocument();
   });
 
   it("schaltet auf Ankunft um und setzt dafür einen Zeitpunkt", async () => {
     mockApi();
     const { router } = renderAt(SEARCH);
+    fireEvent.click(screen.getByRole("button", { name: "Zeitpunkt: Ab jetzt" }));
     fireEvent.click(screen.getByRole("button", { name: "Ankunft" }));
     const params = new URLSearchParams(router.state.location.search);
     expect(params.get("ankunft")).toBe("1");
@@ -320,6 +327,7 @@ describe("Verbindungssuche", () => {
   it("übernimmt Datum und Uhrzeit in die URL", () => {
     mockApi();
     const { router } = renderAt(SEARCH);
+    fireEvent.click(screen.getByRole("button", { name: "Zeitpunkt: Ab jetzt" }));
     fireEvent.change(screen.getByLabelText("Datum und Uhrzeit"), {
       target: { value: "2026-11-20T08:15" },
     });

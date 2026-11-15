@@ -23,6 +23,7 @@ import {
 import { isLegCancelled } from "@/lib/journeys";
 import { platformLabel } from "@/lib/modes";
 import { hasRoute } from "@/lib/route-map";
+import { lineBadgeColors, type LineBadgeColors } from "@/lib/line-colors";
 import { DELAY_TONE_CLASS, delayMinutes, delayTone, formatClock, formatDelay } from "@/lib/time";
 import type { Journey, JourneyLeg, JourneyStop, TransportMode } from "../../shared/api-types";
 
@@ -56,21 +57,41 @@ export function Clock({
   );
 }
 
-/** Einrückung auf Höhe der Haltestellennamen (Zeitspalte w-14 + gap-1.5) */
-const INDENT = "pl-[3.875rem]";
+/** Spalten der Zeitleiste: Zeit | Linie mit Punkten | Inhalt */
+const GRID = "grid grid-cols-[3.25rem_0.875rem_minmax(0,1fr)] gap-x-2";
+/** Inhalt ohne Zeit und Punkt auf Höhe der Namen einrücken */
+const INDENT = "col-start-3";
 
-/** Halt: Zeit, Name, Gleis/Steig (Gleiswechsel in Orange), Ausfall durchgestrichen */
-function LegStop({
+/** Punkt auf der Linie: Ring in Linienfarbe (Fußweg: grau) */
+function Node({ colors, small = false }: { colors: LineBadgeColors | null; small?: boolean }) {
+  return (
+    <span
+      className={cn(
+        "relative z-10 mx-auto mt-[0.2rem] block rounded-full",
+        small ? "size-2 p-[2px]" : "size-3 p-[3px]",
+        colors ? colors.className : "bg-muted-foreground",
+      )}
+      style={colors?.style ? { backgroundColor: colors.style.backgroundColor } : undefined}
+      aria-hidden="true"
+    >
+      <span className="block size-full rounded-full bg-card" />
+    </span>
+  );
+}
+
+/** Halt in der Zeitleiste: Zeit, Punkt, Name mit Gleis/Steig (Gleiswechsel in Orange) */
+function StopRow({
   stop,
   mode,
   time,
-  muted = false,
+  colors,
+  small = false,
 }: {
   stop: JourneyStop;
   mode: TransportMode;
-  /** Zwischenhalte: Abfahrt, sonst Ankunft */
   time: "departure" | "arrival" | "auto";
-  muted?: boolean;
+  colors: LineBadgeColors | null;
+  small?: boolean;
 }) {
   const useDeparture = time === "departure" || (time === "auto" && stop.plannedDeparture !== null);
   const planned = useDeparture ? stop.plannedDeparture : stop.plannedArrival;
@@ -80,14 +101,22 @@ function LegStop({
     stop.plannedPlatform !== null &&
     stop.platform !== stop.plannedPlatform;
   return (
-    <p className={cn("flex gap-1.5", muted && "text-muted-foreground")}>
-      <span className="w-14 shrink-0 tabular-nums">
+    <div className={cn(GRID, small ? "text-muted-foreground" : "")}>
+      <span className={cn("text-right tabular-nums", !small && "font-semibold")}>
         <Clock planned={planned} realtime={realtime} cancelled={stop.cancelled} />
       </span>
-      <span className="min-w-0 flex-1">
-        <span className={cn(stop.cancelled && "line-through")}>{stop.name}</span>
+      <Node colors={colors} small={small} />
+      <span className="min-w-0">
+        <span className={cn(!small && "font-semibold", stop.cancelled && "line-through")}>
+          {stop.name}
+        </span>
         {stop.platform !== null && !stop.cancelled && (
-          <span className={cn("text-muted-foreground", changed && "font-semibold text-warning")}>
+          <span
+            className={cn(
+              "font-normal text-muted-foreground",
+              changed && "font-semibold text-warning",
+            )}
+          >
             {" · "}
             {platformLabel(mode)} {stop.platform}
             {changed && ` statt ${stop.plannedPlatform}`}
@@ -100,53 +129,7 @@ function LegStop({
           </span>
         )}
       </span>
-    </p>
-  );
-}
-
-/** „3 Zwischenhalte“ als Schalter, aufgeklappt die Halte mit Zeit und Gleis */
-function IntermediateStops({ leg }: { leg: JourneyLeg }) {
-  const [open, setOpen] = useState(false);
-  const id = useId();
-  const stops = leg.intermediateStops;
-  const cancelledCount = stops.filter((s) => s.cancelled).length;
-  const mode = leg.mode ?? "other";
-
-  if (stops.length === 0) return null;
-  return (
-    <>
-      <p className={INDENT}>
-        <button
-          type="button"
-          aria-expanded={open}
-          aria-controls={id}
-          onClick={() => setOpen((v) => !v)}
-          className="-mx-1 inline-flex items-center gap-0.5 rounded px-1 text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {stops.length === 1 ? "1 Zwischenhalt" : `${stops.length} Zwischenhalte`}
-          {cancelledCount > 0 && (
-            <span className="font-semibold text-destructive">
-              <span aria-hidden="true"> · </span>
-              <span className="sr-only">, </span>
-              {cancelledCount === 1 ? "1 entfällt" : `${cancelledCount} entfallen`}
-            </span>
-          )}
-          <ChevronDown
-            className={cn("size-3.5 shrink-0 transition-transform", open && "rotate-180")}
-            aria-hidden="true"
-          />
-        </button>
-      </p>
-      {open && (
-        <ol id={id} aria-label={`Zwischenhalte ${leg.line ?? ""}`.trim()} className="space-y-0.5">
-          {stops.map((stop, index) => (
-            <li key={`${stop.id ?? stop.name}-${index}`}>
-              <LegStop stop={stop} mode={mode} time="auto" muted />
-            </li>
-          ))}
-        </ol>
-      )}
-    </>
+    </div>
   );
 }
 
@@ -178,26 +161,105 @@ function LegNotices({ leg }: { leg: JourneyLeg }) {
 }
 
 function TransitLeg({ leg }: { leg: JourneyLeg }) {
+  const [stopsOpen, setStopsOpen] = useState(false);
+  const stopsId = useId();
   const mode = leg.mode ?? "other";
   const cancelled = isLegCancelled(leg);
+  const colors = lineBadgeColors(legBadge(leg));
+  const stops = leg.intermediateStops;
+  const cancelledStops = stops.filter((st) => st.cancelled).length;
   return (
-    <li className="flex items-start gap-2" data-cancelled={cancelled || undefined}>
-      <LineBadge
-        departure={legBadge(leg)}
-        className={cn("h-5 w-auto max-w-20 text-[0.7rem]", cancelled && "opacity-60")}
+    <li className="relative space-y-1" data-cancelled={cancelled || undefined}>
+      {/* durchgehende Linie in Linienfarbe zwischen Start- und Zielpunkt */}
+      <span
+        className={cn(
+          "absolute top-2 bottom-2 left-[calc(3.25rem+0.5rem+0.4375rem-2px)] w-1 rounded-full",
+          colors.className,
+          cancelled && "opacity-40",
+        )}
+        style={colors.style ? { backgroundColor: colors.style.backgroundColor } : undefined}
+        aria-hidden="true"
       />
-      <div className="min-w-0 flex-1 space-y-0.5">
-        <LegStop stop={leg.origin} mode={mode} time="departure" />
-        {leg.direction && (
-          <p className={cn(INDENT, "truncate text-muted-foreground")}>Richtung {leg.direction}</p>
-        )}
-        <IntermediateStops leg={leg} />
-        <LegStop stop={leg.destination} mode={mode} time="arrival" />
-        {cancelled && (
-          <p className={cn(INDENT, "font-semibold text-destructive")}>Fahrt fällt aus</p>
-        )}
-        <LegNotices leg={leg} />
+      <StopRow stop={leg.origin} mode={mode} time="departure" colors={colors} />
+      <div className={GRID}>
+        <div className={cn(INDENT, "space-y-1 py-0.5 text-muted-foreground")}>
+          <p className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+            <LineBadge
+              departure={legBadge(leg)}
+              className={cn("h-5 w-auto max-w-20 text-[0.7rem]", cancelled && "opacity-60")}
+            />
+            {leg.direction && <span className="min-w-0 truncate">Richtung {leg.direction}</span>}
+            {stops.length > 0 && (
+              <button
+                type="button"
+                aria-expanded={stopsOpen}
+                aria-controls={stopsId}
+                onClick={() => setStopsOpen((v) => !v)}
+                className="-mx-1 inline-flex items-center gap-0.5 rounded px-1 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span aria-hidden="true">· </span>
+                {stops.length === 1 ? "1 Zwischenhalt" : `${stops.length} Zwischenhalte`}
+                {cancelledStops > 0 && (
+                  <span className="font-semibold text-destructive">
+                    <span aria-hidden="true"> · </span>
+                    <span className="sr-only">, </span>
+                    {cancelledStops === 1 ? "1 entfällt" : `${cancelledStops} entfallen`}
+                  </span>
+                )}
+                <ChevronDown
+                  className={cn(
+                    "size-3.5 shrink-0 transition-transform",
+                    stopsOpen && "rotate-180",
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
+            )}
+          </p>
+          {cancelled && <p className="font-semibold text-destructive">Fahrt fällt aus</p>}
+          <LegNotices leg={leg} />
+        </div>
       </div>
+      {stopsOpen && (
+        <ol
+          id={stopsId}
+          aria-label={`Zwischenhalte ${leg.line ?? ""}`.trim()}
+          className="space-y-1"
+        >
+          {stops.map((stop, index) => (
+            <li key={`${stop.id ?? stop.name}-${index}`}>
+              <StopRow stop={stop} mode={mode} time="auto" colors={colors} small />
+            </li>
+          ))}
+        </ol>
+      )}
+      <StopRow stop={leg.destination} mode={mode} time="arrival" colors={colors} />
+    </li>
+  );
+}
+
+/** Fußweg: am Anfang bzw. Ende mit dem Start- oder Zielpunkt (Adresse), sonst nur die Zeile */
+function WalkLeg({ leg, position }: { leg: JourneyLeg; position: "first" | "middle" | "last" }) {
+  return (
+    <li className="relative space-y-1">
+      {position !== "middle" && (
+        <span
+          className="absolute top-2 bottom-2 left-[calc(3.25rem+0.5rem+0.4375rem-1px)] border-l-2 border-dotted border-muted-foreground/60"
+          aria-hidden="true"
+        />
+      )}
+      {position === "first" && (
+        <StopRow stop={leg.origin} mode="other" time="departure" colors={null} />
+      )}
+      <div className={GRID}>
+        <p className={cn(INDENT, "flex items-center gap-1.5 py-0.5 text-muted-foreground")}>
+          <Footprints className="size-3.5 shrink-0" aria-hidden="true" />
+          {walkText(leg)}
+        </p>
+      </div>
+      {position === "last" && (
+        <StopRow stop={leg.destination} mode="other" time="arrival" colors={null} />
+      )}
     </li>
   );
 }
@@ -214,12 +276,11 @@ function TransferRow({ transfer }: { transfer: Transfer }) {
   if (text === null) return null;
   const Icon = transfer.status === "ok" ? ArrowLeftRight : TriangleAlert;
   return (
-    <li
-      className={cn("flex items-center gap-1.5", TRANSFER_TONE[transfer.status])}
-      data-transfer={transfer.status}
-    >
-      <Icon className="size-3.5 shrink-0" aria-hidden="true" />
-      {text}
+    <li className={GRID} data-transfer={transfer.status}>
+      <p className={cn(INDENT, "flex items-center gap-1.5", TRANSFER_TONE[transfer.status])}>
+        <Icon className="size-3.5 shrink-0" aria-hidden="true" />
+        {text}
+      </p>
     </li>
   );
 }
@@ -236,7 +297,7 @@ function RouteMapToggle({ journey }: { journey: Journey }) {
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen((v) => !v)}
-        className="-mx-1 inline-flex items-center gap-1 rounded px-1 py-0.5 text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring aria-expanded:text-foreground"
+        className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
       >
         <MapIcon className="size-3.5 shrink-0" aria-hidden="true" />
         Karte
@@ -254,28 +315,27 @@ function RouteMapToggle({ journey }: { journey: Journey }) {
   );
 }
 
-/** Abschnitte untereinander; Umstiege stehen direkt vor der Anschlussfahrt, darunter die Karte */
+/** Zeitleiste der Abschnitte; Umstiege stehen direkt vor der Anschlussfahrt, oben die Karte */
 export function JourneyDetails({ id, journey }: { id: string; journey: Journey }) {
   const transfers = new Map(journeyTransfers(journey).map((t) => [t.toLeg, t]));
+  const last = journey.legs.length - 1;
   return (
-    <div id={id} className="space-y-1.5 border-t px-3 py-2 text-xs">
-      <ol aria-label="Abschnitte" className="space-y-1.5">
+    <div id={id} className="space-y-2 border-t bg-muted/40 px-3 py-2.5 text-xs">
+      <RouteMapToggle journey={journey} />
+      <ol aria-label="Abschnitte" className="space-y-2">
         {journey.legs.map((leg, index) => {
           const transfer = transfers.get(index);
+          const position = index === 0 ? "first" : index === last ? "last" : "middle";
           return [
             transfer && <TransferRow key={`t${index}`} transfer={transfer} />,
             leg.kind === "walk" ? (
-              <li key={index} className="flex items-center gap-1.5 text-muted-foreground">
-                <Footprints className="size-3.5 shrink-0" aria-hidden="true" />
-                {walkText(leg)}
-              </li>
+              <WalkLeg key={index} leg={leg} position={position} />
             ) : (
               <TransitLeg key={index} leg={leg} />
             ),
           ];
         })}
       </ol>
-      <RouteMapToggle journey={journey} />
     </div>
   );
 }
