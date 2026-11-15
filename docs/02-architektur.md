@@ -150,7 +150,7 @@ Limits laut offizieller Doku (Stand 30.10.2026):
 
 - **Security-Header** im Worker:
   - strikte `Content-Security-Policy` (nur eigene Origin + OpenFreeMap; `worker-src 'self'` für Service Worker und MapLibre-Worker). Für die Karte erweitert (`public/_headers`): `connect-src https://tiles.openfreemap.org` (Stil, TileJSON, Vektor- und Rasterkacheln, Schriften, Sprites; MapLibre lädt alles per `fetch`) und `img-src blob:` (MapLibres Bild-Fallback in Browsern ohne `createImageBitmap`). Bewusst **ohne** `'unsafe-eval'`, ohne `blob:` für Worker und ohne Inline-Styles (MapLibre setzt Styles per CSSOM, das ist erlaubt). Geprüft im Browser: keine CSP-Verstöße.
-  - `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` (Geolocation nur self)
+  - `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` (Kamera und Mikrofon aus; Standort ohne Angabe, Standard ist die eigene Seite, mit `geolocation=(self)` lehnte Safari auf dem iPhone ohne Abfrage ab, #65)
 - **Eingabevalidierung** aller `/api`-Parameter, z. B. mit `zod`. Keine Weiterleitung beliebiger URLs, der Worker ist kein offener Proxy.
 - **Rate-Limit** pro IP im Worker (60 Anfragen/Minute je Isolate, `worker/rate-limit.ts`), Pflicht laut VRR-§6.2
 - **User-Agent** `Abfahrt/<version> (+Repo-URL)` bei allen Anfragen an die Quellen, Pflicht laut Transitous-Policy
