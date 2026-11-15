@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { LocationProbe } from "@/components/location-probe";
 
 const REPO_URL = "https://github.com/DasPocky/Abfahrt";
 
@@ -96,6 +97,13 @@ export function AboutPage() {
             sieht OpenFreeMap deine IP-Adresse.
           </li>
         </ul>
+      </Section>
+
+      <Section id="about-location" title="Standort testen">
+        <p className="text-muted-foreground">
+          Fordert den Standort sofort an und zeigt, was der Browser antwortet.
+        </p>
+        <LocationProbe />
       </Section>
 
       <Section id="about-code" title="Quellcode">
