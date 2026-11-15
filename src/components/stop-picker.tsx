@@ -1,6 +1,7 @@
 import { useId, useRef, useState, type KeyboardEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { LoaderCircle, LocateFixed, MapPin } from "lucide-react";
+import { House, Landmark, LoaderCircle, LocateFixed, MapPin } from "lucide-react";
+import type { PlaceKind } from "../../shared/api-types";
 import { cn } from "cn";
 import { SEARCH_DEBOUNCE_MS, SEARCH_MIN_LENGTH } from "@/components/stop-search";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
@@ -17,6 +18,15 @@ interface Option {
   distance?: string;
   /** null = „Mein Standort“ */
   stop: PickedStop | null;
+  kind?: PlaceKind;
+}
+
+/** Symbol je Treffer: Haltestelle, Adresse, Ort */
+function KindIcon({ kind }: { kind: PlaceKind | undefined }) {
+  const className = "size-4 shrink-0 text-muted-foreground";
+  if (kind === "address") return <House className={className} aria-label="Adresse" />;
+  if (kind === "poi") return <Landmark className={className} aria-label="Ort" />;
+  return <MapPin className={className} aria-hidden="true" />;
 }
 
 /**
@@ -54,8 +64,8 @@ export function StopPicker({
   const debounced = useDebouncedValue(query, SEARCH_DEBOUNCE_MS);
   const enabled = debounced.length >= SEARCH_MIN_LENGTH;
   const { data, isFetching, isError } = useQuery({
-    queryKey: ["stops", "search", debounced],
-    queryFn: ({ signal }) => searchStops(debounced, signal),
+    queryKey: ["stops", "search", "places", debounced],
+    queryFn: ({ signal }) => searchStops(debounced, signal, true),
     enabled,
     staleTime: 5 * 60_000,
     placeholderData: keepPreviousData,
@@ -71,6 +81,7 @@ export function StopPicker({
       detail: stop.place,
       distance: distanceKm === null ? undefined : formatDistance(distanceKm),
       stop: { id: stop.id, name: stopLabel(stop) },
+      kind: stop.kind,
     })),
   ];
   const waiting = searching && (debounced !== query || isFetching);
@@ -78,7 +89,7 @@ export function StopPicker({
   if (searching) {
     if (isError) status = "Suche gerade nicht möglich.";
     else if (waiting && ranked.length === 0) status = "Suche läuft …";
-    else if (!waiting && ranked.length === 0) status = "Keine Haltestelle gefunden.";
+    else if (!waiting && ranked.length === 0) status = "Nichts gefunden.";
   }
   const open = focused;
 
@@ -186,7 +197,7 @@ export function StopPicker({
             onClick={() => choose(option)}
           >
             {option.stop ? (
-              <MapPin className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              <KindIcon kind={option.kind} />
             ) : (
               <LocateFixed className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             )}

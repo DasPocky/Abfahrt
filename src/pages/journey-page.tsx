@@ -181,7 +181,7 @@ export function JourneyPage() {
           <div className="min-w-0 flex-1 space-y-1.5">
             <StopPicker
               label="Von"
-              placeholder="Start"
+              placeholder="Haltestelle, Adresse, Ort"
               value={fromStop}
               location={location}
               locating={pending === "from" && !locationFailed}
@@ -190,7 +190,7 @@ export function JourneyPage() {
             />
             <StopPicker
               label="Nach"
-              placeholder="Ziel"
+              placeholder="Haltestelle, Adresse, Ort"
               value={toStop}
               location={location}
               locating={pending === "to" && !locationFailed}

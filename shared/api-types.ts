@@ -5,8 +5,14 @@ export type TransportMode =
 
 export type DataSource = "vrr" | "transitous";
 
+/** Art eines Suchtreffers: Haltestelle, Adresse (Straße/Hausnummer) oder Ort (POI) */
+export type PlaceKind = "stop" | "address" | "poi";
+
 export interface Stop {
-  /** Quellen-präfixierte ID, z. B. "vrr:de:05111:18036" oder "transitous:…" */
+  /**
+   * Quellen-präfixierte ID, z. B. "vrr:de:05111:18036" oder "transitous:…";
+   * Adressen und POIs: "geo:<lat>,<lon>" (siehe shared/geo-id.ts)
+   */
   id: string;
   name: string;
   /** Ort, z. B. "Düsseldorf" */
@@ -15,6 +21,8 @@ export interface Stop {
   lon?: number;
   /** Nur Suche: Passgenauigkeit 0–1000 (höher = besser), für das Ranking nach Nähe in der App */
   relevance?: number;
+  /** Fehlt bei Haltestellen; nur die Suche mit `places=1` liefert Adressen und POIs */
+  kind?: PlaceKind;
 }
 
 export interface Departure {
