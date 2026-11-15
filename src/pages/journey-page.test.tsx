@@ -274,7 +274,7 @@ describe("Verbindungssuche", () => {
     await waitFor(() =>
       expect(new URLSearchParams(router.state.location.search).get("von")).toBe(STOP_HHA.id),
     );
-    expect(combobox("Von")).toHaveValue("Heinrich-Heine-Allee, Düsseldorf");
+    await waitFor(() => expect(combobox("Von")).toHaveValue("Heinrich-Heine-Allee, Düsseldorf"));
     const nearby = fetchMock.mock.calls
       .map((call) => requestUrl(call[0]))
       .find((url) => url.pathname.endsWith("/stops/nearby"));
@@ -361,5 +361,32 @@ describe("Verbindungssuche", () => {
     fireEvent.click(within(alert).getByRole("button", { name: "Erneut versuchen" }));
     expect(await screen.findByRole("list", { name: "Verbindungen" })).toBeInTheDocument();
     expect(journeyCalls(fetchMock)).toHaveLength(2);
+  });
+
+  it("gibt Optionen an die API weiter und zeigt sie kurz an", async () => {
+    const fetchMock = mockApi();
+    const { router } = renderAt(SEARCH);
+    await screen.findByRole("list", { name: "Verbindungen" });
+
+    fireEvent.click(screen.getByRole("button", { name: "Optionen" }));
+    const options = screen.getByRole("dialog", { name: "Optionen" });
+    fireEvent.click(within(options).getByRole("button", { name: "Bus nutzen" }));
+    fireEvent.click(within(options).getByRole("button", { name: "Direkt" }));
+    fireEvent.click(within(options).getByRole("button", { name: "Stufenfrei" }));
+
+    expect(router.state.location.search).toContain("ohne=bus");
+    expect(router.state.location.search).toContain("umstiege=0");
+    expect(router.state.location.search).toContain("barrierefrei=1");
+    expect(screen.getByText("ohne Bus · nur direkt · barrierefrei")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Optionen (3 aktiv)" })).toBeInTheDocument();
+    await waitFor(() => {
+      const last = journeyCalls(fetchMock).at(-1);
+      expect(last?.searchParams.get("exclude")).toBe("bus");
+      expect(last?.searchParams.get("maxTransfers")).toBe("0");
+      expect(last?.searchParams.get("accessible")).toBe("1");
+    });
+
+    fireEvent.click(within(options).getByRole("button", { name: "Zurücksetzen" }));
+    expect(router.state.location.search).not.toContain("ohne=");
   });
 });

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "cn";
 import { JourneyList } from "@/components/journey-list";
+import { JourneyOptionsSheet } from "@/components/journey-options";
 import { SourceAttribution } from "@/components/source-attribution";
 import { StopPicker } from "@/components/stop-picker";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import { distanceKm } from "@/lib/geo";
 import {
   type JourneyQuery,
   type PickedStop,
+  describeJourneyOptions,
   journeyQueryFromParams,
   journeyQueryToParams,
   swapJourneyQuery,
@@ -35,6 +37,7 @@ function errorMessage(error: unknown): string {
   if (error instanceof ApiRequestError) {
     if (error.status === 404) return "Start oder Ziel wurde nicht gefunden.";
     if (error.code === "invalid_when") return "Der gewählte Zeitpunkt ist ungültig.";
+    if (error.code === "invalid_options") return "Die gewählten Optionen sind ungültig.";
     if (error.status === 400) return "Start oder Ziel ist ungültig.";
   }
   return "Verbindungen konnten gerade nicht geladen werden.";
@@ -126,10 +129,16 @@ export function JourneyPage() {
   const ready = from !== null && to !== null && !sameStop;
 
   const { data, error, isPending, isError, isFetching, isPlaceholderData, refetch } = useQuery({
-    queryKey: ["journeys", from?.id, to?.id, query.time ?? "now", query.arrive],
+    queryKey: ["journeys", from?.id, to?.id, query.time ?? "now", query.arrive, query.options],
     queryFn: ({ signal }) =>
       fetchJourneys(
-        { from: from?.id ?? "", to: to?.id ?? "", when: query.time, arrive: query.arrive },
+        {
+          from: from?.id ?? "",
+          to: to?.id ?? "",
+          when: query.time,
+          arrive: query.arrive,
+          options: query.options,
+        },
         signal,
       ),
     enabled: ready,
@@ -151,6 +160,7 @@ export function JourneyPage() {
     name: to.name || (data?.to.id === to.id ? stopLabel(data.to) : "") || to.id,
   };
 
+  const optionsSummary = describeJourneyOptions(query.options);
   const shift = (when: string) => update({ ...query, time: when, arrive: false });
 
   return (
@@ -254,7 +264,14 @@ export function JourneyPage() {
               Jetzt
             </Button>
           )}
+          <JourneyOptionsSheet
+            options={query.options}
+            onChange={(options) => update({ ...query, options })}
+          />
         </div>
+        {optionsSummary && (
+          <p className="truncate px-1 text-xs text-muted-foreground">{optionsSummary}</p>
+        )}
       </div>
 
       {locationMessage && (

@@ -25,12 +25,16 @@ export function apiError(status: number, error: string, message?: string): Respo
   return json(body, { status });
 }
 
-export async function fetchJson<T>(source: string, url: string): Promise<T> {
+export async function fetchJson<T>(
+  source: string,
+  url: string,
+  timeoutMs = UPSTREAM_TIMEOUT_MS,
+): Promise<T> {
   let res: Response;
   try {
     res = await fetch(url, {
       headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     });
   } catch (err) {
     throw new UpstreamError(source, err instanceof Error ? err.message : "Netzwerkfehler");

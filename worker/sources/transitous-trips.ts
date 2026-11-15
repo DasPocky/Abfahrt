@@ -1,4 +1,5 @@
 import type { Journey, JourneyLeg, JourneyStop, Stop } from "../../shared/api-types";
+import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
 import { fetchJson } from "../http";
 import { normalizeHex } from "../line-colors";
 import { MODE_MAP } from "./transitous";
@@ -132,6 +133,27 @@ export function toJourney(it: PlanItinerary, index: number): Journey | null {
   };
 }
 
+/** Mindest-Umstiegszeit in Minuten je Umstiegstempo (MOTIS `minTransferTime`) */
+const MIN_TRANSFER_MINUTES = { fast: 0, normal: 0, slow: 5 } as const;
+
+/** Optionen als MOTIS-Parameter */
+export function optionParams(options: JourneyOptions): string {
+  let params = "";
+  if (options.exclude.length > 0) {
+    // Erlaubte Verkehrsmittel aufzählen: alle bekannten MOTIS-Modi außer den ausgeschlossenen
+    const allowed = Object.entries(MODE_MAP)
+      // RAIL steht in MOTIS für alle Bahnen, die genauen Modi reichen
+      .filter(([motis, mode]) => motis !== "RAIL" && !options.exclude.includes(mode))
+      .map(([motis]) => motis);
+    params += `&transitModes=${allowed.join(",")}`;
+  }
+  if (options.maxTransfers !== null) params += `&maxTransfers=${options.maxTransfers}`;
+  const minTransfer = MIN_TRANSFER_MINUTES[options.transferSpeed];
+  if (minTransfer > 0) params += `&minTransferTime=${minTransfer}`;
+  if (options.accessible) params += "&pedestrianProfile=WHEELCHAIR";
+  return params;
+}
+
 /** Transitous-ID zu einer App-ID: VRR-IDs (DHID) gibt es im DELFI-Datensatz */
 export function planPlaceId(appId: string): string {
   if (appId.startsWith("transitous:")) return appId.slice("transitous:".length);
@@ -143,11 +165,13 @@ export async function trips(
   toId: string,
   when: Date | undefined,
   arrive: boolean,
+  options: JourneyOptions = DEFAULT_JOURNEY_OPTIONS,
 ): Promise<TransitousTripResult> {
   let url =
     `${BASE}/v5/plan?numItineraries=5&detailedTransfers=false&language=de` +
     `&fromPlace=${encodeURIComponent(planPlaceId(fromId))}` +
-    `&toPlace=${encodeURIComponent(planPlaceId(toId))}`;
+    `&toPlace=${encodeURIComponent(planPlaceId(toId))}` +
+    optionParams(options);
   if (when) url += `&time=${encodeURIComponent(when.toISOString())}&arriveBy=${arrive}`;
   const data = await fetchJson<{ from?: PlanPlace; to?: PlanPlace; itineraries?: PlanItinerary[] }>(
     "transitous",

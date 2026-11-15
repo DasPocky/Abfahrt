@@ -2,6 +2,7 @@ import { useId } from "react";
 import { Clock, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
+import { Chip, CHIP_BASE, CHIP_OFF, CHIP_ON } from "@/components/chip";
 import { Button } from "@/components/ui/button";
 import {
   availableLines,
@@ -13,35 +14,6 @@ import {
 import { MODE_LABEL, MODE_SHORT } from "@/lib/modes";
 import { toLocalInputValue } from "@/lib/time";
 import type { Departure } from "../../shared/api-types";
-
-const CHIP_BASE =
-  "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50";
-const CHIP_ON = "bg-foreground text-background";
-const CHIP_OFF = "bg-muted text-foreground hover:bg-accent";
-
-function Chip({
-  active,
-  onClick,
-  children,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-  label?: string;
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      aria-label={label}
-      onClick={onClick}
-      className={cn(CHIP_BASE, active ? CHIP_ON : CHIP_OFF)}
-    >
-      {children}
-    </button>
-  );
-}
 
 function withoutTime(filter: DepartureFilter): DepartureFilter {
   const { time: _time, ...rest } = filter;
