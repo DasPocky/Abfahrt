@@ -1,9 +1,17 @@
 // Aufgeklappte Verbindung: Abschnitte mit Gleis, Zwischenhalten, Fußwegen, Umstiegen und Hinweisen
 import { useId, useState } from "react";
-import { ArrowLeftRight, ChevronDown, ChevronRight, Footprints, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ChevronDown,
+  ChevronRight,
+  Footprints,
+  Map as MapIcon,
+  TriangleAlert,
+} from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { NOTICE_CLASS, NoticeList } from "@/components/departure-list";
+import { LazyRouteMap } from "@/components/lazy-route-map";
 import { LineBadge } from "@/components/line-badge";
 import {
   formatTransfer,
@@ -14,6 +22,7 @@ import {
 } from "@/lib/connections";
 import { isLegCancelled } from "@/lib/journeys";
 import { platformLabel } from "@/lib/modes";
+import { hasRoute } from "@/lib/route-map";
 import { DELAY_TONE_CLASS, delayMinutes, delayTone, formatClock, formatDelay } from "@/lib/time";
 import type { Journey, JourneyLeg, JourneyStop, TransportMode } from "../../shared/api-types";
 
@@ -215,25 +224,58 @@ function TransferRow({ transfer }: { transfer: Transfer }) {
   );
 }
 
-/** Abschnitte untereinander; Umstiege stehen direkt vor der Anschlussfahrt */
+/** Knopf „Karte“ und darunter die lazy geladene Routenkarte */
+function RouteMapToggle({ journey }: { journey: Journey }) {
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  if (!hasRoute(journey)) return null;
+  return (
+    <div className="space-y-2">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((v) => !v)}
+        className="-mx-1 inline-flex items-center gap-1 rounded px-1 py-0.5 text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring aria-expanded:text-foreground"
+      >
+        <MapIcon className="size-3.5 shrink-0" aria-hidden="true" />
+        Karte
+        <ChevronDown
+          className={cn("size-3.5 shrink-0 transition-transform", open && "rotate-180")}
+          aria-hidden="true"
+        />
+      </button>
+      {open && (
+        <div id={id}>
+          <LazyRouteMap journey={journey} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Abschnitte untereinander; Umstiege stehen direkt vor der Anschlussfahrt, darunter die Karte */
 export function JourneyDetails({ id, journey }: { id: string; journey: Journey }) {
   const transfers = new Map(journeyTransfers(journey).map((t) => [t.toLeg, t]));
   return (
-    <ol id={id} aria-label="Abschnitte" className="space-y-1.5 border-t px-3 py-2 text-xs">
-      {journey.legs.map((leg, index) => {
-        const transfer = transfers.get(index);
-        return [
-          transfer && <TransferRow key={`t${index}`} transfer={transfer} />,
-          leg.kind === "walk" ? (
-            <li key={index} className="flex items-center gap-1.5 text-muted-foreground">
-              <Footprints className="size-3.5 shrink-0" aria-hidden="true" />
-              {walkText(leg)}
-            </li>
-          ) : (
-            <TransitLeg key={index} leg={leg} />
-          ),
-        ];
-      })}
-    </ol>
+    <div id={id} className="space-y-1.5 border-t px-3 py-2 text-xs">
+      <ol aria-label="Abschnitte" className="space-y-1.5">
+        {journey.legs.map((leg, index) => {
+          const transfer = transfers.get(index);
+          return [
+            transfer && <TransferRow key={`t${index}`} transfer={transfer} />,
+            leg.kind === "walk" ? (
+              <li key={index} className="flex items-center gap-1.5 text-muted-foreground">
+                <Footprints className="size-3.5 shrink-0" aria-hidden="true" />
+                {walkText(leg)}
+              </li>
+            ) : (
+              <TransitLeg key={index} leg={leg} />
+            ),
+          ];
+        })}
+      </ol>
+      <RouteMapToggle journey={journey} />
+    </div>
   );
 }

@@ -97,6 +97,11 @@ export interface JourneyLeg {
   /** Fahrt fällt (teilweise) aus */
   cancelled: boolean;
   notices: string[];
+  /**
+   * Streckenverlauf als `[lat, lon]`, gerundet auf 5 Nachkommastellen und auf höchstens ca.
+   * 200 Punkte ausgedünnt. Ohne Geometrie der Quelle die Halte verbunden, null wenn unbekannt.
+   */
+  path: [number, number][] | null;
 }
 
 export interface Journey {

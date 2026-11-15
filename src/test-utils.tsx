@@ -112,6 +112,7 @@ export function journeyLeg(overrides: Partial<JourneyLeg> = {}): JourneyLeg {
     intermediateStops: [],
     cancelled: false,
     notices: [],
+    path: null,
     ...overrides,
   };
 }
