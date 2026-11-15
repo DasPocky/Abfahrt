@@ -1,4 +1,5 @@
 import { BottomSheet } from "@/components/bottom-sheet";
+import { LocationProbe } from "@/components/location-probe";
 
 const STEPS: { title: string; steps: string[] }[] = [
   {
@@ -32,6 +33,7 @@ export function LocationHelp() {
       trigger="So gibst du ihn frei"
     >
       <div className="space-y-4 text-sm">
+        <LocationProbe />
         {STEPS.map((group) => (
           <section key={group.title} className="space-y-1.5">
             <h3 className="font-semibold">{group.title}</h3>

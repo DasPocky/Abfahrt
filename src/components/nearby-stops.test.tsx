@@ -1,4 +1,4 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StopSearchResponse } from "../../shared/api-types";
 import { LOCATION_PREF_KEY } from "@/hooks/use-location";
@@ -84,15 +84,14 @@ afterEach(() => {
 });
 
 describe("In der Nähe", () => {
-  it("fragt den Standort erst nach Antippen ab und zeigt die nächsten Haltestellen", async () => {
+  it("fordert den Standort beim Öffnen an und zeigt die nächsten Haltestellen", async () => {
     const geo = mockGeolocation("ok");
     const fetchMock = vi
       .spyOn(globalThis, "fetch")
       .mockImplementation(async () => Response.json(NEARBY));
     renderAt("/");
-    expect(geo).not.toHaveBeenCalled();
+    expect(geo).toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole("button", { name: /in meiner Nähe/ }));
     const list = await screen.findByRole("list", { name: "Haltestellen in der Nähe" });
     const links = within(list).getAllByRole("link");
     expect(links).toHaveLength(4);
@@ -121,15 +120,62 @@ describe("In der Nähe", () => {
     ).toBeInTheDocument();
   });
 
-  it("meldet einen verweigerten Standort", () => {
-    mockGeolocation("denied");
+  it("fragt nicht, wenn der Standort selbst ausgeschaltet wurde", () => {
+    localStorage.setItem(LOCATION_PREF_KEY, "off");
+    const geo = mockGeolocation("ok");
     renderAt("/");
+    expect(geo).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: /in meiner Nähe/ }));
+    expect(geo).toHaveBeenCalledTimes(1);
+  });
+
+  it("meldet einen verweigerten Standort und fragt beim nächsten Öffnen wieder", () => {
+    const geo = mockGeolocation("denied");
+    const { unmount } = renderAt("/");
     const nearby = screen.getByRole("region", { name: "In der Nähe" });
     expect(within(nearby).getByText(/Standort nicht freigegeben/)).toBeInTheDocument();
     expect(
       within(nearby).getByRole("button", { name: "So gibst du ihn frei" }),
     ).toBeInTheDocument();
-    expect(localStorage.getItem(LOCATION_PREF_KEY)).toBe("off");
+    // Ablehnung wird nicht dauerhaft gemerkt
+    expect(localStorage.getItem(LOCATION_PREF_KEY)).toBeNull();
+    unmount();
+    renderAt("/");
+    expect(geo).toHaveBeenCalledTimes(2);
+  });
+
+  it("holt den Standort, sobald er in den Einstellungen freigegeben wird", async () => {
+    let allowed = false;
+    const getCurrentPosition = vi.fn<Geolocation["getCurrentPosition"]>((ok, fail) => {
+      if (allowed) ok({ coords: COORDS, timestamp: Date.now(), toJSON: () => ({}) });
+      else fail?.(DENIED);
+    });
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: { getCurrentPosition },
+    });
+    const listeners: (() => void)[] = [];
+    const permission = {
+      state: "denied",
+      addEventListener: (_type: string, listener: () => void) => listeners.push(listener),
+      removeEventListener: () => {},
+    };
+    Object.defineProperty(navigator, "permissions", {
+      configurable: true,
+      value: { query: async () => permission },
+    });
+    vi.spyOn(globalThis, "fetch").mockImplementation(async () => Response.json(NEARBY));
+
+    renderAt("/");
+    expect((await screen.findAllByText(/Standort nicht freigegeben/)).length).toBeGreaterThan(0);
+    await waitFor(() => expect(listeners).toHaveLength(1));
+
+    allowed = true;
+    permission.state = "granted";
+    act(() => listeners.forEach((listener) => listener()));
+    expect(
+      await screen.findByRole("list", { name: "Haltestellen in der Nähe" }),
+    ).toBeInTheDocument();
+    Reflect.deleteProperty(navigator, "permissions");
   });
 });
