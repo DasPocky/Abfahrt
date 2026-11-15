@@ -87,8 +87,14 @@ export async function getJson<T>(
   return body;
 }
 
-export function searchStops(query: string, signal?: AbortSignal): Promise<StopSearchResponse> {
+/** Haltestellensuche; `places` liefert zusätzlich Adressen und POIs (Verbindungssuche) */
+export function searchStops(
+  query: string,
+  signal?: AbortSignal,
+  places = false,
+): Promise<StopSearchResponse> {
   const params = new URLSearchParams({ q: query });
+  if (places) params.set("places", "1");
   return getJson(`stops/search?${params.toString()}`, isStopSearchResponse, signal);
 }
 

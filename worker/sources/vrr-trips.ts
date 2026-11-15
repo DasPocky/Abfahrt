@@ -1,4 +1,5 @@
 import type { Journey, JourneyLeg, JourneyStop, Stop, TransportMode } from "../../shared/api-types";
+import { parseGeoId } from "../../shared/geo-id";
 import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
 import { legPath } from "../geometry";
 import { fetchJson } from "../http";
@@ -72,11 +73,18 @@ function placeOf(point: VrrPoint): string | undefined {
   return stop.parent?.type === "locality" ? stop.parent.name : undefined;
 }
 
+/** Anzeigename: Haltestellen ohne Städtekürzel, Adressen/POIs ohne Ortsteil („Königsallee 1“) */
+function pointName(point: VrrPoint): string {
+  const stop = stopOf(point);
+  if (stop.type === "stop" || stop.type === "platform") return stripCityPrefix(stop.name ?? "");
+  return point.disassembledName ?? point.name ?? "";
+}
+
 function toStop(point: VrrPoint): Stop {
   const stop = stopOf(point);
   return {
     id: `vrr:${stop.id ?? ""}`,
-    name: stripCityPrefix(stop.name ?? ""),
+    name: pointName(point),
     place: placeOf(point),
     lat: stop.coord?.[0],
     lon: stop.coord?.[1],
@@ -90,7 +98,7 @@ function toJourneyStop(point: VrrPoint, realtime: boolean): JourneyStop {
   const plannedPlatform = props.plannedPlatformName ?? null;
   return {
     id: stop.id?.startsWith("de:") ? `vrr:${stop.id}` : null,
-    name: stripCityPrefix(stop.name ?? ""),
+    name: pointName(point),
     place: placeOf(point),
     lat: point.coord?.[0] ?? stop.coord?.[0],
     lon: point.coord?.[1] ?? stop.coord?.[1],
@@ -210,6 +218,16 @@ function dhid(appId: string): string {
   return appId.startsWith("vrr:") ? appId.slice("vrr:".length) : appId;
 }
 
+/** EFA-Parameter für Start bzw. Ziel: Haltestelle per DHID, Adresse/POI per Koordinate */
+function pointParams(role: "origin" | "destination", appId: string): string {
+  const geo = parseGeoId(appId);
+  if (geo) {
+    const coord = `${geo.lon}:${geo.lat}:WGS84[dd.ddddd]`;
+    return `&type_${role}=coord&name_${role}=${encodeURIComponent(coord)}`;
+  }
+  return `&type_${role}=any&name_${role}=${encodeURIComponent(dhid(appId))}`;
+}
+
 /** `fromId`/`toId` sind App-IDs mit Präfix `vrr:` */
 export async function trips(
   fromId: string,
@@ -220,8 +238,8 @@ export async function trips(
 ): Promise<VrrTripResult> {
   let url =
     `${BASE}/XML_TRIP_REQUEST2?${COMMON}&useRealtime=1&calcNumberOfTrips=5` +
-    `&type_origin=any&name_origin=${encodeURIComponent(dhid(fromId))}` +
-    `&type_destination=any&name_destination=${encodeURIComponent(dhid(toId))}` +
+    pointParams("origin", fromId) +
+    pointParams("destination", toId) +
     optionParams(options);
   if (when) {
     const { date, time } = efaDateTime(when);

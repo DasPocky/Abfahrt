@@ -10,9 +10,15 @@ import { apiError, json, UpstreamError } from "./http";
 import { applyJourneyLineColors, type LineColorMap } from "./line-colors";
 import * as transitousTrips from "./sources/transitous-trips";
 import { isVrrArea } from "./sources/vrr";
+import { parseGeoId } from "../shared/geo-id";
 import * as vrrTrips from "./sources/vrr-trips";
 
 const STOP_ID = /^(vrr|transitous):[A-Za-z0-9:_.-]{1,160}$/;
+
+/** Haltestellen-ID oder Adresse/POI als geo-ID */
+function isPlaceId(id: string): boolean {
+  return STOP_ID.test(id) || parseGeoId(id) !== null;
+}
 /** Kurz, damit Echtzeit aktuell bleibt; Transitous-Limit schont der gemeinsame Cache */
 const JOURNEYS_TTL = 60;
 const MAX_OFFSET_MS = 7 * 24 * 60 * 60 * 1000;
@@ -25,8 +31,30 @@ function inVrr(id: string): boolean {
   return id.startsWith("vrr:") && isVrrArea(id.slice("vrr:".length));
 }
 
+function isGeo(id: string): boolean {
+  return id.startsWith("geo:");
+}
+
+/** Der VRR versteht eigene Haltestellen-IDs und Koordinaten */
+function vrrCapable(id: string): boolean {
+  return id.startsWith("vrr:") || isGeo(id);
+}
+
+/** Spricht für den VRR als erste Quelle: Haltestelle im VRR-Gebiet oder Adresse/POI */
+function vrrSide(id: string): boolean {
+  return inVrr(id) || isGeo(id);
+}
+
 function fallbackStop(id: string): Stop {
+  const geo = parseGeoId(id);
+  if (geo) return { id, name: "Gewählter Ort", ...geo };
   return { id, name: id.slice(id.indexOf(":") + 1) };
+}
+
+/** Bei Adressen/POIs liefert die Quelle eigene IDs; die App braucht ihre geo-ID zurück */
+function endpoint(requested: string, returned: Stop | null): Stop {
+  if (!returned) return fallbackStop(requested);
+  return isGeo(requested) ? { ...returned, id: requested } : returned;
 }
 
 function departureOf(j: Journey): number {
@@ -46,6 +74,23 @@ function actualDepartureOf(j: Journey): number {
  */
 export function dropDeparted(journeys: readonly Journey[], from: number): Journey[] {
   return journeys.filter((j) => !(actualDepartureOf(j) < from - 60_000));
+}
+
+/** Gleiche Verbindung (Abschnitte mit Linie, Start und Zeiten) nur einmal; die Quellen liefern
+ * gelegentlich Doppelte */
+export function dedupeJourneys(journeys: readonly Journey[]): Journey[] {
+  const seen = new Set<string>();
+  return journeys.filter((j) => {
+    const key = j.legs
+      .map(
+        (l) =>
+          `${l.line ?? "walk"}@${l.origin.plannedDeparture ?? ""}>${l.destination.plannedArrival ?? ""}`,
+      )
+      .join("|");
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 /**
@@ -101,8 +146,8 @@ async function load(
   const viaTransitous = async (): Promise<Loaded> => {
     const r = await transitousTrips.trips(from, to, when, arrive, options);
     return {
-      from: r.from ?? fallbackStop(from),
-      to: r.to ?? fallbackStop(to),
+      from: endpoint(from, r.from),
+      to: endpoint(to, r.to),
       journeys: r.journeys,
       source: "transitous",
     };
@@ -110,17 +155,18 @@ async function load(
   const viaVrr = async (): Promise<Loaded> => {
     const r = await vrrTrips.trips(from, to, when, arrive, options);
     return {
-      from: r.from ?? fallbackStop(from),
-      to: r.to ?? fallbackStop(to),
+      from: endpoint(from, r.from),
+      to: endpoint(to, r.to),
       journeys: r.journeys,
       source: "vrr",
     };
   };
 
-  // Im VRR (beide Enden) mit VRR-Echtzeit, sonst Transitous; die jeweils andere Quelle ist Fallback
-  // Der VRR kennt nur eigene IDs (DHID); mit Transitous-IDs bleibt Transitous allein zuständig
-  const vrrPossible = from.startsWith("vrr:") && to.startsWith("vrr:");
-  const primary = inVrr(from) && inVrr(to) ? viaVrr : viaTransitous;
+  // Im VRR (beide Enden) mit VRR-Echtzeit, sonst Transitous; die jeweils andere Quelle ist Fallback.
+  // Der VRR kennt nur eigene IDs (DHID) und Koordinaten; mit Transitous-IDs bleibt Transitous
+  // allein zuständig. VRR zuerst, wenn beide Enden im VRR-Gebiet liegen oder Adressen/POIs sind.
+  const vrrPossible = vrrCapable(from) && vrrCapable(to);
+  const primary = vrrPossible && vrrSide(from) && vrrSide(to) ? viaVrr : viaTransitous;
   const secondary = primary === viaVrr ? viaTransitous : vrrPossible ? viaVrr : null;
   if (!secondary) return primary();
   try {
@@ -146,7 +192,7 @@ export async function getJourneys(
 ): Promise<Response> {
   const from = params.get("from") ?? "";
   const to = params.get("to") ?? "";
-  if (!STOP_ID.test(from) || !STOP_ID.test(to)) {
+  if (!isPlaceId(from) || !isPlaceId(to)) {
     return apiError(400, "invalid_stop", "Ungültige Haltestellen-ID für Start oder Ziel");
   }
   if (from === to) return apiError(400, "same_stop", "Start und Ziel sind gleich");
@@ -178,7 +224,8 @@ export async function getJourneys(
       ? { ...result, journeys: await withLineColors(request, ctx, result.journeys) }
       : result;
   });
-  const journeys = arrive ? loaded.journeys : dropDeparted(loaded.journeys, at.getTime());
+  const unique = dedupeJourneys(loaded.journeys);
+  const journeys = arrive ? unique : dropDeparted(unique, at.getTime());
   const body: JourneysResponse = {
     ...loaded,
     journeys,

@@ -81,16 +81,16 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
-| Endpunkt                                            | Zweck                        | Meilenstein |
-| --------------------------------------------------- | ---------------------------- | ----------- |
-| `GET /abfahrt/api/stops/search?q=`                  | Haltestellen/Adressen suchen | M1          |
-| `GET /abfahrt/api/stops/nearby?lat=&lon=`           | Haltestellen in der Nähe     | M1          |
-| `GET /abfahrt/api/stops/area?min=&max=`             | Haltestellen im Ausschnitt   | M1          |
-| `GET /abfahrt/api/departures?stop=&when=&modes=`    | Abfahrten mit Echtzeit       | M1          |
-| `GET /abfahrt/api/journeys?from=&to=&when=&arrive=` | Verbindungssuche             | M2          |
-| `GET /abfahrt/api/trips/:id`                        | Fahrtverlauf/Zwischenhalte   | M2          |
-| `GET /abfahrt/api/alerts?lines=&stop=`              | Störungen                    | M3          |
-| `POST /abfahrt/api/push/subscribe`                  | Push-Abo                     | M3          |
+| Endpunkt                                            | Zweck                                            | Meilenstein |
+| --------------------------------------------------- | ------------------------------------------------ | ----------- |
+| `GET /abfahrt/api/stops/search?q=&places=1`         | Haltestellen (mit `places=1` auch Adressen/POIs) | M1/M2       |
+| `GET /abfahrt/api/stops/nearby?lat=&lon=`           | Haltestellen in der Nähe                         | M1          |
+| `GET /abfahrt/api/stops/area?min=&max=`             | Haltestellen im Ausschnitt                       | M1          |
+| `GET /abfahrt/api/departures?stop=&when=&modes=`    | Abfahrten mit Echtzeit                           | M1          |
+| `GET /abfahrt/api/journeys?from=&to=&when=&arrive=` | Verbindungssuche                                 | M2          |
+| `GET /abfahrt/api/trips/:id`                        | Fahrtverlauf/Zwischenhalte                       | M2          |
+| `GET /abfahrt/api/alerts?lines=&stop=`              | Störungen                                        | M3          |
+| `POST /abfahrt/api/push/subscribe`                  | Push-Abo                                         | M3          |
 
 Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und wird von App und Worker gemeinsam genutzt.
 
@@ -100,11 +100,13 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 
 - `from`/`to` sind Haltestellen-IDs der App, `when` (ISO, höchstens 7 Tage entfernt) und `arrive=1` für eine Ankunftszeit. Antwort `JourneysResponse` mit `Journey` → `JourneyLeg` (`transit`/`walk`) → `JourneyStop` (Plan- und Echtzeit, Gleis inkl. Gleiswechsel, Zwischenhalte).
 - **Streckenverlauf** (`JourneyLeg.path`, `worker/geometry.ts`): Liste von `[lat, lon]` je Abschnitt für die Routenkarte. VRR liefert `coords` je Abschnitt, Transitous `legGeometry` als Encoded Polyline (eigene Dekodierung, Präzision aus `precision`, getestet: 6). Der Worker rundet auf 5 Nachkommastellen (ca. 1 m), lässt doppelte Punkte weg, vereinfacht per Douglas-Peucker (Toleranz wächst mit der Ausdehnung des Abschnitts: mindestens ca. 5 m, sonst Ausdehnung/4000, z. B. ca. 100 m bei einer 400-km-ICE-Fahrt) und dünnt notfalls gleichmäßig auf höchstens 200 Punkte aus. Ohne Geometrie (Fußwege bei Transitous, Antworten ohne `coords`) verbindet er die Halte (Start, Zwischenhalte, Ziel); ohne Lagedaten oder bei weniger als zwei verschiedenen Punkten `null`. Größe der normalisierten Verbindungen (Aufnahme 15.11.2026, Heinrich-Heine-Allee → Essen Hbf bzw. Berlin Hbf): VRR, 3 Verbindungen, 13,9 → 19,9 kB (gzip 2,0 → 3,6 kB); Transitous, 5 Verbindungen, 35,1 → 64,0 kB (gzip 3,3 → 11,6 kB). Die Rohantworten der Quellen haben 440 bzw. 325 kB.
+- **Adressen und POIs** (`shared/geo-id.ts`): Die Suche mit `places=1` fragt den VRR-Stopfinder mit `anyObjFilter_sf=46` (Haltestellen, Straßen, Adressen, POIs). Treffer ohne Haltestelle bekommen `kind` (`address`/`poi`) und die ID `geo:<lat>,<lon>` (5 Nachkommastellen). `journeys` nimmt solche IDs als `from`/`to`: VRR mit `type_origin=coord&name_origin=<lon>:<lat>:WGS84[dd.ddddd]` (die EFA ergänzt den Fußweg zur ersten Haltestelle, getestet 15.11.2026: Königsallee 1 → Essen Hbf mit 236 m Fußweg), Transitous mit `fromPlace=<lat>,<lon>`. Liegt das andere Ende im VRR-Gebiet oder ist es auch eine Adresse, fragt der Worker zuerst den VRR. Die Abfahrtssuche bleibt bei Haltestellen.
 - **Optionen** (`shared/journey-options.ts`, von App und Worker gemeinsam genutzt): `exclude=<Verkehrsmittel,…>`, `maxTransfers=0–5`, `transfer=fast|slow`, `accessible=1`. Ungültige Werte ergeben `400 invalid_options`. In der App-URL heißen sie `ohne`, `umstiege`, `umstiegszeit=kurz|mehr` und `barrierefrei`.
   - VRR: `excludedMeans=checkbox` + `exclMOT_<Klasse>=1` je EFA-Produktklasse, `maxChanges`, `changeSpeed=fast|slow`, barrierefrei `imparedOptionsActive=1&wheelchair=on&noSolidStairs=on&noEscalators=on&lowPlatformVhcl=on`
   - Transitous: `transitModes` (erlaubte MOTIS-Modi ohne das Sammel-`RAIL`), `maxTransfers`, `minTransferTime=5` bei „mehr Zeit“, `pedestrianProfile=WHEELCHAIR`
   - Getestet 14.11.2026: Ohne Fernverkehr ersetzt der VRR das ICE-Stück durch RE, mit „barrierefrei“ kommen Fußwege mit Aufzug dazu, `maxChanges=0` liefert für Heinrich-Heine-Allee → Essen keine Verbindung.
 - **Quelle:** Liegen Start und Ziel im VRR-Gebiet, fragt der Worker den VRR (`XML_TRIP_REQUEST2`, 5 Verbindungen, Echtzeit, Zeitlimit 15 s statt 8 s, weil die EFA für Verbindungen länger rechnet). Sonst fragt er Transitous `v5/plan`, VRR-IDs gehen dabei als `de-DELFI_<DHID>` hinein. Liefert die erste Quelle nichts oder fällt sie aus, kommt die andere dran. Haltestellen im VRR-Gebiet tragen auch in Transitous-Antworten die `vrr:`-ID. Städtekürzel („D-“) entfernt der Worker.
+- **Doppelte** Verbindungen (gleiche Linien und Zeiten je Abschnitt) entfernt der Worker, der VRR liefert gelegentlich welche.
 - **Zeitpunkt:** Beide Quellen bekommen immer einen festen Zeitpunkt (ohne `when` die aktuelle Zeit). Bei der Suche nach Abfahrtszeit fallen Verbindungen weg, die mehr als 1 Minute vor dem Zeitpunkt abfahren, denn die EFA liefert oft eine schon abgefahrene mit.
 - **Cache:** 60 s, Schlüssel je Strecke, Richtung (Ab/An) und Minute. So teilen sich alle Nutzer eine Abfrage, was das Transitous-Limit (< 720 `/plan` pro Tag) schont.
 - **Früher/Später:** `earlier`/`later` sind Abfahrtszeiten für die nächste Abfrage. Später ist 1 Minute nach der letzten Abfahrt, früher eine Listenlänge (mindestens 20 Minuten) vor der ersten.

@@ -1,4 +1,5 @@
 import type { Journey, JourneyLeg, JourneyStop, Stop } from "../../shared/api-types";
+import { parseGeoId } from "../../shared/geo-id";
 import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
 import { decodePolyline, legPath } from "../geometry";
 import { fetchJson } from "../http";
@@ -164,6 +165,8 @@ export function optionParams(options: JourneyOptions): string {
 
 /** Transitous-ID zu einer App-ID: VRR-IDs (DHID) gibt es im DELFI-Datensatz */
 export function planPlaceId(appId: string): string {
+  const geo = parseGeoId(appId);
+  if (geo) return `${geo.lat},${geo.lon}`;
   if (appId.startsWith("transitous:")) return appId.slice("transitous:".length);
   return `de-DELFI_${appId.slice(appId.indexOf(":") + 1)}`;
 }
