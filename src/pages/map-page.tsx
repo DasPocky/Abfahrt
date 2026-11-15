@@ -1,13 +1,15 @@
 // Karte mit Haltestellen (/abfahrt/karte). Lazy geladen, siehe src/pages/lazy-map-page.tsx.
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { ChevronRight, LoaderCircle, LocateFixed, X } from "lucide-react";
 import type { Stop } from "../../shared/api-types";
+import { MapAttribution } from "@/components/map-attribution";
 import { StopMap, type MapView } from "@/components/stop-map";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useLocation } from "@/hooks/use-location";
+import { usePrefersDark } from "@/hooks/use-prefers-dark";
 import { stopPath } from "@/lib/api";
 import type { Position } from "@/lib/geo";
 import { areaForBounds, fetchStopsInArea } from "@/lib/map-area";
@@ -19,22 +21,6 @@ const DEFAULT_ZOOM = 15;
 const MAP_DEBOUNCE_MS = 400;
 /** Bereits geladene Haltestellen behalten (flüssiges Verschieben), aber nicht unbegrenzt */
 const MAX_KEPT_STOPS = 2000;
-
-const DARK_QUERY = "(prefers-color-scheme: dark)";
-
-function subscribeDark(onChange: () => void) {
-  const media = window.matchMedia?.(DARK_QUERY);
-  media?.addEventListener("change", onChange);
-  return () => media?.removeEventListener("change", onChange);
-}
-
-function usePrefersDark(): boolean {
-  return useSyncExternalStore(
-    subscribeDark,
-    () => window.matchMedia?.(DARK_QUERY).matches ?? false,
-    () => false,
-  );
-}
 
 function mergeStops(known: Map<string, Stop>, incoming: readonly Stop[]): Map<string, Stop> {
   const next = new Map(known);
@@ -159,38 +145,14 @@ export function MapPage() {
           </div>
         )}
 
-        <p className="absolute right-0 bottom-0 rounded-tl-md bg-background/85 px-1.5 py-0.5 text-[10px] leading-tight text-muted-foreground">
-          ©{" "}
-          <a
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline-offset-2 hover:underline"
-          >
-            OpenStreetMap-Mitwirkende
-          </a>
-          ,{" "}
-          <a
-            href="https://openfreemap.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline-offset-2 hover:underline"
-          >
-            OpenFreeMap
-          </a>{" "}
-          ·{" "}
-          <a
-            href="https://www.openmaptiles.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline-offset-2 hover:underline"
-          >
-            OpenMapTiles
-          </a>
-        </p>
+        <MapAttribution />
       </div>
     </section>
   );
 }
 
 export default MapPage;
+
+// Die Routenkarte (Verbindungsdetails) kommt aus demselben lazy Chunk „map-page-*“: MapLibre liegt
+// so nur einmal vor, und der Service Worker lässt den Chunk aus der Offline-Hülle (precache.ts)
+export { RouteMapPanel } from "@/components/route-map-panel";

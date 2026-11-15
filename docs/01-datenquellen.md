@@ -35,6 +35,7 @@ Stand: 30.10.2026. Alle Quellen wurden an diesem Tag live angetestet, die Testan
 - `XML_ADDINFO_REQUEST`: 1.173 aktuelle Meldungen inklusive betroffener Linien
 - `XML_TRIP_REQUEST2` Heinrich-Heine-Allee → Köln Hbf: 3 Verbindungen mit Echtzeit
 - `XML_TRIP_REQUEST2` mit DHIDs als `name_origin`/`name_destination` (`type_origin=any`), Heinrich-Heine-Allee → Essen Hbf (14.11.2026): 3 Verbindungen, Echtzeit je Abschnitt (`realtimeStatus: MONITORED`), Zwischenhalte mit Zeiten und Gleisen in `stopSequence`. Fernzüge haben keinen `disassembledName`, dafür `trainType` + `trainNumber`. Eine unbekannte ID liefert keine Fehlermeldung per HTTP, sondern `systemMessages` mit `origin: multiple matches`.
+- Streckenverlauf (Test 15.11.2026, Heinrich-Heine-Allee → Essen Hbf): jeder Abschnitt hat `coords` als Liste von `[lat, lon]` (6 Nachkommastellen), z. B. U75 74 Punkte, RE1 570 Punkte. Die Rohantwort ist deshalb groß (3 Verbindungen: 440 kB), der Worker dünnt aus (siehe docs/02-architektur.md, Verbindungen). Fixture: `test/worker/fixtures/vrr-trip-coords.json` (eine Verbindung, `coords` vollständig); in `vrr-trip.json` fehlen die `coords` (gekürzt).
 
 **Besonderheiten:**
 
@@ -64,7 +65,7 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - **Endpunkte:**
   - `v1/geocode`: Suche
   - `v1/stoptimes`: Abfahrten
-  - `v5/plan`: Verbindungen. DELFI-IDs mit DHID funktionieren direkt als `fromPlace`/`toPlace`, z. B. `de-DELFI_de:05111:18036` → `de-DELFI_de:11000:900003201` (Berlin Hbf), getestet 14.11.2026: U75 + Fußweg 120 m + ICE, Echtzeit und Gleiswechsel je Halt. `previousPageCursor`/`nextPageCursor` nutzen wir nicht, die App blättert per Zeitpunkt.
+  - `v5/plan`: Verbindungen. DELFI-IDs mit DHID funktionieren direkt als `fromPlace`/`toPlace`, z. B. `de-DELFI_de:05111:18036` → `de-DELFI_de:11000:900003201` (Berlin Hbf), getestet 14.11.2026: U75 + Fußweg 120 m + ICE, Echtzeit und Gleiswechsel je Halt. `previousPageCursor`/`nextPageCursor` nutzen wir nicht, die App blättert per Zeitpunkt. Streckenverlauf je Abschnitt in `legGeometry` (`points` als Encoded Polyline, `precision`, `length` = Punktzahl); getestet 15.11.2026 (Heinrich-Heine-Allee → Berlin Hbf): `precision: 6` (nicht 7), U78 80 Punkte, ICE 278 8.163 Punkte, Fußwege mit `detailedTransfers=false` leer (`length: 0`). Fixture: `test/worker/fixtures/transitous-plan-geometry.json`; in `transitous-plan.json` fehlt `legGeometry`.
   - `trip`: Fahrtverlauf
   - `map/trips`: Fahrzeugpositionen
   - `v1/map/stops`: Haltestellen (Steige) im Rechteck `min=<lat,lon>&max=<lat,lon>`, für die Karte

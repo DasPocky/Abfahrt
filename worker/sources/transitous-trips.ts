@@ -1,6 +1,7 @@
 import type { Journey, JourneyLeg, JourneyStop, Stop } from "../../shared/api-types";
 import { parseGeoId } from "../../shared/geo-id";
 import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
+import { decodePolyline, legPath } from "../geometry";
 import { fetchJson } from "../http";
 import { normalizeHex } from "../line-colors";
 import { MODE_MAP } from "./transitous";
@@ -40,6 +41,8 @@ interface PlanLeg {
   routeTextColor?: string;
   cancelled?: boolean;
   intermediateStops?: PlanPlace[];
+  /** Streckenverlauf als Encoded Polyline; `precision` meist 6 (getestet 15.11.2026) */
+  legGeometry?: { points?: string; precision?: number; length?: number };
 }
 
 interface PlanItinerary {
@@ -101,6 +104,12 @@ export function toLeg(leg: PlanLeg): JourneyLeg {
     origin.plannedArrival = origin.realtimeArrival = null;
     destination.plannedDeparture = destination.realtimeDeparture = null;
   }
+  const intermediateStops = walk
+    ? []
+    : (leg.intermediateStops ?? []).map((p) => toJourneyStop(p, realtime));
+  const geometry = leg.legGeometry?.points
+    ? decodePolyline(leg.legGeometry.points, leg.legGeometry.precision ?? 6)
+    : null;
   return {
     kind: walk ? "walk" : "transit",
     origin,
@@ -112,11 +121,10 @@ export function toLeg(leg: PlanLeg): JourneyLeg {
     direction: walk ? null : leg.headsign ? stripCityPrefix(leg.headsign) : null,
     lineColor: walk ? null : normalizeHex(leg.routeColor),
     lineTextColor: walk ? null : normalizeHex(leg.routeTextColor),
-    intermediateStops: walk
-      ? []
-      : (leg.intermediateStops ?? []).map((p) => toJourneyStop(p, realtime)),
+    intermediateStops,
     cancelled: leg.cancelled === true,
     notices: [],
+    path: legPath(geometry, [origin, ...intermediateStops, destination]),
   };
 }
 

@@ -4,25 +4,14 @@ import { useEffect, useRef } from "react";
 import {
   Map as MapLibreMap,
   NavigationControl,
-  setWorkerUrl,
   type GeoJSONSource,
   type MapGeoJSONFeature,
 } from "maplibre-gl";
-// Eigene Datei statt Blob: Der Worker kommt von der eigenen Origin, das erlaubt `worker-src 'self'`.
-import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
-import "maplibre-gl/dist/maplibre-gl.css";
 import type { FeatureCollection, Point } from "geojson";
 import type { Stop } from "../../shared/api-types";
+import { MAP_LOCALE, mapStyle } from "@/components/map-base";
 import type { Position } from "@/lib/geo";
 import type { Bounds } from "@/lib/map-area";
-
-setWorkerUrl(workerUrl);
-
-/** Kartenstile von OpenFreeMap (OSM-Vektorkacheln, ohne Key), siehe docs/01-datenquellen.md */
-const MAP_STYLES = {
-  light: "https://tiles.openfreemap.org/styles/liberty",
-  dark: "https://tiles.openfreemap.org/styles/dark",
-} as const;
 
 const STOPS_LAYER = "abfahrt-stops";
 /** Antippen trifft eine Haltestelle auch knapp daneben (Finger statt Mauszeiger) */
@@ -168,7 +157,8 @@ export function StopMap({
     if (!container) return undefined;
     const map = new MapLibreMap({
       container,
-      style: latest.current.dark ? MAP_STYLES.dark : MAP_STYLES.light,
+      style: mapStyle(latest.current.dark),
+      locale: MAP_LOCALE,
       center: [initialCenter.lon, initialCenter.lat],
       zoom: initialZoom,
       maxZoom: 19,
@@ -238,7 +228,7 @@ export function StopMap({
   useEffect(() => {
     if (styleRef.current === dark) return;
     styleRef.current = dark;
-    mapRef.current?.setStyle(dark ? MAP_STYLES.dark : MAP_STYLES.light, { diff: false });
+    mapRef.current?.setStyle(mapStyle(dark), { diff: false });
   }, [dark]);
 
   return (

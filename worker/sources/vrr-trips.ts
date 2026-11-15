@@ -1,6 +1,7 @@
 import type { Journey, JourneyLeg, JourneyStop, Stop, TransportMode } from "../../shared/api-types";
 import { parseGeoId } from "../../shared/geo-id";
 import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
+import { legPath } from "../geometry";
 import { fetchJson } from "../http";
 import { stripCityPrefix } from "./transitous-map";
 import { efaDateTime, MODE_BY_CLASS } from "./vrr";
@@ -46,6 +47,8 @@ interface VrrLeg {
     properties?: { trainType?: string; trainNumber?: string; lineDisplay?: string };
   };
   stopSequence?: VrrPoint[];
+  /** Streckenverlauf als `[lat, lon]` (mit `coordOutputFormat=WGS84[dd.ddddd]`) */
+  coords?: [number, number][];
   infos?: { title?: string; subtitle?: string }[];
 }
 
@@ -130,10 +133,15 @@ export function toLeg(leg: VrrLeg): JourneyLeg {
   const notices = [
     ...new Set((leg.infos ?? []).map((i) => (i.subtitle ?? i.title ?? "").trim()).filter(Boolean)),
   ].slice(0, 3);
+  const origin = toJourneyStop(leg.origin, realtime);
+  const destination = toJourneyStop(leg.destination, realtime);
+  const intermediateStops = walk
+    ? []
+    : sequence.slice(1, -1).map((p) => toJourneyStop(p, realtime));
   return {
     kind: walk ? "walk" : "transit",
-    origin: toJourneyStop(leg.origin, realtime),
-    destination: toJourneyStop(leg.destination, realtime),
+    origin,
+    destination,
     durationMinutes: minutes(leg.duration),
     distanceMeters: walk ? (leg.distance ?? null) : null,
     line: walk ? null : lineName(t),
@@ -141,9 +149,10 @@ export function toLeg(leg: VrrLeg): JourneyLeg {
     direction: walk ? null : stripCityPrefix(t.destination?.name ?? "") || null,
     lineColor: null,
     lineTextColor: null,
-    intermediateStops: walk ? [] : sequence.slice(1, -1).map((p) => toJourneyStop(p, realtime)),
+    intermediateStops,
     cancelled,
     notices: walk ? [] : notices,
+    path: legPath(leg.coords, [origin, ...intermediateStops, destination]),
   };
 }
 

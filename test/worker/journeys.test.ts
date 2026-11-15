@@ -147,6 +147,7 @@ function at(iso: string): Journey {
         intermediateStops: [],
         cancelled: false,
         notices: [],
+        path: null,
       },
     ],
   };
