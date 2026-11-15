@@ -10,6 +10,7 @@ import transitousGeocodeHha from "./fixtures/transitous-geocode-hha.json";
 import transitousPlan from "./fixtures/transitous-plan.json";
 import transitousColors from "./fixtures/transitous-stoptimes-colors.json";
 import vrrTrip from "./fixtures/vrr-trip.json";
+import vrrTripCoord from "./fixtures/vrr-trip-coord.json";
 
 const API = `https://endlab.test${API_PREFIX}`;
 const HHA = "vrr:de:05111:18036";
@@ -308,6 +309,42 @@ describe("Optionen", () => {
       const res = await get(`from=${HHA}&to=${ESSEN}&${query}`);
       expect(res.status).toBe(400);
       expect(await res.json()).toMatchObject({ error: "invalid_options" });
+    },
+  );
+});
+
+describe("Adressen und POIs", () => {
+  const KOE = "geo:51.22603,6.77840";
+
+  it("fragt den VRR mit Koordinate und liefert die geo-ID zurück", async () => {
+    const calls = mockUpstream({
+      XML_TRIP_REQUEST2: shiftTimes(vrrTripCoord, "2026-11-16T06:49:00Z"),
+      "v1/geocode": transitousGeocodeHha,
+      "v5/stoptimes": transitousColors,
+    });
+    const res = await exports.default.fetch(`${API}journeys?from=${KOE}&to=${ESSEN}`, {
+      headers: { "CF-Connecting-IP": "10.1.3.1" },
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json<JourneysResponse>();
+    expect(body.source).toBe("vrr");
+    expect(body.from).toMatchObject({ id: KOE, name: "Königsallee 1" });
+    const first = body.journeys[0]?.legs[0];
+    expect(first).toMatchObject({ kind: "walk", distanceMeters: 236 });
+    expect(first?.origin).toMatchObject({ id: null, name: "Königsallee 1" });
+    const url = calls.find((u) => u.includes("XML_TRIP_REQUEST2")) ?? "";
+    expect(url).toContain("&type_origin=coord&name_origin=6.7784%3A51.22603%3AWGS84");
+  });
+
+  it("gibt Koordinaten an Transitous als lat,lon weiter", () => {
+    expect(transitousTrips.planPlaceId(KOE)).toBe("51.22603,6.7784");
+  });
+
+  it.each(["geo:51.2,6.7,1", "geo:10.00000,6.70000", "geo:abc"])(
+    "lehnt ungültige Koordinaten ab (%s)",
+    async (id) => {
+      const res = await get(`from=${encodeURIComponent(id)}&to=${ESSEN}`);
+      expect(res.status).toBe(400);
     },
   );
 });

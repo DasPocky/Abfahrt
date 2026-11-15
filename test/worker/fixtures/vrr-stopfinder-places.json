@@ -1,0 +1,101 @@
+{
+  "serverInfo": {
+    "controllerVersion": "10.6.34.3",
+    "serverID": "EFA-X-DELFI04_",
+    "virtDir": "openservice",
+    "serverTime": "2026-11-15T14:26:25",
+    "calcTime": 184.081,
+    "logRequestId": "2b899122c1a00622"
+  },
+  "version": "10.4.18.18",
+  "systemMessages": [{ "type": "error", "module": "BROKER", "code": -8011, "text": "" }],
+  "locations": [
+    {
+      "id": "de:05111:18537",
+      "isGlobalId": true,
+      "name": "Düsseldorf, Rheinturm",
+      "disassembledName": "Rheinturm",
+      "coord": [51.216501, 6.759858],
+      "type": "stop",
+      "matchQuality": 250,
+      "isBest": true,
+      "productClasses": [5],
+      "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+      "properties": {}
+    },
+    {
+      "id": "poiID:50632:5382012:-1:Hexenturm:Bornheim (Rheinl):Hexenturm:ANY:POI:769203:5415067:MRCV:nrw",
+      "name": "Bornheim (Rheinl), Hexenturm",
+      "disassembledName": "Hexenturm",
+      "coord": [50.793987, 6.909868],
+      "type": "poi",
+      "matchQuality": 166,
+      "isBest": false,
+      "parent": { "id": "placeID:5382012:-1", "name": "Bornheim (Rheinl)", "type": "locality" }
+    },
+    {
+      "id": "poiID:117291:8335043:-1:Rheintorturm:Konstanz:Rheintorturm:ANY:POI:1021625:5948531:MRCV:nrw",
+      "name": "Konstanz, Rheintorturm",
+      "disassembledName": "Rheintorturm",
+      "coord": [47.666007, 9.177414],
+      "type": "poi",
+      "matchQuality": 246,
+      "isBest": false,
+      "parent": { "id": "placeID:8335043:-1", "name": "Konstanz", "type": "locality" }
+    },
+    {
+      "id": "poiID:58425:8315015:-1:Radbrunnenturm:Breisach am Rhein:Radbrunnenturm:ANY:POI:843619:5887968:MRCV:nrw",
+      "name": "Breisach am Rhein, Radbrunnenturm",
+      "disassembledName": "Radbrunnenturm",
+      "coord": [48.03111, 7.578358],
+      "type": "poi",
+      "matchQuality": 201,
+      "isBest": false,
+      "parent": { "id": "placeID:8315015:-1", "name": "Breisach am Rhein", "type": "locality" }
+    },
+    {
+      "id": "poiID:316487:5158026:-1:Schelmenturm:Monheim (Rhein):Schelmenturm:ANY:POI:766285:5362496:MRCV:nrw",
+      "name": "Monheim (Rhein), Schelmenturm",
+      "disassembledName": "Schelmenturm",
+      "coord": [51.091551, 6.883655],
+      "type": "poi",
+      "matchQuality": 164,
+      "isBest": false,
+      "parent": { "id": "placeID:5158026:-1", "name": "Monheim (Rhein)", "type": "locality" }
+    },
+    {
+      "id": "poiID:148990:5566076:-1:Kirchenturm St. Elisabeth:Rheine:Kirchenturm St. Elisabeth:ANY:POI:827305:5150959:MRCV:nrw",
+      "name": "Rheine, Kirchenturm St. Elisabeth",
+      "disassembledName": "Kirchenturm St. Elisabeth",
+      "coord": [52.269715, 7.431807],
+      "type": "poi",
+      "matchQuality": 198,
+      "isBest": false,
+      "parent": { "id": "placeID:5566076:-1", "name": "Rheine", "type": "locality" }
+    },
+    {
+      "id": "streetID:1500004330::4011000:-1:Hermann-Rhein-Weg:Bremen:Hermann-Rhein-Weg::Hermann-Rhein-Weg: 28277:ANY:DIVA_STREET:983240:5010266:MRCV:nrw:0",
+      "name": "Bremen, Hermann-Rhein-Weg",
+      "disassembledName": "Hermann-Rhein-Weg",
+      "coord": [53.036401, 8.832595],
+      "streetName": "Hermann-Rhein-Weg",
+      "postCode": " 28277",
+      "type": "street",
+      "matchQuality": 140,
+      "isBest": false,
+      "parent": { "id": "placeID:4011000:-1", "name": "Bremen", "type": "locality" }
+    },
+    {
+      "id": "streetID:1500000284::5382048:-1:Kallenturm:Rheinbach:Kallenturm::Kallenturm: 53359:ANY:DIVA_STREET:773788:5444532:MRCV:nrw:0",
+      "name": "Rheinbach, Kallenturm",
+      "disassembledName": "Kallenturm",
+      "coord": [50.626375, 6.951056],
+      "streetName": "Kallenturm",
+      "postCode": " 53359",
+      "type": "street",
+      "matchQuality": 203,
+      "isBest": false,
+      "parent": { "id": "placeID:5382048:-1", "name": "Rheinbach", "type": "locality" }
+    }
+  ]
+}

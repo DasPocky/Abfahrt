@@ -389,4 +389,52 @@ describe("Verbindungssuche", () => {
     fireEvent.click(within(options).getByRole("button", { name: "Zurücksetzen" }));
     expect(router.state.location.search).not.toContain("ohne=");
   });
+
+  it("nimmt Adressen und Orte als Start, mit eigenem Symbol", async () => {
+    const fetchMock = mockApi(undefined, {
+      stops: [
+        STOP_HBF,
+        {
+          id: "geo:51.21780,6.76170",
+          name: "Rheinturm",
+          place: "Düsseldorf",
+          lat: 51.2178,
+          lon: 6.7617,
+          kind: "poi",
+        },
+        {
+          id: "geo:51.22603,6.77840",
+          name: "Königsallee 1",
+          place: "Düsseldorf",
+          lat: 51.22603,
+          lon: 6.7784,
+          kind: "address",
+        },
+      ],
+    });
+    const { router } = renderAt(`/verbindung?nach=${HHA}&nachName=Heinrich-Heine-Allee`);
+
+    fireEvent.focus(combobox("Von"));
+    fireEvent.change(combobox("Von"), { target: { value: "Rhein" } });
+    const options = await screen.findByRole("listbox", { name: "Von: Vorschläge" });
+    const poi = await within(options).findByRole("option", { name: /Rheinturm/ });
+    expect(within(poi).getByLabelText("Ort")).toBeInTheDocument();
+    expect(
+      within(within(options).getByRole("option", { name: /Königsallee 1/ })).getByLabelText(
+        "Adresse",
+      ),
+    ).toBeInTheDocument();
+    const search = fetchMock.mock.calls
+      .map((call) => requestUrl(call[0]))
+      .find((url) => url.pathname.endsWith("/stops/search"));
+    expect(search?.searchParams.get("places")).toBe("1");
+
+    fireEvent.click(poi);
+    const params = new URLSearchParams(router.state.location.search);
+    expect(params.get("von")).toBe("geo:51.21780,6.76170");
+    expect(params.get("vonName")).toBe("Rheinturm, Düsseldorf");
+    await waitFor(() =>
+      expect(journeyCalls(fetchMock).at(-1)?.searchParams.get("from")).toBe("geo:51.21780,6.76170"),
+    );
+  });
 });

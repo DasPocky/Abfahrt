@@ -1,4 +1,5 @@
-import type { Departure, Stop, TransportMode } from "../../shared/api-types";
+import type { Departure, PlaceKind, Stop, TransportMode } from "../../shared/api-types";
+import { toGeoId } from "../../shared/geo-id";
 import { fetchJson } from "../http";
 
 // VRR OpenService (EFA rapidJSON), siehe docs/01-datenquellen.md
@@ -101,13 +102,46 @@ function toStop(loc: VrrLocation): Stop {
   return stop;
 }
 
-export async function searchStops(query: string): Promise<Stop[]> {
-  const url = `${BASE}/XML_STOPFINDER_REQUEST?${COMMON}&type_sf=any&anyObjFilter_sf=2&anyMaxSizeHitList=40&name_sf=${encodeURIComponent(query)}`;
+/** EFA-Objektfilter: 2 = Haltestellen; + 4 Straßen, 8 Adressen, 32 POIs */
+const FILTER_STOPS = 2;
+const FILTER_PLACES = 2 + 4 + 8 + 32;
+const PLACE_KIND: Record<string, PlaceKind> = {
+  street: "address",
+  singlehouse: "address",
+  address: "address",
+  poi: "poi",
+};
+
+function isStop(l: VrrLocation): boolean {
+  return l.type === "stop" && l.isGlobalId !== false && l.id.startsWith("de:");
+}
+
+/** Adresse oder POI als Suchtreffer mit geo-ID */
+function toPlace(loc: VrrLocation): Stop | null {
+  const kind = PLACE_KIND[loc.type ?? ""];
+  const [lat, lon] = loc.coord ?? [];
+  if (!kind || lat === undefined || lon === undefined) return null;
+  const place: Stop = {
+    id: toGeoId(lat, lon),
+    name: loc.disassembledName ?? loc.name ?? "",
+    place: loc.parent?.name,
+    lat,
+    lon,
+    kind,
+  };
+  if (loc.matchQuality !== undefined) place.relevance = loc.matchQuality;
+  return place;
+}
+
+/** Haltestellen, mit `places` auch Adressen und POIs */
+export async function searchStops(query: string, places = false): Promise<Stop[]> {
+  const filter = places ? FILTER_PLACES : FILTER_STOPS;
+  const url = `${BASE}/XML_STOPFINDER_REQUEST?${COMMON}&type_sf=any&anyObjFilter_sf=${filter}&anyMaxSizeHitList=40&name_sf=${encodeURIComponent(query)}`;
   const data = await fetchJson<{ locations?: VrrLocation[] }>("vrr", url);
   return (data.locations ?? [])
-    .filter((l) => l.type === "stop" && l.isGlobalId !== false && l.id.startsWith("de:"))
     .toSorted((a, b) => (b.matchQuality ?? 0) - (a.matchQuality ?? 0))
-    .map(toStop);
+    .map((l) => (isStop(l) ? toStop(l) : places ? toPlace(l) : null))
+    .filter((s): s is Stop => s !== null && s.name !== "");
 }
 
 /** Haltestellen im Umkreis (m) um eine Koordinate, nächste zuerst. */

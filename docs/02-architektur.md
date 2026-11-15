@@ -80,16 +80,16 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
-| Endpunkt                                            | Zweck                        | Meilenstein |
-| --------------------------------------------------- | ---------------------------- | ----------- |
-| `GET /abfahrt/api/stops/search?q=`                  | Haltestellen/Adressen suchen | M1          |
-| `GET /abfahrt/api/stops/nearby?lat=&lon=`           | Haltestellen in der Nähe     | M1          |
-| `GET /abfahrt/api/stops/area?min=&max=`             | Haltestellen im Ausschnitt   | M1          |
-| `GET /abfahrt/api/departures?stop=&when=&modes=`    | Abfahrten mit Echtzeit       | M1          |
-| `GET /abfahrt/api/journeys?from=&to=&when=&arrive=` | Verbindungssuche             | M2          |
-| `GET /abfahrt/api/trips/:id`                        | Fahrtverlauf/Zwischenhalte   | M2          |
-| `GET /abfahrt/api/alerts?lines=&stop=`              | Störungen                    | M3          |
-| `POST /abfahrt/api/push/subscribe`                  | Push-Abo                     | M3          |
+| Endpunkt                                            | Zweck                                            | Meilenstein |
+| --------------------------------------------------- | ------------------------------------------------ | ----------- |
+| `GET /abfahrt/api/stops/search?q=&places=1`         | Haltestellen (mit `places=1` auch Adressen/POIs) | M1/M2       |
+| `GET /abfahrt/api/stops/nearby?lat=&lon=`           | Haltestellen in der Nähe                         | M1          |
+| `GET /abfahrt/api/stops/area?min=&max=`             | Haltestellen im Ausschnitt                       | M1          |
+| `GET /abfahrt/api/departures?stop=&when=&modes=`    | Abfahrten mit Echtzeit                           | M1          |
+| `GET /abfahrt/api/journeys?from=&to=&when=&arrive=` | Verbindungssuche                                 | M2          |
+| `GET /abfahrt/api/trips/:id`                        | Fahrtverlauf/Zwischenhalte                       | M2          |
+| `GET /abfahrt/api/alerts?lines=&stop=`              | Störungen                                        | M3          |
+| `POST /abfahrt/api/push/subscribe`                  | Push-Abo                                         | M3          |
 
 Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und wird von App und Worker gemeinsam genutzt.
 
@@ -98,6 +98,7 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 **Verbindungen** (`worker/journeys.ts`, `worker/sources/vrr-trips.ts`, `worker/sources/transitous-trips.ts`):
 
 - `from`/`to` sind Haltestellen-IDs der App, `when` (ISO, höchstens 7 Tage entfernt) und `arrive=1` für eine Ankunftszeit. Antwort `JourneysResponse` mit `Journey` → `JourneyLeg` (`transit`/`walk`) → `JourneyStop` (Plan- und Echtzeit, Gleis inkl. Gleiswechsel, Zwischenhalte).
+- **Adressen und POIs** (`shared/geo-id.ts`): Die Suche mit `places=1` fragt den VRR-Stopfinder mit `anyObjFilter_sf=46` (Haltestellen, Straßen, Adressen, POIs). Treffer ohne Haltestelle bekommen `kind` (`address`/`poi`) und die ID `geo:<lat>,<lon>` (5 Nachkommastellen). `journeys` nimmt solche IDs als `from`/`to`: VRR mit `type_origin=coord&name_origin=<lon>:<lat>:WGS84[dd.ddddd]` (die EFA ergänzt den Fußweg zur ersten Haltestelle, getestet 15.11.2026: Königsallee 1 → Essen Hbf mit 236 m Fußweg), Transitous mit `fromPlace=<lat>,<lon>`. Liegt das andere Ende im VRR-Gebiet oder ist es auch eine Adresse, fragt der Worker zuerst den VRR. Die Abfahrtssuche bleibt bei Haltestellen.
 - **Optionen** (`shared/journey-options.ts`, von App und Worker gemeinsam genutzt): `exclude=<Verkehrsmittel,…>`, `maxTransfers=0–5`, `transfer=fast|slow`, `accessible=1`. Ungültige Werte ergeben `400 invalid_options`. In der App-URL heißen sie `ohne`, `umstiege`, `umstiegszeit=kurz|mehr` und `barrierefrei`.
   - VRR: `excludedMeans=checkbox` + `exclMOT_<Klasse>=1` je EFA-Produktklasse, `maxChanges`, `changeSpeed=fast|slow`, barrierefrei `imparedOptionsActive=1&wheelchair=on&noSolidStairs=on&noEscalators=on&lowPlatformVhcl=on`
   - Transitous: `transitModes` (erlaubte MOTIS-Modi ohne das Sammel-`RAIL`), `maxTransfers`, `minTransferTime=5` bei „mehr Zeit“, `pedestrianProfile=WHEELCHAIR`

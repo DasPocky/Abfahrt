@@ -34,10 +34,12 @@ export async function searchStops(
   if (q.length < 2 || q.length > 80) {
     return apiError(400, "invalid_query", "Suchbegriff mit 2 bis 80 Zeichen angeben");
   }
-  const key = `search:${q.toLowerCase()}`;
+  // places=1: auch Adressen und POIs (Start/Ziel der Verbindungssuche)
+  const places = params.get("places") === "1";
+  const key = `search:${places ? "places:" : ""}${q.toLowerCase()}`;
   const stops = await cached<Stop[]>(request, ctx, key, SEARCH_TTL, async () => {
     try {
-      return await vrr.searchStops(q);
+      return await vrr.searchStops(q, places);
     } catch (err) {
       if (!(err instanceof UpstreamError)) throw err;
       return transitous.searchStops(q);

@@ -11,6 +11,7 @@ import transitousStopTimes from "./fixtures/transitous-stoptimes.json";
 import vrrCoord from "./fixtures/vrr-coord.json";
 import vrrDmBerlin from "./fixtures/vrr-dm-berlin.json";
 import vrrDm from "./fixtures/vrr-dm.json";
+import vrrStopfinderPlaces from "./fixtures/vrr-stopfinder-places.json";
 import vrrStopfinder from "./fixtures/vrr-stopfinder.json";
 
 const API = `https://endlab.test${API_PREFIX}`;
@@ -95,6 +96,25 @@ describe("Haltestellensuche", () => {
       name: "Heinrich-Heine-Allee U",
       place: "Düsseldorf",
     });
+  });
+
+  it("liefert mit places=1 auch POIs und Adressen mit geo-ID", async () => {
+    const calls = mockUpstream({ XML_STOPFINDER_REQUEST: vrrStopfinderPlaces });
+    const res = await get("stops/search?q=Rheinturm&places=1");
+    const body = await res.json<StopSearchResponse>();
+    expect(calls[0]).toContain("anyObjFilter_sf=46");
+    expect(body.stops[0]).toMatchObject({ id: "vrr:de:05111:18537", name: "Rheinturm" });
+    expect(body.stops[0]?.kind).toBeUndefined();
+    const poi = body.stops.find((s) => s.kind === "poi");
+    expect(poi?.id).toMatch(/^geo:\d+\.\d{5},\d+\.\d{5}$/);
+    expect(body.stops.some((s) => s.kind === "address")).toBe(true);
+  });
+
+  it("liefert ohne places nur Haltestellen", async () => {
+    const calls = mockUpstream({ XML_STOPFINDER_REQUEST: vrrStopfinderPlaces });
+    const body = await (await get("stops/search?q=Rheinturm%20nur")).json<StopSearchResponse>();
+    expect(calls[0]).toContain("anyObjFilter_sf=2&");
+    expect(body.stops.every((s) => s.kind === undefined && s.id.startsWith("vrr:"))).toBe(true);
   });
 
   it("weicht auf Transitous aus, wenn der VRR nicht antwortet", async () => {
