@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { journey, journeyLeg, journeyStop } from "../test-utils";
+import { DEFAULT_JOURNEY_OPTIONS } from "../../shared/journey-options";
 import {
+  countJourneyOptions,
+  describeJourneyOptions,
   EMPTY_JOURNEY_QUERY,
   formatDuration,
   formatTransfers,
@@ -27,6 +30,7 @@ describe("URL-Parameter der Verbindungssuche", () => {
       to: { id: TO.id, name: "" },
       time: "2026-11-13T12:00:00.000Z",
       arrive: true,
+      options: DEFAULT_JOURNEY_OPTIONS,
     });
   });
 
@@ -37,21 +41,64 @@ describe("URL-Parameter der Verbindungssuche", () => {
   });
 
   it("schreibt die Parameter verlustfrei zurück", () => {
-    const query = { from: FROM, to: TO, time: "2026-11-13T12:00:00.000Z", arrive: true };
+    const query = {
+      from: FROM,
+      to: TO,
+      time: "2026-11-13T12:00:00.000Z",
+      arrive: true,
+      options: {
+        exclude: ["longdistance" as const, "bus" as const],
+        maxTransfers: 1,
+        transferSpeed: "slow" as const,
+        accessible: true,
+      },
+    };
     expect(journeyQueryFromParams(journeyQueryToParams(query))).toEqual(query);
     expect(journeyQueryToParams({ ...query, time: undefined }).has("ankunft")).toBe(false);
   });
 
   it("baut den Pfad und tauscht Start und Ziel", () => {
     expect(journeyPath()).toBe("/verbindung");
-    expect(journeyPath({ from: FROM, to: null, arrive: false })).toBe(
+    expect(journeyPath({ ...EMPTY_JOURNEY_QUERY, from: FROM })).toBe(
       "/verbindung?von=vrr%3Ade%3A05111%3A18235&vonName=D%C3%BCsseldorf+Hbf",
     );
-    expect(swapJourneyQuery({ from: FROM, to: TO, arrive: false })).toEqual({
+    expect(swapJourneyQuery({ ...EMPTY_JOURNEY_QUERY, from: FROM, to: TO })).toEqual({
+      ...EMPTY_JOURNEY_QUERY,
       from: TO,
       to: FROM,
-      arrive: false,
     });
+  });
+
+  it("liest Optionen aus deutschen Parametern und ignoriert Ungültiges", () => {
+    const query = journeyQueryFromParams(
+      new URLSearchParams("ohne=bus,auto,longdistance&umstiege=0&umstiegszeit=kurz&barrierefrei=1"),
+    );
+    expect(query.options).toEqual({
+      exclude: ["bus", "longdistance"],
+      maxTransfers: 0,
+      transferSpeed: "fast",
+      accessible: true,
+    });
+    expect(
+      journeyQueryFromParams(new URLSearchParams("umstiege=9&umstiegszeit=x")).options,
+    ).toEqual(DEFAULT_JOURNEY_OPTIONS);
+  });
+
+  it("beschreibt und zählt Optionen", () => {
+    const options = {
+      exclude: ["bus" as const, "longdistance" as const],
+      maxTransfers: 1,
+      transferSpeed: "slow" as const,
+      accessible: true,
+    };
+    expect(describeJourneyOptions(options)).toBe(
+      "ohne Fernzug, Bus · max. 1 Umstieg · mehr Umstiegszeit · barrierefrei",
+    );
+    expect(countJourneyOptions(options)).toBe(4);
+    expect(describeJourneyOptions({ ...DEFAULT_JOURNEY_OPTIONS, maxTransfers: 0 })).toBe(
+      "nur direkt",
+    );
+    expect(countJourneyOptions(DEFAULT_JOURNEY_OPTIONS)).toBe(0);
   });
 });
 

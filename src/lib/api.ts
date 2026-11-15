@@ -5,6 +5,11 @@ import type {
   JourneysResponse,
   StopSearchResponse,
 } from "../../shared/api-types";
+import {
+  DEFAULT_JOURNEY_OPTIONS,
+  journeyOptionsToParams,
+  type JourneyOptions,
+} from "../../shared/journey-options";
 import { API_PREFIX } from "../../shared/base-path";
 
 export class ApiRequestError extends Error {
@@ -118,15 +123,17 @@ export interface JourneysParams {
   when?: string;
   /** `when` ist die gewünschte Ankunftszeit */
   arrive?: boolean;
+  options?: JourneyOptions;
 }
 
 export function fetchJourneys(
-  { from, to, when, arrive = false }: JourneysParams,
+  { from, to, when, arrive = false, options = DEFAULT_JOURNEY_OPTIONS }: JourneysParams,
   signal?: AbortSignal,
 ): Promise<JourneysResponse> {
   const params = new URLSearchParams({ from, to });
   if (when !== undefined) params.set("when", when);
   params.set("arrive", arrive ? "1" : "0");
+  journeyOptionsToParams(options, params);
   return getJson(`journeys?${params.toString()}`, isJourneysResponse, signal);
 }
 

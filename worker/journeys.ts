@@ -1,4 +1,9 @@
 import type { Journey, JourneysResponse, Stop } from "../shared/api-types";
+import {
+  journeyOptionsFromParams,
+  journeyOptionsKey,
+  type JourneyOptions,
+} from "../shared/journey-options";
 import { lineColorsForStop } from "./api";
 import { cached } from "./cache";
 import { apiError, json, UpstreamError } from "./http";
@@ -91,9 +96,10 @@ async function load(
   to: string,
   when: Date | undefined,
   arrive: boolean,
+  options: JourneyOptions,
 ): Promise<Loaded> {
   const viaTransitous = async (): Promise<Loaded> => {
-    const r = await transitousTrips.trips(from, to, when, arrive);
+    const r = await transitousTrips.trips(from, to, when, arrive, options);
     return {
       from: r.from ?? fallbackStop(from),
       to: r.to ?? fallbackStop(to),
@@ -102,7 +108,7 @@ async function load(
     };
   };
   const viaVrr = async (): Promise<Loaded> => {
-    const r = await vrrTrips.trips(from, to, when, arrive);
+    const r = await vrrTrips.trips(from, to, when, arrive, options);
     return {
       from: r.from ?? fallbackStop(from),
       to: r.to ?? fallbackStop(to),
@@ -146,6 +152,10 @@ export async function getJourneys(
   if (from === to) return apiError(400, "same_stop", "Start und Ziel sind gleich");
 
   const arrive = params.get("arrive") === "1";
+  const options = journeyOptionsFromParams(params);
+  if (!options) {
+    return apiError(400, "invalid_options", "Ungültige Optionen für die Verbindungssuche");
+  }
   const whenParam = params.get("when");
   let when: Date | undefined;
   if (whenParam) {
@@ -161,9 +171,9 @@ export async function getJourneys(
   // Minutengenauer Schlüssel: alle, die dieselbe Strecke zur selben Minute suchen, teilen sich
   // eine Abfrage (wichtig für das Transitous-Limit)
   const minute = Math.floor(at.getTime() / 60_000);
-  const key = `jrn:v1:${from}>${to}:${arrive ? "arr" : "dep"}:${minute}`;
+  const key = `jrn:v2:${from}>${to}:${arrive ? "arr" : "dep"}:${minute}:${journeyOptionsKey(options)}`;
   const loaded = await cached(request, ctx, key, JOURNEYS_TTL, async () => {
-    const result = await load(from, to, at, arrive);
+    const result = await load(from, to, at, arrive, options);
     return result.source === "vrr"
       ? { ...result, journeys: await withLineColors(request, ctx, result.journeys) }
       : result;
