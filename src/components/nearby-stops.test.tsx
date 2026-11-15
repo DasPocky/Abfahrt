@@ -125,7 +125,11 @@ describe("In der Nähe", () => {
     mockGeolocation("denied");
     renderAt("/");
     fireEvent.click(screen.getByRole("button", { name: /in meiner Nähe/ }));
-    expect(screen.getByText(/Standort nicht freigegeben/)).toBeInTheDocument();
+    const nearby = screen.getByRole("region", { name: "In der Nähe" });
+    expect(within(nearby).getByText(/Standort nicht freigegeben/)).toBeInTheDocument();
+    expect(
+      within(nearby).getByRole("button", { name: "So gibst du ihn frei" }),
+    ).toBeInTheDocument();
     expect(localStorage.getItem(LOCATION_PREF_KEY)).toBe("off");
   });
 });

@@ -12,6 +12,7 @@ import {
 import { cn } from "cn";
 import { JourneyList } from "@/components/journey-list";
 import { JourneyOptionsSheet } from "@/components/journey-options";
+import { JourneyTimeSheet } from "@/components/journey-time";
 import { SourceAttribution } from "@/components/source-attribution";
 import { StopPicker } from "@/components/stop-picker";
 import { Button } from "@/components/ui/button";
@@ -28,8 +29,8 @@ import {
   journeyQueryToParams,
   swapJourneyQuery,
 } from "@/lib/journeys";
-import { toLocalInputValue } from "@/lib/time";
 import { stopLabel } from "@/lib/stop-label";
+import { LocationHelp } from "@/components/location-help";
 
 type Slot = "from" | "to";
 
@@ -42,9 +43,6 @@ function errorMessage(error: unknown): string {
   }
   return "Verbindungen konnten gerade nicht geladen werden.";
 }
-
-const SEGMENT_CLASS =
-  "h-7 rounded px-2.5 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-xs text-muted-foreground hover:text-foreground dark:aria-pressed:bg-input/50";
 
 export function JourneyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -72,7 +70,7 @@ export function JourneyPage() {
     locationError ??
     (locationFailed
       ? locationStatus === "denied"
-        ? "Standort nicht freigegeben (Browser-Einstellungen)."
+        ? "Standort nicht freigegeben."
         : "Standort gerade nicht verfügbar."
       : null);
   useEffect(() => {
@@ -177,33 +175,39 @@ export function JourneyPage() {
       </h1>
 
       <div className="space-y-2">
-        <div className="flex items-center gap-1.5">
-          <div className="min-w-0 flex-1 space-y-1.5">
-            <StopPicker
-              label="Von"
-              placeholder="Haltestelle, Adresse, Ort"
-              value={fromStop}
-              location={location}
-              locating={pending === "from" && !locationFailed}
-              onSelect={(stop) => update({ ...query, from: stop })}
-              onPickLocation={() => pickLocation("from")}
-            />
-            <StopPicker
-              label="Nach"
-              placeholder="Haltestelle, Adresse, Ort"
-              value={toStop}
-              location={location}
-              locating={pending === "to" && !locationFailed}
-              onSelect={(stop) => update({ ...query, to: stop })}
-              onPickLocation={() => pickLocation("to")}
-            />
-          </div>
+        <div className="relative rounded-xl border bg-card">
+          <StopPicker
+            label="Von"
+            marker="start"
+            placeholder="Start: Haltestelle, Adresse, Ort"
+            value={fromStop}
+            location={location}
+            locating={pending === "from" && !locationFailed}
+            onSelect={(stop) => update({ ...query, from: stop })}
+            onPickLocation={() => pickLocation("from")}
+          />
+          <div className="ml-8 border-t" aria-hidden="true" />
+          <StopPicker
+            label="Nach"
+            marker="end"
+            placeholder="Ziel: Haltestelle, Adresse, Ort"
+            value={toStop}
+            location={location}
+            locating={pending === "to" && !locationFailed}
+            onSelect={(stop) => update({ ...query, to: stop })}
+            onPickLocation={() => pickLocation("to")}
+          />
+          {/* gepunktete Verbindung zwischen Start- und Zielpunkt */}
+          <span
+            className="pointer-events-none absolute top-[1.6rem] left-[1.05rem] h-[1.15rem] border-l-2 border-dotted border-muted-foreground/60"
+            aria-hidden="true"
+          />
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon-sm"
             aria-label="Start und Ziel tauschen"
             title="Start und Ziel tauschen"
-            className="text-muted-foreground"
+            className="absolute top-1/2 right-2 z-10 -translate-y-1/2 rounded-full bg-card text-muted-foreground"
             disabled={from === null && to === null}
             onClick={() => update(swapJourneyQuery({ ...query, from: fromStop, to: toStop }))}
           >
@@ -212,71 +216,27 @@ export function JourneyPage() {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <div
-            role="group"
-            aria-label="Zeitpunkt gilt für"
-            className="flex shrink-0 rounded-md border bg-muted p-0.5"
-          >
-            <button
-              type="button"
-              className={SEGMENT_CLASS}
-              aria-pressed={!query.arrive}
-              onClick={() => update({ ...query, arrive: false })}
-            >
-              Abfahrt
-            </button>
-            <button
-              type="button"
-              className={SEGMENT_CLASS}
-              aria-pressed={query.arrive}
-              // Ankunft braucht einen Zeitpunkt: ohne Auswahl gilt die aktuelle Uhrzeit
-              onClick={() =>
-                update({ ...query, arrive: true, time: query.time ?? new Date().toISOString() })
-              }
-            >
-              Ankunft
-            </button>
-          </div>
-          <label htmlFor="journey-time" className="sr-only">
-            Datum und Uhrzeit
-          </label>
-          <input
-            id="journey-time"
-            type="datetime-local"
-            className="h-8 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm dark:bg-input/30"
-            value={toLocalInputValue(query.time ?? now.toISOString())}
-            onChange={(event) => {
-              const value = event.target.value;
-              update(
-                value
-                  ? { ...query, time: new Date(value).toISOString() }
-                  : { ...query, time: undefined, arrive: false },
-              );
-            }}
+          <JourneyTimeSheet
+            time={query.time}
+            arrive={query.arrive}
+            now={now}
+            onChange={(time, arrive) => update({ ...query, time, arrive })}
           />
-          {query.time && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2"
-              onClick={() => update({ ...query, time: undefined, arrive: false })}
-            >
-              Jetzt
-            </Button>
-          )}
           <JourneyOptionsSheet
             options={query.options}
             onChange={(options) => update({ ...query, options })}
           />
+          {optionsSummary && (
+            <p className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
+              {optionsSummary}
+            </p>
+          )}
         </div>
-        {optionsSummary && (
-          <p className="truncate px-1 text-xs text-muted-foreground">{optionsSummary}</p>
-        )}
       </div>
 
       {locationMessage && (
         <p role="status" className="px-1 text-sm text-muted-foreground">
-          {locationMessage}
+          {locationMessage} {locationFailed && locationStatus === "denied" && <LocationHelp />}
         </p>
       )}
 

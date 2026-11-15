@@ -9,6 +9,7 @@ import { StopRow } from "@/components/stop-row";
 import type { LocationState } from "@/hooks/use-location";
 import { rankStops } from "@/lib/geo";
 import { searchStops, stopPath } from "@/lib/api";
+import { LocationHelp } from "@/components/location-help";
 
 export const SEARCH_DEBOUNCE_MS = 250;
 export const SEARCH_MIN_LENGTH = 2;
@@ -167,6 +168,11 @@ export function StopSearch({ location }: { location: LocationState }) {
 
       <p id={statusId} role="status" className="min-h-5 px-1 text-sm text-muted-foreground">
         {status}
+        {!status && location.status === "denied" && (
+          <>
+            Standort nicht freigegeben. <LocationHelp />
+          </>
+        )}
       </p>
 
       <ul

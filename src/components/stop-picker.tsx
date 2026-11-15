@@ -39,11 +39,14 @@ export function StopPicker({
   value,
   location,
   locating = false,
+  marker,
   onSelect,
   onPickLocation,
 }: {
-  /** Sichtbare Beschriftung, z. B. „Von“ */
+  /** Beschriftung für Screenreader, z. B. „Von“ */
   label: string;
+  /** Punkt vor dem Feld: Start hohl, Ziel gefüllt (wie auf der Karte) */
+  marker: "start" | "end";
   placeholder: string;
   value: PickedStop | null;
   location: LocationState;
@@ -128,10 +131,15 @@ export function StopPicker({
       <label htmlFor={id} className="sr-only">
         {label}
       </label>
-      <div className="flex h-10 items-center gap-2 rounded-md border border-input bg-transparent pr-2 pl-2.5 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30">
-        <span className="w-9 shrink-0 text-xs font-medium text-muted-foreground" aria-hidden="true">
-          {label}
-        </span>
+      {/* Ohne eigenen Rahmen: Von und Nach stehen gemeinsam in einem Kasten (journey-page) */}
+      <div className="flex h-11 items-center gap-2.5 pr-11 pl-3 focus-within:bg-muted/50">
+        <span
+          className={cn(
+            "size-2.5 shrink-0 rounded-full border-2 border-foreground",
+            marker === "end" && "bg-foreground",
+          )}
+          aria-hidden="true"
+        />
         <input
           ref={inputRef}
           id={id}
