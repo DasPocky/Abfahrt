@@ -1,7 +1,9 @@
-import { exports } from "cloudflare:workers";
+import { createExecutionContext } from "cloudflare:test";
+import { env, exports } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
 import { API_PREFIX } from "../../shared/base-path";
-import { SECURITY_HEADERS } from "../../worker/security-headers";
+import worker from "../../worker/index";
+import { PAGE_SECURITY_HEADERS, SECURITY_HEADERS } from "../../worker/security-headers";
 
 const API = `https://endlab.test${API_PREFIX}`;
 
@@ -40,6 +42,42 @@ describe("Basis-Pfad", () => {
     });
     expect(res.status).toBe(301);
     expect(res.headers.get("Location")).toBe("https://endlab.test/abfahrt/?x=1");
+  });
+});
+
+describe("App-Seiten (#76)", () => {
+  // Static Assets gibt es im Testumfeld nicht: ASSETS als Attrappe, die index.html liefert
+  const requested: string[] = [];
+  const assets: Fetcher = {
+    fetch: async (input: RequestInfo | URL) => {
+      requested.push(input instanceof Request ? input.url : String(input));
+      return new Response('<div id="root"></div>', {
+        headers: { "Content-Type": "text/html", "Content-Security-Policy": "alt" },
+      });
+    },
+    connect: () => {
+      throw new Error("nicht genutzt");
+    },
+  };
+  const pageEnv: Env = { ...env, ASSETS: assets };
+
+  it.each([
+    "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18036",
+    "/abfahrt/verbindung?von=vrr%3Ade%3A05111%3A18036",
+    "/abfahrt/fahrt",
+  ])("liefert %s als index.html mit den Seiten-Headern aus", async (path) => {
+    requested.length = 0;
+    const res = await worker.fetch(
+      new Request(`https://endlab.test${path}`, { headers: { Accept: "text/html" } }),
+      pageEnv,
+      createExecutionContext(),
+    );
+    expect(res.status).toBe(200);
+    expect(requested).toEqual(["https://endlab.test/"]);
+    expect(res.headers.get("Content-Security-Policy")).toBe(
+      PAGE_SECURITY_HEADERS["Content-Security-Policy"],
+    );
+    expect(await res.text()).toContain('<div id="root"');
   });
 });
 

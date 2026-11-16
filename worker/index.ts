@@ -5,7 +5,7 @@ import { cacheProbe } from "./cache-probe";
 import { getJourneys } from "./journeys";
 import { apiError, json, UpstreamError } from "./http";
 import { isRateLimited } from "./rate-limit";
-import { withSecurityHeaders } from "./security-headers";
+import { PAGE_SECURITY_HEADERS, withSecurityHeaders } from "./security-headers";
 import { getStopsInArea } from "./stops-area";
 
 const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
@@ -66,7 +66,19 @@ export default {
       url.pathname = `${BASE_PATH}/`;
       return withSecurityHeaders(Response.redirect(url.toString(), 301));
     }
-    // Wird nur erreicht, falls ein anderer Pfad den Worker trifft
+    // App-Seiten (/abfahrt/haltestelle/…, /abfahrt/verbindung, …) liefert der Worker selbst als
+    // index.html aus. Grund (#76): Die Static Assets antworten Browsern bei Pfaden mit „%3A“ mit
+    // einer 307-Weiterleitung auf dieselbe Adresse (Endlosschleife). Dateien unter
+    // /abfahrt/assets/ usw. kommen weiter direkt aus den Assets (siehe run_worker_first).
+    if (
+      url.pathname.startsWith(`${BASE_PATH}/`) &&
+      (request.method === "GET" || request.method === "HEAD")
+    ) {
+      const index = await env.ASSETS.fetch(
+        new Request(new URL("/", url), { method: request.method, headers: request.headers }),
+      );
+      return withSecurityHeaders(index, PAGE_SECURITY_HEADERS);
+    }
     return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;
