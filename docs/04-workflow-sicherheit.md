@@ -50,7 +50,7 @@ Workflow: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
 - PRs aus Forks und von Dependabot bekommen keine Actions-Secrets und bekommen deshalb keine Preview. Die Pflicht-Checks laufen trotzdem.
 - **Rollback:** Cloudflare-Dashboard → Workers → `abfahrt` → _Deployments_, frühere Version auswählen, oder lokal `npx wrangler rollback`.
 
-**Einrichtung Web Push** ([`.github/workflows/push-setup.yml`](../.github/workflows/push-setup.yml), manuell über _Actions → push-setup → Run workflow_): legt die D1-Datenbank `abfahrt-push` an und erzeugt das VAPID-Schlüsselpaar im Runner. Der private Schlüssel geht per `wrangler secret put` direkt als Worker-Secret `VAPID_PRIVATE_JWK` an Cloudflare und erscheint nirgends; die Zusammenfassung des Laufs nennt nur die Datenbank-ID und den öffentlichen Schlüssel. Ein vorhandenes Secret bleibt bestehen, außer man setzt „rotate_vapid“ (dann werden alle Push-Abos ungültig).
+**Einrichtung Web Push** ([`.github/workflows/push-setup.yml`](../.github/workflows/push-setup.yml), manuell über _Actions → push-setup → Run workflow_): legt die D1-Datenbank `abfahrt-push` an, rollt den aktuellen Stand von `main` aus (Cloudflare ändert Secrets nur bei ausgerollter neuester Version, PR-Previews laden neuere hoch) und erzeugt das VAPID-Schlüsselpaar im Runner. Der private Schlüssel geht per `wrangler secret put` direkt als Worker-Secret `VAPID_PRIVATE_JWK` an Cloudflare und erscheint nirgends; die Zusammenfassung des Laufs nennt nur die Datenbank-ID und den öffentlichen Schlüssel. Ein vorhandenes Secret bleibt bestehen, außer man setzt „rotate_vapid“ (dann werden alle Push-Abos ungültig).
 
 **Prüfung der Workflows:** Vor Änderungen an `.github/` lokal `actionlint` und `zizmor` laufen lassen.
 
