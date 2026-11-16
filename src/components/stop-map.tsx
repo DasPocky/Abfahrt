@@ -83,6 +83,8 @@ function stopsToGeoJson(stops: readonly Stop[], selectedKey: string | null): Col
             id: stop.id,
             track: platform.track ?? "",
             color: MODE_HEX[platform.modes[0] ?? "other"],
+            // Zweites Verkehrsmittel als Ring (z. B. U-Bahn + Straßenbahn: blau mit rotem Ring)
+            ring: platform.modes[1] ? MODE_HEX[platform.modes[1]] : "",
             selected: key === selectedKey || stop.id === selectedKey,
           },
         };
@@ -163,8 +165,22 @@ function addOwnLayers(
         ["case", ["get", "selected"], 12, 9],
       ],
       "circle-color": ["get", "color"],
-      "circle-stroke-color": ["case", ["get", "selected"], c.stroke, c.fill],
-      "circle-stroke-width": ["case", ["get", "selected"], 3, 1.5],
+      "circle-stroke-color": [
+        "case",
+        ["get", "selected"],
+        c.stroke,
+        ["!=", ["get", "ring"], ""],
+        ["get", "ring"],
+        c.fill,
+      ],
+      "circle-stroke-width": [
+        "case",
+        ["get", "selected"],
+        3,
+        ["!=", ["get", "ring"], ""],
+        ["interpolate", ["linear"], ["zoom"], 14, 2, 18, 3.5],
+        1.5,
+      ],
     },
   });
   // Steig-Nummer im Punkt (herangezoomt)
