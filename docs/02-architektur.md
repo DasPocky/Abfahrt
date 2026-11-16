@@ -26,7 +26,7 @@
 
 Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` auf der gemeinsamen Domain `endlab.de`. Der Präfix steht zentral in `shared/base-path.ts`.
 
-- Assets werden nach `abfahrt/assets/` gebaut und kommen ohne Worker-Aufruf aus den Static Assets. `/abfahrt/` liefert über den SPA-Fallback die `index.html`.
+- Assets werden nach `abfahrt/assets/` gebaut und kommen ohne Worker-Aufruf aus den Static Assets (ebenso `icons/`, `sw.js`, Manifest). **App-Seiten** (`/abfahrt/`, `/abfahrt/haltestelle/…`, `/abfahrt/verbindung`, …) laufen per `run_worker_first` durch den Worker, der die `index.html` aus `ASSETS` holt und mit den Seiten-Headern (`PAGE_SECURITY_HEADERS`, per Test gleich wie `public/_headers`) ausliefert. Grund (#76): Die Static Assets antworteten Browsern bei Pfaden mit `%3A` (Haltestellen-IDs) mit einer 307-Weiterleitung auf dieselbe Adresse, also einer Endlosschleife (curl bekam 200).
 - Durch den Worker laufen nur `/abfahrt/api/*` und `/abfahrt` (301 auf `/abfahrt/`).
 - **Gemeinsame Origin mit anderen Apps:** Alle `localStorage`-Schlüssel bekommen das Präfix `abfahrt:`. Der Service Worker liegt unter `/abfahrt/sw.js` und hat nur den Scope `/abfahrt/`, seine Caches heißen `abfahrt-shell-<version>`. Cookies gibt es nicht. HSTS wird ohne `includeSubDomains` gesetzt, damit eine einzelne App keine Regel für die ganze Domain festlegt.
 
@@ -39,7 +39,7 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
   - `/abfahrt/karte` – Karte mit Haltestellen (lazy geladen, siehe [Karte](#karte))
   - `/abfahrt/verbindung` – Verbindungssuche (Parameter in der URL, siehe unten)
   - `/abfahrt/ueber` – Über die App: Zweck, Pflicht-Quellhinweise, Datenschutz, Quellcode (verlinkt im Fußbereich jeder Seite)
-  - alles andere – „Seite nicht gefunden“. Direktaufrufe und Reloads funktionieren über den SPA-Fallback der Static Assets (lokal, in Produktion und auf `workers.dev`).
+  - alles andere – „Seite nicht gefunden“. Direktaufrufe und Reloads funktionieren, weil der Worker für alle App-Seiten die `index.html` liefert (siehe oben, #76).
 - **Datenabruf:** TanStack Query, Zugriff auf die API nur über `src/lib/api.ts` (Vertrag `shared/api-types.ts`, Antworten werden grob auf ihre Form geprüft). 4xx-Fehler werden nicht wiederholt, andere höchstens zweimal.
   - Suche: Debounce 250 ms, ab 2 Zeichen, Treffer 5 min gecacht
   - Abfahrten: `refetchInterval: 30_000`. Ein lokaler Ticker (15 s) aktualisiert nur den Countdown, ohne neuen Abruf.

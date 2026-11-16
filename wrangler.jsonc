@@ -14,9 +14,16 @@
     "binding": "ASSETS",
     // React-App (SPA): unbekannte Pfade liefern index.html
     "not_found_handling": "single-page-application",
-    // Nur die API und die Weiterleitung /abfahrt -> /abfahrt/ laufen durch den Worker,
-    // alles andere kommt direkt aus den Static Assets (unter abfahrt/assets/)
-    "run_worker_first": ["/abfahrt/api/*", "/abfahrt"],
+    // API, die Weiterleitung /abfahrt -> /abfahrt/ und die App-Seiten laufen durch den Worker
+    // (#76: Static Assets leiten Pfade mit „%3A“ endlos um). Dateien kommen direkt aus den Assets.
+    "run_worker_first": [
+      "/abfahrt",
+      "/abfahrt/*",
+      "!/abfahrt/assets/*",
+      "!/abfahrt/icons/*",
+      "!/abfahrt/sw.js",
+      "!/abfahrt/manifest.webmanifest",
+    ],
   },
   "observability": {
     "enabled": true,
