@@ -69,8 +69,21 @@ export function platformDeparturesPath(stopPath: string, platform: StopPlatform 
   return platform?.track ? `${stopPath}?gleis=${encodeURIComponent(platform.track)}` : stopPath;
 }
 
-/** Steige bis zu diesem Abstand (Meter) gelten herausgezoomt als ein Punkt (#86) */
-export const PLATFORM_GROUP_RADIUS_M = 60;
+/**
+ * Steige, die auf dem Bildschirm näher als so viele Pixel beieinanderliegen, werden ein Punkt
+ * (#86): etwa ein Markerdurchmesser, d. h. erst wenn man sie ohnehin nicht mehr getrennt sieht.
+ */
+export const PLATFORM_MERGE_PX = 16;
+
+/** Meter je Bildschirmpixel bei dieser Zoomstufe und Breite (MapLibre: 512-px-Kacheln) */
+export function metersPerPixel(zoom: number, lat: number): number {
+  return (40_075_016.686 * Math.cos((lat * Math.PI) / 180)) / (512 * 2 ** zoom);
+}
+
+/** Abstand in Metern, unter dem Steige bei dieser Zoomstufe zusammengefasst werden */
+export function mergeRadiusMeters(zoom: number, lat: number, px = PLATFORM_MERGE_PX): number {
+  return px * metersPerPixel(zoom, lat);
+}
 
 const MODE_RANK: TransportMode[] = [
   "longdistance",
@@ -99,13 +112,13 @@ function metersBetween(a: { lat: number; lon: number }, b: { lat: number; lon: n
 }
 
 /**
- * Herausgezoomt: nahe beieinanderliegende Steige zu Gruppen zusammenfassen (Kette über
- * PLATFORM_GROUP_RADIUS_M). Liegen Steige sichtbar auseinander (z. B. Auf der Hardt: U73 unten,
- * U83/709 oben), entstehen mehrere Gruppen und damit mehrere Punkte.
+ * Steige zu Gruppen zusammenfassen, die näher als `radiusM` beieinanderliegen (Kette). Mit
+ * `mergeRadiusMeters` hängt das von der Zoomstufe ab: Steige, die man auf der Karte getrennt
+ * sieht (z. B. Auf der Hardt: U73 unten, U83/709 oben), bleiben getrennte Punkte.
  */
 export function platformGroups(
   platforms: readonly StopPlatform[],
-  radiusM = PLATFORM_GROUP_RADIUS_M,
+  radiusM: number,
 ): PlatformGroup[] {
   const groups: StopPlatform[][] = [];
   for (const platform of platforms) {
