@@ -1,6 +1,6 @@
 name: push-setup
 
-# Einmalige Einrichtung für Web Push (#71), manuell starten:
+# Einmalige Einrichtung für Web Push (#71), manuell starten (nur auf main):
 # - legt die D1-Datenbank „abfahrt-push“ an (falls noch nicht vorhanden) und nennt ihre ID
 # - erzeugt das VAPID-Schlüsselpaar hier im Runner und speichert den privaten Schlüssel direkt
 #   als Worker-Secret VAPID_PRIVATE_JWK; ausgegeben wird nur der öffentliche Schlüssel.
@@ -22,6 +22,7 @@ concurrency:
 
 jobs:
   setup:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -44,6 +45,13 @@ jobs:
           fi
           id=$(npx wrangler d1 list --json | jq -r '.[] | select(.name == "abfahrt-push") | .uuid')
           echo "D1 abfahrt-push: \`$id\`" >> "$GITHUB_STEP_SUMMARY"
+      # Secrets lassen sich nur ändern, wenn die neueste Worker-Version ausgerollt ist (PR-Previews
+      # laden neuere Versionen hoch). Daher zuerst den aktuellen Stand von main ausrollen.
+      - run: npm run build
+      - name: Aktuellen Stand von main ausrollen
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx wrangler deploy
       - name: VAPID-Schlüssel als Worker-Secret
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
