@@ -178,8 +178,78 @@ export function groupMapStops(entries: readonly TransitousMapStop[]): Stop[] {
     .map(({ importance: _importance, ...stop }) => stop);
 }
 
-export async function stopsInArea(area: Area): Promise<Stop[]> {
+/**
+ * Verkehrsmittel, die sich in den Quellen leicht unterscheiden, zählen als eine Familie: Eine
+ * Stadtbahn ist bei Transitous mal SUBWAY, mal TRAM; S-Bahn/Regionalzug ebenso.
+ */
+const MODE_FAMILY: Record<TransportMode, string> = {
+  longdistance: "rail",
+  regional: "rail",
+  suburban: "rail",
+  subway: "urban",
+  tram: "urban",
+  bus: "bus",
+  ferry: "ferry",
+  other: "other",
+};
+
+function families(modes: readonly TransportMode[]): Set<string> {
+  return new Set(modes.map((m) => MODE_FAMILY[m]));
+}
+
+/**
+ * Gleicht die Verkehrsmittel der Steige mit den Linien laut VRR ab (#88). Transitous leitet sie
+ * aus dem ganzen Fahrplanzeitraum ab, ein seltener Ersatzverkehr macht so einen Steig dauerhaft
+ * zum Bus-Steig (Auf der Hardt). Verkehrsmittel ohne passende VRR-Linie fallen weg, Steige ohne
+ * verbleibendes Verkehrsmittel ebenso. Bleibt nichts übrig, gilt die Angabe von Transitous.
+ */
+export function confirmModes(stop: Stop, served: readonly TransportMode[]): Stop {
+  const allowed = families(served);
+  if (allowed.size === 0 || !stop.platforms) return stop;
+  const keep = (m: TransportMode) => m === "other" || allowed.has(MODE_FAMILY[m]);
+  const platforms = stop.platforms.flatMap((p) => {
+    if (p.modes.length === 0) return [p];
+    const modes = p.modes.filter(keep);
+    return modes.length > 0 ? [{ ...p, modes }] : [];
+  });
+  return platforms.length > 0 ? { ...stop, platforms } : stop;
+}
+
+/** So viele Haltestellen je Ausschnitt höchstens abgleichen (Subrequest-Grenze des Free-Plans) */
+export const MAX_MODE_CHECKS = 12;
+
+/** Linien laut VRR je DHID (der Aufrufer cacht) */
+export type ServedModes = (dhid: string) => Promise<TransportMode[]>;
+
+/**
+ * Nur VRR-Haltestellen mit mehreren Verkehrsmittel-Familien abgleichen: Bei reinen Bus- oder
+ * Bahnhalten gibt es nichts zu verwechseln. Die wichtigsten zuerst, höchstens MAX_MODE_CHECKS.
+ */
+export async function confirmAreaModes(stops: Stop[], servedModes: ServedModes): Promise<Stop[]> {
+  const candidates = stops
+    .map((stop, index) => ({ stop, index }))
+    .filter(
+      ({ stop }) =>
+        stop.id.startsWith("vrr:") &&
+        families((stop.platforms ?? []).flatMap((p) => p.modes)).size > 1,
+    )
+    .slice(0, MAX_MODE_CHECKS);
+  const result = [...stops];
+  await Promise.all(
+    candidates.map(async ({ stop, index }) => {
+      try {
+        result[index] = confirmModes(stop, await servedModes(stop.id.slice("vrr:".length)));
+      } catch {
+        // VRR nicht erreichbar: Angaben von Transitous behalten
+      }
+    }),
+  );
+  return result;
+}
+
+export async function stopsInArea(area: Area, servedModes?: ServedModes): Promise<Stop[]> {
   const url = `${BASE}/v1/map/stops?min=${area.minLat},${area.minLon}&max=${area.maxLat},${area.maxLon}`;
   const data = await fetchJson<TransitousMapStop[]>("transitous", url);
-  return groupMapStops(Array.isArray(data) ? data : []);
+  const stops = groupMapStops(Array.isArray(data) ? data : []);
+  return servedModes ? confirmAreaModes(stops, servedModes) : stops;
 }

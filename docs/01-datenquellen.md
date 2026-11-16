@@ -85,6 +85,8 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - je Abschnitt: Streckenverlauf (`polyline`), Plan- und Echtzeit für Abfahrt/Ankunft, Linie (`trips`)
 - Antwortgröße ca. 275 kB. Die Position wird im Browser entlang der Polyline interpoliert, der Worker cached pro Kachel. So entsteht eine flüssige Karte wie bei TRAVIC, aber mit eigenen Mitteln und offenen Daten.
 
+**Test 16.11.2026, Linien einer Haltestelle** (VRR `XML_DM_REQUEST?outputFormat=JSON&type_dm=stop&name_dm=<DHID>&mode=line&lineReqType=1`): `servingLines.lines[].mode.type` ist die EFA-Produktklasse (2 U-Bahn, 4 Straßenbahn, 5 Bus …). rapidJSON liefert die Liste nicht. Auf der Hardt/LVR-Klinikum: U73, U83, 709 – kein Bus, obwohl Transitous `v1/map/stops` an Steig 2/5/6 `BUS` meldet und `v5/stoptimes` über eine Woche keinen Bus zeigt. Genutzt für den Abgleich der Steige auf der Karte (#88).
+
 **Test 14.11.2026, Haltestellen für die Karte** (`v1/map/stops`):
 
 - Düsseldorf Innenstadt `min=51.220,6.770&max=51.230,6.785` (ca. 1,1 × 1 km): 30 Einträge, 9 kB, ca. 0,6 s. Jeder Eintrag ist ein Steig (`stopId` z. B. `de-DELFI_de:05111:18036:8:4`), nur manche haben `parentId` (`de-DELFI_de:05111:18036`). Zusammengefasst nach DHID: 20 Haltestellen, alle im VRR.

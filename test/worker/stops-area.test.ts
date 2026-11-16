@@ -1,9 +1,17 @@
 import { exports } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { StopSearchResponse } from "../../shared/api-types";
+import type { Stop, StopSearchResponse } from "../../shared/api-types";
 import { API_PREFIX } from "../../shared/base-path";
 import { resetRateLimit } from "../../worker/rate-limit";
-import { dhidOf, groupMapStops, stripCityPrefix } from "../../worker/sources/transitous-map";
+import {
+  confirmAreaModes,
+  confirmModes,
+  dhidOf,
+  groupMapStops,
+  MAX_MODE_CHECKS,
+  stripCityPrefix,
+} from "../../worker/sources/transitous-map";
+import { servingModes } from "../../worker/sources/vrr-lines";
 import { parseArea } from "../../worker/stops-area";
 // Aufgezeichnet am 14.11.2026: v1/map/stops?min=51.220,6.770&max=51.230,6.785 (Düsseldorf)
 import duesseldorf from "./fixtures/transitous-map-stops-duesseldorf.json";
@@ -106,9 +114,16 @@ describe("GET stops/area", () => {
       lon: expect.any(Number),
       platforms: expect.any(Array),
     });
-    expect(calls).toEqual([
+    expect(calls[0]).toBe(
       "https://api.transitous.org/api/v1/map/stops?min=51.22,6.77&max=51.23,6.785",
-    ]);
+    );
+    // Abgleich mit den VRR-Linien (#88): nur gemischte Haltestellen, in der Grenze
+    const vrr = calls.slice(1);
+    expect(vrr.length).toBeGreaterThan(0);
+    expect(vrr.length).toBeLessThanOrEqual(MAX_MODE_CHECKS);
+    expect(
+      vrr.every((url) => url.includes("openservice.vrr.de") && url.includes("mode=line")),
+    ).toBe(true);
   });
 
   it("teilt sich den Cache-Eintrag für denselben gerundeten Ausschnitt", async () => {
@@ -188,5 +203,76 @@ describe("Steige (#84)", () => {
       { track: "3", lat: 51.241238, lon: 6.844022, modes: ["subway", "tram"] },
       { track: "4", lat: 51.24137, lon: 6.844579, modes: ["subway", "tram"] },
     ]);
+  });
+});
+
+describe("Verkehrsmittel mit VRR abgleichen (#88)", () => {
+  // Auf der Hardt: Transitous meldet an Steig 2/5/6 Busse (seltener Ersatzverkehr), laut VRR
+  // fahren nur U73, U83 und 709
+  const hardt: Stop = {
+    id: "vrr:de:05111:18221",
+    name: "Auf der Hardt/LVR-Klinikum",
+    platforms: [
+      { track: "1", lat: 51.240376, lon: 6.843923, modes: ["subway"] },
+      { track: "2", lat: 51.24007, lon: 6.844444, modes: ["subway", "bus"] },
+      { track: "3", lat: 51.241238, lon: 6.844022, modes: ["subway", "tram"] },
+      { track: "5", lat: 51.241325, lon: 6.844632, modes: ["bus"] },
+    ],
+  };
+
+  it("entfernt Verkehrsmittel ohne VRR-Linie und leere Steige", () => {
+    const stop = confirmModes(hardt, ["subway", "tram"]);
+    expect(stop.platforms?.map((p) => [p.track, p.modes])).toEqual([
+      ["1", ["subway"]],
+      ["2", ["subway"]],
+      ["3", ["subway", "tram"]],
+    ]);
+  });
+
+  it("behandelt Stadtbahn als U-Bahn oder Straßenbahn gleich", () => {
+    expect(confirmModes(hardt, ["tram", "bus"]).platforms).toHaveLength(4);
+  });
+
+  it("behält die Angaben ohne VRR-Linien", () => {
+    expect(confirmModes(hardt, [])).toBe(hardt);
+    expect(confirmModes(hardt, ["ferry"])).toBe(hardt);
+  });
+
+  it("gleicht nur gemischte VRR-Haltestellen ab, höchstens MAX_MODE_CHECKS", async () => {
+    const busOnly: Stop = { ...hardt, id: "vrr:de:05111:1", platforms: [hardt.platforms![3]!] };
+    const outside: Stop = { ...hardt, id: "transitous:x" };
+    const many = Array.from({ length: MAX_MODE_CHECKS + 3 }, (_, i) => ({
+      ...hardt,
+      id: `vrr:de:05111:${100 + i}`,
+    }));
+    const asked: string[] = [];
+    const stops = await confirmAreaModes([busOnly, outside, ...many], async (dhid) => {
+      asked.push(dhid);
+      if (dhid === "de:05111:101") throw new Error("weg");
+      return ["subway", "tram"];
+    });
+    expect(asked).toHaveLength(MAX_MODE_CHECKS);
+    expect(asked).not.toContain("de:05111:1");
+    expect(stops[0]).toBe(busOnly);
+    expect(stops[1]).toBe(outside);
+    expect(stops[2]?.platforms).toHaveLength(3);
+    // Fehler bei einer Haltestelle: Transitous-Angaben bleiben
+    expect(stops[3]?.platforms).toHaveLength(4);
+    expect(stops.at(-1)?.platforms).toHaveLength(4);
+  });
+
+  it("liest die Verkehrsmittel aus der VRR-Linienliste", async () => {
+    const calls: string[] = [];
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      calls.push(String(input instanceof Request ? input.url : input));
+      return Response.json({
+        servingLines: {
+          lines: [{ mode: { type: "2" } }, { mode: { type: "4" } }, { mode: { type: "4" } }],
+        },
+      });
+    });
+    expect(await servingModes("de:05111:18221")).toEqual(["subway", "tram"]);
+    expect(calls[0]).toContain("mode=line");
+    expect(calls[0]).toContain("name_dm=de%3A05111%3A18221");
   });
 });
