@@ -61,3 +61,46 @@ export async function recordResult(
     : db.prepare("UPDATE push_subscriptions SET failures = failures + 1 WHERE id = ?1").bind(id);
   await statement.run();
 }
+
+export interface CronRow extends StoredSubscription {
+  seen_alerts: string | null;
+  trip_state: string;
+}
+
+export async function updateTopics(
+  db: D1Database,
+  endpoint: string,
+  topics: string,
+  now = Date.now(),
+): Promise<boolean> {
+  const id = await subscriptionId(endpoint);
+  const result = await db
+    .prepare("UPDATE push_subscriptions SET topics = ?2, updated_at = ?3 WHERE id = ?1")
+    .bind(id, topics, now)
+    .run();
+  return result.meta.changes > 0;
+}
+
+/** Abos mit Interessen (alles außer leerer Liste/aus) für den Cron-Lauf */
+export async function subscriptionsWithTopics(db: D1Database, limit: number): Promise<CronRow[]> {
+  const result = await db
+    .prepare(
+      `SELECT id, endpoint, p256dh, auth, topics, seen_alerts, trip_state FROM push_subscriptions
+       WHERE topics != '[]' ORDER BY updated_at DESC LIMIT ?1`,
+    )
+    .bind(limit)
+    .all<CronRow>();
+  return result.results;
+}
+
+export async function saveState(
+  db: D1Database,
+  id: string,
+  seenAlerts: string | null,
+  tripState: string,
+): Promise<void> {
+  await db
+    .prepare("UPDATE push_subscriptions SET seen_alerts = ?2, trip_state = ?3 WHERE id = ?1")
+    .bind(id, seenAlerts, tripState)
+    .run();
+}

@@ -1,5 +1,6 @@
 // Web Push in der App (#71): Zustand ermitteln, abonnieren, abbestellen, Testnachricht
 import { API_PREFIX, BASE_PATH } from "../../shared/base-path";
+import { PUSH_CHANGED } from "./push-topics";
 
 export type PushState =
   /** Browser kann kein Push */
@@ -84,6 +85,7 @@ export async function enablePush(): Promise<PushState> {
     }));
   const res = await postJson("push/subscribe", { subscription: subscription.toJSON() });
   if (!res.ok) throw new Error("Abo konnte nicht gespeichert werden");
+  window.dispatchEvent(new Event(PUSH_CHANGED));
   return "on";
 }
 
@@ -100,5 +102,17 @@ export async function sendTestPush(): Promise<boolean> {
   const subscription = await currentSubscription();
   if (!subscription) return false;
   const res = await postJson("push/test", { subscription: subscription.toJSON() });
+  return res.ok;
+}
+
+/** Interessen an den Worker schicken (nur wenn ein Abo besteht); true bei Erfolg */
+export async function syncPushTopics(payload: string): Promise<boolean> {
+  const subscription = await currentSubscription();
+  if (!subscription) return false;
+  const res = await fetch(`${API_PREFIX}push/topics`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: `{"subscription":${JSON.stringify(subscription.toJSON())},"topics":${payload}}`,
+  });
   return res.ok;
 }

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Bell, BellOff, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/chip";
 import { disablePush, enablePush, pushState, sendTestPush, type PushState } from "@/lib/push";
+import { readPushPrefs, writePushPrefs, type PushPrefs } from "@/lib/push-topics";
 
 const STATE_TEXT: Record<PushState, string> = {
   unsupported: "Dieser Browser unterstützt keine Benachrichtigungen.",
@@ -84,11 +86,40 @@ export function PushSettings() {
           </>
         )}
       </div>
+      {state === "on" && <PushPrefsChips />}
       {message && (
         <p role="status" className="text-sm">
           {message}
         </p>
       )}
+    </div>
+  );
+}
+
+const PREF_LABELS: { key: keyof PushPrefs; label: string }[] = [
+  { key: "alerts", label: "Störungen bei Favoriten" },
+  { key: "trip", label: "Gemerkte Fahrt" },
+  { key: "quiet", label: "Ruhe 22–6 Uhr" },
+];
+
+/** Wofür Nachrichten kommen (#72) */
+function PushPrefsChips() {
+  const [prefs, setPrefs] = useState<PushPrefs>(readPushPrefs);
+  return (
+    <div role="group" aria-label="Benachrichtigungen für" className="flex flex-wrap gap-1.5">
+      {PREF_LABELS.map(({ key, label }) => (
+        <Chip
+          key={key}
+          active={prefs[key]}
+          onClick={() => {
+            const next = { ...prefs, [key]: !prefs[key] };
+            setPrefs(next);
+            writePushPrefs(next);
+          }}
+        >
+          {label}
+        </Chip>
+      ))}
     </div>
   );
 }

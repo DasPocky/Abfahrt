@@ -3,6 +3,7 @@ import { getDepartures, nearbyStops, searchStops } from "./api";
 import { getAlerts } from "./alerts";
 import { cacheProbe } from "./cache-probe";
 import { getJourneys } from "./journeys";
+import { runPushCron } from "./push/cron";
 import { handlePush, PUSH_ROUTES } from "./push/routes";
 import { apiError, json, UpstreamError } from "./http";
 import { isRateLimited } from "./rate-limit";
@@ -38,6 +39,7 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
       case "push/subscribe":
       case "push/unsubscribe":
       case "push/test":
+      case "push/topics":
         return await handlePush(request, env, route);
       case "alerts":
         return await getAlerts(request, ctx, url.searchParams);
@@ -87,5 +89,10 @@ export default {
       return withSecurityHeaders(index, PAGE_SECURITY_HEADERS);
     }
     return env.ASSETS.fetch(request);
+  },
+
+  /** Cron (wrangler.jsonc „triggers“): Push-Auslöser alle 5 Minuten (#72) */
+  async scheduled(_controller, env, ctx): Promise<void> {
+    ctx.waitUntil(runPushCron(env, ctx).then(() => undefined));
   },
 } satisfies ExportedHandler<Env>;

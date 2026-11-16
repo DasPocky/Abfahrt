@@ -136,7 +136,8 @@ async function withLineColors(
   return applyJourneyLineColors(journeys, colors);
 }
 
-async function load(
+/** Verbindungen ohne Cache und ohne Linienfarben (auch für die Push-Prüfung, worker/push/cron.ts) */
+export async function loadJourneys(
   from: string,
   to: string,
   when: Date | undefined,
@@ -219,7 +220,7 @@ export async function getJourneys(
   const minute = Math.floor(at.getTime() / 60_000);
   const key = `jrn:v2:${from}>${to}:${arrive ? "arr" : "dep"}:${minute}:${journeyOptionsKey(options)}`;
   const loaded = await cached(request, ctx, key, JOURNEYS_TTL, async () => {
-    const result = await load(from, to, at, arrive, options);
+    const result = await loadJourneys(from, to, at, arrive, options);
     return result.source === "vrr"
       ? { ...result, journeys: await withLineColors(request, ctx, result.journeys) }
       : result;

@@ -84,9 +84,10 @@ export function AboutPage() {
             Favoriten und die gemerkte Verbindung werden nur lokal in deinem Browser gespeichert.
           </li>
           <li>
-            Benachrichtigungen (falls eingeschaltet): Gespeichert wird nur die Adresse beim
-            Push-Dienst deines Browsers (Apple, Google, Mozilla, Microsoft) mit ihren Schlüsseln,
-            ohne Bezug zu deiner Person. Ausschalten löscht den Eintrag.
+            Benachrichtigungen (falls eingeschaltet): Gespeichert werden die Adresse beim
+            Push-Dienst deines Browsers (Apple, Google, Mozilla, Microsoft) mit ihren Schlüsseln
+            und, je nach Einstellung, deine Favoriten-Haltestellen mit Linien und die gemerkte
+            Verbindung, ohne Bezug zu deiner Person. Ausschalten löscht den Eintrag.
           </li>
           <li>
             Dein Standort wird beim Öffnen angefragt, dein Browser fragt dich vorher um Erlaubnis.

@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router";
 import { TramFront } from "lucide-react";
+import { PushSync } from "@/components/push-sync";
 
 export function Layout() {
   return (
@@ -20,6 +21,7 @@ export function Layout() {
       </header>
       <main className="mx-auto max-w-2xl px-4 pt-4 pb-10">
         <Outlet />
+        <PushSync />
       </main>
       <footer className="mx-auto max-w-2xl px-4 pt-2 pb-8 text-xs text-muted-foreground">
         <Link to="/ueber" className="rounded-sm underline-offset-2 hover:underline">

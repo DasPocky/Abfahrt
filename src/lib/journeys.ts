@@ -1,5 +1,5 @@
 // Verbindungssuche: URL-Parameter und Anzeige-Hilfen (reine Funktionen, getestet)
-import type { Journey, JourneyLeg, TransportMode } from "../../shared/api-types";
+import type { Journey, TransportMode } from "../../shared/api-types";
 import {
   DEFAULT_JOURNEY_OPTIONS,
   EXCLUDABLE_MODES,
@@ -194,13 +194,7 @@ export function journeyTimes(journey: Journey): JourneyTimes {
 }
 
 /** Fällt eine Fahrt oder ein genutzter Halt aus, ist die Verbindung nicht fahrbar */
-export function isLegCancelled(leg: JourneyLeg): boolean {
-  return leg.cancelled || leg.origin.cancelled || leg.destination.cancelled;
-}
-
-export function isJourneyCancelled(journey: Journey): boolean {
-  return journey.legs.some((leg) => leg.kind === "transit" && isLegCancelled(leg));
-}
+export { isJourneyCancelled, isLegCancelled } from "../../shared/transfers";
 
 const DAY_KEY = new Intl.DateTimeFormat("en-CA", { timeZone: DISPLAY_TIME_ZONE });
 const WEEKDAY_DATE = new Intl.DateTimeFormat("de-DE", {
