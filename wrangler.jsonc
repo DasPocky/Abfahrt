@@ -25,6 +25,15 @@
       "!/abfahrt/manifest.webmanifest",
     ],
   },
+  // Push-Abos (#71); angelegt vom Workflow push-setup, Schema in migrations/
+  "d1_databases": [
+    {
+      "binding": "PUSH_DB",
+      "database_name": "abfahrt-push",
+      "database_id": "0574d7d0-056d-4eaf-9eff-23bde561c8f1",
+      "migrations_dir": "migrations",
+    },
+  ],
   "observability": {
     "enabled": true,
   },

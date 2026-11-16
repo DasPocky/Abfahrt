@@ -70,3 +70,39 @@ async function fromCache(request) {
   const cached = await caches.match(request, { cacheName: CACHE_NAME, ignoreVary: true });
   return cached ?? fetch(request);
 }
+
+// ---- Web Push (#71): Nachricht anzeigen, beim Antippen die passende Seite öffnen ----
+
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = {};
+  }
+  const title = typeof data.title === "string" ? data.title : "Abfahrt";
+  // Nur Seiten dieser App öffnen
+  const url = typeof data.url === "string" && data.url.startsWith(SHELL_URL) ? data.url : SHELL_URL;
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: typeof data.body === "string" ? data.body : "",
+      tag: typeof data.tag === "string" ? data.tag : undefined,
+      icon: `${BUILD.base}/icons/icon-192.png`,
+      badge: `${BUILD.base}/icons/icon-192.png`,
+      lang: "de",
+      data: { url },
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = new URL(event.notification.data?.url ?? SHELL_URL, self.location.origin).href;
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+      const open = windows.find((w) => w.url.startsWith(self.location.origin + SHELL_URL));
+      if (open) return open.navigate(target).then((w) => (w ?? open).focus());
+      return self.clients.openWindow(target);
+    }),
+  );
+});
