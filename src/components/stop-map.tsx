@@ -173,13 +173,15 @@ function addOwnLayers(
         ["get", "ring"],
         c.fill,
       ],
+      // „zoom“ darf nur ganz außen stehen: interpolate außen, Fälle je Stufe innen
       "circle-stroke-width": [
-        "case",
-        ["get", "selected"],
-        3,
-        ["!=", ["get", "ring"], ""],
-        ["interpolate", ["linear"], ["zoom"], 14, 2, 18, 3.5],
-        1.5,
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        14,
+        ["case", ["get", "selected"], 3, ["!=", ["get", "ring"], ""], 2, 1.5],
+        18,
+        ["case", ["get", "selected"], 3, ["!=", ["get", "ring"], ""], 3.5, 1.5],
       ],
     },
   });
