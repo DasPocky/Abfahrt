@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { areaForBounds, MAX_AREA_LAT, MAX_AREA_LON, STOPS_MIN_ZOOM } from "./map-area";
+import {
+  areaForBounds,
+  MAX_AREA_LAT,
+  MAX_AREA_LON,
+  STOPS_MIN_ZOOM,
+  platformDeparturesPath,
+  platformSummary,
+  selectionKey,
+} from "./map-area";
 
 const SMALL = { west: 6.77012, south: 51.22049, east: 6.78488, north: 51.22951 };
 
@@ -25,5 +33,18 @@ describe("areaForBounds", () => {
     expect(maxLon - minLon).toBeGreaterThanOrEqual(MAX_AREA_LON);
     expect((minLat + maxLat) / 2).toBeCloseTo(51.25, 2);
     expect((minLon + maxLon) / 2).toBeCloseTo(6.8, 2);
+  });
+});
+
+describe("Steige auf der Karte (#84)", () => {
+  it("beschreibt einen Steig und verlinkt seine Abfahrten", () => {
+    const platform = { track: "1", lat: 51.24, lon: 6.84, modes: ["subway" as const] };
+    expect(platformSummary(platform)).toBe("Steig 1 · U-Bahn");
+    expect(platformSummary({ ...platform, track: "12", modes: ["suburban" as const] })).toBe(
+      "Gleis 12 · S-Bahn",
+    );
+    expect(platformDeparturesPath("/haltestelle/x", platform)).toBe("/haltestelle/x?gleis=1");
+    expect(platformDeparturesPath("/haltestelle/x", null)).toBe("/haltestelle/x");
+    expect(selectionKey("vrr:a", "1")).toBe("vrr:a|1");
   });
 });

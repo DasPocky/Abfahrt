@@ -104,6 +104,7 @@ describe("GET stops/area", () => {
       name: expect.any(String),
       lat: expect.any(Number),
       lon: expect.any(Number),
+      platforms: expect.any(Array),
     });
     expect(calls).toEqual([
       "https://api.transitous.org/api/v1/map/stops?min=51.22,6.77&max=51.23,6.785",
@@ -143,5 +144,49 @@ describe("Haltestellennamen", () => {
     ["Bad Neuenahr-Ahrweiler", "Bad Neuenahr-Ahrweiler"],
   ])("entfernt das Städtekürzel: %s", (raw, expected) => {
     expect(stripCityPrefix(raw)).toBe(expected);
+  });
+});
+
+describe("Steige (#84)", () => {
+  it("liefert jeden Steig an seiner Position mit Nummer und Verkehrsmitteln", () => {
+    // Auf der Hardt/LVR-Klinikum: Steig 1 (U73, biegt ab) liegt gut 100 m südlich von Steig 3/4
+    const stops = groupMapStops([
+      {
+        stopId: "de-DELFI_de:05111:18221:0:1",
+        name: "D-Auf der Hardt/LVR-Klinikum",
+        lat: 51.240376,
+        lon: 6.843923,
+        track: "1",
+        modes: ["SUBWAY"],
+      },
+      {
+        stopId: "de-DELFI_de:05111:18221:0:4",
+        name: "D-Auf der Hardt/LVR-Klinikum",
+        lat: 51.24137,
+        lon: 6.844579,
+        track: "4",
+        modes: ["SUBWAY", "TRAM"],
+      },
+      {
+        stopId: "de-DELFI_de:05111:18221:0:3",
+        name: "D-Auf der Hardt/LVR-Klinikum",
+        lat: 51.241238,
+        lon: 6.844022,
+        track: "3",
+        modes: ["TRAM", "SUBWAY"],
+      },
+      {
+        stopId: "de-DELFI_de:05111:18221",
+        name: "D-Auf der Hardt/LVR-Klinikum",
+        lat: 51.2409,
+        lon: 6.8443,
+      },
+    ]);
+    expect(stops).toHaveLength(1);
+    expect(stops[0]?.platforms).toEqual([
+      { track: "1", lat: 51.240376, lon: 6.843923, modes: ["subway"] },
+      { track: "3", lat: 51.241238, lon: 6.844022, modes: ["subway", "tram"] },
+      { track: "4", lat: 51.24137, lon: 6.844579, modes: ["subway", "tram"] },
+    ]);
   });
 });

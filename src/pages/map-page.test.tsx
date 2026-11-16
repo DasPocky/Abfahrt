@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Stop } from "../../shared/api-types";
+import type { Stop, StopPlatform } from "../../shared/api-types";
 import { renderAt, requestUrl } from "../test-utils";
 
 // MapLibre braucht WebGL, das jsdom nicht hat: die Karte selbst wird ersetzt
@@ -12,7 +12,7 @@ vi.mock("@/components/stop-map", () => ({
   }: {
     stops: Stop[];
     onViewChange: (view: unknown) => void;
-    onSelect: (stop: Stop | null) => void;
+    onSelect: (selection: { stop: Stop; platform: StopPlatform | null } | null) => void;
   }) => (
     <div>
       <button
@@ -33,7 +33,10 @@ vi.mock("@/components/stop-map", () => ({
         Herauszoomen
       </button>
       {stops.map((stop) => (
-        <button key={stop.id} onClick={() => onSelect(stop)}>
+        <button
+          key={stop.id}
+          onClick={() => onSelect({ stop, platform: stop.platforms?.[0] ?? null })}
+        >
           Punkt {stop.name}
         </button>
       ))}
@@ -46,6 +49,7 @@ const HHA: Stop = {
   name: "D-Heinrich-Heine-Allee U",
   lat: 51.2261,
   lon: 6.7767,
+  platforms: [{ track: "4", lat: 51.22609, lon: 6.776693, modes: ["subway", "tram"] }],
 };
 
 beforeEach(() => localStorage.clear());
@@ -67,9 +71,11 @@ describe("Karte", () => {
 
     const card = screen.getByRole("group", { name: "D-Heinrich-Heine-Allee U" });
     expect(card).toHaveTextContent("D-Heinrich-Heine-Allee U");
+    // Antippen trifft einen Steig (#84): Nummer, Verkehrsmittel und Abfahrten nur dieses Steigs
+    expect(card).toHaveTextContent("Steig 4 · U-Bahn, Straßenbahn");
     expect(screen.getByRole("link", { name: /Abfahrten/ })).toHaveAttribute(
       "href",
-      "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18036",
+      "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18036?gleis=4",
     );
     fireEvent.click(screen.getByRole("button", { name: "Schließen" }));
     expect(screen.queryByRole("group", { name: "D-Heinrich-Heine-Allee U" })).toBeNull();

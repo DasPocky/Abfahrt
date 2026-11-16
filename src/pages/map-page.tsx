@@ -5,14 +5,20 @@ import { Link } from "react-router";
 import { ChevronRight, LoaderCircle, LocateFixed, X } from "lucide-react";
 import type { Stop } from "../../shared/api-types";
 import { MapAttribution } from "@/components/map-attribution";
-import { StopMap, type MapView } from "@/components/stop-map";
+import { StopMap, type MapSelection, type MapView } from "@/components/stop-map";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useLocation } from "@/hooks/use-location";
 import { usePrefersDark } from "@/hooks/use-prefers-dark";
 import { stopPath } from "@/lib/api";
 import type { Position } from "@/lib/geo";
-import { areaForBounds, fetchStopsInArea } from "@/lib/map-area";
+import {
+  areaForBounds,
+  fetchStopsInArea,
+  platformDeparturesPath,
+  platformSummary,
+  selectionKey,
+} from "@/lib/map-area";
 
 /** Startpunkt ohne Standort: Düsseldorf Innenstadt (Heinrich-Heine-Allee) */
 const DEFAULT_CENTER: Position = { lat: 51.2255, lon: 6.7775 };
@@ -44,7 +50,8 @@ export function MapPage() {
   const area = debouncedView ? areaForBounds(debouncedView.bounds, debouncedView.zoom) : null;
   const tooFar = view !== null && areaForBounds(view.bounds, view.zoom) === null;
   const [known, setKnown] = useState<Map<string, Stop>>(() => new Map());
-  const [selected, setSelected] = useState<Stop | null>(null);
+  const [selection, setSelection] = useState<MapSelection | null>(null);
+  const selected = selection?.stop ?? null;
   // Antippen von „Mein Standort“; sonst fährt die Karte einmal zum Standort, sobald er da ist
   // (nur wenn in der App schon erlaubt, siehe useLocation)
   const [manualFocus, setManualFocus] = useState<Position | null>(null);
@@ -86,11 +93,13 @@ export function MapPage() {
           initialZoom={DEFAULT_ZOOM}
           focus={focus}
           stops={stops}
-          selectedId={selected?.id ?? null}
+          selectedKey={
+            selection ? selectionKey(selection.stop.id, selection.platform?.track ?? null) : null
+          }
           userPosition={location.position}
           dark={dark}
           onViewChange={setView}
-          onSelect={setSelected}
+          onSelect={setSelection}
         />
 
         <div className="pointer-events-none absolute inset-x-0 top-2 flex justify-center px-14">
@@ -127,9 +136,16 @@ export function MapPage() {
             aria-label={selected.name}
             className="absolute inset-x-2 bottom-7 flex items-center gap-2 rounded-xl border bg-background p-3 shadow-lg"
           >
-            <p className="line-clamp-2 min-w-0 flex-1 leading-snug font-medium">{selected.name}</p>
+            <p className="min-w-0 flex-1 leading-snug">
+              <span className="line-clamp-2 font-medium">{selected.name}</span>
+              {selection?.platform && (
+                <span className="block text-xs text-muted-foreground">
+                  {platformSummary(selection.platform)}
+                </span>
+              )}
+            </p>
             <Button asChild size="sm">
-              <Link to={stopPath(selected.id)}>
+              <Link to={platformDeparturesPath(stopPath(selected.id), selection?.platform ?? null)}>
                 Abfahrten
                 <ChevronRight aria-hidden="true" />
               </Link>
@@ -138,7 +154,7 @@ export function MapPage() {
               variant="ghost"
               size="icon-sm"
               aria-label="Schließen"
-              onClick={() => setSelected(null)}
+              onClick={() => setSelection(null)}
             >
               <X aria-hidden="true" />
             </Button>
