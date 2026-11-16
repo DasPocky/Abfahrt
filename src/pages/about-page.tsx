@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { LocationProbe } from "@/components/location-probe";
+import { PushSettings } from "@/components/push-settings";
 
 const REPO_URL = "https://github.com/DasPocky/Abfahrt";
 
@@ -83,6 +84,11 @@ export function AboutPage() {
             Favoriten und die gemerkte Verbindung werden nur lokal in deinem Browser gespeichert.
           </li>
           <li>
+            Benachrichtigungen (falls eingeschaltet): Gespeichert wird nur die Adresse beim
+            Push-Dienst deines Browsers (Apple, Google, Mozilla, Microsoft) mit ihren Schlüsseln,
+            ohne Bezug zu deiner Person. Ausschalten löscht den Eintrag.
+          </li>
+          <li>
             Dein Standort wird beim Öffnen angefragt, dein Browser fragt dich vorher um Erlaubnis.
             Über das Standort-Symbol in der Suche schaltest du ihn dauerhaft aus. Die Suche sortiert
             damit nur auf deinem Gerät. Für „In der Nähe“ geht er auf etwa 100 m gerundet an unseren
@@ -99,6 +105,10 @@ export function AboutPage() {
             sieht OpenFreeMap deine IP-Adresse.
           </li>
         </ul>
+      </Section>
+
+      <Section id="about-push" title="Benachrichtigungen">
+        <PushSettings />
       </Section>
 
       <Section id="about-location" title="Standort testen">

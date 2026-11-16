@@ -125,6 +125,15 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 - Normalisierung: Art (`blocking` aus stop/route/lineBlocking, `facility` aus infrastructure = Aufzug/Rolltreppe, sonst `info`), Dringlichkeit, Titel (aus „Straßenbahnlinie 709:“ + Untertitel), Text ohne HTML (Tags raus, Entities aufgelöst, max. 2.000 Zeichen; die App zeigt ihn nur als Text), Gültigkeit (Jahr 2500 = „bis auf Weiteres“ → `null`), Linien je Richtung zusammengefasst, Haltestellen auf die DHID der Haltestelle (ohne Steig). Gleiche Meldungen (gleicher Titel und Text, der VRR schickt sie oft je Linie einzeln) werden zu einer zusammengefasst, Düsseldorf: 30 → 26.
 - Haltestellen außerhalb des VRR (`transitous:`) liefern eine leere Liste.
 
+**Web Push** (`worker/push/`, `src/lib/push.ts`, `src/pwa/service-worker.js`, #71):
+
+- Ohne Fremddienst und ohne Bibliothek: VAPID-Token (RFC 8292, ES256) und Verschlüsselung der Nachricht (RFC 8291, `aes128gcm`, ein Datensatz) mit WebCrypto im Worker (`worker/push/crypto.ts`). Die Tests entschlüsseln unabhängig wie ein Browser und prüfen die Signatur.
+- Schlüssel: privater VAPID-Schlüssel als Worker-Secret `VAPID_PRIVATE_JWK` (angelegt vom Workflow push-setup, siehe [Workflow & Sicherheit](04-workflow-sicherheit.md)); den öffentlichen Schlüssel berechnet der Worker daraus (`GET push/key`).
+- Abos in **D1** `abfahrt-push` (Bindung `PUSH_DB`, Schema in `migrations/`, angewendet vom Deploy-Workflow): Kennung = SHA-256 des Endpunkts, Endpunkt, Schlüssel des Browsers, `topics` (für #72), Zeitstempel, Fehlerzähler. Keine personenbezogenen Daten.
+- `POST push/subscribe`, `push/unsubscribe`, `push/test` (Body `{ subscription }` aus `PushSubscription.toJSON()`): nur mit `Origin` der eigenen Seite, JSON bis 4 KB, Endpunkt nur bei bekannten Push-Diensten (Google FCM, Mozilla, Apple, Microsoft), sonst `400`. Antwortet der Push-Dienst mit 404/410, wird das Abo gelöscht.
+- Service Worker: `push` zeigt die Nachricht (Titel, Text, Kennung `tag` ersetzt ältere), `notificationclick` öffnet bzw. fokussiert die Seite aus `url` (nur Seiten unter `/abfahrt/`).
+- App: „Benachrichtigungen“ auf der Über-Seite (`src/components/push-settings.tsx`) mit Einschalten (Erlaubnis nur nach Antippen), Testnachricht, Ausschalten. Am iPhone geht Push nur in der installierten App (Homescreen), im Browser erklärt die Seite das.
+
 **Quellenwahl für Abfahrten** (`worker/api.ts`):
 
 1. `transitous:`-IDs → Transitous `v5/stoptimes`
