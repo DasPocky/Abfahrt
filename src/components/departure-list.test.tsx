@@ -246,7 +246,7 @@ describe("DepartureList", () => {
     expect(screen.getByText("Zurzeit keine Abfahrten an dieser Haltestelle.")).toBeInTheDocument();
   });
 
-  it("benennt Halteplätze: Gleis für Schienenverkehr, Steig für Bus und Tram", () => {
+  it("benennt Halteplätze: Gleis für die Eisenbahn, Steig für U-Bahn, Tram und Bus", () => {
     render(
       <DepartureList
         now={NOW}
@@ -272,7 +272,7 @@ describe("DepartureList", () => {
       />,
     );
     expect(rowAt(rows(), 0)).toHaveTextContent("Gleis2");
-    expect(rowAt(rows(), 1)).toHaveTextContent("Gleis2");
+    expect(rowAt(rows(), 1)).toHaveTextContent("Steig2");
     expect(rowAt(rows(), 2)).toHaveTextContent("Steig14");
   });
 });

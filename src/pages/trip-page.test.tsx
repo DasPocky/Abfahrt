@@ -70,7 +70,7 @@ describe("Live-Begleitung", () => {
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/abfahrt/fahrt"));
     expect(localStorage.getItem(SAVED_TRIP_KEY)).toContain(journeySignature(trip));
-    const status = await screen.findByText("U79 ab Düsseldorf Hbf · Gleis 2");
+    const status = await screen.findByText("U79 ab Düsseldorf Hbf · Steig 2");
     expect(status).toBeInTheDocument();
     expect(screen.getByText(/^Abfahrt in (9|10) Min$/)).toBeInTheDocument();
     // Live-Abfrage ab der geplanten Abfahrt der gemerkten Verbindung
