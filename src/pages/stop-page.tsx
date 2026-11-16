@@ -9,7 +9,14 @@ import { SourceAttribution } from "@/components/source-attribution";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNow } from "@/hooks/use-now";
-import { ALERTS_STALE_MS, duplicatesNotice, sortAlerts, stopAlertsKey } from "@/lib/alerts";
+import {
+  ALERTS_STALE_MS,
+  duplicatesNotice,
+  sortAlerts,
+  splitFacilityAlerts,
+  stopAlertsKey,
+  withoutNotices,
+} from "@/lib/alerts";
 import { ApiRequestError, fetchAlerts, fetchDepartures } from "@/lib/api";
 import {
   type DepartureFilter,
@@ -67,8 +74,15 @@ export function StopPage() {
   });
   // Was schon als Hinweis an den Abfahrten steht, nicht noch einmal zeigen
   const notices = data ? data.departures.flatMap((d) => d.notices) : [];
-  const stopAlerts = sortAlerts(alertsData?.alerts ?? []).filter(
-    (alert) => !duplicatesNotice(alert, notices),
+  // Aufzüge/Rolltreppen immer in eigener Zeile (Barrierefreiheit, #70)
+  const { facility: facilityAlerts, other } = splitFacilityAlerts(
+    sortAlerts(alertsData?.alerts ?? []),
+  );
+  const otherAlerts = other.filter((alert) => !duplicatesNotice(alert, notices));
+  const stopAlerts = [...facilityAlerts, ...otherAlerts];
+  // Gleiche Aufzug-Texte nicht zusätzlich als Abfahrts-Hinweis zeigen
+  const shown = withoutNotices(visible, (notice) =>
+    facilityAlerts.some((alert) => duplicatesNotice(alert, [notice])),
   );
 
   const knownName = data?.stop.name ?? stopNameFromState(location.state);
@@ -122,8 +136,9 @@ export function StopPage() {
 
       {(stopAlerts.length > 0 || (data && visible.length > 0)) && (
         <div className="space-y-1.5">
-          <StopAlertsBanner alerts={stopAlerts} now={liveNow} />
-          {data && visible.length > 0 && <StopNoticesBanner departures={visible} now={now} />}
+          <StopAlertsBanner alerts={facilityAlerts} now={liveNow} facility />
+          <StopAlertsBanner alerts={otherAlerts} now={liveNow} />
+          {data && visible.length > 0 && <StopNoticesBanner departures={shown} now={now} />}
         </div>
       )}
 
@@ -159,7 +174,7 @@ export function StopPage() {
               </Button>
             </div>
           ) : (
-            data && <DepartureList departures={visible} now={now} />
+            data && <DepartureList departures={shown} now={now} />
           )}
         </CardContent>
       </Card>

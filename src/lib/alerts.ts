@@ -202,3 +202,34 @@ export function duplicatesNotice(alert: Alert, notices: readonly string[]): bool
     return title.length >= 15 && key.includes(title);
   });
 }
+
+/**
+ * Titel ohne vorangestellten Haltestellennamen, für die Anzeige an der Haltestelle selbst:
+ * „Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.“ → „Rolltreppe außer Betrieb“
+ */
+export function titleAtStop(alert: Pick<Alert, "title">): string {
+  const match = /^Haltestelle [^:]+:\s*(.+)$/.exec(alert.title);
+  return (match?.[1] ?? alert.title).replace(/\.$/, "");
+}
+
+/** Aufzüge/Rolltreppen getrennt von übrigen Meldungen (eigene Zeile an der Haltestelle) */
+export function splitFacilityAlerts(alerts: readonly Alert[]): {
+  facility: Alert[];
+  other: Alert[];
+} {
+  return {
+    facility: alerts.filter((a) => a.kind === "facility"),
+    other: alerts.filter((a) => a.kind !== "facility"),
+  };
+}
+
+/** Abfahrten ohne die Hinweise, die `drop` erfasst (z. B. weil sie schon als Meldung dastehen) */
+export function withoutNotices<T extends { notices: string[] }>(
+  departures: readonly T[],
+  drop: (notice: string) => boolean,
+): T[] {
+  return departures.map((d) => {
+    const notices = d.notices.filter((n) => !drop(n));
+    return notices.length === d.notices.length ? d : { ...d, notices };
+  });
+}

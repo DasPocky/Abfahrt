@@ -4,7 +4,7 @@ import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { NOTICE_CLASS } from "@/components/departure-list";
 import { LineBadge } from "@/components/line-badge";
-import { ALERT_KIND_LABEL, formatValidity } from "@/lib/alerts";
+import { ALERT_KIND_LABEL, formatValidity, titleAtStop } from "@/lib/alerts";
 import type { Alert, AlertKind, AlertSeverity } from "../../shared/api-types";
 
 const KIND_ICON: Record<AlertKind, typeof Info> = {
@@ -142,7 +142,8 @@ export function AlertRow({
   );
 }
 
-function alertCount(count: number): string {
+function alertCount(count: number, facility: boolean): string {
+  if (facility) return count === 1 ? "Aufzug/Rolltreppe" : `${count} Aufzüge/Rolltreppen`;
   return count === 1 ? "Störung" : `${count} Störungen`;
 }
 
@@ -150,20 +151,37 @@ function alertCount(count: number): string {
  * Meldungen einer Haltestelle als eine schlanke Zeile über den Abfahrten (wie die Sammelhinweise);
  * das Panel zeigt alle mit vollem Text.
  */
-export function StopAlertsBanner({ alerts, now }: { alerts: readonly Alert[]; now: Date }) {
+export function StopAlertsBanner({
+  alerts,
+  now,
+  facility = false,
+}: {
+  alerts: readonly Alert[];
+  now: Date;
+  /** Aufzüge/Rolltreppen (#70): eigene Beschriftung, Titel ohne Haltestellennamen */
+  facility?: boolean;
+}) {
   const [first] = alerts;
   if (!first) return null;
   const single = alerts.length === 1;
+  const title = (alert: Alert) => (facility ? titleAtStop(alert) : alert.title);
   return (
     <BottomSheet
-      title={single ? first.title : "Störungen an dieser Haltestelle"}
+      title={
+        single
+          ? title(first)
+          : facility
+            ? "Aufzüge und Rolltreppen an dieser Haltestelle"
+            : "Störungen an dieser Haltestelle"
+      }
       description={single ? sheetDescription(first, now) : undefined}
       triggerClassName={NOTICE_CLASS}
       trigger={
         <>
           <AlertIcon alert={first} />
           <span className="min-w-0 flex-1 truncate">
-            <span className="font-medium">{alertCount(alerts.length)}:</span> {first.title}
+            <span className="font-medium">{alertCount(alerts.length, facility)}:</span>{" "}
+            {title(first)}
           </span>
           <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         </>
@@ -177,7 +195,7 @@ export function StopAlertsBanner({ alerts, now }: { alerts: readonly Alert[]; no
             <li key={alert.id} className="space-y-2 py-3 first:pt-0">
               <p className="flex items-start gap-2">
                 <AlertIcon alert={alert} className="mt-0.5" />
-                <span className="min-w-0 flex-1 font-medium">{alert.title}</span>
+                <span className="min-w-0 flex-1 font-medium">{title(alert)}</span>
                 <span className="shrink-0 text-xs text-muted-foreground">
                   {formatValidity(alert, now)}
                 </span>

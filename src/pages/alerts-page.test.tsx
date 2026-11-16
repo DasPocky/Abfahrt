@@ -209,14 +209,16 @@ describe("Hinweis auf der Haltestellenseite", () => {
     );
     renderAt(`/haltestelle/${encodeURIComponent(STOP_HBF.id)}`);
 
+    // Aufzüge/Rolltreppen in eigener Zeile, ohne Haltestellennamen im Titel (#70)
     const banner = await screen.findByRole("button", {
-      name: /Störung: Haltestelle Düsseldorf Hbf: Aufzug/,
+      name: /2 Aufzüge\/Rolltreppen: Aufzug außer Betrieb/,
     });
-    expect(
-      screen.getByRole("button", { name: /^1 Hinweis für diese Haltestelle/ }),
-    ).toBeInTheDocument();
+    // der gleiche Text steht nicht zusätzlich als Hinweis an den Abfahrten
+    expect(screen.queryByRole("button", { name: /Hinweis für diese Haltestelle/ })).toBeNull();
     fireEvent.click(banner);
-    const dialog = screen.getByRole("dialog", { name: LIFT.title });
-    expect(within(dialog).queryByText(shared)).toBeNull();
+    const dialog = screen.getByRole("dialog", {
+      name: "Aufzüge und Rolltreppen an dieser Haltestelle",
+    });
+    expect(within(dialog).getByText("Rolltreppe zu Gleis 2 außer Betrieb")).toBeInTheDocument();
   });
 });
