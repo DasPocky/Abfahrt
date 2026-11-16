@@ -83,7 +83,7 @@ export async function getAlerts(
   }
   if (omc === null) return apiError(400, "invalid_area", "Haltestelle oder Gemeinde angeben");
 
-  const all = await cached(request, ctx, `alerts:v1:${omc}`, ALERTS_TTL, () => areaAlerts(omc));
+  const all = await cached(request, ctx, `alerts:v2:${omc}`, ALERTS_TTL, () => areaAlerts(omc));
   const stopId =
     stop === null ? null : `vrr:${stop.slice("vrr:".length).split(":").slice(0, 3).join(":")}`;
   const body: AlertsResponse = {
