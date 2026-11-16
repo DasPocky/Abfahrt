@@ -85,16 +85,16 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
 
 ## Worker-API (internes, quellenunabhängiges Format)
 
-| Endpunkt                                            | Zweck                                            | Meilenstein |
-| --------------------------------------------------- | ------------------------------------------------ | ----------- |
-| `GET /abfahrt/api/stops/search?q=&places=1`         | Haltestellen (mit `places=1` auch Adressen/POIs) | M1/M2       |
-| `GET /abfahrt/api/stops/nearby?lat=&lon=`           | Haltestellen in der Nähe                         | M1          |
-| `GET /abfahrt/api/stops/area?min=&max=`             | Haltestellen im Ausschnitt                       | M1          |
-| `GET /abfahrt/api/departures?stop=&when=&modes=`    | Abfahrten mit Echtzeit                           | M1          |
-| `GET /abfahrt/api/journeys?from=&to=&when=&arrive=` | Verbindungssuche                                 | M2          |
-| `GET /abfahrt/api/trips/:id`                        | Fahrtverlauf/Zwischenhalte                       | M2          |
-| `GET /abfahrt/api/alerts?lines=&stop=`              | Störungen                                        | M3          |
-| `POST /abfahrt/api/push/subscribe`                  | Push-Abo                                         | M3          |
+| Endpunkt                                             | Zweck                                            | Meilenstein |
+| ---------------------------------------------------- | ------------------------------------------------ | ----------- |
+| `GET /abfahrt/api/stops/search?q=&places=1`          | Haltestellen (mit `places=1` auch Adressen/POIs) | M1/M2       |
+| `GET /abfahrt/api/stops/nearby?lat=&lon=`            | Haltestellen in der Nähe                         | M1          |
+| `GET /abfahrt/api/stops/area?min=&max=`              | Haltestellen im Ausschnitt                       | M1          |
+| `GET /abfahrt/api/departures?stop=&when=&modes=`     | Abfahrten mit Echtzeit                           | M1          |
+| `GET /abfahrt/api/journeys?from=&to=&when=&arrive=`  | Verbindungssuche                                 | M2          |
+| `GET /abfahrt/api/trips/:id`                         | Fahrtverlauf/Zwischenhalte                       | M2          |
+| `GET /abfahrt/api/alerts?stop=&lines=` bzw. `?area=` | Störungsmeldungen (Gemeinde der Haltestelle)     | M3          |
+| `POST /abfahrt/api/push/subscribe`                   | Push-Abo                                         | M3          |
 
 Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und wird von App und Worker gemeinsam genutzt.
 
@@ -116,6 +116,14 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 - **Früher/Später:** `earlier`/`later` sind Abfahrtszeiten für die nächste Abfrage. Später ist 1 Minute nach der letzten Abfahrt, früher eine Listenlänge (mindestens 20 Minuten) vor der ersten.
 - **Fehler:** Unbekannte Haltestellen meldet die EFA nur als Systemmeldung („origin: multiple matches“), daraus wird `404 stop_not_found`. Start gleich Ziel ergibt `400 same_stop`.
 - **Linienfarben:** Für VRR-Verbindungen kommen sie wie bei den Abfahrten aus Transitous, je Einstiegshaltestelle (höchstens 6 pro Antwort), 7 Tage gecacht und höchstens 2,5 s abgewartet.
+
+**Störungen** (`worker/alerts.ts`, `worker/sources/vrr-alerts.ts`, `worker/html-text.ts`):
+
+- Quelle: VRR `XML_ADDINFO_REQUEST`, immer **je Gemeinde** (`filterOMC=<7-stelliger Gemeindeschlüssel>`) und **ohne die globalen Listen** (`filterShowLineList=0&filterShowStopList=0&filterShowPlaceList=0`). Grund ist das Free-Plan-Limit von 10 ms CPU: das ganze VRR-Gebiet hat ~3,4 MB (1.131 Meldungen), Düsseldorf allein ~100 kB (30 Meldungen).
+- Gemeinde einer Haltestelle: in kreisfreien Städten aus der DHID (Kreis `05111` → `5111000`), in Kreisen über den Stopfinder (Elternort `placeID:5158032:…`), 30 Tage gecacht.
+- Meldungen je Gemeinde 5 min gecacht (alle Nutzer teilen sich die Abfrage), Antwort `public, max-age=120`. Filter `stop` (Meldungen mit dieser Haltestelle) und `lines` (Liniennamen normalisiert verglichen), beides ODER-verknüpft; `area` ohne Filter liefert alle Meldungen der Gemeinde.
+- Normalisierung: Art (`blocking` aus stop/route/lineBlocking, `facility` aus infrastructure = Aufzug/Rolltreppe, sonst `info`), Dringlichkeit, Titel (aus „Straßenbahnlinie 709:“ + Untertitel), Text ohne HTML (Tags raus, Entities aufgelöst, max. 2.000 Zeichen; die App zeigt ihn nur als Text), Gültigkeit (Jahr 2500 = „bis auf Weiteres“ → `null`), Linien je Richtung zusammengefasst, Haltestellen auf die DHID der Haltestelle (ohne Steig).
+- Haltestellen außerhalb des VRR (`transitous:`) liefern eine leere Liste.
 
 **Quellenwahl für Abfahrten** (`worker/api.ts`):
 

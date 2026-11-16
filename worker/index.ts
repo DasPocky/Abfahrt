@@ -1,5 +1,6 @@
 import { API_PREFIX, BASE_PATH } from "../shared/base-path";
 import { getDepartures, nearbyStops, searchStops } from "./api";
+import { getAlerts } from "./alerts";
 import { cacheProbe } from "./cache-probe";
 import { getJourneys } from "./journeys";
 import { apiError, json, UpstreamError } from "./http";
@@ -31,6 +32,8 @@ async function handleApi(request: Request, ctx: ExecutionContext): Promise<Respo
         return await getStopsInArea(request, ctx, url.searchParams);
       case "stops/nearby":
         return await nearbyStops(request, ctx, url.searchParams);
+      case "alerts":
+        return await getAlerts(request, ctx, url.searchParams);
       case "journeys":
         return await getJourneys(request, ctx, url.searchParams);
       case "departures":

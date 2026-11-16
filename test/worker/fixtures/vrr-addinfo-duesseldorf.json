@@ -1,0 +1,2586 @@
+{
+  "version": "10.4.18.18",
+  "timestamp": "2026-11-16T07:44:09Z",
+  "infos": {
+    "current": [
+      {
+        "type": "lineInfo",
+        "id": "313278",
+        "version": 2,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-10-20T08:08:00Z",
+          "availability": { "from": "2026-10-04T22:43:59Z", "to": "2026-11-21T03:00:59Z" },
+          "validity": [{ "from": "2026-10-10T02:00:59Z", "to": "2026-11-21T03:00:59Z" }],
+          "expiration": "2026-11-21T03:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=313278",
+        "content": "<a href=\"https://www.rheinbahn.de/Barrierefreier_Ausbau_Flingern_S\">Hier alle Infos</a>",
+        "subtitle": "Barrierefreier Ausbau der Haltestelle \"Flingern S, Steig 3\"",
+        "title": "Straßenbahnlinie 709:",
+        "properties": {
+          "wmlText": "Hier alle Infos",
+          "smsText": "Hier alle Infos",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "10/10/2026 04:00 - 21/11/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72834: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus 834",
+              "number": "834",
+              "description": "D-Theodor-Heuss-Brücke - Nordfriedhof - Mörsenbroich - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72834: :R:",
+              "destination": { "name": "D-Theodor-Heuss-Brücke", "type": "stop" },
+              "name": "Niederflurbus 834",
+              "number": "834",
+              "description": "Düsseldorf Hbf - Mörsenbroich - Nordfriedhof - D-Theodor-Heuss-Brücke",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71708: :H:",
+              "destination": { "name": "D-Polizeipräsidium", "type": "stop" },
+              "name": "Niederflurstrab 708",
+              "number": "708",
+              "description": "D-Mörsenbroich, Heinrichstraße - Brehmplatz - Düsseldorf Hbf - D-Polizeipräsidium",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71708: :R:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurstrab 708",
+              "number": "708",
+              "description": "D-Polizeipräsidium - Düsseldorf Hbf - Brehmplatz - D-Mörsenbroich, Heinrichstraße",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71709: :H:",
+              "destination": { "name": "Neuss Theodor-Heuss-Platz", "type": "stop" },
+              "name": "Niederflurstrab 709",
+              "number": "709",
+              "description": "D-Gerresheim, Krankenhaus - Grafenberg - Düsseldorf Hbf - NE-Stadthalle - Neuss Hbf - NE-Theodor-Heuss-Platz",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71709: :R:",
+              "destination": { "name": "D-G'heim, Krankenhaus", "type": "stop" },
+              "name": "Niederflurstrab 709",
+              "number": "709",
+              "description": "NE-Theodor-Heuss-Platz - Neuss Hbf - NE-Stadthalle - Düsseldorf Hbf - Grafenberg - D-Gerresheim, Krankenhaus",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "infrastructure",
+        "id": "VRR-de:05111:18227:31",
+        "version": 15,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-16T01:08:00Z",
+          "availability": { "from": "2026-11-16T01:08:00Z", "to": "2026-11-17T01:00:00Z" },
+          "validity": [{ "from": "2026-11-16T01:08:00Z", "to": "2026-11-17T01:00:00Z" }],
+          "expiration": "2026-11-17T01:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://ems.vrr.de/info-link/c014ad8f-7b8a-5189-b9f9-3a20627a8db3",
+        "content": "An der Haltestelle D-Pempelforter Straße U ist der Aufzug von Eingang Am Wehrhahn nach Steig 2  Richtung Heinrich-Heine-Allee bis auf Weiteres außer Betrieb.",
+        "subtitle": "Haltestelle D-Pempelforter Straße U: Aufzug außer Betrieb.",
+        "title": "Haltestelle D-Pempelforter Straße U: Aufzug außer Betrieb.",
+        "properties": {
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "c014ad8f-7b8a-5189-b9f9-3a20627a8db3",
+          "eventRef": "88cc74714c26441c4a4ccd43375217ca",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "16/11/2026 02:08 - 17/11/2026 02:00",
+          "providerCode": "VRR"
+        },
+        "affected": {
+          "stops": [
+            {
+              "id": "de:05111:18227",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Pempelforter Straße U",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018227" }
+            }
+          ],
+          "Infrastructures": [
+            {
+              "name": "de:05111:18227:L2090170",
+              "status": "INACTIVE",
+              "type": "ELEVATOR",
+              "infrastructureIds": [{ "provider": "osm", "id": "4033350639" }]
+            }
+          ]
+        }
+      },
+      {
+        "type": "infrastructure",
+        "id": "VRR-de:05111:18234:57",
+        "version": 40,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-16T01:08:00Z",
+          "availability": { "from": "2026-11-16T01:08:00Z", "to": "2026-11-17T01:00:00Z" },
+          "validity": [{ "from": "2026-11-16T01:08:00Z", "to": "2026-11-17T01:00:00Z" }],
+          "expiration": "2026-11-17T01:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://ems.vrr.de/info-link/37a019cd-8f51-5d11-88b6-81c2ba90b5b9",
+        "content": "An der Haltestelle D-Steinstr./Königsallee ist die Rolltreppe Nr. 1 von Zwischengeschoss Eingang Berliner Allee nach Steig 2+4 bis auf Weiteres außer Betrieb.",
+        "subtitle": "Haltestelle D-Steinstr./Königsallee: Rolltreppe außer Betrieb.",
+        "title": "Haltestelle D-Steinstr./Königsallee: Rolltreppe außer Betrieb.",
+        "properties": {
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "37a019cd-8f51-5d11-88b6-81c2ba90b5b9",
+          "eventRef": "3d748174f051872f44029b582f464fbc",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "16/11/2026 02:08 - 17/11/2026 02:00",
+          "providerCode": "VRR"
+        },
+        "affected": {
+          "stops": [
+            {
+              "id": "de:05111:18234",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Steinstr./Königsallee",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018234" }
+            }
+          ],
+          "Infrastructures": [
+            {
+              "name": "de:05111:18234:E2090137",
+              "status": "INACTIVE",
+              "type": "ESCALATOR",
+              "infrastructureIds": [{ "provider": "osm", "id": "314247440" }]
+            }
+          ]
+        }
+      },
+      {
+        "type": "stopInfo",
+        "id": "ems-42696",
+        "version": 50,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2025-11-17T08:16:00Z",
+          "availability": { "from": "2025-11-17T07:59:00Z", "to": "2500-12-31T00:10:00Z" },
+          "validity": [{ "from": "2025-11-17T08:16:00Z", "to": "2500-12-31T00:00:00Z" }],
+          "expiration": "2500-12-31T00:00:59Z"
+        },
+        "urlText": "Linie 701, 705, E701, U78, U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+        "url": "http://ems.vrr.de/info-link/b055a731-9063-54e9-bb82-ad2a3aef6d8f",
+        "content": "<div>Die Landeshauptstadt und die Rheinbahn erneuern im U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab Sommer den Brandschutz der Haltestelle. Dazu wurden in den letzten Wochen vorbereitende Arbeiten durchgef&uuml;hrt. Dabei wurde nun ein Austritt von Schadstoffen festgestellt, sodass der U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab 21. Mai, bis auf Weiteres, nicht angefahren werden kann.<br />Die Bahnen k&ouml;nnen den U-Bahnhof weiterhin passieren, ohne dass dabei eine Gefahr f&uuml;r die Gesundheit besteht. Jedoch durchfahren die Bahnen aus Sicherheitsgr&uuml;nden die Haltestelle mit einer reduzierten Geschwindigkeit. Der Ein- und Ausstieg an der Haltestelle ist bis auf Weiteres nicht m&ouml;glich.<br />Der oberirdische Fahrgastbetrieb der Stra&szlig;enbahnlinien 701 und 705 ist von der Einschr&auml;nkung der U-Bahnlinien U78 und U79 nicht betroffen.</div>",
+        "subtitle": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+        "title": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "b055a731-9063-54e9-bb82-ad2a3aef6d8f",
+          "eventRef": "003dd3a5ede02c4cd3e967cbfceda482",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "17/11/2025 09:16 - 31/12/2500 01:00",
+          "providerCode": "DVG"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "dvg:20079: :H:",
+              "destination": { "name": "D-Uni Ost/Botanischer Garten", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "DU-Meiderich Bf - Duisburg Hbf - D-Kaiserswerth - Düsseldorf Hbf - Oberbilk - D-Universität Ost",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "20", "name": "DVG AG" }
+            },
+            {
+              "id": "dvg:20079: :R:",
+              "destination": { "name": "Duisburg Meiderich Bf", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "D-Universität Ost - Oberbilk - Düsseldorf Hbf - D-Kaiserswerth - Duisburg Hbf - DU-Meiderich Bf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "20", "name": "DVG AG" }
+            }
+          ],
+          "stops": [
+            {
+              "id": "de:05111:18029",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Nordstraße U",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018029" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "infrastructure",
+        "id": "VRR-de:05111:18036:65",
+        "version": 205,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-16T01:08:00Z",
+          "availability": { "from": "2026-11-16T01:08:00Z", "to": "2026-11-17T01:00:00Z" },
+          "validity": [{ "from": "2026-11-16T01:08:00Z", "to": "2026-11-17T01:00:00Z" }],
+          "expiration": "2026-11-17T01:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://ems.vrr.de/info-link/b2864118-fc49-5cbf-b1c1-bdc0aa66cf4b",
+        "content": "An der Haltestelle D-Heinrich-Heine-Allee U ist die Rolltreppe von Zwischengeschoss nach Steig 5+6 bis auf Weiteres außer Betrieb.",
+        "subtitle": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+        "title": "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb.",
+        "properties": {
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "b2864118-fc49-5cbf-b1c1-bdc0aa66cf4b",
+          "eventRef": "2be040f12140198c8644f3160a2edd6d",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "16/11/2026 02:08 - 17/11/2026 02:00",
+          "providerCode": "VRR"
+        },
+        "affected": {
+          "stops": [
+            {
+              "id": "de:05111:18036",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Heinrich-Heine-Allee U",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018036" }
+            }
+          ],
+          "Infrastructures": [
+            {
+              "name": "de:05111:18036:E2090241",
+              "status": "INACTIVE",
+              "type": "ESCALATOR",
+              "infrastructureIds": [{ "provider": "osm", "id": "403019343" }]
+            }
+          ]
+        }
+      },
+      {
+        "type": "stopBlocking",
+        "id": "ems-42697",
+        "version": 59,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2025-11-17T08:17:00Z",
+          "availability": { "from": "2025-11-17T07:58:00Z", "to": "2500-12-31T00:10:00Z" },
+          "validity": [{ "from": "2025-11-17T08:17:00Z", "to": "2500-12-31T00:00:00Z" }],
+          "expiration": "2500-12-31T00:00:59Z"
+        },
+        "urlText": "Linie U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung - Linie U79 - Haltestellenausfall - Grund: Haltestellensperrung",
+        "url": "http://ems.vrr.de/info-link/42b46e42-119c-5e47-b59e-16db8090d12b",
+        "content": "<b>Linie U79: </b>An der <b>(H) Düsseldorf, Nordstraße U</b> kommt es zu <b>einem Haltestellenausfall</b>.<br><br> Dauer: Bis auf Weiteres<br><br>\n\n\n\n\nFür die Linie <b> U79 </b> gilt:<br>Die Haltestelle <b>(H) Düsseldorf, Nordstraße U</b> wird nicht angefahren. Die Landeshauptstadt und die Rheinbahn erneuern im U-Bahnhof „Nordstraße“ ab Sommer den Brandschutz der Haltestelle. Dazu wurden in den letzten Wochen vorbereitende Arbeiten durchgeführt. Dabei wurde nun ein Austritt von Schadstoffen festgestellt, sodass der U-Bahnhof „Nordstraße“ ab 21. Mai, bis auf Weiteres, nicht angefahren werden kann.\nDie Bahnen können den U-Bahnhof weiterhin passieren, ohne dass dabei eine Gefahr für die Gesundheit besteht. Jedoch durchfahren die Bahnen aus Sicherheitsgründen die Haltestelle mit einer reduzierten Geschwindigkeit. Der Ein- und Ausstieg an der Haltestelle ist bis auf Weiteres nicht möglich.\nDer oberirdische Fahrgastbetrieb der Straßenbahnlinien 701 und 705 ist von der Einschränkung der U-Bahnlinien U78 und U79 nicht betroffen.",
+        "subtitle": "Haltestellenausfall durch Haltestellensperrung",
+        "title": "Haltestellenausfall durch Haltestellensperrung",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung - Linie U79 - Haltestellenausfall - Grund: Haltestellensperrung",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "R": "0",
+          "L": "999",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "42b46e42-119c-5e47-b59e-16db8090d12b",
+          "eventRef": "cf8091301158e3e58a6d0b791e2e52c7",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "17/11/2025 09:17 - 31/12/2500 01:00",
+          "providerCode": "DVG"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "dvg:20079: :R:",
+              "destination": { "name": "Duisburg Meiderich Bf", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "D-Universität Ost - Oberbilk - Düsseldorf Hbf - D-Kaiserswerth - Duisburg Hbf - DU-Meiderich Bf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "20", "name": "DVG AG" }
+            },
+            {
+              "id": "dvg:20079: :H:",
+              "destination": { "name": "D-Uni Ost/Botanischer Garten", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "DU-Meiderich Bf - Duisburg Hbf - D-Kaiserswerth - Düsseldorf Hbf - Oberbilk - D-Universität Ost",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "20", "name": "DVG AG" }
+            }
+          ],
+          "stops": [
+            {
+              "id": "de:05111:18029",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Nordstraße U",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018029" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "308154",
+        "version": 2,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-11T11:45:00Z",
+          "availability": { "from": "2026-05-26T05:00:59Z", "to": "2026-12-31T03:00:59Z" },
+          "validity": [{ "from": "2026-05-26T05:00:59Z", "to": "2026-12-31T03:00:59Z" }],
+          "expiration": "2026-12-31T03:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=308154",
+        "content": "<a href=\"https://www.rheinbahn.de/Jacobistrasse\">Hier alle Infos</a>",
+        "subtitle": "Haltestelle \"Jacobistraße, Steig 2\" wird verlegt",
+        "title": "Linien 707, 752, 754, SB55 und NE1:",
+        "properties": {
+          "wmlText": "Wegen Bauarbeiten wird die Haltestelle \"Jacobistraße, Steig 2\" in Richtung Schloss Jägerhof der Linien 707, 752, 754, SB55 und NE1 verlegt - ab Dienstag, 26. Mai, 7 Uhr, voraussichtlich bis Ende Dezember.",
+          "smsText": "Wegen Bauarbeiten wird die Haltestelle \"Jacobistraße, Steig 2\" in Richtung Schloss Jägerhof der Linien 707, 752, 754, SB55 und NE1 verlegt - ab Dienstag, 26. Mai, 7 Uhr, voraussichtlich bis Ende Dezember.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "26/05/2026 07:00 - 31/12/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72752: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus 752",
+              "number": "752",
+              "description": "Mülheim Hbf - MH-Selbeck - Ratingen-Lintorf - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72752: :R:",
+              "destination": { "name": "Mülheim Hauptbahnhof", "type": "stop" },
+              "name": "Niederflurbus 752",
+              "number": "752",
+              "description": "Düsseldorf Hbf - Ratingen-Lintorf - MH-Selbeck - Mülheim Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72754: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus 754",
+              "number": "754",
+              "description": "Ratingen-Lintorf, Siemensstraße - Ratingen West - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72754: :R:",
+              "destination": { "name": "Ratingen Siemensstraße", "type": "stop" },
+              "name": "Niederflurbus 754",
+              "number": "754",
+              "description": "Düsseldorf Hbf - Ratingen West - Ratingen-Lintorf, Siemensstraße",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE1: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE1",
+              "number": "NE1",
+              "description": "D-Neu-Lichtenbroich - D-Unterrath  - Spichernplatz - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE1: :R:",
+              "destination": { "name": "D-Neu-Lichtenbroich", "type": "stop" },
+              "name": "Niederflurbus NE1",
+              "number": "NE1",
+              "description": "Düsseldorf Hbf - Spichernplatz - D-Unterrath  - D-Neu-Lichtenbroich",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S55: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "SB SB55",
+              "number": "SB55",
+              "description": "Ratingen-Lintorf, Siemensstraße - Düsseldorf Hbf",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S55: :R:",
+              "destination": { "name": "Ratingen Siemensstraße", "type": "stop" },
+              "name": "SB SB55",
+              "number": "SB55",
+              "description": "Düsseldorf Hbf - Ratingen-Lintorf, Siemensstraße",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71707: :H:",
+              "destination": { "name": "D-Medienhafen, Kesselstraße", "type": "stop" },
+              "name": "Niederflurstrab 707",
+              "number": "707",
+              "description": "D-Unterrath  - Jacobistraße - Düsseldorf Hbf - Bilker Kirche - D-Medienhafen, Kesselstraße",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71707: :R:",
+              "destination": { "name": "D-Unterrath S", "type": "stop" },
+              "name": "Niederflurstrab 707",
+              "number": "707",
+              "description": "D-Medienhafen, Kesselstraße - Bilker Kirche - Düsseldorf Hbf - Jacobistraße - D-Unterrath",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "312858",
+        "version": 1,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-09-23T09:35:00Z",
+          "availability": { "from": "2026-09-22T22:28:59Z", "to": "2028-09-21T02:00:59Z" },
+          "validity": [{ "from": "2026-09-23T08:28:59Z", "to": "2028-09-21T02:00:59Z" }],
+          "expiration": "2028-09-21T02:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=312858",
+        "content": "<a href=\"https://www.rheinbahn.de/Breitestrasse_Benrather_Strasse\">Hier alle Infos</a>",
+        "subtitle": "Änderungen für neun Buslinien",
+        "title": "Bauarbeiten im Bereich Breitestraße und Benrather Straße:",
+        "properties": {
+          "wmlText": "Wegen Bauarbeiten im Bereich Breitestraße und Benrather Straße werden die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE4 und NE7 umgeleitet - ab Montag, 21. September 2026, 4 Uhr.",
+          "smsText": "Wegen Bauarbeiten im Bereich Breitestraße und Benrather Straße werden die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE4 und NE7 umgeleitet - ab Montag, 21. September 2026, 4 Uhr.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "23/09/2026 10:28 - 21/09/2028 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72780: :H:",
+              "destination": { "name": "Erkrath Hochdahler Markt", "type": "stop" },
+              "name": "Niederflurbus 780",
+              "number": "780",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72780: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 780",
+              "number": "780",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72782: :H:",
+              "destination": { "name": "Solingen, Hauptbahnhof", "type": "stop" },
+              "name": "Niederflurbus 782",
+              "number": "782",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72782: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 782",
+              "number": "782",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72785: :H:",
+              "destination": { "name": "Langenfeld", "type": "stop" },
+              "name": "Niederflurbus 785",
+              "number": "785",
+              "description": "D-Heinrich-Heine-Allee  - D-Reisholz  - Hilden Mitte - Hilden Süd  - Langenfeld-Richrath - Langenfeld",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72785: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 785",
+              "number": "785",
+              "description": "Langenfeld  - Langenfeld-Richrath - Hilden Süd  - Hilden Mitte - D-Reisholz  - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75805: :H:",
+              "destination": { "name": "D-Lierenfelder Straße", "type": "stop" },
+              "name": "Niederflurbus 805",
+              "number": "805",
+              "description": "D-Handweiser - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Lierenfelder Str.",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75805: :R:",
+              "destination": { "name": "D-Handweiser", "type": "stop" },
+              "name": "Niederflurbus 805",
+              "number": "805",
+              "description": "D-Lierenfelder Str. - Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Handweiser",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75817: :H:",
+              "destination": { "name": "D-Benrath Btf", "type": "stop" },
+              "name": "Niederflurbus 817",
+              "number": "817",
+              "description": "D-Heinrich-Heine-Allee  - Düsseldorf Hbf - Holthausen - D-Benrath  - D-Benrath Btf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75817: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 817",
+              "number": "817",
+              "description": "D-Benrath Btf - D-Benrath  - Holthausen - Düsseldorf Hbf - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE3: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE3",
+              "number": "NE3",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE3: :R:",
+              "destination": { "name": "D-Oberrath", "type": "stop" },
+              "name": "Niederflurbus NE3",
+              "number": "NE3",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE4: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE4",
+              "number": "NE4",
+              "description": "Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Wehrhahn  - Grafenberg - Gerresheim - Dieselstraße - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE4::R:",
+              "destination": { "name": "", "type": "stop" },
+              "name": "",
+              "iconId": 0,
+              "product": { "class": 0, "iconId": 0 },
+              "operator": {}
+            },
+            {
+              "id": "rbg:75NE7: :H:",
+              "destination": { "name": "D-Josef-Kürten-Platz", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE7: :R:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S50: :H:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "SB SB50",
+              "number": "SB50",
+              "description": "D-Rheinterrasse - Heinrich-Heine-Allee  - D-Uni-Kliniken - Haan, Markt - Haan, Nachbarsberg",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S50: :R:",
+              "destination": { "name": "D-Rheinterrasse", "type": "stop" },
+              "name": "SB SB50",
+              "number": "SB50",
+              "description": "Haan, Nachbarsberg - Haan, Markt - D-Uni-Kliniken - Heinrich-Heine-Allee  - D-Rheinterrasse",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-42695",
+        "version": 245,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2025-11-17T08:10:00Z",
+          "availability": { "from": "2025-11-17T08:00:00Z", "to": "2500-12-31T00:10:00Z" },
+          "validity": [{ "from": "2025-11-17T08:00:00Z", "to": "2500-12-31T00:00:00Z" }],
+          "expiration": "2500-12-31T00:00:59Z"
+        },
+        "urlText": "Linie 701, 705, E701, U78, U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+        "url": "http://ems.vrr.de/info-link/b42de25d-eb04-5cf5-9589-f4f2d3d21956",
+        "content": "<div>Die Landeshauptstadt und die Rheinbahn erneuern im U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab Sommer den Brandschutz der Haltestelle. Dazu wurden in den letzten Wochen vorbereitende Arbeiten durchgef&uuml;hrt. Dabei wurde nun ein Austritt von Schadstoffen festgestellt, sodass der U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab 21. Mai, bis auf Weiteres, nicht angefahren werden kann.<br />Die Bahnen k&ouml;nnen den U-Bahnhof weiterhin passieren, ohne dass dabei eine Gefahr f&uuml;r die Gesundheit besteht. Jedoch durchfahren die Bahnen aus Sicherheitsgr&uuml;nden die Haltestelle mit einer reduzierten Geschwindigkeit. Der Ein- und Ausstieg an der Haltestelle ist bis auf Weiteres nicht m&ouml;glich.<br />Der oberirdische Fahrgastbetrieb der Stra&szlig;enbahnlinien 701 und 705 ist von der Einschr&auml;nkung der U-Bahnlinien U78 und U79 nicht betroffen.</div>",
+        "subtitle": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+        "title": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "b42de25d-eb04-5cf5-9589-f4f2d3d21956",
+          "eventRef": "67a5a319a42666b4f26e84dfb18a200d",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "17/11/2025 09:00 - 31/12/2500 01:00",
+          "providerCode": "DVG"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "dvg:20079: :H:",
+              "destination": { "name": "D-Uni Ost/Botanischer Garten", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "DU-Meiderich Bf - Duisburg Hbf - D-Kaiserswerth - Düsseldorf Hbf - Oberbilk - D-Universität Ost",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "20", "name": "DVG AG" }
+            },
+            {
+              "id": "dvg:20079: :R:",
+              "destination": { "name": "Duisburg Meiderich Bf", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "D-Universität Ost - Oberbilk - Düsseldorf Hbf - D-Kaiserswerth - Duisburg Hbf - DU-Meiderich Bf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "20", "name": "DVG AG" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "308715",
+        "version": 2,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-09-29T08:49:00Z",
+          "availability": { "from": "2026-06-08T02:00:59Z", "to": "2027-06-08T02:00:59Z" },
+          "validity": [{ "from": "2026-06-08T02:00:59Z", "to": "2027-06-08T02:00:59Z" }],
+          "expiration": "2027-06-08T02:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=308715",
+        "content": "<a href=\"https://www.rheinbahn.de/DB_Bruecke_Knipprather_Strasse_Langenfeld\">Hier alle Infos</a>",
+        "subtitle": "Änderungen für die Buslinien 785, 790 und 791",
+        "title": "Neubau der DB-Brücke Knipprather Straße in Langenfeld:",
+        "properties": {
+          "wmlText": "Wegen Bauarbeiten in Langenfeld für die neue Brücke über die Knipprather Straße, von Montag, 8. Juni, 4 Uhr, für etwa ein Jahr, ergeben sich Änderungen für die Buslinien 785, 790 und 791.",
+          "smsText": "Wegen Bauarbeiten in Langenfeld für die neue Brücke über die Knipprather Straße, von Montag, 8. Juni, 4 Uhr, für etwa ein Jahr, ergeben sich Änderungen für die Buslinien 785, 790 und 791.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "08/06/2026 04:00 - 08/06/2027 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72785: :H:",
+              "destination": { "name": "Langenfeld", "type": "stop" },
+              "name": "Niederflurbus 785",
+              "number": "785",
+              "description": "D-Heinrich-Heine-Allee  - D-Reisholz  - Hilden Mitte - Hilden Süd  - Langenfeld-Richrath - Langenfeld",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72785: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 785",
+              "number": "785",
+              "description": "Langenfeld  - Langenfeld-Richrath - Hilden Süd  - Hilden Mitte - D-Reisholz  - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72790: :H:",
+              "destination": { "name": "Monheim (Rhein), Mona Mare", "type": "stop" },
+              "name": "Niederflurbus 790",
+              "number": "790",
+              "description": "Langenfeld-Richrath, Götsche - Richrath, Krankenhaus - Langenfeld  - Monheim Mitte - Monheim, Mona Mare",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72790: :R:",
+              "destination": { "name": "Langenfeld Götsche", "type": "stop" },
+              "name": "Niederflurbus 790",
+              "number": "790",
+              "description": "Monheim, Mona Mare - Monheim Mitte - Langenfeld  - Richrath, Krankenhaus - Langenfeld-Richrath, Götsche",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72791: :H:",
+              "destination": { "name": "Monheim, Monheim Mitte", "type": "stop" },
+              "name": "Niederflurbus 791",
+              "number": "791",
+              "description": "Solingen Hbf  - L'feld, Schneiderstraße - Langenfeld  - Monheim Mitte",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72791: :R:",
+              "destination": { "name": "Langenfeld (Rheinl) S", "type": "stop" },
+              "name": "Niederflurbus 791",
+              "number": "791",
+              "description": "Monheim Mitte - Langenfeld  - L'feld, Schneiderstraße - Solingen Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-56936",
+        "version": 147475,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-11T13:17:00Z",
+          "availability": { "from": "2026-11-11T12:43:00Z", "to": "2026-12-01T03:10:00Z" },
+          "validity": [{ "from": "2026-11-26T03:00:00Z", "to": "2026-12-01T03:00:00Z" }],
+          "expiration": "2026-12-01T03:00:59Z"
+        },
+        "urlText": "Linien U70, U76 - Ersatzverkehre - (H) Krefeld, Rheinstraße - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/1ff527f1-2d44-50c8-a7d9-a34e953ff479",
+        "content": "<div>Wegen Bauarbeiten am neuen Hochbahnsteig &bdquo;Meerbusch, Hoterheide&ldquo; und Fahrleitungsarbeiten ist der Abschnitt zwischen \"D-L&ouml;rick\" und \"Krefeld, Rheinstra&szlig;e\" von 26. November, 4 Uhr bis 1. Dezember, 4 Uhr f&uuml;r die Linien U70 und U76 gesperrt. Die Bahnen enden in Fahrtrichtung Krefeld in \"D-L&ouml;rick\". Zwischen &bdquo;L&ouml;ricker Stra&szlig;e&ldquo; und \"Krefeld, Rheinstra&szlig;e\" fahren Ersatzbusse.</div>\n<div>&nbsp;</div>\n<div><img src=\"https://ems.vrr.de/s/rttBV.jpg\" alt=\"Vollansicht Sperrgrafik\" width=\"600\" height=\"1000\" /></div>",
+        "subtitle": "U70, U76: Busse statt Bahnen zwischen Lörick und Krefeld",
+        "title": "U70, U76: Busse statt Bahnen zwischen Lörick und Krefeld",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linien U70, U76 - Ersatzverkehre - (H) Krefeld, Rheinstraße - Grund: Baumaßnahme",
+          "attachments": [
+            {
+              "ID": 0,
+              "type": "image/jpeg",
+              "path": "https://ems.vrr.de/s/rttBV.jpg",
+              "virtPath": "https://ems.vrr.de/s/rttBV.jpg",
+              "linkText": "Vollansicht Sperrgrafik.jpg",
+              "linkTarget": "_blank",
+              "size": 186770
+            }
+          ],
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "1ff527f1-2d44-50c8-a7d9-a34e953ff479",
+          "eventRef": "94683de4639bca0a9e0c89b7952f50b6",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "26/11/2026 04:00 - 01/12/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70070: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "U-Bahn U70",
+              "number": "U70",
+              "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70076: :H:",
+              "destination": { "name": "D-Löricker Straße", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Oberbilk   - Holthausen",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70070: :R:",
+              "destination": { "name": "Krefeld Rheinstraße", "type": "stop" },
+              "name": "U-Bahn U70",
+              "number": "U70",
+              "description": "D-Handelszentrum/Moskauer Str.  - Düsseldorf Hbf - H.-Heine-Allee  - D-Lörick - Meerbusch - Krefeld, Rheinstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70076: :R:",
+              "destination": { "name": "Krefeld Rheinstraße", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "D-Holthausen - D-Oberbilk   - Düsseldorf Hbf - H.-Heine-Allee  - D-Lörick - Meerbusch - Krefeld, Rheinstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "266787",
+        "version": 9,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2025-10-27T08:50:00Z",
+          "availability": { "from": "2023-01-23T23:14:59Z", "to": "2026-12-31T03:00:59Z" },
+          "validity": [{ "from": "2023-01-29T03:00:59Z", "to": "2026-12-31T03:00:59Z" }],
+          "expiration": "2026-12-31T03:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=266787",
+        "content": "<DIV>Wegen Bauarbeiten wird die Kasernenstraße in Höhe des Heinrich-Heine-Platzes gesperrt - <STRONG>ab Sonntag, 29. Januar 2023, 4 Uhr</STRONG>. Davon betroffen sind die <STRONG>Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5 und NE7</STRONG>:</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Buslinien SB50, 780, 782 und 785<BR></STRONG>Stadtauswärts fahren die Busse ab der Haltestelle \"Heinrich-Heine-Allee, Steig 7\" vor dem KundenCenter eine Umleitung. Die Haltestelle \"Benrather Straße\" entfällt, bitte stattdessen die Haltestelle \"Heinrich-Heine-Allee, Steig 7\" nutzen. Die Haltestelle \"Steinstraße/Königsallee, Steig 11\" muss leider entfallen, bitte stattdessen den Steig 7 nutzen.</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Buslinien 805, 817, NE3 und NE5</STRONG><BR>Die Busse fahren stadtauswärts ab der Haltestelle \"Heinrich-Heine-Allee, Steig 7\" vor dem KundenCenter eine Umleitung. Die Haltestelle \"Benrather Straße\" entfällt, bitte stattdessen die Haltestelle \"Heinrich-Heine-Allee, Steig 7\" nutzen.&nbsp; Die Haltestelle \"Steinstraße/Königsallee, Steig 11\" muss leider entfallen, bitte stattdessen die Haltestelle \"Steinstraße/Berliner Allee\" nutzen.</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Buslinie NE7</STRONG><BR>Die Busse fahren stadtauswärts ab der Haltestelle \"Heinrich-Heine-Allee, Steig 7\" vor dem KundenCenter eine Umleitung. Die Haltestelle \"Benrather Straße\" entfällt, bitte stattdessen die Haltestelle \"Heinrich-Heine-Allee, Steig 7\" nutzen.</DIV>\n<DIV>&nbsp;</DIV>\n<DIV><STRONG>Information</STRONG><BR>Aushänge an den betroffenen Haltestellen und Durchsagen in den Bussen informieren die Kunden über die Änderungen. Die Rheinbahn bittet um Verständnis.</DIV>",
+        "subtitle": "Umleitungen für die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5 und NE7",
+        "title": "Sperrung der Kasernenstraße:",
+        "properties": {
+          "wmlText": "Wegen Bauarbeiten wird die Kasernenstraße in Höhe des Heinrich-Heine-Platzes gesperrt - ab Sonntag, 29. Januar, 4 Uhr, für etwa anderthalb Jahre. Davon betroffen sind die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5",
+          "smsText": "Wegen Bauarbeiten wird die Kasernenstraße in Höhe des Heinrich-Heine-Platzes gesperrt - ab Sonntag, 29. Januar, 4 Uhr, für etwa anderthalb Jahre. Davon betroffen sind die Buslinien SB50, 780, 782, 785, 805, 817, NE3, NE5",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "29/01/2023 04:00 - 31/12/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72780: :H:",
+              "destination": { "name": "Erkrath Hochdahler Markt", "type": "stop" },
+              "name": "Niederflurbus 780",
+              "number": "780",
+              "description": "D-Heinr.-Heine-Allee  - Erkrath-Unterfeldhaus - Hochd., Schulzentrum - Erkr., Hochdahler Markt",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72780: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 780",
+              "number": "780",
+              "description": "Erkr., Hochdahler Markt - Hochd., Schulzentr. - Erkrath-Unterfeldhaus - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72782: :H:",
+              "destination": { "name": "Solingen Hbf", "type": "stop" },
+              "name": "Niederflurbus 782",
+              "number": "782",
+              "description": "D-Heinrich-Heine-Allee  - Hilden Nord - Hilden Mitte - Hilden Süd  - Solingen Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72782: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 782",
+              "number": "782",
+              "description": "Solingen Hbf  - Hilden Süd  - Hilden Mitte - Hilden Nord - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72785: :H:",
+              "destination": { "name": "Langenfeld", "type": "stop" },
+              "name": "Niederflurbus 785",
+              "number": "785",
+              "description": "D-Heinrich-Heine-Allee  - D-Reisholz  - Hilden Mitte - Hilden Süd  - Langenfeld-Richrath - Langenfeld",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72785: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 785",
+              "number": "785",
+              "description": "Langenfeld  - Langenfeld-Richrath - Hilden Süd  - Hilden Mitte - D-Reisholz  - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75805: :H:",
+              "destination": { "name": "D-Lierenfelder Straße", "type": "stop" },
+              "name": "Niederflurbus 805",
+              "number": "805",
+              "description": "D-Handweiser - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Lierenfelder Str.",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75805: :R:",
+              "destination": { "name": "D-Handweiser", "type": "stop" },
+              "name": "Niederflurbus 805",
+              "number": "805",
+              "description": "D-Lierenfelder Str. - Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Handweiser",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75817: :H:",
+              "destination": { "name": "D-Benrath Btf", "type": "stop" },
+              "name": "Niederflurbus 817",
+              "number": "817",
+              "description": "D-Heinrich-Heine-Allee  - Düsseldorf Hbf - Holthausen - D-Benrath  - D-Benrath Btf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75817: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 817",
+              "number": "817",
+              "description": "D-Benrath Btf - D-Benrath  - Holthausen - Düsseldorf Hbf - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE3: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE3",
+              "number": "NE3",
+              "description": "D-Oberrath - Mörsenbroich - D-Wehrhahn  - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE3: :R:",
+              "destination": { "name": "D-Oberrath", "type": "stop" },
+              "name": "Niederflurbus NE3",
+              "number": "NE3",
+              "description": "Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Wehrhahn  - Mörsenbroich - D-Rath Mitte  - D-Oberrath",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE5: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE5",
+              "number": "NE5",
+              "description": "Düsseldorf Hbf - Dieselstraße - Gerresheim - Grafenberg - D-Wehrhahn  - Heinrich-Heine-Allee  - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE5::R:",
+              "destination": { "name": "", "type": "stop" },
+              "name": "",
+              "iconId": 0,
+              "product": { "class": 0, "iconId": 0 },
+              "operator": {}
+            },
+            {
+              "id": "rbg:75NE7: :H:",
+              "destination": { "name": "D-Josef-Kürten-Platz", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "description": "Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Bilk  - Uni-Kliniken - Holthausen - Reisholz - Benrath - D-Urdenbach, Josef-Kürten-Platz",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE7: :R:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "description": "D-Urdenbach, Josef-Kürten-Platz - Uni-Kliniken - D-Bilk  - Heinrich-Heine-Allee  - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S50: :H:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "SB SB50",
+              "number": "SB50",
+              "description": "D-Rheinterrasse - Heinrich-Heine-Allee  - D-Uni-Kliniken - Haan, Markt - Haan, Nachbarsberg",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S50: :R:",
+              "destination": { "name": "D-Rheinterrasse", "type": "stop" },
+              "name": "SB SB50",
+              "number": "SB50",
+              "description": "Haan, Nachbarsberg - Haan, Markt - D-Uni-Kliniken - Heinrich-Heine-Allee  - D-Rheinterrasse",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-56877",
+        "version": 89501,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-10T12:19:00Z",
+          "availability": { "from": "2026-11-11T07:00:00Z", "to": "2026-11-20T13:10:00Z" },
+          "validity": [
+            { "from": "2026-11-16T07:00:00Z", "to": "2026-11-16T13:00:00Z" },
+            { "from": "2026-11-17T07:00:00Z", "to": "2026-11-17T13:00:00Z" },
+            { "from": "2026-11-18T07:00:00Z", "to": "2026-11-18T13:00:00Z" },
+            { "from": "2026-11-19T07:00:00Z", "to": "2026-11-19T13:00:00Z" },
+            { "from": "2026-11-20T07:00:00Z", "to": "2026-11-20T13:00:00Z" }
+          ],
+          "expiration": "2026-11-20T13:00:59Z"
+        },
+        "urlText": "Linie U75 - Ersatzverkehre - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/13001953-08d2-5969-b2c8-37bab5b93ff6",
+        "content": "<div>Wegen Bauarbeiten wird der Streckenabschnitt zwischen &bdquo;Handweiser&ldquo; und &bdquo;Neuss Hbf&ldquo; an f&uuml;nf Tagen jeweils von 8 bis 14 Uhr gesperrt. Es fahren Ersatzbusse.</div>\n<div>&nbsp;</div>\n<div><img src=\"https://ems.vrr.de/s/1Uzse.jpg\" alt=\"\" width=\"600\" height=\"300\" /></div>",
+        "subtitle": "U75: Busse statt Bahnen zwischen „Handweiser“ und „Neuss Hbf“",
+        "title": "U75: Busse statt Bahnen zwischen „Handweiser“ und „Neuss Hbf“",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie U75 - Ersatzverkehre - (H) Neuss, Hauptbahnhof - Grund: Baumaßnahme",
+          "attachments": [
+            {
+              "ID": 1,
+              "type": "image/jpeg",
+              "path": "https://ems.vrr.de/s/1Uzse.jpg",
+              "virtPath": "https://ems.vrr.de/s/1Uzse.jpg",
+              "linkText": "Vollansicht Sperrgrafik",
+              "linkTarget": "_blank",
+              "size": 136980
+            }
+          ],
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "13001953-08d2-5969-b2c8-37bab5b93ff6",
+          "eventRef": "9bb4fcfc6f76adc248f60a77ad467697",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "16/11/2026 08:00 - 20/11/2026 14:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70075: :H:",
+              "destination": { "name": "D-Vennhauser Allee", "type": "stop" },
+              "name": "U-Bahn U75",
+              "number": "U75",
+              "description": "Neuss Hbf - D-Heerdt - Heinr.-Heine-Allee  - Düsseldorf Hbf - D-Eller Mitte  - D-Eller, Vennhauser Allee",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70075: :R:",
+              "destination": { "name": "Neuss Hauptbahnhof", "type": "stop" },
+              "name": "U-Bahn U75",
+              "number": "U75",
+              "description": "D-Eller, Vennhauser Allee - D-Eller Mitte  - Düsseldorf Hbf -  Heinr.-Heine-Allee  - D-Heerdt - Neuss Hbf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-56934",
+        "version": 147693,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-11T13:15:00Z",
+          "availability": { "from": "2026-11-10T23:00:00Z", "to": "2026-11-20T03:10:00Z" },
+          "validity": [{ "from": "2026-11-16T19:00:00Z", "to": "2026-11-20T03:00:00Z" }],
+          "expiration": "2026-11-20T03:00:59Z"
+        },
+        "urlText": "Linie U76 - Ersatzverkehre - (H) Krefeld, Rheinstraße - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/5ef21576-49a9-5ca1-bdfd-af2cd5b97a3a",
+        "content": "<div>Wegen Fahrleitungsarbeiten ist die Strecke der Linie U76 zwischen &bdquo;D-L&ouml;rick&ldquo; und &bdquo;Krefeld, Rheinstra&szlig;e&ldquo; in mehreren N&auml;chten (16. bis 20. November und 23. bis 25. November) zwischen 20 und 4 Uhr gesperrt. Die Bahnen enden in Fahrtrichtung Krefeld in \"D-L&ouml;rick\". Es fahren Ersatzbusse zwischen &bdquo;L&ouml;ricker Stra&szlig;e&ldquo; und &bdquo;Krefeld, Rheinstra&szlig;e&ldquo;.</div>\n<div>&nbsp;</div>\n<div><img src=\"https://ems.vrr.de/s/-9v2x.jpg\" alt=\"Vollansicht Sprerrgrafik\" width=\"600\" height=\"1000\" /></div>",
+        "subtitle": "U76: Busse statt Bahnen zwischen Lörick und Krefeld",
+        "title": "U76: Busse statt Bahnen zwischen Lörick und Krefeld",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie U76 - Ersatzverkehre - (H) Krefeld, Rheinstraße - Grund: Baumaßnahme",
+          "attachments": [
+            {
+              "ID": -9,
+              "type": "image/jpeg",
+              "path": "https://ems.vrr.de/s/-9v2x.jpg",
+              "virtPath": "https://ems.vrr.de/s/-9v2x.jpg",
+              "linkText": "Vollansicht Sperrgrafik.jpg",
+              "linkTarget": "_blank",
+              "size": 186770
+            }
+          ],
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "5ef21576-49a9-5ca1-bdfd-af2cd5b97a3a",
+          "eventRef": "d6e34453b78b7f0a7276142b05be81b5",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "16/11/2026 20:00 - 20/11/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70076: :H:",
+              "destination": { "name": "D-Löricker Straße", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Oberbilk   - Holthausen",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70076: :R:",
+              "destination": { "name": "Krefeld Rheinstraße", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "D-Holthausen - D-Oberbilk   - Düsseldorf Hbf - H.-Heine-Allee  - D-Lörick - Meerbusch - Krefeld, Rheinstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "314532",
+        "version": 2,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-16T07:17:34Z",
+          "availability": { "from": "2026-11-16T07:17:59Z", "to": "2026-11-16T07:22:59Z" },
+          "validity": [{ "from": "2026-11-16T07:17:59Z", "to": "2026-11-16T07:22:59Z" }],
+          "expiration": "2026-11-16T07:22:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314532",
+        "content": "Die Störung im Bereich Handelszentrum/Moskauer Straße wurde behoben. Auf den Linien U75 und U77 kann es noch vereinzelt zu Verzögerungen kommen.",
+        "subtitle": "Linien U75 und U77: Rettungswageneinsatz im Bereich Handelszentrum/Moskauer Straße.",
+        "title": "Linien U75 und U77:",
+        "properties": {
+          "wmlText": "Die Störung im Bereich Handelszentrum/Moskauer Straße wurde behoben. Auf den Linien U75 und U77 kann es noch vereinzelt zu Verzögerungen kommen.",
+          "smsText": "Die Störung im Bereich Handelszentrum/Moskauer Straße wurde behoben. Auf den Linien U75 und U77 kann es noch vereinzelt zu Verzögerungen kommen.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "16/11/2026 08:17 - 16/11/2026 08:22",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70075: :H:",
+              "destination": { "name": "D-Vennhauser Allee", "type": "stop" },
+              "name": "U-Bahn U75",
+              "number": "U75",
+              "description": "Neuss Hbf - D-Heerdt - Heinr.-Heine-Allee  - Düsseldorf Hbf - D-Eller Mitte  - D-Eller, Vennhauser Allee",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70075: :R:",
+              "destination": { "name": "Neuss Hauptbahnhof", "type": "stop" },
+              "name": "U-Bahn U75",
+              "number": "U75",
+              "description": "D-Eller, Vennhauser Allee - D-Eller Mitte  - Düsseldorf Hbf -  Heinr.-Heine-Allee  - D-Heerdt - Neuss Hbf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70077: :H:",
+              "destination": { "name": "D-Lierenfeld Btf", "type": "stop" },
+              "name": "U-Bahn U77",
+              "number": "U77",
+              "description": "D-Am Seestern - Oberkassel - Heinr.-Heine-Allee  - Düsseldorf Hbf - D-Lierenfeld Btf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70077: :R:",
+              "destination": { "name": "D-Am Seestern", "type": "stop" },
+              "name": "U-Bahn U77",
+              "number": "U77",
+              "description": "D-Lierenfeld Btf - Düsseldorf Hbf - Heinr.-Heine-Allee  - Oberkassel - D-Am Seestern",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "314063",
+        "version": 1,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-10-28T16:23:00Z",
+          "availability": { "from": "2026-10-27T23:39:59Z", "to": "2026-12-18T03:30:59Z" },
+          "validity": [{ "from": "2026-11-02T20:00:59Z", "to": "2026-12-18T03:00:59Z" }],
+          "expiration": "2026-12-18T03:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314063",
+        "content": "<a href=\"https://www.rheinbahn.de/Sperrung_Loerick_Krefeld\">Hier alle Infos</a>",
+        "subtitle": "Änderungen für die Stadtbahnlinien U70 und U76",
+        "title": "Rheinbahn investiert in Barrierefreiheit und eine zukunftsfähige Infrastruktur:",
+        "properties": {
+          "wmlText": "Wegen Fahrleitungsarbeiten zwischen den Haltestellen \"Lörick\" und \"Meerbusch, Haus Meer\" sind auf der Linie U76 im November und Dezember teilweise Busse statt Bahnen im Einsatz.",
+          "smsText": "Wegen Fahrleitungsarbeiten zwischen den Haltestellen \"Lörick\" und \"Meerbusch, Haus Meer\" sind auf der Linie U76 im November und Dezember teilweise Busse statt Bahnen im Einsatz.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "02/11/2026 21:00 - 18/12/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70070: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "U-Bahn U70",
+              "number": "U70",
+              "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70070: :R:",
+              "destination": { "name": "Krefeld Rheinstraße", "type": "stop" },
+              "name": "U-Bahn U70",
+              "number": "U70",
+              "description": "D-Handelszentrum/Moskauer Str.  - Düsseldorf Hbf - H.-Heine-Allee  - D-Lörick - Meerbusch - Krefeld, Rheinstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70076: :H:",
+              "destination": { "name": "D-Holthausen", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Oberbilk   - Holthausen",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70076: :R:",
+              "destination": { "name": "Krefeld Rheinstraße", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "D-Holthausen - D-Oberbilk   - Düsseldorf Hbf - H.-Heine-Allee  - D-Lörick - Meerbusch - Krefeld, Rheinstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "stopInfo",
+        "id": "ems-40053",
+        "version": 11326766,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2025-09-05T09:36:00Z",
+          "availability": { "from": "2025-09-05T08:59:00Z", "to": "2500-12-31T00:10:00Z" },
+          "validity": [{ "from": "2025-09-08T04:31:00Z", "to": "2500-12-31T00:00:00Z" }],
+          "expiration": "2500-12-31T00:00:59Z"
+        },
+        "urlText": "Linien 729, 759, 776, E, SB51 - Haltestellenverlegung - (H) Düsseldorf, Flughafen Bahnhof - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/c6247978-066e-593f-948e-fa12ae04963c",
+        "content": "<div>Die Linien SB51, 729, 759 und 776 k&ouml;nnen die Haltestelle &bdquo;Flughafen Bf&ldquo; derzeit nicht anfahren.</div>\n<div>Fahrg&auml;ste nutzen bitte die Ersatzhaltestelle, die etwa 150 Meter entfernt auf der Stra&szlig;e &bdquo;EUREF-Campus&ldquo; liegt hinter dem Kreisverkehr.</div>\n<div>&nbsp;</div>",
+        "subtitle": "Verlegung der Haltestelle „Flughafen Bf“ wegen Bauarbeiten bis auf Weiteres",
+        "title": "Verlegung der Haltestelle „Flughafen Bf“ wegen Bauarbeiten bis auf Weiteres",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linien 729, 759, 776, E, SB51 - Haltestellenverlegung - (H) Düsseldorf, Flughafen Bahnhof - Grund: Baumaßnahme",
+          "attachments": [
+            {
+              "ID": 0,
+              "type": "image/jpeg",
+              "path": "https://ems.vrr.de/s/fiCgx",
+              "virtPath": "https://ems.vrr.de/s/fiCgx",
+              "linkText": "H_FlughafebBf_E-Haltestelle_v2.jpg",
+              "linkTarget": "_blank",
+              "size": 115688
+            }
+          ],
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "c6247978-066e-593f-948e-fa12ae04963c",
+          "eventRef": "6d99faa9a4cb57c173557e33f209ce43",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "08/09/2025 06:31 - 31/12/2500 01:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:720E6: :H:",
+              "destination": { "name": "D-Flughafen Bf", "type": "stop" },
+              "name": "Niederflurbus E",
+              "number": "E",
+              "description": "E-Wagen Tiefenbroich",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:720E3: :R:",
+              "destination": { "name": "D-Universität Süd", "type": "stop" },
+              "name": "Niederflurbus E",
+              "number": "E",
+              "description": "E-Wagen Lierenfeld",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:720E3: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus E",
+              "number": "E",
+              "description": "E-Wagen Lierenfeld",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72729: :R:",
+              "destination": { "name": "D-Flughafen Bf", "type": "stop" },
+              "name": "Niederflurbus 729",
+              "number": "729",
+              "description": "D-Theodor-Heuss-Brücke - Nordfriedhof - D-Unterrath  - Lichtenbroich - D-Flughafen Bf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72729: :H:",
+              "destination": { "name": "D-Theodor-Heuss-Brücke", "type": "stop" },
+              "name": "Niederflurbus 729",
+              "number": "729",
+              "description": "D-Flughafen Bf - Lichtenbroich - D-Unterrath  - Nordfriedhof - D-Theodor-Heuss-Brücke",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72759: :H:",
+              "destination": { "name": "D-Flughafen Bf", "type": "stop" },
+              "name": "Niederflurbus 759",
+              "number": "759",
+              "description": "Ratingen Ost  - Ratingen Mitte - Ratingen West - D-Flughafen Bf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72759: :R:",
+              "destination": { "name": "Ratingen Ost S", "type": "stop" },
+              "name": "Niederflurbus 759",
+              "number": "759",
+              "description": "D-Flughafen Bf - Ratingen West - Ratingen Mitte - Ratingen Ost",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72776: :R:",
+              "destination": { "name": "D-Flughafen Bf", "type": "stop" },
+              "name": "Niederflurbus 776",
+              "number": "776",
+              "description": "D- Flughafen Bf - Lichtenbroich - Unterrath - D-Rath Mitte  - D-Mörsenbroich, Mercedesstraße",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72776: :H:",
+              "destination": { "name": "D-Mercedesstraße", "type": "stop" },
+              "name": "Niederflurbus 776",
+              "number": "776",
+              "description": "D- Flughafen Bf - Lichtenbroich - Unterrath - D-Rath Mitte  - D-Mörsenbroich, Mercedesstraße",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S51: :R:",
+              "destination": { "name": "D-Am Seestern", "type": "stop" },
+              "name": "SB SB51",
+              "number": "SB51",
+              "description": "Kaarster Bf - Mb.-Büderich, Landsknecht - D-Am Seestern",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S51: :H:",
+              "destination": { "name": "Kaarst Neers. Str./Kaarster Bf", "type": "stop" },
+              "name": "SB SB51",
+              "number": "SB51",
+              "description": "D-Am Seestern - Mb.-Büderich, Landsknecht - Kaarster Bf",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ],
+          "stops": [
+            {
+              "id": "de:05111:18488",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Flughafen Bahnhof",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018488" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-42633",
+        "version": 1851,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2025-11-14T09:48:00Z",
+          "availability": { "from": "2025-11-14T09:00:00Z", "to": "2500-12-31T00:10:00Z" },
+          "validity": [{ "from": "2025-11-14T09:00:00Z", "to": "2500-12-31T00:00:00Z" }],
+          "expiration": "2500-12-31T00:00:59Z"
+        },
+        "urlText": "Linien 701, 705, E701, U78, U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+        "url": "http://ems.vrr.de/info-link/fa11b505-89b5-5791-a6a9-57aece5fbe94",
+        "content": "<div>Die Landeshauptstadt und die Rheinbahn erneuern im U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab Sommer den Brandschutz der Haltestelle. Dazu wurden in den letzten Wochen vorbereitende Arbeiten durchgef&uuml;hrt. Dabei wurde nun ein Austritt von Schadstoffen festgestellt, sodass der U-Bahnhof &bdquo;Nordstra&szlig;e&ldquo; ab 21. Mai, bis auf Weiteres, nicht angefahren werden kann.<br />Die Bahnen k&ouml;nnen den U-Bahnhof weiterhin passieren, ohne dass dabei eine Gefahr f&uuml;r die Gesundheit besteht. Jedoch durchfahren die Bahnen aus Sicherheitsgr&uuml;nden die Haltestelle mit einer reduzierten Geschwindigkeit. Der Ein- und Ausstieg an der Haltestelle ist bis auf Weiteres nicht m&ouml;glich.<br />Der oberirdische Fahrgastbetrieb der Stra&szlig;enbahnlinien 701 und 705 ist von der Einschr&auml;nkung der U-Bahnlinien U78 und U79 nicht betroffen.</div>",
+        "subtitle": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+        "title": "U-Bahnen halten bis auf Weiteres nicht am U-Bahnhof \"Nordstraße\"",
+        "properties": {
+          "additionalContent": "<div>Die beschriebenen &Auml;nderungen sind in der elektronischen Fahrplanauskunft (EFA) ber&uuml;cksichtigt.</div>",
+          "smsText": "Linien 701, 705, E701, U78, U79 - Haltestellenausfall - (H) Düsseldorf, Nordstraße U - Grund: Haltestellensperrung",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "fa11b505-89b5-5791-a6a9-57aece5fbe94",
+          "eventRef": "74065c889cf00f6004cbfab23d888503",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "14/11/2025 10:00 - 31/12/2500 01:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70078: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "U-Bahn U78",
+              "number": "U78",
+              "description": "D-MERKUR SPIEL-ARENA / Messe Nord - Heinrich-Heine-Allee  - Düsseldorf Hbf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70079: :H:",
+              "destination": { "name": "D-Uni Ost/Botanischer Garten", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "DU-Meiderich Bf - Duisburg Hbf - D-Kaiserswerth - Düsseldorf Hbf - Oberbilk - D-Universität Ost",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71701:E:H:",
+              "destination": { "name": "D-Oberbilk S U", "type": "stop" },
+              "name": "Niederflurstrab E701",
+              "number": "E701",
+              "description": "E-Wagen PSD BANK DOME",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71701: :H:",
+              "destination": { "name": "D-Vennhauser Allee", "type": "stop" },
+              "name": "Niederflurstrab 701",
+              "number": "701",
+              "description": "D-DOME/Am Hülserhof - D-Rath  - Mörsenbroich - Schadowstraße  - D-Eller Mitte  - D-Eller, Vennhauser Allee",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71705: :H:",
+              "destination": { "name": "D-Am Steinberg", "type": "stop" },
+              "name": "Niederflurstrab 705",
+              "number": "705",
+              "description": "D-Unterrath  - Schadowstraße  - Berliner Allee - D-Am Steinberg",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70078: :R:",
+              "destination": { "name": "D-MERKUR SPIEL-ARENA/Messe Nord", "type": "stop" },
+              "name": "U-Bahn U78",
+              "number": "U78",
+              "description": "Düsseldorf Hbf - Heinrich-Heine-Allee  - D-MERKUR SPIEL-ARENA / Messe Nord",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70079: :R:",
+              "destination": { "name": "Duisburg Meiderich Bf", "type": "stop" },
+              "name": "U-Bahn U79",
+              "number": "U79",
+              "description": "D-Universität Ost - Oberbilk - Düsseldorf Hbf - D-Kaiserswerth - Duisburg Hbf - DU-Meiderich Bf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71701:E:R:",
+              "destination": { "name": "D-DOME/Am Hülserhof", "type": "stop" },
+              "name": "Niederflurstrab E701",
+              "number": "E701",
+              "description": "E-Wagen PSD BANK DOME",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71701: :R:",
+              "destination": { "name": "D-DOME/Am Hülserhof", "type": "stop" },
+              "name": "Niederflurstrab 701",
+              "number": "701",
+              "description": "D-Eller, Vennhauser Allee - D-Eller Mitte  - Schadowstraße  - Mörsenbroich - D-Rath  - D-DOME/Am Hülserhof",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:71705: :R:",
+              "destination": { "name": "D-Unterrath S", "type": "stop" },
+              "name": "Niederflurstrab 705",
+              "number": "705",
+              "description": "D-Merowingerstraße - Berliner Allee - Schadowstraße  - D-Unterrath",
+              "iconId": 18,
+              "product": { "class": 4, "iconId": 4 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-56299",
+        "version": 96909,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-10-28T10:43:00Z",
+          "availability": { "from": "2026-10-28T03:00:00Z", "to": "2026-11-21T03:10:00Z" },
+          "validity": [{ "from": "2026-10-31T03:00:00Z", "to": "2026-11-21T03:00:00Z" }],
+          "expiration": "2026-11-21T03:00:59Z"
+        },
+        "urlText": "Linie 834 - Veränderter Fahrtweg - (H) Düsseldorf, Düsseldorf Hbf - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/27d6f272-baa5-5d5b-b53a-92aac2e42878",
+        "content": "<div>\n<div>Die Buslinie 834 in Fahrtrichtung &bdquo;Theodor-Heuss-Br&uuml;cke&ldquo; wird bis 21. November, 4 Uhr zwischen den Haltestellen &bdquo;Elisabethkirche&ldquo; und &bdquo;Engerstra&szlig;e&ldquo; umgeleitet. (Die Busse in Fahrtrichtung &bdquo;D&uuml;sseldorf Hbf&ldquo; sind nicht betroffen.)</div>\n<div>Die Haltestellen &bdquo;Elisabethkirche&ldquo; und &bdquo;Engerstra&szlig;e&ldquo; werden an andere Steige verlegt; &bdquo;Birkenstra&szlig;e&ldquo; und &bdquo;Lindenstra&szlig;e&ldquo; entfallen; die Haltestelle &bdquo;Hermannstra&szlig;e&ldquo; wird an eine Ersatzhaltestelle an der Gerresheimer Stra&szlig;e 157-159 verlegt. Zus&auml;tzlich halten die Busse an &bdquo;D-Flingern S&ldquo;, Steig 5\n<div>und &bdquo;Hoffeldstra&szlig;e&ldquo;, Steig 2.</div>\n<div>&nbsp;</div>\n</div>\n</div>",
+        "subtitle": "834 in Richtung „Theodor-Heuss-Brücke“: Umleitung wegen Neubau des Bahnsteigs \"D-Flingern S\"",
+        "title": "834 in Richtung „Theodor-Heuss-Brücke“: Umleitung wegen Neubau des Bahnsteigs \"D-Flingern S\"",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie 834 - Veränderter Fahrtweg - (H) Düsseldorf, Düsseldorf Hbf - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "27d6f272-baa5-5d5b-b53a-92aac2e42878",
+          "eventRef": "57836fbac068139d50a682b9c98604d7",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "31/10/2026 04:00 - 21/11/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72834: :R:",
+              "destination": { "name": "D-Theodor-Heuss-Brücke", "type": "stop" },
+              "name": "Niederflurbus 834",
+              "number": "834",
+              "description": "Düsseldorf Hbf - Mörsenbroich - Nordfriedhof - D-Theodor-Heuss-Brücke",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-56876",
+        "version": 13,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-10T12:12:00Z",
+          "availability": { "from": "2026-11-10T12:00:00Z", "to": "2500-12-31T00:10:00Z" },
+          "validity": [{ "from": "2026-11-10T12:00:00Z", "to": "2500-12-31T00:00:00Z" }],
+          "expiration": "2500-12-31T00:00:59Z"
+        },
+        "urlText": "Linie 726 - Veränderter Fahrtweg - (H) Düsseldorf, Volmerswerther Deich - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/77a1c866-c209-5e76-8b10-12547d6ce6c2",
+        "content": "<div>Wegen Bauarbeiten ist die Stra&szlig;e Auf dem Rheindamm halbseitig gesperrt. Die Busse der Linie 726 fahren in Richtung &bdquo;Maxplatz&ldquo; eine Umleitung. Die Haltestelle &bdquo;Auf dem Rheindamm&ldquo; wird an die Adresse Auf dem Rheindamm 13 verlegt. Die Haltestellen &bdquo;In der H&ouml;tt&ldquo;, &bdquo;Flehe&ldquo; und &bdquo;Am Scharfenstein&ldquo; entfallen. In Richtung &bdquo;Volmerswerther Deich&ldquo; gilt der regul&auml;re Linienweg.</div>",
+        "subtitle": "726: Umleitung in Hamm",
+        "title": "726: Umleitung in Hamm",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie 726 - Veränderter Fahrtweg - (H) Düsseldorf, Volmerswerther Deich - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "77a1c866-c209-5e76-8b10-12547d6ce6c2",
+          "eventRef": "5da4fe6712bdba40e8d4de43d7818dbd",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "10/11/2026 13:00 - 31/12/2500 01:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72726: :H:",
+              "destination": { "name": "D-Volmerswerther Deich", "type": "stop" },
+              "name": "Niederflurbus 726",
+              "number": "726",
+              "description": "D-Carlstadt, Maxplatz - Graf-Adolf-Platz   - Landtag/Kniebrücke - Hafen - Aachener Platz - Flehe - D-Volmerswerth",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72726: :R:",
+              "destination": { "name": "D-Maxplatz", "type": "stop" },
+              "name": "Niederflurbus 726",
+              "number": "726",
+              "description": "D-Volmerswerth - Flehe - Aachener Platz - Hafen - Landtag/Kniebrücke - Graf-Adolf-Platz  - D-Carlstadt, Maxplatz",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-56935",
+        "version": 147775,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-11T13:15:00Z",
+          "availability": { "from": "2026-11-11T04:45:00Z", "to": "2026-11-25T03:10:00Z" },
+          "validity": [{ "from": "2026-11-23T19:00:00Z", "to": "2026-11-25T03:00:00Z" }],
+          "expiration": "2026-11-25T03:00:59Z"
+        },
+        "urlText": "Linie U76 - Ersatzverkehre - (H) Krefeld, Rheinstraße - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/4174963a-f8a6-5b09-ad17-e9c2381f162c",
+        "content": "<div>Wegen Fahrleitungsarbeiten ist die Strecke der Linie U76 zwischen &bdquo;D-L&ouml;rick&ldquo; und &bdquo;Krefeld, Rheinstra&szlig;e&ldquo; in mehreren N&auml;chten (16. bis 20. November und 23. bis 25. November) zwischen 20 und 4 Uhr gesperrt. Die Bahnen enden in Fahrtrichtung Krefeld in \"D-L&ouml;rick\". Es fahren Ersatzbusse zwischen &bdquo;L&ouml;ricker Stra&szlig;e&ldquo; und &bdquo;Krefeld, Rheinstra&szlig;e&ldquo;.</div>\n<div>&nbsp;</div>\n<div><img src=\"https://ems.vrr.de/s/_MEyJ.jpg\" alt=\"Vollansicht Sperrgrafik\" width=\"600\" height=\"1000\" /></div>",
+        "subtitle": "U76: Busse statt Bahnen zwischen Lörick und Krefeld",
+        "title": "U76: Busse statt Bahnen zwischen Lörick und Krefeld",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie U76 - Ersatzverkehre - (H) Krefeld, Rheinstraße - Grund: Baumaßnahme",
+          "attachments": [
+            {
+              "ID": 0,
+              "type": "image/jpeg",
+              "path": "https://ems.vrr.de/s/_MEyJ.jpg",
+              "virtPath": "https://ems.vrr.de/s/_MEyJ.jpg",
+              "linkText": "Vollansicht Sperrgrafik.jpg",
+              "linkTarget": "_blank",
+              "size": 186770
+            }
+          ],
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "4174963a-f8a6-5b09-ad17-e9c2381f162c",
+          "eventRef": "23832d5178e9c54bfe3d616c1e20d21c",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "23/11/2026 20:00 - 25/11/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70076: :H:",
+              "destination": { "name": "D-Löricker Straße", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Oberbilk   - Holthausen",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70076: :R:",
+              "destination": { "name": "Krefeld Rheinstraße", "type": "stop" },
+              "name": "U-Bahn U76",
+              "number": "U76",
+              "description": "D-Holthausen - D-Oberbilk   - Düsseldorf Hbf - H.-Heine-Allee  - D-Lörick - Meerbusch - Krefeld, Rheinstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "314466",
+        "version": 1,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-13T10:37:00Z",
+          "availability": { "from": "2026-11-12T23:12:59Z", "to": "2026-11-24T03:00:59Z" },
+          "validity": [{ "from": "2026-11-20T03:00:59Z", "to": "2026-11-24T03:00:59Z" }],
+          "expiration": "2026-11-24T03:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314466",
+        "content": "<a href=\"https://www.rheinbahn.de/Gleisarbeiten_Aachener_Strasse\">Hier alle Infos</a>",
+        "subtitle": "Gleisarbeiten bringen Änderungen auf den Linien U71 und U83",
+        "title": "Rheinbahn investiert in zuverlässige Verbindungen und mehr Fahrkomfort auf der Aachener Straße:",
+        "properties": {
+          "wmlText": "Wegen Gleisarbeiten auf der Aachener Straße in Höhe der Hausnummern 33 bis 44, von Freitag, 20. November, 4 Uhr, bis Dienstag, 24. November, 4 Uhr, fahren Busse statt Bahnen auf den Stadtbahnlinien U71 und U83.",
+          "smsText": "Wegen Gleisarbeiten auf der Aachener Straße in Höhe der Hausnummern 33 bis 44, von Freitag, 20. November, 4 Uhr, bis Dienstag, 24. November, 4 Uhr, fahren Busse statt Bahnen auf den Stadtbahnlinien U71 und U83.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "20/11/2026 04:00 - 24/11/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70071: :H:",
+              "destination": { "name": "D-Hellriegelstraße", "type": "stop" },
+              "name": "U-Bahn U71",
+              "number": "U71",
+              "description": "D-Rath  - Mörsenbroich - Heinrich-Heine-Allee  - D-Bilk  - D-Volmerswerth, Hellriegelstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70071: :R:",
+              "destination": { "name": "D-Rath S", "type": "stop" },
+              "name": "U-Bahn U71",
+              "number": "U71",
+              "description": "D-Volmerswerth, Hellriegelstraße - D-Bilk  - Heinrich-Heine-Allee  - Mörsenbroich - D-Rath",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70083: :H:",
+              "destination": { "name": "D-Hellriegelstraße", "type": "stop" },
+              "name": "U-Bahn U83",
+              "number": "U83",
+              "description": "D-Gerresheim, Krankenhaus - Heinr.-Heine-Allee  - D-Bilk  - D-Volmerswerth, Hellriegelstraße",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70083: :R:",
+              "destination": { "name": "D-Staufenplatz", "type": "stop" },
+              "name": "U-Bahn U83",
+              "number": "U83",
+              "description": "D-Volmerswerth, Hellriegelstraße - D-Bilk  - Heinrich-Heine-Allee  - D-Gerresheim, Krankenhaus",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "stopBlocking",
+        "id": "ems-54980",
+        "version": 178,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-09-28T07:04:00Z",
+          "availability": { "from": "2026-09-28T07:00:00Z", "to": "2026-12-17T03:10:00Z" },
+          "validity": [{ "from": "2026-09-28T07:00:00Z", "to": "2026-12-17T03:00:00Z" }],
+          "expiration": "2026-12-17T03:00:59Z"
+        },
+        "urlText": "Linien 835, 836, NE7 - Haltestellenausfälle - (H) Düsseldorf, Merowingerstraße und (H) Düsseldorf, Merowingerplatz - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/a69b93f3-a0db-5024-af9e-153915eb85ad",
+        "content": "<div>Ab Donnerstag, 17. September 2026, f&uuml;r etwa 3 Monate, wird die Merowingerstra&szlig;e in H&ouml;he des historischen Betriebshofs \"Am Steinberg\" wegen Tiefbauarbeiten halbseitig gesperrt. Die Linien 835, 836 und NE7 sind betroffen; in Fahrtrichtung Universit&auml;t erfolgt eine Umleitung ab \"Karolingerstra&szlig;e\" &uuml;ber \"Merowingerstra&szlig;e\", \"Kopernikusstra&szlig;e\" und \"Himmelgeister Stra&szlig;e\" mit R&uuml;ckf&uuml;hrung im Kreisverkehr. Die Haltestellen \"Merowingerstra&szlig;e\" und \"Merowingerplatz\" entfallen in Fahrtrichtung Universit&auml;t.</div>",
+        "subtitle": "Umleitung für Linien 835, 836 und NE7 wegen Sperrung",
+        "title": "Umleitung für Linien 835, 836 und NE7 wegen Sperrung",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linien 835, 836, NE7 - Haltestellenausfälle - (H) Düsseldorf, Merowingerstraße und (H) Düsseldorf, Merowingerplatz - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "a69b93f3-a0db-5024-af9e-153915eb85ad",
+          "eventRef": "596bf0ae3d4820e5f515c15ce49b2629",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "28/09/2026 09:00 - 17/12/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:75NE7: :H:",
+              "destination": { "name": "D-Josef-Kürten-Platz", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72835: :H:",
+              "destination": { "name": "D-In der Steele", "type": "stop" },
+              "name": "Niederflurbus 835",
+              "number": "835",
+              "description": "D-Niederkassel, Comeniuspl. - Rheinkniebrücke - D-Bilk  - Universität - Holthausen - D-Reisholz  - D-In der Steele",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72836: :H:",
+              "destination": { "name": "D-Universität Süd", "type": "stop" },
+              "name": "Niederflurbus 836",
+              "number": "836",
+              "description": "D-Am Seestern - Oberkassel - Rheinkniebrücke - D-Bilk  - D-Universität Süd",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ],
+          "stops": [
+            {
+              "id": "de:05111:18653",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Merowingerstraße",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018653" }
+            },
+            {
+              "id": "de:05111:18270",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Merowingerplatz",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018270" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-55032",
+        "version": 63,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-09-29T06:31:00Z",
+          "availability": { "from": "2026-09-29T02:00:00Z", "to": "2027-05-31T01:00:00Z" },
+          "validity": [{ "from": "2026-10-02T02:00:00Z", "to": "2027-05-31T01:00:00Z" }],
+          "expiration": "2027-05-31T01:00:59Z"
+        },
+        "urlText": "Linie SB59 - Haltestellenausfälle - Zwischen (H) Monheim (Rhein), Griesstraße und (H) Düsseldorf, Benrath S - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/de3f358e-888a-5e1b-a313-f3389eee341d",
+        "content": "<div>\n<div>BSM-Hinweis * SB59 * Bauma&szlig;nahme A59 * 02.10.2026 04:00 Uhr bis voraussichtlich Juni 2027 * Umleitung Richtung D&uuml;sseldorf zwischen (H) Griesstra&szlig;e und (H) Benrath S * (H) Schlegelstra&szlig;e und (H) Merkur-Spielbank sowie (H) auf der Umleitungsstrecke werden nicht angefahren * www.bahnen-monheim.de</div>\n<div>&nbsp;</div>\n</div>",
+        "subtitle": "Haltestellenausfälle durch Baumaßnahme",
+        "title": "Haltestellenausfälle durch Baumaßnahme",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie SB59 - Haltestellenausfälle - Zwischen (H) Monheim (Rhein), Griesstraße und (H) Düsseldorf, Benrath S - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "de3f358e-888a-5e1b-a313-f3389eee341d",
+          "eventRef": "76a2ebf6ccc90ec21e27762b44c0d317",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "02/10/2026 04:00 - 31/05/2027 03:00",
+          "providerCode": "BSM"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "bsm:76S59: :R:",
+              "destination": { "name": "D-Südpark", "type": "stop" },
+              "name": "Bus SB59",
+              "number": "SB59",
+              "description": "Langenfeld S - D-Südpark",
+              "iconId": 2,
+              "product": { "class": 5, "iconId": 3 },
+              "operator": { "id": "76", "name": "BSM" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-54376",
+        "version": 44,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-09-15T05:33:00Z",
+          "availability": { "from": "2026-09-15T02:00:00Z", "to": "2500-12-31T00:10:00Z" },
+          "validity": [{ "from": "2026-09-21T02:00:00Z", "to": "2500-12-31T00:00:00Z" }],
+          "expiration": "2500-12-31T00:00:59Z"
+        },
+        "urlText": "Linien 780, 782, 785, 805, 817, NE3, NE4, NE7, SB50 - Haltestellenausfälle - (H) Haan (Rheinl), Nachbarsberg - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/467468dc-ec69-52c5-b854-ce62a7766feb",
+        "content": "<div>Ab 21. September 2026, 4 Uhr wird die Breite Stra&szlig;e nicht mehr befahren, um Versp&auml;tungen zu reduzieren. Betroffen sind die Linien 780, 782, 785, SB50, 805, 817 sowie NE3, NE4 und NE7. In Fahrtrichtung \"Heinrich‑Heine‑Allee\" verl&auml;uft die Route &uuml;ber \"Berliner Allee\", K&ouml;‑Bogen‑Tunnel und \"Heinrich‑Heine‑Allee\". Die Haltestelle \"Steinstra&szlig;e/K&ouml;nigsallee\" Steig 12 wird an Steig 13 verlegt und die Haltestelle \"Steinstra&szlig;e/K&ouml;nigsallee\" Steig 12 wird an Steig 10 verlegt.</div>",
+        "subtitle": "Sperrung der Breite Straße",
+        "title": "Sperrung der Breite Straße",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linien 780, 782, 785, 805, 817, NE3, NE4, NE7, SB50 - Haltestellenausfälle - (H) Haan (Rheinl), Nachbarsberg - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "467468dc-ec69-52c5-b854-ce62a7766feb",
+          "eventRef": "ff54039b759609431efc6cc1e2a14f29",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "21/09/2026 04:00 - 31/12/2500 01:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:75NE3: :R:",
+              "destination": { "name": "D-Oberrath", "type": "stop" },
+              "name": "Niederflurbus NE3",
+              "number": "NE3",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE4: :H:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE4",
+              "number": "NE4",
+              "description": "Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Wehrhahn  - Grafenberg - Gerresheim - Dieselstraße - Düsseldorf Hbf",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE7: :R:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72780: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 780",
+              "number": "780",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72782: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 782",
+              "number": "782",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72785: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 785",
+              "number": "785",
+              "description": "Langenfeld  - Langenfeld-Richrath - Hilden Süd  - Hilden Mitte - D-Reisholz  - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75805: :R:",
+              "destination": { "name": "D-Handweiser", "type": "stop" },
+              "name": "Niederflurbus 805",
+              "number": "805",
+              "description": "D-Lierenfelder Str. - Düsseldorf Hbf - Heinrich-Heine-Allee  - D-Handweiser",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75817: :R:",
+              "destination": { "name": "D-Heinrich-Heine-Allee U", "type": "stop" },
+              "name": "Niederflurbus 817",
+              "number": "817",
+              "description": "D-Benrath Btf - D-Benrath  - Holthausen - Düsseldorf Hbf - D-Heinrich-Heine-Allee",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72S50: :R:",
+              "destination": { "name": "D-Rheinterrasse", "type": "stop" },
+              "name": "SB SB50",
+              "number": "SB50",
+              "description": "Haan, Nachbarsberg - Haan, Markt - D-Uni-Kliniken - Heinrich-Heine-Allee  - D-Rheinterrasse",
+              "iconId": 3,
+              "product": { "class": 7, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-51551",
+        "version": 435,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-07-06T13:10:00Z",
+          "availability": { "from": "2026-07-06T01:59:00Z", "to": "2027-02-17T03:10:00Z" },
+          "validity": [{ "from": "2026-08-17T02:00:00Z", "to": "2027-02-17T03:00:00Z" }],
+          "expiration": "2027-02-17T03:00:59Z"
+        },
+        "urlText": "Linien 830, 831, 839, E - Umleitungen - (H) Meerbusch, Bergfeld - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/9e94178c-0f1a-581c-a346-49ed5750dd5b",
+        "content": "<div>Ab dem 17. August 2026, f&uuml;r ca. 6 Monate, wird die L137 (Moerser Stra&szlig;e) f&uuml;r die Sanierung der Fahrbahn und des Radwegs sowie dem Ersatzneubau eines Br&uuml;ckenbauwerks gesperrt. Betroffen sind die Buslinien 830, 831, 839 und die Schulbusse. Die Busse fahren alle eine Umleitung &uuml;ber Meerbusch, Osterath.</div>",
+        "subtitle": "Umleitungen und Haltestellenänderungen in Meerbusch",
+        "title": "Umleitungen und Haltestellenänderungen in Meerbusch",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linien 830, 831, 839, E - Umleitungen - (H) Meerbusch, Bergfeld - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "9e94178c-0f1a-581c-a346-49ed5750dd5b",
+          "eventRef": "81ac38edb9780272e585f9c8db9edad5",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "17/08/2026 04:00 - 17/02/2027 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:720E7: :H:",
+              "destination": { "name": "D-Handweiser", "type": "stop" },
+              "name": "Niederflurbus E",
+              "number": "E",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72830: :H:",
+              "destination": { "name": "Neuss Stadthalle/Museum", "type": "stop" },
+              "name": "Niederflurbus 830",
+              "number": "830",
+              "description": "Meerbusch-Lank - Haus Meer - Mb.-Büderich - D-Handweiser - NE-Am Kaiser  - Neuss, Stadthalle",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72831: :H:",
+              "destination": { "name": "Meerbusch Haus Meer", "type": "stop" },
+              "name": "Niederflurbus 831",
+              "number": "831",
+              "description": "KR-HPZ Uerdingen - KR-Uerdingen Bf - Mb.-Lank-Latum - Meerbusch, Haus Meer",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72839: :H:",
+              "destination": { "name": "Meerbusch Haus Meer", "type": "stop" },
+              "name": "Niederflurbus 839",
+              "number": "839",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:720E7: :R:",
+              "destination": { "name": "Meerbusch An der Alten Schule", "type": "stop" },
+              "name": "Niederflurbus E",
+              "number": "E",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72830: :R:",
+              "destination": { "name": "Meerbusch Lank, Kirche", "type": "stop" },
+              "name": "Niederflurbus 830",
+              "number": "830",
+              "description": "Neuss, Stadthalle - NE-Am Kaiser  - D-Handweiser - Mb.-Büderich - Haus Meer - Meerbusch-Lank",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72831: :R:",
+              "destination": { "name": "Krefeld HPZ Uerdingen", "type": "stop" },
+              "name": "Niederflurbus 831",
+              "number": "831",
+              "description": "Meerbusch, Haus Meer - Mb.-Lank-Latum - KR-Uerdingen Bf - KR-HPZ Uerdingen",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72839: :R:",
+              "destination": { "name": "Meerbusch Haus Meer", "type": "stop" },
+              "name": "Niederflurbus 839",
+              "number": "839",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "311535",
+        "version": 1,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-08-10T10:08:00Z",
+          "availability": { "from": "2026-08-09T22:15:59Z", "to": "2027-02-17T03:00:59Z" },
+          "validity": [{ "from": "2026-08-17T02:00:59Z", "to": "2027-02-17T03:00:59Z" }],
+          "expiration": "2027-02-17T03:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=311535",
+        "content": "<a href=\"https://www.rheinbahn.de/Moerser_Strasse_Meerbusch\">Hier alle Infos</a>",
+        "subtitle": "Umleitungen für drei Buslinien",
+        "title": "Sperrung der Moerser Straße in Meerbusch:",
+        "properties": {
+          "wmlText": "Wegen Bauarbeiten in Meerbusch wird die Moerser Straße zwischen den Haltestellen \"Haus Meer\" und \"Bergfeld\" gesperrt - von Montag, 17. August, 4 Uhr, für etwa sechs Monate. Betroffen sind die Buslinien 830, 831 und 839.",
+          "smsText": "Wegen Bauarbeiten in Meerbusch wird die Moerser Straße zwischen den Haltestellen \"Haus Meer\" und \"Bergfeld\" gesperrt - von Montag, 17. August, 4 Uhr, für etwa sechs Monate. Betroffen sind die Buslinien 830, 831 und 839.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "17/08/2026 04:00 - 17/02/2027 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:72830: :H:",
+              "destination": { "name": "Neuss Stadthalle/Museum", "type": "stop" },
+              "name": "Niederflurbus 830",
+              "number": "830",
+              "description": "Meerbusch-Lank - Haus Meer - Mb.-Büderich - D-Handweiser - NE-Am Kaiser  - Neuss, Stadthalle",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72830: :R:",
+              "destination": { "name": "Meerbusch Lank, Kirche", "type": "stop" },
+              "name": "Niederflurbus 830",
+              "number": "830",
+              "description": "Neuss, Stadthalle - NE-Am Kaiser  - D-Handweiser - Mb.-Büderich - Haus Meer - Meerbusch-Lank",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72831: :H:",
+              "destination": { "name": "Meerbusch Haus Meer", "type": "stop" },
+              "name": "Niederflurbus 831",
+              "number": "831",
+              "description": "KR-HPZ Uerdingen - KR-Uerdingen Bf - Mb.-Lank-Latum - Meerbusch, Haus Meer",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72831: :R:",
+              "destination": { "name": "Krefeld HPZ Uerdingen", "type": "stop" },
+              "name": "Niederflurbus 831",
+              "number": "831",
+              "description": "Meerbusch, Haus Meer - Mb.-Lank-Latum - KR-Uerdingen Bf - KR-HPZ Uerdingen",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72839: :H:",
+              "destination": { "name": "Meerbusch Haus Meer", "type": "stop" },
+              "name": "Niederflurbus 839",
+              "number": "839",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72839: :R:",
+              "destination": { "name": "Meerbusch Haus Meer", "type": "stop" },
+              "name": "Niederflurbus 839",
+              "number": "839",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "ems-54978",
+        "version": 105,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-09-28T07:00:00Z",
+          "availability": { "from": "2026-09-28T06:00:00Z", "to": "2026-12-17T03:10:00Z" },
+          "validity": [{ "from": "2026-09-28T06:00:00Z", "to": "2026-12-17T03:00:00Z" }],
+          "expiration": "2026-12-17T03:00:59Z"
+        },
+        "urlText": "Linien 835, 836, NE7 - Umleitungen - Zwischen (H) Düsseldorf, Karolingerstraße und (H) Düsseldorf, Moorenstraße - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/a6c4f269-990d-5f91-abd2-fce0e053b78c",
+        "content": "<div>Ab Donnerstag, 17. September 2026, f&uuml;r etwa 3 Monate, wird die Merowingerstra&szlig;e in H&ouml;he des historischen Betriebshofs \"Am Steinberg\" wegen Tiefbauarbeiten halbseitig gesperrt. Die Linien 835, 836 und NE7 sind betroffen; in Fahrtrichtung Universit&auml;t erfolgt eine Umleitung ab \"Karolingerstra&szlig;e\" &uuml;ber \"Merowingerstra&szlig;e\", \"Kopernikusstra&szlig;e\" und \"Himmelgeister Stra&szlig;e\" mit R&uuml;ckf&uuml;hrung im Kreisverkehr. Die Haltestellen \"Merowingerstra&szlig;e\" und \"Merowingerplatz\" entfallen in Fahrtrichtung Universit&auml;t.</div>",
+        "subtitle": "Umleitung für Linien 835, 836 und NE7 wegen Sperrung",
+        "title": "Umleitung für Linien 835, 836 und NE7 wegen Sperrung",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linien 835, 836, NE7 - Umleitungen - Zwischen (H) Düsseldorf, Karolingerstraße und (H) Düsseldorf, Moorenstraße - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "a6c4f269-990d-5f91-abd2-fce0e053b78c",
+          "eventRef": "5bbec0a6e4331b9821b9ccf184c03cc5",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "28/09/2026 08:00 - 17/12/2026 04:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:75NE7: :H:",
+              "destination": { "name": "D-Josef-Kürten-Platz", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72835: :H:",
+              "destination": { "name": "D-In der Steele", "type": "stop" },
+              "name": "Niederflurbus 835",
+              "number": "835",
+              "description": "D-Niederkassel, Comeniuspl. - Rheinkniebrücke - D-Bilk  - Universität - Holthausen - D-Reisholz  - D-In der Steele",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72836: :H:",
+              "destination": { "name": "D-Universität Süd", "type": "stop" },
+              "name": "Niederflurbus 836",
+              "number": "836",
+              "description": "D-Am Seestern - Oberkassel - Rheinkniebrücke - D-Bilk  - D-Universität Süd",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:75NE7: :R:",
+              "destination": { "name": "Düsseldorf Hbf", "type": "stop" },
+              "name": "Niederflurbus NE7",
+              "number": "NE7",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72835: :R:",
+              "destination": { "name": "D-Comeniusplatz", "type": "stop" },
+              "name": "Niederflurbus 835",
+              "number": "835",
+              "description": "D-In der Steele - D-Reisholz  - Holthausen - Universität - D-Bilk  - Rheinkniebrücke - D-Niederkassel , Comeniuspl.",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:72836: :R:",
+              "destination": { "name": "D-Am Seestern", "type": "stop" },
+              "name": "Niederflurbus 836",
+              "number": "836",
+              "description": "D-Universität Süd - D-Bilk - Rheinkniebrücke - Oberkassel - D-Am Seestern",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "lineInfo",
+        "id": "314433",
+        "version": 1,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-12T15:01:00Z",
+          "availability": { "from": "2026-11-11T23:40:59Z", "to": "2026-11-20T13:00:59Z" },
+          "validity": [{ "from": "2026-11-16T07:00:59Z", "to": "2026-11-20T13:00:59Z" }],
+          "expiration": "2026-11-20T13:00:59Z"
+        },
+        "urlText": "",
+        "url": "http://www.rheinbahn.de/Seiten/MeldungsDetail.aspx?Nr=314433",
+        "content": "<a href=\"https://www.rheinbahn.de/Burgunderstrasse\">Hier alle Infos</a>",
+        "subtitle": "Busse statt Bahnen auf der U75",
+        "title": "Fahrleitungsarbeiten in Heerdt für einen verlässlichen Betrieb:",
+        "properties": {
+          "wmlText": "Wegen Fahrleitungsarbeiten von Montag, 16. November, bis Freitag, 20. November, jeweils zwischen 8 und 14 Uhr, fahren Busse statt Bahnen auf der Linie U75.",
+          "smsText": "Wegen Fahrleitungsarbeiten von Montag, 16. November, bis Freitag, 20. November, jeweils zwischen 8 und 14 Uhr, fahren Busse statt Bahnen auf der Linie U75.",
+          "source": { "id": "RBG", "name": "CMSVRR", "type": "CMS" },
+          "incidentDateTime": "16/11/2026 08:00 - 20/11/2026 14:00",
+          "providerCode": "Rheinbahn"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "rbg:70075: :H:",
+              "destination": { "name": "D-Vennhauser Allee", "type": "stop" },
+              "name": "U-Bahn U75",
+              "number": "U75",
+              "description": "Neuss Hbf - D-Heerdt - Heinr.-Heine-Allee  - Düsseldorf Hbf - D-Eller Mitte  - D-Eller, Vennhauser Allee",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            },
+            {
+              "id": "rbg:70075: :R:",
+              "destination": { "name": "Neuss Hauptbahnhof", "type": "stop" },
+              "name": "U-Bahn U75",
+              "number": "U75",
+              "description": "D-Eller, Vennhauser Allee - D-Eller Mitte  - Düsseldorf Hbf -  Heinr.-Heine-Allee  - D-Heerdt - Neuss Hbf",
+              "iconId": 0,
+              "product": { "class": 2, "iconId": 1 },
+              "operator": { "id": "70", "name": "Rheinbahn" }
+            }
+          ]
+        }
+      },
+      {
+        "type": "stopInfo",
+        "id": "ems-56790",
+        "version": 1,
+        "priority": "normal",
+        "timestamps": {
+          "creation": "2026-11-09T11:02:00Z",
+          "availability": { "from": "2026-11-14T23:01:00Z", "to": "2026-11-20T23:09:00Z" },
+          "validity": [{ "from": "2026-11-14T23:01:00Z", "to": "2026-11-20T23:00:00Z" }],
+          "expiration": "2026-11-20T23:00:59Z"
+        },
+        "urlText": "Linie 828 - Haltestellenausfall - (H) Düsseldorf, Nikolaus-Knopp-Platz - Grund: Baumaßnahme",
+        "url": "http://ems.vrr.de/info-link/160df8ec-6be8-5a86-9e91-966b7c8bcadb",
+        "content": "<div>D&uuml;sseldorf: Umleitung wegen Bauarbeiten<br />Zeitraum: Ab 15. September bis 20. November 2026<br />Betroffene Linie: 828<br />Aufgrund von Bauarbeiten wird die Schissstra&szlig;e in Fahrtrichtung Belsenplatz f&uuml;r den Busverkehr gesperrt. Die Haltestelle &bdquo;Nikolaus-Knopp-Platz&ldquo; kann in dieser Fahrtrichtung nicht bedient werden. Bitte nutzen Sie die n&auml;chstgelege-nen Haltestellen.</div>",
+        "subtitle": "Haltestellenausfall durch Baumaßnahme",
+        "title": "Haltestellenausfall durch Baumaßnahme",
+        "properties": {
+          "additionalContent": "Die beschriebenen Änderungen sind in der elektronischen Fahrplanauskunft (EFA) <b>nicht</b> berücksichtigt.",
+          "smsText": "Linie 828 - Haltestellenausfall - (H) Düsseldorf, Nikolaus-Knopp-Platz - Grund: Baumaßnahme",
+          "source": { "id": "VRR-EMS-LIVE", "name": "VRR-EMS-LIVE", "type": "MENTZ-EMS v2" },
+          "MessageType": "planned",
+          "producerRef": "VRR",
+          "deviceRef": "1439f847f8ab4864a994413edb1dd4bd",
+          "messageRef": "160df8ec-6be8-5a86-9e91-966b7c8bcadb",
+          "eventRef": "9184c788a3d17ce8b6dc6155fb79b291",
+          "EquipmentReason": "constructionWork",
+          "publisher": "ems.comm.addinfo",
+          "incidentDateTime": "15/11/2026 00:01 - 21/11/2026 00:00",
+          "providerCode": "BVR"
+        },
+        "affected": {
+          "lines": [
+            {
+              "id": "bvr:88828:K:R:",
+              "destination": { "name": "D-Belsenplatz", "type": "stop" },
+              "name": "Niederflurbus 828",
+              "number": "828",
+              "description": "NE-Stadthalle/Museum - D-Belsenplatz",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "88", "name": "DB Bahn Rheinlandbus" }
+            },
+            {
+              "id": "bvr:88828:K:H:",
+              "destination": { "name": "Neuss Stadthalle/Museum", "type": "stop" },
+              "name": "Niederflurbus 828",
+              "number": "828",
+              "description": "D-Belsenplatz - NE-Stadthalle/Museum",
+              "iconId": 13,
+              "product": { "class": 5, "iconId": 5 },
+              "operator": { "id": "88", "name": "DB Bahn Rheinlandbus" }
+            }
+          ],
+          "stops": [
+            {
+              "id": "de:05111:18131",
+              "isGlobalId": true,
+              "name": "Düsseldorf, Nikolaus-Knopp-Platz",
+              "type": "stop",
+              "parent": { "id": "placeID:5111000:6", "name": "Düsseldorf", "type": "locality" },
+              "properties": { "stopId": "20018131" }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
