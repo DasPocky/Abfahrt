@@ -8,12 +8,37 @@ import {
   type MapGeoJSONFeature,
 } from "maplibre-gl";
 import type { FeatureCollection, Point } from "geojson";
-import type { Stop } from "../../shared/api-types";
+import type { Stop, StopPlatform, TransportMode } from "../../shared/api-types";
 import { MAP_LOCALE, mapStyle } from "@/components/map-base";
 import type { Position } from "@/lib/geo";
-import type { Bounds } from "@/lib/map-area";
+import { selectionKey, type Bounds } from "@/lib/map-area";
 
 const STOPS_LAYER = "abfahrt-stops";
+
+/** Farbe eines Steigs nach dem wichtigsten Verkehrsmittel (wie die Fallback-Farben der Linien) */
+const MODE_HEX: Record<TransportMode, string> = {
+  longdistance: "#404040",
+  regional: "#525252",
+  suburban: "#15803d",
+  subway: "#2563eb",
+  tram: "#dc2626",
+  bus: "#ca8a04",
+  ferry: "#0891b2",
+  other: "#737373",
+};
+
+/** Ausgewählt: Haltestelle und ggf. ein Steig */
+export interface MapSelection {
+  stop: Stop;
+  platform: StopPlatform | null;
+}
+
+/** Steige einer Haltestelle; ohne Angaben die Haltestelle selbst als einziger Punkt */
+function platformsOf(stop: Stop): StopPlatform[] {
+  if (stop.platforms && stop.platforms.length > 0) return stop.platforms;
+  if (stop.lat === undefined || stop.lon === undefined) return [];
+  return [{ track: null, lat: stop.lat, lon: stop.lon, modes: [] }];
+}
 /** Antippen trifft eine Haltestelle auch knapp daneben (Finger statt Mauszeiger) */
 const TAP_TOLERANCE_PX = 12;
 
@@ -33,29 +58,57 @@ interface StopMapProps {
   /** Wechselt der Wert, fährt die Karte dorthin (z. B. Standort) */
   focus: Position | null;
   stops: readonly Stop[];
-  selectedId: string | null;
+  /** Ausgewählter Steig als „<Haltestellen-ID>|<Steig>“ bzw. nur die ID */
+  selectedKey: string | null;
   userPosition: Position | null;
   dark: boolean;
   onViewChange: (view: MapView) => void;
-  onSelect: (stop: Stop | null) => void;
+  onSelect: (selection: MapSelection | null) => void;
 }
 
 type Collection = FeatureCollection<Point>;
 
-function stopsToGeoJson(stops: readonly Stop[], selectedId: string | null): Collection {
+/** Jeder Steig ein Punkt an seiner echten Position (#84), dazu der Name einmal je Haltestelle */
+function stopsToGeoJson(stops: readonly Stop[], selectedKey: string | null): Collection {
   return {
     type: "FeatureCollection",
     features: stops.flatMap((stop) =>
-      stop.lat === undefined || stop.lon === undefined
-        ? []
-        : [
+      platformsOf(stop).map((platform) => {
+        const key = selectionKey(stop.id, platform.track);
+        return {
+          type: "Feature" as const,
+          geometry: { type: "Point" as const, coordinates: [platform.lon, platform.lat] },
+          properties: {
+            key,
+            id: stop.id,
+            track: platform.track ?? "",
+            color: MODE_HEX[platform.modes[0] ?? "other"],
+            // Zweites Verkehrsmittel als Ring (z. B. U-Bahn + Straßenbahn: blau mit rotem Ring)
+            ring: platform.modes[1] ? MODE_HEX[platform.modes[1]] : "",
+            selected: key === selectedKey || stop.id === selectedKey,
+          },
+        };
+      }),
+    ),
+  };
+}
+
+/** Name je Haltestelle am ersten Steig (kein gemittelter Punkt) */
+function namesToGeoJson(stops: readonly Stop[]): Collection {
+  return {
+    type: "FeatureCollection",
+    features: stops.flatMap((stop) => {
+      const first = platformsOf(stop)[0];
+      return first
+        ? [
             {
               type: "Feature" as const,
-              geometry: { type: "Point" as const, coordinates: [stop.lon, stop.lat] },
-              properties: { id: stop.id, name: stop.name, selected: stop.id === selectedId },
+              geometry: { type: "Point" as const, coordinates: [first.lon, first.lat] },
+              properties: { name: stop.name },
             },
-          ],
-    ),
+          ]
+        : [];
+    }),
   };
 }
 
@@ -75,10 +128,17 @@ function positionToGeoJson(position: Position | null): Collection {
 }
 
 /** Eigene Quellen und Ebenen; nach jedem Stilwechsel (hell/dunkel) neu anlegen */
-function addOwnLayers(map: MapLibreMap, dark: boolean, stops: Collection, me: Collection) {
+function addOwnLayers(
+  map: MapLibreMap,
+  dark: boolean,
+  stops: Collection,
+  names: Collection,
+  me: Collection,
+) {
   const c = dark ? COLORS.dark : COLORS.light;
   map.addSource("abfahrt-me", { type: "geojson", data: me });
   map.addSource("abfahrt-stops", { type: "geojson", data: stops });
+  map.addSource("abfahrt-stop-names", { type: "geojson", data: names });
   map.addLayer({
     id: "abfahrt-me",
     type: "circle",
@@ -100,26 +160,57 @@ function addOwnLayers(map: MapLibreMap, dark: boolean, stops: Collection, me: Co
         ["linear"],
         ["zoom"],
         14,
-        ["case", ["get", "selected"], 7, 4.5],
+        ["case", ["get", "selected"], 6, 3.5],
         18,
-        ["case", ["get", "selected"], 11, 8],
+        ["case", ["get", "selected"], 12, 9],
       ],
-      "circle-color": ["case", ["get", "selected"], c.stroke, c.fill],
-      "circle-stroke-color": ["case", ["get", "selected"], c.fill, c.stroke],
-      "circle-stroke-width": ["case", ["get", "selected"], 3, 2],
+      "circle-color": ["get", "color"],
+      "circle-stroke-color": [
+        "case",
+        ["get", "selected"],
+        c.stroke,
+        ["!=", ["get", "ring"], ""],
+        ["get", "ring"],
+        c.fill,
+      ],
+      // „zoom“ darf nur ganz außen stehen: interpolate außen, Fälle je Stufe innen
+      "circle-stroke-width": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        14,
+        ["case", ["get", "selected"], 3, ["!=", ["get", "ring"], ""], 2, 1.5],
+        18,
+        ["case", ["get", "selected"], 3, ["!=", ["get", "ring"], ""], 3.5, 1.5],
+      ],
     },
+  });
+  // Steig-Nummer im Punkt (herangezoomt)
+  map.addLayer({
+    id: "abfahrt-stop-tracks",
+    type: "symbol",
+    source: "abfahrt-stops",
+    minzoom: 16.5,
+    layout: {
+      "text-field": ["get", "track"],
+      "text-font": ["Noto Sans Bold"],
+      "text-size": 10,
+      "text-allow-overlap": true,
+      "text-ignore-placement": true,
+    },
+    paint: { "text-color": "#ffffff" },
   });
   map.addLayer({
     id: "abfahrt-stop-labels",
     type: "symbol",
-    source: "abfahrt-stops",
+    source: "abfahrt-stop-names",
     minzoom: 16,
     layout: {
       "text-field": ["get", "name"],
       "text-font": ["Noto Sans Regular"],
       "text-size": 12,
       "text-anchor": "top",
-      "text-offset": [0, 0.9],
+      "text-offset": [0, 1.1],
       "text-max-width": 9,
       "text-optional": true,
     },
@@ -140,7 +231,7 @@ export function StopMap({
   initialZoom,
   focus,
   stops,
-  selectedId,
+  selectedKey,
   userPosition,
   dark,
   onViewChange,
@@ -149,8 +240,8 @@ export function StopMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   // Aktuelle Werte für die MapLibre-Ereignisse, ohne die Karte neu anzulegen
-  const latest = useRef({ stops, selectedId, userPosition, dark, onViewChange, onSelect });
-  latest.current = { stops, selectedId, userPosition, dark, onViewChange, onSelect };
+  const latest = useRef({ stops, selectedKey, userPosition, dark, onViewChange, onSelect });
+  latest.current = { stops, selectedKey, userPosition, dark, onViewChange, onSelect };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -174,8 +265,8 @@ export function StopMap({
     mapRef.current = map;
 
     map.on("style.load", () => {
-      const { stops: s, selectedId: sel, userPosition: me, dark: d } = latest.current;
-      addOwnLayers(map, d, stopsToGeoJson(s, sel), positionToGeoJson(me));
+      const { stops: s, selectedKey: sel, userPosition: me, dark: d } = latest.current;
+      addOwnLayers(map, d, stopsToGeoJson(s, sel), namesToGeoJson(s), positionToGeoJson(me));
     });
     map.on("load", () => latest.current.onViewChange(viewOf(map)));
     map.on("moveend", () => latest.current.onViewChange(viewOf(map)));
@@ -190,9 +281,20 @@ export function StopMap({
             { layers: [STOPS_LAYER] },
           )
         : [];
-      const id = hits[0]?.properties.id as unknown;
+      const props: unknown = hits[0]?.properties;
+      const id = typeof props === "object" && props !== null && "id" in props ? props.id : null;
+      const track =
+        typeof props === "object" &&
+        props !== null &&
+        "track" in props &&
+        typeof props.track === "string"
+          ? props.track
+          : "";
       const stop = latest.current.stops.find((s) => s.id === id) ?? null;
-      latest.current.onSelect(stop);
+      const platform = stop
+        ? (platformsOf(stop).find((p) => (p.track ?? "") === track) ?? null)
+        : null;
+      latest.current.onSelect(stop ? { stop, platform } : null);
     });
     map.on("mousemove", STOPS_LAYER, () => {
       map.getCanvas().style.cursor = "pointer";
@@ -211,8 +313,10 @@ export function StopMap({
 
   useEffect(() => {
     const source = mapRef.current?.getSource<GeoJSONSource>("abfahrt-stops");
-    void source?.setData(stopsToGeoJson(stops, selectedId));
-  }, [stops, selectedId]);
+    void source?.setData(stopsToGeoJson(stops, selectedKey));
+    const names = mapRef.current?.getSource<GeoJSONSource>("abfahrt-stop-names");
+    void names?.setData(namesToGeoJson(stops));
+  }, [stops, selectedKey]);
 
   useEffect(() => {
     void mapRef.current

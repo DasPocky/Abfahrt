@@ -23,6 +23,18 @@ export interface Stop {
   relevance?: number;
   /** Fehlt bei Haltestellen; nur die Suche mit `places=1` liefert Adressen und POIs */
   kind?: PlaceKind;
+  /** Nur Karte (`stops/area`): Steige bzw. Bahnsteige an ihrer echten Position */
+  platforms?: StopPlatform[];
+}
+
+/** Ein Steig/Bahnsteig einer Haltestelle (Karte) */
+export interface StopPlatform {
+  /** Steig- bzw. Gleisnummer, z. B. "1"; null wenn unbekannt */
+  track: string | null;
+  lat: number;
+  lon: number;
+  /** Verkehrsmittel, die hier halten */
+  modes: TransportMode[];
 }
 
 export interface Departure {

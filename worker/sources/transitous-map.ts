@@ -1,4 +1,5 @@
-import type { Stop } from "../../shared/api-types";
+import type { Stop, StopPlatform, TransportMode } from "../../shared/api-types";
+import { MODE_MAP } from "./transitous";
 import { fetchJson } from "../http";
 import { isVrrArea } from "./vrr";
 
@@ -13,6 +14,11 @@ export interface TransitousMapStop {
   lat: number;
   lon: number;
   importance?: number;
+  /** Steig-/Gleisnummer, z. B. "2" */
+  track?: string;
+  scheduledTrack?: string;
+  /** MOTIS-Verkehrsmittel, die hier halten (z. B. ["SUBWAY", "TRAM"]) */
+  modes?: string[];
 }
 
 export interface Area {
@@ -80,6 +86,47 @@ export function stripCityPrefix(name: string): string {
   return name.replace(/^[A-ZÄÖÜ]{1,3}-(?!Bahn)(?=[A-ZÄÖÜ0-9])/u, "");
 }
 
+const MODE_ORDER: TransportMode[] = [
+  "longdistance",
+  "regional",
+  "suburban",
+  "subway",
+  "tram",
+  "bus",
+  "ferry",
+  "other",
+];
+
+function round6(value: number): number {
+  return Math.round(value * 1e6) / 1e6;
+}
+
+/**
+ * Steige an ihrer echten Position (#84). Einträge ohne Steignummer (die Haltestelle selbst)
+ * zählen nur, wenn es keine nummerierten Steige gibt. Gleiche Nummer nur einmal.
+ */
+export function platformsOf(members: readonly TransitousMapStop[]): StopPlatform[] {
+  const numbered = members.filter((m) => (m.track ?? m.scheduledTrack) !== undefined);
+  const source = numbered.length > 0 ? numbered : members;
+  const byKey = new Map<string, StopPlatform>();
+  for (const m of source) {
+    const track = m.track ?? m.scheduledTrack ?? null;
+    const key = track ?? `${round6(m.lat)},${round6(m.lon)}`;
+    const modes = [...new Set((m.modes ?? []).map((x) => MODE_MAP[x] ?? "other"))].toSorted(
+      (a, b) => MODE_ORDER.indexOf(a) - MODE_ORDER.indexOf(b),
+    );
+    const existing = byKey.get(key);
+    if (existing) {
+      for (const mode of modes) if (!existing.modes.includes(mode)) existing.modes.push(mode);
+    } else {
+      byKey.set(key, { track, lat: round6(m.lat), lon: round6(m.lon), modes });
+    }
+  }
+  return [...byKey.values()].toSorted((a, b) =>
+    (a.track ?? "").localeCompare(b.track ?? "", "de", { numeric: true }),
+  );
+}
+
 function toStop(group: Group): AreaStop {
   const delfi = group.members.filter((m) => m.stopId.startsWith("de-DELFI_"));
   const preferred = delfi.length > 0 ? delfi : group.members;
@@ -93,9 +140,10 @@ function toStop(group: Group): AreaStop {
   return {
     id,
     name: stripCityPrefix(mostCommon(preferred.map((m) => m.name))),
-    lat: Math.round(lat * 1e6) / 1e6,
-    lon: Math.round(lon * 1e6) / 1e6,
+    lat: round6(lat),
+    lon: round6(lon),
     importance: Math.max(0, ...group.members.map((m) => m.importance ?? 0)),
+    platforms: platformsOf(preferred),
   };
 }
 

@@ -1,7 +1,8 @@
 // Kartenausschnitt → Anfrage an /api/stops/area (Grenzen wie im Worker, worker/stops-area.ts).
 // Es geht nur der sichtbare Ausschnitt an den Worker, nicht der Standort.
-import type { StopSearchResponse } from "../../shared/api-types";
+import type { StopPlatform, StopSearchResponse } from "../../shared/api-types";
 import { getJson, isStopSearchResponse } from "@/lib/api";
+import { MODE_LABEL, platformLabel } from "@/lib/modes";
 
 /** Haltestellen erst ab dieser Zoomstufe laden (ca. 2–3 km Kartenbreite auf dem Handy) */
 export const STOPS_MIN_ZOOM = 14;
@@ -47,4 +48,23 @@ export function areaForBounds(bounds: Bounds, zoom: number): Area | null {
 export function fetchStopsInArea(area: Area, signal?: AbortSignal): Promise<StopSearchResponse> {
   const params = new URLSearchParams({ min: area.min, max: area.max });
   return getJson(`stops/area?${params.toString()}`, isStopSearchResponse, signal);
+}
+
+/** Schlüssel eines Steigs auf der Karte: „<Haltestellen-ID>|<Steig>“, ohne Steig nur die ID */
+export function selectionKey(stopId: string, track: string | null): string {
+  return track === null ? stopId : `${stopId}|${track}`;
+}
+
+/** „Steig 1 · U-Bahn, Straßenbahn“ für das Kärtchen eines Steigs (#84) */
+export function platformSummary(platform: StopPlatform): string {
+  const label = platformLabel(platform.modes[0] ?? "other");
+  const modes = platform.modes.map((m) => MODE_LABEL[m]).join(", ");
+  return [platform.track ? `${label} ${platform.track}` : null, modes || null]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+/** Abfahrten der Haltestelle, mit Steig gefiltert auf diesen Steig */
+export function platformDeparturesPath(stopPath: string, platform: StopPlatform | null): string {
+  return platform?.track ? `${stopPath}?gleis=${encodeURIComponent(platform.track)}` : stopPath;
 }
