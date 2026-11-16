@@ -6,6 +6,8 @@ import { App } from "./App";
 import { routes } from "./routes";
 import { BASE_PATH } from "../shared/base-path";
 import type {
+  Alert,
+  AlertsResponse,
   Departure,
   DeparturesResponse,
   Journey,
@@ -133,6 +135,36 @@ export function journeysResponse(
     generatedAt: "2026-11-13T12:00:00Z",
     earlier: "2026-11-13T11:40:00.000Z",
     later: "2026-11-13T12:30:00.000Z",
+    ...overrides,
+  };
+}
+
+/** Störungsmeldung nach dem Muster der VRR-Daten (Straßenbahn, Baustelle an der Haltestelle) */
+export function alert(overrides: Partial<Alert> & Pick<Alert, "id">): Alert {
+  return {
+    kind: "blocking",
+    severity: "normal",
+    title: "Straßenbahnlinie 709: Barrierefreier Ausbau der Haltestelle Flingern S, Steig 3",
+    text: "Wegen Bauarbeiten hält die Linie 709 an der Ersatzhaltestelle in der Hoffeldstraße.",
+    url: "https://www.vrr.de/de/stoerungsmeldungen/",
+    validFrom: "2026-10-10T04:00:00Z",
+    validTo: "2026-11-21T20:00:00Z",
+    lines: [{ line: "709", mode: "tram" }],
+    stops: [{ id: "vrr:de:05111:18560", name: "Flingern S" }],
+    ...overrides,
+  };
+}
+
+export function alertsResponse(
+  alerts: Alert[],
+  overrides: Partial<AlertsResponse> = {},
+): AlertsResponse {
+  return {
+    area: "5111000",
+    areaName: "Düsseldorf",
+    alerts,
+    source: "vrr",
+    generatedAt: "2026-11-13T12:00:00Z",
     ...overrides,
   };
 }

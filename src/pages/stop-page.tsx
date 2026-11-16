@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useParams, useSearchParams } from "react-router";
 import { ArrowLeft, LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react";
+import { StopAlertsBanner } from "@/components/alert-list";
 import { DepartureList, StopNoticesBanner } from "@/components/departure-list";
 import { FavoriteButton } from "@/components/favorite-button";
 import { FilterBar } from "@/components/filter-bar";
@@ -8,7 +9,8 @@ import { SourceAttribution } from "@/components/source-attribution";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNow } from "@/hooks/use-now";
-import { ApiRequestError, fetchDepartures } from "@/lib/api";
+import { ALERTS_STALE_MS, duplicatesNotice, sortAlerts, stopAlertsKey } from "@/lib/alerts";
+import { ApiRequestError, fetchAlerts, fetchDepartures } from "@/lib/api";
 import {
   type DepartureFilter,
   describeFilter,
@@ -55,6 +57,19 @@ export function StopPage() {
     refetchInterval: filter.time ? false : DEPARTURES_REFETCH_MS,
   });
   const visible = data ? filterDepartures(data.departures, filter) : [];
+
+  // Störungsmeldungen der Haltestelle (inkl. Aufzüge); nur VRR-Haltestellen haben welche
+  const { data: alertsData } = useQuery({
+    queryKey: stopAlertsKey(stopId),
+    queryFn: ({ signal }) => fetchAlerts({ stop: stopId }, signal),
+    enabled: stopId.startsWith("vrr:"),
+    staleTime: ALERTS_STALE_MS,
+  });
+  // Was schon als Hinweis an den Abfahrten steht, nicht noch einmal zeigen
+  const notices = data ? data.departures.flatMap((d) => d.notices) : [];
+  const stopAlerts = sortAlerts(alertsData?.alerts ?? []).filter(
+    (alert) => !duplicatesNotice(alert, notices),
+  );
 
   const knownName = data?.stop.name ?? stopNameFromState(location.state);
   const title = knownName ?? "Haltestelle";
@@ -105,7 +120,12 @@ export function StopPage() {
 
       {data && <FilterBar departures={data.departures} filter={filter} onChange={setFilter} />}
 
-      {data && visible.length > 0 && <StopNoticesBanner departures={visible} now={now} />}
+      {(stopAlerts.length > 0 || (data && visible.length > 0)) && (
+        <div className="space-y-1.5">
+          <StopAlertsBanner alerts={stopAlerts} now={liveNow} />
+          {data && visible.length > 0 && <StopNoticesBanner departures={visible} now={now} />}
+        </div>
+      )}
 
       <Card className="py-0">
         <CardContent className="px-4">

@@ -1,6 +1,7 @@
 import type { RouteObject } from "react-router";
 import { Layout } from "@/components/layout";
 import { AboutPage } from "@/pages/about-page";
+import { AlertsPage } from "@/pages/alerts-page";
 import { HomePage } from "@/pages/home-page";
 import { JourneyPage } from "@/pages/journey-page";
 import { LazyMapPage } from "@/pages/lazy-map-page";
@@ -18,6 +19,7 @@ export const routes: RouteObject[] = [
       { path: "karte", element: <LazyMapPage /> },
       { path: "verbindung", element: <JourneyPage /> },
       { path: "fahrt", element: <TripPage /> },
+      { path: "stoerungen", element: <AlertsPage /> },
       { path: "ueber", element: <AboutPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

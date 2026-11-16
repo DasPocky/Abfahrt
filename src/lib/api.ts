@@ -1,5 +1,7 @@
 // Zugriff auf die Worker-API (Vertrag: shared/api-types.ts)
 import type {
+  Alert,
+  AlertsResponse,
   ApiError,
   DeparturesResponse,
   Journey,
@@ -80,6 +82,43 @@ export function isJourneysResponse(value: unknown): value is JourneysResponse {
   );
 }
 
+const ALERT_KINDS = new Set(["blocking", "facility", "info"]);
+const ALERT_SEVERITIES = new Set(["high", "normal", "low"]);
+
+function isAlert(value: unknown): value is Alert {
+  return (
+    isObject(value) &&
+    typeof value.id === "string" &&
+    typeof value.kind === "string" &&
+    ALERT_KINDS.has(value.kind) &&
+    typeof value.severity === "string" &&
+    ALERT_SEVERITIES.has(value.severity) &&
+    typeof value.title === "string" &&
+    typeof value.text === "string" &&
+    isNullableString(value.url) &&
+    isNullableString(value.validFrom) &&
+    isNullableString(value.validTo) &&
+    Array.isArray(value.lines) &&
+    value.lines.every(
+      (l) => isObject(l) && typeof l.line === "string" && typeof l.mode === "string",
+    ) &&
+    Array.isArray(value.stops) &&
+    value.stops.every((s) => isObject(s) && typeof s.id === "string" && typeof s.name === "string")
+  );
+}
+
+export function isAlertsResponse(value: unknown): value is AlertsResponse {
+  return (
+    isObject(value) &&
+    typeof value.area === "string" &&
+    isNullableString(value.areaName) &&
+    Array.isArray(value.alerts) &&
+    value.alerts.every(isAlert) &&
+    (value.source === "vrr" || value.source === "transitous") &&
+    typeof value.generatedAt === "string"
+  );
+}
+
 export async function getJson<T>(
   path: string,
   guard: (value: unknown) => value is T,
@@ -132,6 +171,26 @@ export function fetchDepartures(
   const params = new URLSearchParams({ stop: stopId });
   if (when !== undefined) params.set("when", when);
   return getJson(`departures?${params.toString()}`, isDeparturesResponse, signal);
+}
+
+export interface AlertsParams {
+  /** Haltestelle: Meldungen ihrer Gemeinde, die sie oder eine der `lines` betreffen */
+  stop?: string;
+  lines?: readonly string[];
+  /** 7-stelliger Gemeindeschlüssel: alle Meldungen der Gemeinde */
+  area?: string;
+}
+
+/** Störungsmeldungen; nur Haltestellen mit `vrr:`-ID haben welche */
+export function fetchAlerts(
+  { stop, lines = [], area }: AlertsParams,
+  signal?: AbortSignal,
+): Promise<AlertsResponse> {
+  const params = new URLSearchParams();
+  if (stop !== undefined) params.set("stop", stop);
+  if (lines.length > 0) params.set("lines", lines.join(","));
+  if (area !== undefined) params.set("area", area);
+  return getJson(`alerts?${params.toString()}`, isAlertsResponse, signal);
 }
 
 export interface JourneysParams {

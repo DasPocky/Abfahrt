@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
+import { FavoriteAlertsBanner } from "@/components/favorite-alerts-banner";
 import { FavoriteCard } from "@/components/favorite-card";
 import { MapLink } from "@/components/map-link";
 import { NearbyStops } from "@/components/nearby-stops";
@@ -31,6 +32,7 @@ export function HomePage() {
       <SavedTripCard />
 
       <section aria-labelledby="favorites-title" className="space-y-3">
+        {favorites.length > 0 && <FavoriteAlertsBanner favorites={favorites} />}
         <div className="flex items-center justify-between">
           <h2 id="favorites-title" className="text-lg font-semibold tracking-tight">
             Meine Haltestellen

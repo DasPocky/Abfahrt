@@ -13,7 +13,7 @@ export interface DepartureFilter {
 export const EMPTY_FILTER: DepartureFilter = { modes: [], lines: [], platforms: [] };
 
 /** Anzeigereihenfolge der Verkehrsmittel (schnelle Schiene zuerst) */
-const MODE_ORDER: TransportMode[] = [
+export const MODE_ORDER: TransportMode[] = [
   "longdistance",
   "regional",
   "suburban",
