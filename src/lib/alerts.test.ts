@@ -14,6 +14,8 @@ import {
   sameStop,
   sortAlerts,
   truncateText,
+  splitFacilityAlerts,
+  titleAtStop,
 } from "./alerts";
 
 const NOW = new Date("2026-11-16T12:00:00Z");
@@ -141,5 +143,22 @@ describe("duplicatesNotice", () => {
     ).toBe(true);
     expect(duplicatesNotice(alert({ id: "t" }), [alert({ id: "t" }).text])).toBe(true);
     expect(duplicatesNotice(lift, ["Kurzzug", ""])).toBe(false);
+  });
+});
+
+describe("Aufzüge und Rolltreppen (#70)", () => {
+  it("kürzt den Haltestellennamen aus dem Titel", () => {
+    expect(
+      titleAtStop({ title: "Haltestelle D-Heinrich-Heine-Allee U: Rolltreppe außer Betrieb." }),
+    ).toBe("Rolltreppe außer Betrieb");
+    expect(titleAtStop({ title: "Umleitung wegen Bauarbeiten" })).toBe(
+      "Umleitung wegen Bauarbeiten",
+    );
+  });
+
+  it("trennt Aufzug-/Rolltreppenmeldungen von den übrigen", () => {
+    const lift = alert({ id: "l", kind: "facility" });
+    const other = alert({ id: "o", kind: "info" });
+    expect(splitFacilityAlerts([other, lift])).toEqual({ facility: [lift], other: [other] });
   });
 });
