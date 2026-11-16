@@ -5,6 +5,7 @@ import {
   MAX_AREA_LON,
   STOPS_MIN_ZOOM,
   platformDeparturesPath,
+  platformGroups,
   platformSummary,
   selectionKey,
 } from "./map-area";
@@ -46,5 +47,33 @@ describe("Steige auf der Karte (#84)", () => {
     expect(platformDeparturesPath("/haltestelle/x", platform)).toBe("/haltestelle/x?gleis=1");
     expect(platformDeparturesPath("/haltestelle/x", null)).toBe("/haltestelle/x");
     expect(selectionKey("vrr:a", "1")).toBe("vrr:a|1");
+  });
+});
+
+describe("Steiggruppen herausgezoomt (#86)", () => {
+  it("fasst nahe Steige zusammen und trennt sichtbar entfernte", () => {
+    // Auf der Hardt/LVR-Klinikum (echte Lagen): 1/2 unten (U73), 3–6 oben an der Hauptstraße
+    const groups = platformGroups([
+      { track: "1", lat: 51.240376, lon: 6.843923, modes: ["subway"] },
+      { track: "2", lat: 51.24007, lon: 6.844444, modes: ["subway", "bus"] },
+      { track: "3", lat: 51.241238, lon: 6.844022, modes: ["subway", "tram"] },
+      { track: "4", lat: 51.24137, lon: 6.844579, modes: ["subway", "tram"] },
+      { track: "5", lat: 51.241325, lon: 6.844632, modes: ["bus"] },
+      { track: "6", lat: 51.241257, lon: 6.844552, modes: ["bus"] },
+    ]);
+    expect(groups.map((g) => g.platforms.map((p) => p.track))).toEqual([
+      ["1", "2"],
+      ["3", "4", "5", "6"],
+    ]);
+    expect(groups[1]?.modes).toEqual(["subway", "tram", "bus"]);
+  });
+
+  it("verbindet Ketten naher Steige zu einer Gruppe", () => {
+    const groups = platformGroups([
+      { track: "a", lat: 51, lon: 7, modes: [] },
+      { track: "c", lat: 51.0008, lon: 7, modes: [] },
+      { track: "b", lat: 51.0004, lon: 7, modes: [] },
+    ]);
+    expect(groups).toHaveLength(1);
   });
 });

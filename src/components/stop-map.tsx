@@ -12,23 +12,12 @@ import type { FeatureCollection, Point } from "geojson";
 import type { Stop, StopPlatform, TransportMode } from "../../shared/api-types";
 import { MAP_LOCALE, mapStyle } from "@/components/map-base";
 import type { Position } from "@/lib/geo";
-import { selectionKey, type Bounds } from "@/lib/map-area";
+import { platformGroups, selectionKey, type Bounds } from "@/lib/map-area";
 
 const STOPS_LAYER = "abfahrt-stops";
 const CENTERS_LAYER = "abfahrt-stop-centers";
 /** Ab dieser Zoomstufe teilt sich der Haltestellenpunkt in die einzelnen Steige auf (#86) */
 const PLATFORMS_MIN_ZOOM = 16;
-/** Wichtigste Verkehrsmittel zuerst (Farbe, Ring) */
-const MODE_RANK: TransportMode[] = [
-  "longdistance",
-  "regional",
-  "suburban",
-  "subway",
-  "tram",
-  "bus",
-  "ferry",
-  "other",
-];
 
 /** Farbe eines Steigs nach dem wichtigsten Verkehrsmittel (wie die Fallback-Farben der Linien) */
 const MODE_HEX: Record<TransportMode, string> = {
@@ -108,30 +97,27 @@ function stopsToGeoJson(stops: readonly Stop[], selectedKey: string | null): Col
   };
 }
 
-/** Herausgezoomt: ein Punkt je Haltestelle in der Mitte ihrer Steige (#86) */
+/**
+ * Herausgezoomt: ein Punkt je Gruppe nahe beieinanderliegender Steige (#86). Liegen Steige
+ * sichtbar auseinander, gibt es mehrere Punkte; antippen öffnet die ganze Haltestelle.
+ */
 function centersToGeoJson(stops: readonly Stop[], selectedKey: string | null): Collection {
   return {
     type: "FeatureCollection",
-    features: stops.flatMap((stop) => {
-      if (stop.lat === undefined || stop.lon === undefined) return [];
-      const modes = [...new Set(platformsOf(stop).flatMap((p) => p.modes))].toSorted(
-        (a, b) => MODE_RANK.indexOf(a) - MODE_RANK.indexOf(b),
-      );
-      return [
-        {
-          type: "Feature" as const,
-          geometry: { type: "Point" as const, coordinates: [stop.lon, stop.lat] },
-          properties: {
-            key: stop.id,
-            id: stop.id,
-            track: "",
-            color: MODE_HEX[modes[0] ?? "other"],
-            ring: modes[1] ? MODE_HEX[modes[1]] : "",
-            selected: selectedKey?.split("|")[0] === stop.id,
-          },
+    features: stops.flatMap((stop) =>
+      platformGroups(platformsOf(stop)).map((group) => ({
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [group.lon, group.lat] },
+        properties: {
+          key: stop.id,
+          id: stop.id,
+          track: "",
+          color: MODE_HEX[group.modes[0] ?? "other"],
+          ring: group.modes[1] ? MODE_HEX[group.modes[1]] : "",
+          selected: selectedKey?.split("|")[0] === stop.id,
         },
-      ];
-    }),
+      })),
+    ),
   };
 }
 
