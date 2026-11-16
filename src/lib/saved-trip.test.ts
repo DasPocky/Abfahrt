@@ -56,7 +56,7 @@ describe("Nächster Schritt", () => {
     expect(
       stepText(tripStep(TRIP, at("2026-11-13T12:00:00Z")), at("2026-11-13T12:00:00Z")),
     ).toEqual({
-      title: "U79 ab Düsseldorf Hbf · Gleis 2",
+      title: "U79 ab Düsseldorf Hbf · Steig 2",
       when: "Abfahrt in 5 Min",
     });
     const riding = tripStep(TRIP, at("2026-11-13T12:08:00Z"));
