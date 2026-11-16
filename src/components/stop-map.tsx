@@ -337,8 +337,9 @@ export function StopMap({
         positionToGeoJson(me),
       );
     });
-    // Marker-Bilder bei Bedarf zeichnen (auch nach jedem Stilwechsel)
-    map.on("styleimagemissing", ({ id }) => {
+    // Marker-Bilder bei Bedarf zeichnen (auch nach jedem Stilwechsel). Nur der Resolver kann
+    // das Bild für die laufende Anfrage liefern, ein styleimagemissing-Listener käme zu spät.
+    map.setMissingStyleImageResolver((id) => {
       const image = drawMarker(id);
       if (image && !map.hasImage(id)) map.addImage(id, image, { pixelRatio: MARKER_RATIO });
     });
