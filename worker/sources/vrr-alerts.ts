@@ -115,11 +115,52 @@ export function toAlert(info: VrrInfo): Alert | null {
   };
 }
 
+const SEVERITY_RANK: Record<AlertSeverity, number> = { high: 0, normal: 1, low: 2 };
+const KIND_RANK: Record<AlertKind, number> = { blocking: 0, facility: 1, info: 2 };
+
+/**
+ * Gleiche Meldungen zusammenfassen: Der VRR schickt dieselbe Meldung oft je Linie oder Typ
+ * einzeln (z. B. Haltestellenausfall für U78, U79, …). Gleich heißt gleicher Titel und Text;
+ * Linien und Haltestellen werden vereint, Art und Dringlichkeit nehmen den wichtigsten Wert,
+ * die Gültigkeit den frühesten Beginn und das späteste Ende.
+ */
+export function mergeAlerts(alerts: readonly Alert[]): Alert[] {
+  const merged = new Map<string, Alert>();
+  for (const alert of alerts) {
+    const key = `${alert.title}\n${alert.text}`;
+    const prev = merged.get(key);
+    if (!prev) {
+      merged.set(key, { ...alert, lines: [...alert.lines], stops: [...alert.stops] });
+      continue;
+    }
+    for (const line of alert.lines) {
+      if (!prev.lines.some((l) => l.line === line.line && l.mode === line.mode))
+        prev.lines.push(line);
+    }
+    for (const stop of alert.stops) {
+      if (!prev.stops.some((s) => s.id === stop.id)) prev.stops.push(stop);
+    }
+    if (KIND_RANK[alert.kind] < KIND_RANK[prev.kind]) prev.kind = alert.kind;
+    if (SEVERITY_RANK[alert.severity] < SEVERITY_RANK[prev.severity])
+      prev.severity = alert.severity;
+    if (alert.validFrom && (!prev.validFrom || alert.validFrom < prev.validFrom)) {
+      prev.validFrom = alert.validFrom;
+    }
+    if (prev.validTo !== null && (alert.validTo === null || alert.validTo > prev.validTo)) {
+      prev.validTo = alert.validTo;
+    }
+    prev.url ??= alert.url;
+  }
+  return [...merged.values()];
+}
+
 /** Aktuelle Meldungen einer Gemeinde (7-stelliger Gemeindeschlüssel, z. B. 5111000) */
 export async function areaAlerts(omc: string): Promise<Alert[]> {
   const url = `${BASE}/XML_ADDINFO_REQUEST?${COMMON}&filterOMC=${omc}`;
   const data = await fetchJson<{ infos?: { current?: VrrInfo[] } }>("vrr", url, TIMEOUT_MS);
-  return (data.infos?.current ?? []).map(toAlert).filter((a): a is Alert => a !== null);
+  return mergeAlerts(
+    (data.infos?.current ?? []).map(toAlert).filter((a): a is Alert => a !== null),
+  );
 }
 
 /** Kreisfreie Städte im VRR: Gemeindeschlüssel = Kreisschlüssel ohne führende 0 + „000“ */

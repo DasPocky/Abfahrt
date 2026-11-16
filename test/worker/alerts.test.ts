@@ -48,7 +48,13 @@ describe("VRR-Störungen", () => {
     const alerts = await areaAlerts("5111000");
     expect(calls[0]).toContain("filterOMC=5111000");
     expect(calls[0]).toContain("filterShowLineList=0&filterShowStopList=0&filterShowPlaceList=0");
-    expect(alerts).toHaveLength(30);
+    // 30 Meldungen, davon 3 + 2 + 2 gleiche zusammengefasst
+    expect(alerts).toHaveLength(26);
+    const nordstrasse = alerts.filter((a) => a.title.includes("nicht am U-Bahnhof"));
+    expect(nordstrasse).toHaveLength(1);
+    expect(nordstrasse[0]?.lines.map((l) => l.line)).toEqual(
+      expect.arrayContaining(["U78", "U79", "701", "705"]),
+    );
 
     const tram = alerts.find((a) => a.title.startsWith("Straßenbahnlinie 709:"));
     expect(tram).toMatchObject({
@@ -119,7 +125,7 @@ describe("API alerts", () => {
   it("liefert alle Meldungen einer Gemeinde", async () => {
     mockUpstream({ XML_ADDINFO_REQUEST: addinfo });
     const body = await (await get("area=5111000")).json<AlertsResponse>();
-    expect(body.alerts).toHaveLength(30);
+    expect(body.alerts).toHaveLength(26);
   });
 
   it("liefert für Haltestellen außerhalb des VRR eine leere Liste", async () => {
