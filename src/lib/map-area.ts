@@ -1,6 +1,6 @@
 // Kartenausschnitt → Anfrage an /api/stops/area (Grenzen wie im Worker, worker/stops-area.ts).
 // Es geht nur der sichtbare Ausschnitt an den Worker, nicht der Standort.
-import type { StopPlatform, StopSearchResponse } from "../../shared/api-types";
+import type { StopPlatform, StopSearchResponse, TransportMode } from "../../shared/api-types";
 import { getJson, isStopSearchResponse } from "@/lib/api";
 import { MODE_LABEL, platformLabel } from "@/lib/modes";
 
@@ -67,4 +67,72 @@ export function platformSummary(platform: StopPlatform): string {
 /** Abfahrten der Haltestelle, mit Steig gefiltert auf diesen Steig */
 export function platformDeparturesPath(stopPath: string, platform: StopPlatform | null): string {
   return platform?.track ? `${stopPath}?gleis=${encodeURIComponent(platform.track)}` : stopPath;
+}
+
+/**
+ * Steige, die auf dem Bildschirm näher als so viele Pixel beieinanderliegen, werden ein Punkt
+ * (#86): etwa ein Markerdurchmesser, d. h. erst wenn man sie ohnehin nicht mehr getrennt sieht.
+ */
+export const PLATFORM_MERGE_PX = 16;
+
+/** Meter je Bildschirmpixel bei dieser Zoomstufe und Breite (MapLibre: 512-px-Kacheln) */
+export function metersPerPixel(zoom: number, lat: number): number {
+  return (40_075_016.686 * Math.cos((lat * Math.PI) / 180)) / (512 * 2 ** zoom);
+}
+
+/** Abstand in Metern, unter dem Steige bei dieser Zoomstufe zusammengefasst werden */
+export function mergeRadiusMeters(zoom: number, lat: number, px = PLATFORM_MERGE_PX): number {
+  return px * metersPerPixel(zoom, lat);
+}
+
+const MODE_RANK: TransportMode[] = [
+  "longdistance",
+  "regional",
+  "suburban",
+  "subway",
+  "tram",
+  "bus",
+  "ferry",
+  "other",
+];
+
+export interface PlatformGroup {
+  lat: number;
+  lon: number;
+  /** Verkehrsmittel der Gruppe, wichtigstes zuerst */
+  modes: TransportMode[];
+  platforms: StopPlatform[];
+}
+
+function metersBetween(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
+  const rad = Math.PI / 180;
+  const x = (b.lon - a.lon) * rad * Math.cos(((a.lat + b.lat) / 2) * rad);
+  const y = (b.lat - a.lat) * rad;
+  return Math.sqrt(x * x + y * y) * 6_371_000;
+}
+
+/**
+ * Steige zu Gruppen zusammenfassen, die näher als `radiusM` beieinanderliegen (Kette). Mit
+ * `mergeRadiusMeters` hängt das von der Zoomstufe ab: Steige, die man auf der Karte getrennt
+ * sieht (z. B. Auf der Hardt: U73 unten, U83/709 oben), bleiben getrennte Punkte.
+ */
+export function platformGroups(
+  platforms: readonly StopPlatform[],
+  radiusM: number,
+): PlatformGroup[] {
+  const groups: StopPlatform[][] = [];
+  for (const platform of platforms) {
+    const near = groups.filter((g) => g.some((p) => metersBetween(p, platform) <= radiusM));
+    const merged = [...near.flat(), platform];
+    for (const g of near) groups.splice(groups.indexOf(g), 1);
+    groups.push(merged);
+  }
+  return groups.map((g) => ({
+    lat: g.reduce((sum, p) => sum + p.lat, 0) / g.length,
+    lon: g.reduce((sum, p) => sum + p.lon, 0) / g.length,
+    modes: [...new Set(g.flatMap((p) => p.modes))].toSorted(
+      (a, b) => MODE_RANK.indexOf(a) - MODE_RANK.indexOf(b),
+    ),
+    platforms: g,
+  }));
 }

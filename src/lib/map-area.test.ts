@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
+import type { StopPlatform } from "../../shared/api-types";
 import {
   areaForBounds,
   MAX_AREA_LAT,
   MAX_AREA_LON,
   STOPS_MIN_ZOOM,
   platformDeparturesPath,
+  mergeRadiusMeters,
+  metersPerPixel,
+  platformGroups,
   platformSummary,
   selectionKey,
 } from "./map-area";
@@ -46,5 +50,50 @@ describe("Steige auf der Karte (#84)", () => {
     expect(platformDeparturesPath("/haltestelle/x", platform)).toBe("/haltestelle/x?gleis=1");
     expect(platformDeparturesPath("/haltestelle/x", null)).toBe("/haltestelle/x");
     expect(selectionKey("vrr:a", "1")).toBe("vrr:a|1");
+  });
+});
+
+describe("Steiggruppen je Zoomstufe (#86)", () => {
+  // Auf der Hardt/LVR-Klinikum (echte Lagen): 1/2 unten (U73), 3–6 oben an der Hauptstraße
+  const HARDT: StopPlatform[] = [
+    { track: "1", lat: 51.240376, lon: 6.843923, modes: ["subway"] },
+    { track: "2", lat: 51.24007, lon: 6.844444, modes: ["subway"] },
+    { track: "3", lat: 51.241238, lon: 6.844022, modes: ["subway", "tram"] },
+    { track: "4", lat: 51.24137, lon: 6.844579, modes: ["subway", "tram"] },
+    { track: "5", lat: 51.241325, lon: 6.844632, modes: ["bus"] },
+    { track: "6", lat: 51.241257, lon: 6.844552, modes: ["bus"] },
+  ];
+  const tracksAt = (zoom: number) =>
+    platformGroups(HARDT, mergeRadiusMeters(zoom, 51.24)).map((g) =>
+      g.platforms.map((p) => p.track),
+    );
+
+  it("rechnet Bildschirmpixel in Meter um", () => {
+    // Zoom 16 in Düsseldorf: knapp 0,75 m je Pixel
+    expect(metersPerPixel(16, 51.24)).toBeCloseTo(0.748, 2);
+    expect(mergeRadiusMeters(15, 51.24)).toBeCloseTo(2 * mergeRadiusMeters(16, 51.24), 6);
+  });
+
+  it("fasst nur zusammen, was man auf der Karte nicht mehr getrennt sieht", () => {
+    expect(tracksAt(12)).toEqual([["1", "2", "3", "4", "5", "6"]]);
+    // Zoom 15: die gut 40 m auseinanderliegenden Steige getrennt, 4–6 (unter 10 m) ein Punkt
+    expect(tracksAt(15)).toEqual([["1"], ["2"], ["3"], ["4", "5", "6"]]);
+    expect(tracksAt(18)).toHaveLength(6);
+  });
+
+  it("mischt die Verkehrsmittel einer Gruppe, wichtigstes zuerst", () => {
+    expect(platformGroups(HARDT, 1000)[0]?.modes).toEqual(["subway", "tram", "bus"]);
+  });
+
+  it("verbindet Ketten naher Steige zu einer Gruppe", () => {
+    const groups = platformGroups(
+      [
+        { track: "a", lat: 51, lon: 7, modes: [] },
+        { track: "c", lat: 51.0008, lon: 7, modes: [] },
+        { track: "b", lat: 51.0004, lon: 7, modes: [] },
+      ],
+      60,
+    );
+    expect(groups).toHaveLength(1);
   });
 });
