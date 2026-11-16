@@ -9,11 +9,29 @@ import type { Departure } from "../../shared/api-types";
 export function LineBadge({
   departure,
   className,
+  size = "default",
 }: {
   departure: Pick<Departure, "line" | "mode" | "lineColor" | "lineTextColor">;
   className?: string;
+  /** „sm“: schmales Kästchen nur mit der Bezeichnung, z. B. in Störungsmeldungen */
+  size?: "default" | "sm";
 }) {
   const colors = lineBadgeColors(departure);
+  if (size === "sm") {
+    return (
+      <Badge
+        className={cn(
+          "h-4.5 shrink-0 rounded px-1 text-[0.7rem] font-bold tabular-nums ring-1 ring-black/10 ring-inset dark:ring-white/15",
+          colors.className,
+          className,
+        )}
+        style={colors.style}
+      >
+        <span className="sr-only">{MODE_LABEL[departure.mode]} </span>
+        {departure.line}
+      </Badge>
+    );
+  }
   return (
     <Badge
       className={cn(

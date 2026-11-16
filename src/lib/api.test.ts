@@ -1,7 +1,15 @@
 import { describe, expect, it, vi } from "vitest";
-import { departuresResponse, journey, journeysResponse, requestUrl } from "../test-utils";
+import {
+  alert,
+  alertsResponse,
+  departuresResponse,
+  journey,
+  journeysResponse,
+  requestUrl,
+} from "../test-utils";
 import {
   ApiRequestError,
+  fetchAlerts,
   fetchDepartures,
   fetchJourneys,
   searchStops,
@@ -16,6 +24,38 @@ describe("searchStops", () => {
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
     expect(url.pathname).toBe("/abfahrt/api/stops/search");
     expect(url.searchParams.get("q")).toBe("Düsseldorf Hbf");
+  });
+});
+
+describe("fetchAlerts", () => {
+  it("fragt nach Haltestelle mit Linien oder nach Gemeinde", async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async () => Response.json(alertsResponse([alert({ id: "a" })])));
+    const res = await fetchAlerts({ stop: "vrr:de:05111:18235", lines: ["U79", "706"] });
+    expect(res.alerts).toHaveLength(1);
+    let url = requestUrl(fetchMock.mock.calls[0]?.[0]);
+    expect(url.pathname).toBe("/abfahrt/api/alerts");
+    expect(url.searchParams.get("stop")).toBe("vrr:de:05111:18235");
+    expect(url.searchParams.get("lines")).toBe("U79,706");
+
+    await fetchAlerts({ area: "5111000" });
+    url = requestUrl(fetchMock.mock.calls[1]?.[0]);
+    expect(url.searchParams.get("area")).toBe("5111000");
+    expect(url.searchParams.has("stop")).toBe(false);
+    expect(url.searchParams.has("lines")).toBe(false);
+  });
+
+  it("lehnt kaputte Meldungen ab", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      Response.json({
+        ...alertsResponse([]),
+        alerts: [{ ...alert({ id: "a" }), kind: "unbekannt" }],
+      }),
+    );
+    await expect(fetchAlerts({ area: "5111000" })).rejects.toMatchObject({
+      code: "invalid_response",
+    });
   });
 });
 

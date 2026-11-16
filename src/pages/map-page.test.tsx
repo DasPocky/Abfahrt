@@ -97,7 +97,7 @@ describe("Karte", () => {
 describe("Einstieg auf der Startseite", () => {
   it("verlinkt die Karte", async () => {
     renderAt("/");
-    fireEvent.click(screen.getByRole("link", { name: /auf der Karte/ }));
+    fireEvent.click(screen.getByRole("link", { name: "Karte" }));
     await waitFor(() => expect(screen.getByRole("heading", { name: "Karte" })).toBeInTheDocument());
   });
 });
