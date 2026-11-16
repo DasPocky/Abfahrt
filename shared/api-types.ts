@@ -134,6 +134,46 @@ export interface JourneysResponse {
   later: string | null;
 }
 
+// ---- Störungen (M3) ----
+
+/** blocking: Sperrung/Ausfall, facility: Aufzug/Rolltreppe, info: sonstige Hinweise (z. B. Bauarbeiten) */
+export type AlertKind = "blocking" | "facility" | "info";
+export type AlertSeverity = "high" | "normal" | "low";
+
+export interface AlertLine {
+  /** Linienbezeichnung wie in den Abfahrten, z. B. "U79", "706", "RE1" */
+  line: string;
+  mode: TransportMode;
+}
+
+export interface Alert {
+  /** Stabil über Abrufe hinweg (Quelle + ID + Version), z. B. für „schon gesehen“ und Push */
+  id: string;
+  kind: AlertKind;
+  severity: AlertSeverity;
+  /** Kurzfassung, z. B. "Barrierefreier Ausbau der Haltestelle Flingern S, Steig 3" */
+  title: string;
+  /** Langtext ohne HTML, leer wenn nichts über den Titel hinaus */
+  text: string;
+  url: string | null;
+  /** ISO-8601, Gültigkeit; null = unbekannt bzw. offen */
+  validFrom: string | null;
+  validTo: string | null;
+  lines: AlertLine[];
+  /** Betroffene Haltestellen (IDs wie in `Stop.id`) */
+  stops: { id: string; name: string }[];
+}
+
+export interface AlertsResponse {
+  /** Gemeinde (7-stelliger Gemeindeschlüssel), aus der die Meldungen stammen */
+  area: string;
+  /** Name der Gemeinde, falls bekannt, z. B. "Düsseldorf" */
+  areaName: string | null;
+  alerts: Alert[];
+  source: DataSource;
+  generatedAt: string;
+}
+
 export interface ApiError {
   error: string;
   message?: string;
