@@ -3,17 +3,26 @@ import { BASE_PATH } from "../../shared/base-path";
 import { apiError, json } from "../http";
 import { parseVapidJwk, vapidPublicKey, type SubscriptionKeys } from "./crypto";
 import { isAllowedEndpoint, sendPush } from "./send";
-import { deleteSubscription, findSubscription, recordResult, saveSubscription } from "./store";
+import { parsePushTopics } from "../../shared/push-topics";
+import {
+  deleteSubscription,
+  findSubscription,
+  recordResult,
+  saveSubscription,
+  updateTopics,
+} from "./store";
 
-const MAX_BODY_BYTES = 4096;
+const MAX_BODY_BYTES = 16_384;
 const B64URL = /^[A-Za-z0-9_-]+$/;
 
-export type PushRoute = "push/key" | "push/subscribe" | "push/unsubscribe" | "push/test";
+export type PushRoute =
+  "push/key" | "push/subscribe" | "push/unsubscribe" | "push/test" | "push/topics";
 export const PUSH_ROUTES: ReadonlySet<string> = new Set<PushRoute>([
   "push/key",
   "push/subscribe",
   "push/unsubscribe",
   "push/test",
+  "push/topics",
 ]);
 
 interface SubscriptionBody {
@@ -80,7 +89,7 @@ export async function handlePush(request: Request, env: Env, route: string): Pro
     const forbidden = err instanceof Error && err.message === "forbidden_origin";
     return forbidden
       ? apiError(403, "forbidden_origin", "Nur aus der App heraus erlaubt")
-      : apiError(400, "invalid_body", "JSON mit höchstens 4 KB erwartet");
+      : apiError(400, "invalid_body", "JSON mit höchstens 16 KB erwartet");
   }
   const subscription = parseSubscription(isRecord(body) ? body.subscription : null);
   if (!subscription) return apiError(400, "invalid_subscription", "Ungültiges Push-Abo");
@@ -89,6 +98,18 @@ export async function handlePush(request: Request, env: Env, route: string): Pro
     case "push/subscribe": {
       await saveSubscription(env.PUSH_DB, subscription.endpoint, subscription.keys, "[]");
       return json({ status: "subscribed" });
+    }
+    case "push/topics": {
+      const topics = parsePushTopics(isRecord(body) ? body.topics : null);
+      if (!topics)
+        return apiError(400, "invalid_topics", "Ungültige Angaben für Benachrichtigungen");
+      const stored = JSON.stringify(topics);
+      if (stored.length > 16_000) return apiError(400, "invalid_topics", "Zu viele Angaben");
+      // Abo ggf. neu anlegen (z. B. nach Löschen durch den Push-Dienst), dann Interessen setzen
+      if (!(await updateTopics(env.PUSH_DB, subscription.endpoint, stored))) {
+        await saveSubscription(env.PUSH_DB, subscription.endpoint, subscription.keys, stored);
+      }
+      return json({ status: "saved" });
     }
     case "push/unsubscribe": {
       await deleteSubscription(env.PUSH_DB, subscription.endpoint);

@@ -25,6 +25,8 @@
       "!/abfahrt/manifest.webmanifest",
     ],
   },
+  // Push-Auslöser alle 5 Minuten (#72, worker/push/cron.ts)
+  "triggers": { "crons": ["*/5 * * * *"] },
   // Push-Abos (#71); angelegt vom Workflow push-setup, Schema in migrations/
   "d1_databases": [
     {

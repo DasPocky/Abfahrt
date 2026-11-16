@@ -1,6 +1,7 @@
 // Gemerkte Verbindung für die Live-Begleitung: lokal gespeichert, Status „nächster Schritt“
 import type { Journey, JourneyLeg } from "../../shared/api-types";
 import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
+import { journeySignature } from "../../shared/transfers";
 import { isJourney } from "./api";
 import { journeyTimes, type PickedStop } from "./journeys";
 import { platformLabel } from "./modes";
@@ -24,12 +25,7 @@ export interface SavedTrip {
 }
 
 /** Fahrten mit Linie und geplanter Abfahrt am Einstieg, z. B. „U76@…|S6@…“ */
-export function journeySignature(journey: Journey): string {
-  return journey.legs
-    .filter((l) => l.kind === "transit")
-    .map((l) => `${l.line ?? ""}@${l.origin.plannedDeparture ?? ""}`)
-    .join("|");
-}
+export { journeySignature };
 
 export function findJourney(journeys: readonly Journey[], signature: string): Journey | null {
   return journeys.find((j) => journeySignature(j) === signature) ?? null;
