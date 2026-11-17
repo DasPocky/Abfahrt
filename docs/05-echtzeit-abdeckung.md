@@ -96,7 +96,54 @@ U-Bahnen**, und zwar regional sehr unterschiedlich, nicht nur auf dem Land:
 | TH   | Jena Paradies                   | mittel | 5/5      | 100 %  | Fern 1/1, Regio 4/4                                         |
 | TH   | Nordhausen, Bahnhofsplatz       | klein  | 3/4      | 75 %   | Tram 3/4                                                    |
 
-## Mögliche Quellen für die Lücken (noch zu prüfen)
+## Regionale Quellen im Test (17.11.2026, nächste 45 Minuten)
+
+Gleiche Haltestellen, Anteil der Abfahrten mit Echtzeit, im Vergleich zu Transitous:
+
+| Quelle                | Haltestelle                     | Echtzeit regional         | Transitous |
+| --------------------- | ------------------------------- | ------------------------- | ---------- |
+| VRR (EFA)             | Düsseldorf Heinrich-Heine-Allee | 110/113 (97 %)            | 31 %       |
+| Westfalen (EFA)       | Bielefeld Jahnplatz             | 39/40 (98 %)              | 2 %        |
+| Westfalen (EFA)       | Münster Hbf                     | 37/40 (93 %)              | 12 %       |
+| Westfalen (EFA)       | Paderborn Hbf                   | 28/40 (70 %)              | 23 %       |
+| MVV (EFA)             | München Marienplatz             | 76/76 (100 %, auch Busse) | 80 %       |
+| Bayern-Fahrplan (EFA) | Passau Hbf                      | 30/44 (68 %)              | 34 %       |
+| Bayern-Fahrplan (EFA) | Frankfurt Hauptwache, U-Bahn    | 36/48 (75 %)              | 0 %        |
+| NVBW efa-bw (EFA)     | Biberach Busbahnhof             | 47/53 (89 %)              | 71 %       |
+| NVBW efa-bw (EFA)     | Freiburg Bertoldsbrunnen        | 49/49 (100 %)             | 100 %      |
+| VVS (EFA)             | Stuttgart Hbf                   | 143/148 (97 %)            | 95 %       |
+| KVV (EFA)             | Karlsruhe Marktplatz            | 43/45 (96 %)              | 100 %      |
+| VVO (EFA)             | Dresden Postplatz               | 87/87 (100 %)             | 100 %      |
+| VGN (EFA)             | Nürnberg Hbf                    | 0/141 (0 %)               | 22 %       |
+
+Keine der freien EFA-Quellen hat Echtzeit für **Niedersachsen, Bremen, Hamburg, Mainz** (geprüft:
+Hannover, Oldenburg, Osnabrück, Lingen, Hamburg, Mainz über Westfalen, Bayern und efa-bw). Dafür kommen nur
+VBN, GVH, HVV und RMV in Frage, die eine Registrierung oder Anfrage brauchen.
+
+## Zugang zu den Quellen
+
+**Frei nutzbar (getestet):** Transitous, VRR OpenService, MVV, Bayern-Fahrplan, VGN, VVS, NVBW (efa-bw),
+KVV, Westfalenfahrplan, VVO (alle EFA wie VRR), `realtime.gtfs.de` (bundesweiter GTFS-RT-Feed, 31 MB, für
+einen Worker zu groß; Transitous verarbeitet ihn bereits).
+
+**Registrierung (kostenlos):**
+
+- DB API Marketplace (`apis.deutschebahn.com`): Timetables (Züge, Echtzeit, Gleise), FaSta (Aufzüge),
+  RIS::Stations
+- RMV HAPI (`www.rmv.de/hapi`): antwortet ohne `accessId` mit Fehler
+
+**Auf Anfrage:**
+
+- HVV Geofox GTI (`gti.geofox.de`): ohne Zugangsdaten „Authentication failed“
+- VBB-API (Berlin/Brandenburg)
+- VBN Entwicklerzugang (Niedersachsen/Bremen, Echtzeit)
+
+**Inoffiziell (nicht nutzen ohne Erlaubnis):** die internen HAFAS-Schnittstellen der Apps (`mgate.exe` bei
+VBB, VBN, NAH.SH, saarVV); sie antworten, sind aber nicht für Dritte freigegeben.
+
+**Nicht erreichbar:** `v6.db.transport.rest` (Community-Dienst zu DB-Navigator-Daten, 502 am 17.11.2026).
+
+## Übersicht möglicher Quellen
 
 | Region                         | Quelle                          | Art           | Zugang                    |
 | ------------------------------ | ------------------------------- | ------------- | ------------------------- |
