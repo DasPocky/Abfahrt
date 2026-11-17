@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { useSettings } from "@/hooks/use-settings";
 
 const DARK_QUERY = "(prefers-color-scheme: dark)";
 
@@ -8,11 +9,13 @@ function subscribeDark(onChange: () => void) {
   return () => media?.removeEventListener("change", onChange);
 }
 
-/** Dunkelmodus des Systems (die App folgt ihm, siehe src/index.css) */
+/** Dunkelmodus: aus den Einstellungen erzwungen (#37), sonst der des Systems (src/index.css) */
 export function usePrefersDark(): boolean {
-  return useSyncExternalStore(
+  const { theme } = useSettings();
+  const system = useSyncExternalStore(
     subscribeDark,
     () => window.matchMedia?.(DARK_QUERY).matches ?? false,
     () => false,
   );
+  return theme === "system" ? system : theme === "dark";
 }

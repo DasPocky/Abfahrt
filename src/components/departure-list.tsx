@@ -2,14 +2,17 @@ import { ChevronRight, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { LineBadge } from "@/components/line-badge";
+import { useSettings } from "@/hooks/use-settings";
 import {
   effectiveTime,
   hasPlatformChange,
   sortDepartures,
   upcomingDepartures,
 } from "@/lib/departures";
+import { lineBadgeColors } from "@/lib/line-colors";
 import { platformLabel } from "@/lib/modes";
 import { summarizeNotices } from "@/lib/notices";
+import type { RowStyle } from "@/lib/settings";
 import {
   delayMinutes,
   DELAY_TONE_CLASS,
@@ -139,86 +142,164 @@ function DepartureNotices({
   );
 }
 
+/** Planzeit mit Verspätung bzw. „fällt aus“ */
+function Meta({ departure }: { departure: Departure }) {
+  const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
+  const tone = delayTone(delay);
+  return (
+    <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums">
+      ab{" "}
+      <time
+        dateTime={departure.plannedTime}
+        className={cn("text-foreground", departure.cancelled && "line-through")}
+      >
+        {formatClock(new Date(departure.plannedTime))}
+      </time>
+      {delay !== null && !departure.cancelled && (
+        <span
+          className={cn("ml-1.5", delay === 0 ? "" : "font-semibold", DELAY_TONE_CLASS[tone])}
+          data-tone={tone}
+        >
+          {formatDelay(delay)}
+        </span>
+      )}
+      {departure.cancelled && (
+        <span className="ml-1.5 font-semibold text-destructive">fällt aus</span>
+      )}
+    </p>
+  );
+}
+
+/** Countdown: „in 7 Min“ gestapelt als große Zahl + „Min“, spart Breite */
+function Countdown({
+  departure,
+  now,
+  align,
+  large = false,
+}: {
+  departure: Departure;
+  now: Date;
+  align: "left" | "right";
+  large?: boolean;
+}) {
+  const countdown = formatCountdown(effectiveTime(departure), now);
+  const minutes = /^in (\d+) Min$/.exec(countdown)?.[1];
+  return (
+    <div
+      className={cn(
+        "leading-none font-bold tabular-nums",
+        align === "right" ? "text-right" : "text-left",
+        departure.cancelled && "text-muted-foreground line-through",
+      )}
+    >
+      {minutes ? (
+        <span
+          className={cn("flex flex-col", align === "right" ? "items-end" : "items-start")}
+          aria-label={countdown}
+        >
+          <span className={cn("leading-none", large ? "text-2xl" : "text-lg")}>{minutes}</span>
+          <span className="text-[0.65rem] font-medium text-muted-foreground" aria-hidden="true">
+            Min
+          </span>
+        </span>
+      ) : (
+        <span className="text-sm">{countdown}</span>
+      )}
+    </div>
+  );
+}
+
+function Direction({ departure }: { departure: Departure }) {
+  return (
+    <p
+      className={cn(
+        "truncate leading-tight font-medium",
+        departure.cancelled && "text-muted-foreground line-through",
+      )}
+    >
+      {departure.direction}
+    </p>
+  );
+}
+
+/** Abfahrtszeile in der gewählten Darstellung (#37) */
 function DepartureRow({
   departure,
   notices,
   now,
+  rowStyle,
 }: {
   departure: Departure;
   /** Hinweise nur zu dieser Fahrt (ohne Sammelhinweise der Haltestelle) */
   notices: readonly string[];
   now: Date;
+  rowStyle: RowStyle;
 }) {
-  const planned = new Date(departure.plannedTime);
-  const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
-  const tone = delayTone(delay);
-  const countdown = formatCountdown(effectiveTime(departure), now);
-  // „in 7 Min“ gestapelt als große Zahl + „Min“, spart Breite für die Meta-Zeile
-  const minutes = /^in (\d+) Min$/.exec(countdown)?.[1];
+  const noticeRow = notices.length > 0 && (
+    <div className="col-span-3 col-start-2">
+      <DepartureNotices departure={departure} notices={notices} />
+    </div>
+  );
 
+  if (rowStyle === "b") {
+    // B · Anzeigetafel: große Minuten vorne, Linie + Ziel, Gleis rechts
+    return (
+      <li
+        className="grid grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1 py-2"
+        data-cancelled={departure.cancelled || undefined}
+      >
+        <Countdown departure={departure} now={now} align="left" large />
+        <div className="min-w-0">
+          <div className="flex min-w-0 items-center gap-2">
+            <LineBadge departure={departure} size="sm" />
+            <Direction departure={departure} />
+          </div>
+          <Meta departure={departure} />
+        </div>
+        <Platform departure={departure} />
+        {noticeRow}
+      </li>
+    );
+  }
+
+  const content = (
+    <>
+      <LineBadge departure={departure} />
+      <div className="min-w-0">
+        <Direction departure={departure} />
+        <Meta departure={departure} />
+      </div>
+      <Platform departure={departure} />
+      <Countdown departure={departure} now={now} align="right" />
+      {noticeRow}
+    </>
+  );
+
+  if (rowStyle === "c") {
+    // C · Karte mit Farbstreifen der Linie links
+    const colors = lineBadgeColors(departure);
+    return (
+      <li
+        className="relative grid grid-cols-[auto_minmax(0,1fr)_auto_2.75rem] items-center gap-x-2.5 gap-y-1 overflow-hidden rounded-lg border bg-card py-2 pr-2.5 pl-3.5"
+        data-cancelled={departure.cancelled || undefined}
+      >
+        <span
+          className={cn("absolute inset-y-0 left-0 w-1.5", colors.className)}
+          style={colors.style ? { backgroundColor: colors.style.backgroundColor } : undefined}
+          aria-hidden="true"
+        />
+        {content}
+      </li>
+    );
+  }
+
+  // A · Linie mit Symbol in einem Feld (Standard)
   return (
     <li
       className="grid grid-cols-[auto_minmax(0,1fr)_auto_2.75rem] items-center gap-x-2.5 gap-y-1 py-2"
       data-cancelled={departure.cancelled || undefined}
     >
-      <LineBadge departure={departure} />
-
-      <div className="min-w-0">
-        <p
-          className={cn(
-            "truncate leading-tight font-medium",
-            departure.cancelled && "text-muted-foreground line-through",
-          )}
-        >
-          {departure.direction}
-        </p>
-        <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums">
-          ab{" "}
-          <time
-            dateTime={departure.plannedTime}
-            className={cn("text-foreground", departure.cancelled && "line-through")}
-          >
-            {formatClock(planned)}
-          </time>
-          {delay !== null && !departure.cancelled && (
-            <span
-              className={cn("ml-1.5", delay === 0 ? "" : "font-semibold", DELAY_TONE_CLASS[tone])}
-              data-tone={tone}
-            >
-              {formatDelay(delay)}
-            </span>
-          )}
-          {departure.cancelled && (
-            <span className="ml-1.5 font-semibold text-destructive">fällt aus</span>
-          )}
-        </p>
-      </div>
-
-      <Platform departure={departure} />
-
-      <div
-        className={cn(
-          "text-right leading-none font-bold tabular-nums",
-          departure.cancelled && "text-muted-foreground line-through",
-        )}
-      >
-        {minutes ? (
-          <span className="flex flex-col items-end" aria-label={countdown}>
-            <span className="text-lg leading-none">{minutes}</span>
-            <span className="text-[0.65rem] font-medium text-muted-foreground" aria-hidden="true">
-              Min
-            </span>
-          </span>
-        ) : (
-          <span className="text-sm">{countdown}</span>
-        )}
-      </div>
-
-      {notices.length > 0 && (
-        <div className="col-span-3 col-start-2">
-          <DepartureNotices departure={departure} notices={notices} />
-        </div>
-      )}
+      {content}
     </li>
   );
 }
@@ -227,12 +308,17 @@ export function DepartureList({
   departures,
   now,
   compact = false,
+  rowStyle,
 }: {
   departures: readonly Departure[];
   now: Date;
+  /** Darstellung; ohne Angabe die aus den Einstellungen (#37) */
+  rowStyle?: RowStyle;
   /** Kompakte Vorschau (Favoriten): Hinweise nur per ⓘ, kein Sammelhinweis */
   compact?: boolean;
 }) {
+  const settings = useSettings();
+  const style = rowStyle ?? settings.rowStyle;
   const visible = upcomingDepartures(sortDepartures(departures), now);
 
   if (visible.length === 0) {
@@ -250,13 +336,14 @@ export function DepartureList({
 
   return (
     <>
-      <ul aria-label="Abfahrten" className="divide-y">
+      <ul aria-label="Abfahrten" className={style === "c" ? "space-y-2" : "divide-y"}>
         {visible.map((departure) => (
           <DepartureRow
             key={departure.id}
             departure={departure}
             notices={departureNotices.get(departure.id) ?? []}
             now={now}
+            rowStyle={style}
           />
         ))}
       </ul>

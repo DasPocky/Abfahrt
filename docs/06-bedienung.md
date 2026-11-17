@@ -8,7 +8,7 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 - Jeder Bereich merkt sich, wo du warst, z. B. die offene Haltestelle oder die letzte Suche.
 - Tippst du auf den Bereich, in dem du gerade bist, geht es an dessen Anfang.
-- **Mehr** enthält Benachrichtigungen, die Anleitung zum Installieren und „Über Abfahrt“ mit Datenquellen
+- **Mehr** enthält Benachrichtigungen, die Anleitung zum Installieren, die Einstellungen und „Über Abfahrt“ mit Datenquellen
   und Datenschutz.
 - Android: Lange auf das App-Symbol tippen öffnet direkt Abfahrten, Verbindung, Karte oder Störungen.
 
@@ -183,6 +183,16 @@ Bereich **Störungen** (`/abfahrt/stoerungen`).
     Ausfall oder wenn die Verbindung nicht mehr im Fahrplan ist
   - **Ruhe 22–6 Uhr:** dann keine Störungsmeldungen
 - Geprüft wird alle 5 Minuten. Gemeldet wird nur, was neu ist.
+
+## Einstellungen
+
+Unter **Mehr → Einstellungen** (`/abfahrt/einstellungen`), gespeichert nur im Browser:
+
+- **Darstellung der Abfahrten** mit Vorschau: **Linie vorn** (Standard: Linie mit Symbol, Ziel, Minuten
+  rechts), **Anzeigetafel** (große Minuten vorn, Gleis rechts) oder **Karten** (jede Abfahrt als Karte mit
+  Farbstreifen der Linie). Gilt für Haltestellen und Favoriten.
+- **Erscheinungsbild:** wie System, Hell oder Dunkel. Gilt auch für die Karte.
+- **Abfahrten je Favorit** auf der Startseite: 3, 4, 6 oder 8.
 
 ## Installieren
 

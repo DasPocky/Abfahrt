@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter } from "react-router";
 import { createQueryClient } from "@/lib/query-client";
+import { applyTheme, getSettings } from "@/lib/settings";
 import { registerServiceWorker } from "@/pwa/register-service-worker";
 import { App } from "./App";
 import { routes } from "./routes";
@@ -10,6 +11,9 @@ import "./index.css";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root fehlt in index.html");
+
+// Erzwungenes Hell/Dunkel aus den Einstellungen (#37) so früh wie möglich setzen
+applyTheme(getSettings().theme);
 
 const router = createBrowserRouter(routes, { basename: BASE_PATH });
 const queryClient = createQueryClient();

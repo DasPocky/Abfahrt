@@ -1,6 +1,6 @@
 // „Mehr“ (#106): Benachrichtigungen, Installieren und Infos zur App.
 import { Link } from "react-router";
-import { ChevronRight, Download, Info } from "lucide-react";
+import { ChevronRight, Download, Info, Settings } from "lucide-react";
 import { PushSettings } from "@/components/push-settings";
 
 export function MorePage() {
@@ -36,7 +36,15 @@ export function MorePage() {
         </ul>
       </section>
 
-      <nav aria-label="Infos" className="overflow-hidden rounded-xl border">
+      <nav aria-label="Infos" className="divide-y overflow-hidden rounded-xl border">
+        <Link
+          to="/einstellungen"
+          className="flex items-center gap-3 px-4 py-3 text-sm font-medium outline-none hover:bg-muted/50 focus-visible:bg-muted/50"
+        >
+          <Settings className="size-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <span className="flex-1">Einstellungen</span>
+          <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
+        </Link>
         <Link
           to="/ueber"
           className="flex items-center gap-3 px-4 py-3 text-sm font-medium outline-none hover:bg-muted/50 focus-visible:bg-muted/50"
