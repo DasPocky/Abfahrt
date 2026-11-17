@@ -1,6 +1,6 @@
 // Karte mit Haltestellen (/abfahrt/karte). Lazy geladen, siehe src/pages/lazy-map-page.tsx.
 import { useMemo, useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQueries, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { ChevronRight, LoaderCircle, LocateFixed, TramFront, X } from "lucide-react";
 import type { Stop } from "../../shared/api-types";
@@ -17,9 +17,11 @@ import type { Position } from "@/lib/geo";
 import {
   areaForBounds,
   fetchStopsInArea,
+  mergeStop,
   platformDeparturesPath,
   platformSummary,
   selectionKey,
+  tilesForBounds,
 } from "@/lib/map-area";
 import { fetchVehicles, vehiclePositions, type VehiclePosition } from "@/lib/vehicles";
 
@@ -28,6 +30,8 @@ const DEFAULT_CENTER: Position = { lat: 51.2255, lon: 6.7775 };
 const DEFAULT_ZOOM = 15;
 /** Erst laden, wenn die Karte so lange stillsteht */
 const MAP_DEBOUNCE_MS = 400;
+/** Kacheln mit Haltestellen gelten so lange als frisch (Browser-Cache des Workers: 1 Tag) */
+const TILE_FRESH_MS = 24 * 60 * 60_000;
 /** Bereits geladene Haltestellen behalten (flüssiges Verschieben), aber nicht unbegrenzt */
 const MAX_KEPT_STOPS = 2000;
 
@@ -67,8 +71,10 @@ function vehicleTime(v: VehiclePosition): string {
 function mergeStops(known: Map<string, Stop>, incoming: readonly Stop[]): Map<string, Stop> {
   const next = new Map(known);
   for (const stop of incoming) {
+    const before = next.get(stop.id);
     next.delete(stop.id);
-    next.set(stop.id, stop);
+    // Haltestelle auf einer Kachelgrenze: Steige beider Kacheln zusammenführen (#98)
+    next.set(stop.id, before ? mergeStop(before, stop) : stop);
   }
   // Älteste Einträge zuerst verwerfen
   for (const id of next.keys()) {
@@ -84,6 +90,8 @@ export function MapPage() {
   const [view, setView] = useState<MapView | null>(null);
   const debouncedView = useDebouncedValue(view, MAP_DEBOUNCE_MS);
   const area = debouncedView ? areaForBounds(debouncedView.bounds, debouncedView.zoom) : null;
+  // Haltestellen in festen Kacheln (#98), Fahrzeuge weiter für den Ausschnitt
+  const tiles = debouncedView ? tilesForBounds(debouncedView.bounds, debouncedView.zoom) : null;
   const tooFar = view !== null && areaForBounds(view.bounds, view.zoom) === null;
   const [known, setKnown] = useState<Map<string, Stop>>(() => new Map());
   const [selection, setSelection] = useState<MapSelection | null>(null);
@@ -96,17 +104,22 @@ export function MapPage() {
   const [manualFocus, setManualFocus] = useState<Position | null>(null);
   const focus = manualFocus ?? location.position;
 
-  const { data, isFetching, isError } = useQuery({
-    queryKey: ["stops", "area", area?.min, area?.max],
-    queryFn: async ({ signal }) => {
-      const result = await fetchStopsInArea(area!, signal);
-      // Geladene Haltestellen bleiben beim Verschieben sichtbar
-      setKnown((prev) => mergeStops(prev, result.stops));
-      return result;
-    },
-    enabled: area !== null,
-    staleTime: 60 * 60_000,
+  const tileQueries = useQueries({
+    queries: (tiles ?? []).map((tile) => ({
+      queryKey: ["stops", "tile", tile.min, tile.max],
+      queryFn: async ({ signal }: { signal: AbortSignal }) => {
+        const result = await fetchStopsInArea(tile, signal);
+        // Geladene Haltestellen bleiben beim Verschieben sichtbar
+        setKnown((prev) => mergeStops(prev, result.stops));
+        return result;
+      },
+      // Haltestellen ändern sich selten: einen Tag frisch, so lange auch im Speicher
+      staleTime: TILE_FRESH_MS,
+      gcTime: TILE_FRESH_MS,
+    })),
   });
+  const isFetching = tileQueries.some((q) => q.isFetching);
+  const isError = tileQueries.some((q) => q.isError);
 
   const vehiclesQuery = useQuery({
     queryKey: ["vehicles", area?.min, area?.max],
@@ -147,10 +160,7 @@ export function MapPage() {
     else if (location.status !== "locating") location.toggle();
   }
 
-  const stops = useMemo(
-    () => [...(data ? mergeStops(known, data.stops) : known).values()],
-    [known, data],
-  );
+  const stops = useMemo(() => [...known.values()], [known]);
   let hint: string | null = null;
   if (tooFar) hint = "Zum Anzeigen der Haltestellen näher heranzoomen";
   else if (isError) hint = "Haltestellen konnten nicht geladen werden";

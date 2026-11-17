@@ -5,7 +5,8 @@ import { apiError, json } from "./http";
 import { stopsInArea, type Area } from "./sources/transitous-map";
 import { servingModes } from "./sources/vrr-lines";
 
-const AREA_TTL = 24 * 60 * 60;
+/** Haltestellen ändern sich selten; die App fragt feste Kacheln (#98), dadurch trifft der Cache oft */
+const AREA_TTL = 7 * 24 * 60 * 60;
 /** Linien einer Haltestelle ändern sich selten (#88) */
 const LINES_TTL = 7 * 24 * 60 * 60;
 /** Größter erlaubter Ausschnitt (nur bei ausreichendem Zoom, schont Transitous) */
@@ -60,5 +61,5 @@ export async function getStopsInArea(
     ),
   );
   const body: StopSearchResponse = { stops };
-  return json(body, { headers: { "Cache-Control": "public, max-age=3600" } });
+  return json(body, { headers: { "Cache-Control": "public, max-age=86400" } });
 }

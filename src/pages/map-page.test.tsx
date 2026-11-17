@@ -66,8 +66,9 @@ describe("Karte", () => {
 
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
     expect(url.pathname).toBe("/abfahrt/api/stops/area");
-    expect(url.searchParams.get("min")).toBe("51.220,6.770");
-    expect(url.searchParams.get("max")).toBe("51.230,6.785");
+    // feste Kachel, die den Ausschnitt abdeckt (#98)
+    expect(url.searchParams.get("min")).toBe("51.200,6.720");
+    expect(url.searchParams.get("max")).toBe("51.240,6.780");
 
     const card = screen.getByRole("group", { name: "D-Heinrich-Heine-Allee U" });
     expect(card).toHaveTextContent("D-Heinrich-Heine-Allee U");

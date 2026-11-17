@@ -1,6 +1,6 @@
 // Kartenausschnitt → Anfrage an /api/stops/area (Grenzen wie im Worker, worker/stops-area.ts).
 // Es geht nur der sichtbare Ausschnitt an den Worker, nicht der Standort.
-import type { StopPlatform, StopSearchResponse, TransportMode } from "../../shared/api-types";
+import type { Stop, StopPlatform, StopSearchResponse, TransportMode } from "../../shared/api-types";
 import { getJson, isStopSearchResponse } from "@/lib/api";
 import { MODE_LABEL, platformLabel } from "@/lib/modes";
 
@@ -43,6 +43,53 @@ export function areaForBounds(bounds: Bounds, zoom: number): Area | null {
     min: `${down(midLat - halfLat)},${down(midLon - halfLon)}`,
     max: `${up(midLat + halfLat)},${up(midLon + halfLon)}`,
   };
+}
+
+/** Feste Kacheln für Haltestellen (#98): 0,04° × 0,06° (ca. 4,4 × 4,2 km), in Tausendstel Grad */
+export const TILE_LAT_MILLI = 40;
+export const TILE_LON_MILLI = 60;
+
+const milli = (v: number) => (v / 1000).toFixed(3);
+
+/**
+ * Kacheln, die den sichtbaren Ausschnitt abdecken (ab STOPS_MIN_ZOOM, Ausschnitt wie bei
+ * `areaForBounds` auf die erlaubte Größe beschnitten). Gleiche Kachel = gleiche Anfrage, dadurch
+ * greifen Worker- und Browser-Cache beim Verschieben und Zurückschieben.
+ */
+export function tilesForBounds(bounds: Bounds, zoom: number): Area[] | null {
+  const area = areaForBounds(bounds, zoom);
+  if (!area) return null;
+  const [south = 0, west = 0] = area.min.split(",").map(Number);
+  const [north = 0, east = 0] = area.max.split(",").map(Number);
+  const i0 = Math.floor(Math.round(south * 1000) / TILE_LAT_MILLI);
+  const i1 = Math.ceil(Math.round(north * 1000) / TILE_LAT_MILLI) - 1;
+  const j0 = Math.floor(Math.round(west * 1000) / TILE_LON_MILLI);
+  const j1 = Math.ceil(Math.round(east * 1000) / TILE_LON_MILLI) - 1;
+  const tiles: Area[] = [];
+  for (let i = i0; i <= i1; i++) {
+    for (let j = j0; j <= j1; j++) {
+      tiles.push({
+        min: `${milli(i * TILE_LAT_MILLI)},${milli(j * TILE_LON_MILLI)}`,
+        max: `${milli((i + 1) * TILE_LAT_MILLI)},${milli((j + 1) * TILE_LON_MILLI)}`,
+      });
+    }
+  }
+  return tiles;
+}
+
+/**
+ * Haltestelle aus zwei Kacheln zusammenführen: Liegt eine Haltestelle auf der Kachelgrenze, liefert
+ * jede Kachel nur die Steige auf ihrer Seite. Steige gleicher Nummer zählen einmal.
+ */
+function platformKey(p: StopPlatform): string {
+  return p.track ?? `${p.lat},${p.lon}`;
+}
+
+export function mergeStop(a: Stop, b: Stop): Stop {
+  if (!a.platforms || !b.platforms) return b.platforms ? b : a;
+  const platforms = new Map(a.platforms.map((p) => [platformKey(p), p]));
+  for (const p of b.platforms) platforms.set(platformKey(p), p);
+  return { ...b, platforms: [...platforms.values()] };
 }
 
 export function fetchStopsInArea(area: Area, signal?: AbortSignal): Promise<StopSearchResponse> {

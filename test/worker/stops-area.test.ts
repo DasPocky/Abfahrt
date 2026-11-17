@@ -104,7 +104,7 @@ describe("GET stops/area", () => {
     const calls = mockTransitous(duesseldorf);
     const res = await get("stops/area?min=51.22041,6.77013&max=51.22987,6.78466");
     expect(res.status).toBe(200);
-    expect(res.headers.get("Cache-Control")).toBe("public, max-age=3600");
+    expect(res.headers.get("Cache-Control")).toBe("public, max-age=86400");
     const body = await res.json<StopSearchResponse>();
     expect(body.stops.length).toBeGreaterThan(5);
     expect(body.stops[0]).toEqual({
