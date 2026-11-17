@@ -118,8 +118,13 @@ export function journeyTransferRisk(journey: Journey): "tight" | "missed" | null
   return null;
 }
 
-/** Mindestens ein Umstieg, und alle am selben Steig (#97) */
-export function hasOnlySamePlatformTransfers(journey: Journey): boolean {
-  const transfers = journeyTransfers(journey);
-  return transfers.length > 0 && transfers.every((t) => t.samePlatform);
+/**
+ * Aufwand der Umstiege (#97): je Steigwechsel 2 Punkte, dazu jede Minute Fußweg zwischen zwei
+ * Fahrten. 0 = alle Umstiege am selben Steig (oder keiner).
+ */
+export function transferEffort(journey: Journey): number {
+  return journeyTransfers(journey).reduce(
+    (sum, t) => sum + (t.samePlatform ? 0 : 2) + t.walkMinutes,
+    0,
+  );
 }

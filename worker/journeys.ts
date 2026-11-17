@@ -12,7 +12,7 @@ import * as transitousTrips from "./sources/transitous-trips";
 import { isVrrArea } from "./sources/vrr";
 import { parseGeoId } from "../shared/geo-id";
 import * as vrrTrips from "./sources/vrr-trips";
-import { hasOnlySamePlatformTransfers } from "../shared/transfers";
+import { transferEffort } from "../shared/transfers";
 
 const STOP_ID = /^(vrr|transitous):[A-Za-z0-9:_.-]{1,160}$/;
 
@@ -112,7 +112,7 @@ export function paging(journeys: readonly Journey[]): {
   };
 }
 
-/** So viel später darf eine Variante mit Umstieg am selben Steig ankommen, um vorne zu stehen */
+/** So viel später darf eine bequemere Variante ankommen, um vorne zu stehen */
 export const SAME_PLATFORM_EXTRA_MS = 5 * 60_000;
 
 function arrivalOf(j: Journey): number {
@@ -127,9 +127,11 @@ function firstRide(j: Journey): string {
 }
 
 /**
- * Sortiert nach Abfahrt, dann Ankunft. Varianten derselben ersten Fahrt: Liegen alle Umstiege am
- * selben Steig und kommt sie höchstens SAME_PLATFORM_EXTRA_MS später an, steht sie vor der
- * Variante mit Steigwechsel (#97, U83 → U72 an Schlüterstraße statt U76 an Heinrich-Heine-Allee).
+ * Sortiert nach Abfahrt, dann Ankunft. Varianten derselben ersten Fahrt: Hat eine weniger
+ * Umstiegsaufwand (Steigwechsel, Fußwege; `transferEffort`) und kommt höchstens
+ * SAME_PLATFORM_EXTRA_MS später an, steht sie vorn (#97, z. B. U83 → U72 am selben Steig an
+ * Schlüterstraße statt U83 → U76 mit Steigwechsel an Heinrich-Heine-Allee). Gilt für alle
+ * Verbindungen, nicht für bestimmte Linien.
  */
 export function orderJourneys(journeys: readonly Journey[]): Journey[] {
   const sorted = journeys.toSorted(
@@ -137,18 +139,21 @@ export function orderJourneys(journeys: readonly Journey[]): Journey[] {
   );
   for (let i = 0; i < sorted.length - 1; i++) {
     const fast = sorted[i]!;
+    let best: { index: number; effort: number } | null = null;
     for (let k = i + 1; k < sorted.length; k++) {
-      const comfy = sorted[k]!;
-      if (firstRide(comfy) !== firstRide(fast)) break;
+      const other = sorted[k]!;
+      if (firstRide(other) !== firstRide(fast)) break;
+      const effort = transferEffort(other);
       if (
-        !hasOnlySamePlatformTransfers(fast) &&
-        hasOnlySamePlatformTransfers(comfy) &&
-        arrivalOf(comfy) - arrivalOf(fast) <= SAME_PLATFORM_EXTRA_MS
+        effort < (best?.effort ?? transferEffort(fast)) &&
+        arrivalOf(other) - arrivalOf(fast) <= SAME_PLATFORM_EXTRA_MS
       ) {
-        sorted.splice(k, 1);
-        sorted.splice(i, 0, comfy);
-        break;
+        best = { index: k, effort };
       }
+    }
+    if (best) {
+      const [comfy] = sorted.splice(best.index, 1);
+      sorted.splice(i, 0, comfy!);
     }
   }
   return sorted;
@@ -187,8 +192,9 @@ export async function loadJourneys(
   arrive: boolean,
   options: JourneyOptions,
   /**
-   * Beim VRR zusätzlich mit langsamem Umsteigen fragen: Nur so liefert er Varianten mit Umstieg
-   * am selben Steig (#97). Kostet eine zweite, parallele Abfrage; die Push-Prüfung braucht es nicht.
+   * Beim VRR zusätzlich mit „wenig Fußweg“ (LEASTWALKING) fragen: So liefert er Varianten mit
+   * Umstieg am selben Steig und kurzen Wegen (#97). Kostet eine zweite, parallele Abfrage; die
+   * Push-Prüfung braucht es nicht.
    */
   samePlatformVariants = false,
 ): Promise<Loaded> {
@@ -202,23 +208,20 @@ export async function loadJourneys(
     };
   };
   const viaVrr = async (): Promise<Loaded> => {
-    const withVariants = samePlatformVariants && options.transferSpeed === "normal";
-    const [r, slow] = await Promise.all([
+    const [r, comfy] = await Promise.all([
       vrrTrips.trips(from, to, when, arrive, options),
-      withVariants
-        ? vrrTrips
-            .trips(from, to, when, arrive, { ...options, transferSpeed: "slow" })
-            .catch((err: unknown) => {
-              if (err instanceof UpstreamError) return null;
-              throw err;
-            })
+      samePlatformVariants
+        ? vrrTrips.trips(from, to, when, arrive, options, "LEASTWALKING").catch((err: unknown) => {
+            if (err instanceof UpstreamError) return null;
+            throw err;
+          })
         : null,
     ]);
     return {
       from: endpoint(from, r.from),
       to: endpoint(to, r.to),
-      journeys: slow
-        ? orderJourneys(dedupeJourneys([...r.journeys, ...slow.journeys]))
+      journeys: comfy
+        ? orderJourneys(dedupeJourneys([...r.journeys, ...comfy.journeys]))
         : r.journeys,
       source: "vrr",
     };

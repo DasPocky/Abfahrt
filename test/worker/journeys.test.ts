@@ -192,6 +192,23 @@ function viaTransfer(
 }
 
 describe("Umstieg am selben Steig (#97)", () => {
+  it("bevorzugt auch weniger Fußweg beim Umsteigen", () => {
+    const [ride1, ride2] = platformChange.legs;
+    const walk = {
+      ...ride1!,
+      kind: "walk" as const,
+      line: null,
+      mode: null,
+      durationMinutes: 4,
+    };
+    const walking: Journey = { ...platformChange, id: "walk", legs: [ride1!, walk, ride2!] };
+    // gleiche Ankunft: Steigwechsel ohne Fußweg (2 Punkte) vor 4 Min Fußweg (6 Punkte)
+    expect(orderJourneys([walking, platformChange]).map((j) => j.id)).toEqual([
+      platformChange.id,
+      "walk",
+    ]);
+  });
+
   // Auf der Hardt → Holthausen, 12:02 mit der U83 (Zeiten vereinfacht)
   const platformChange = viaTransfer("12:02", "12:40", "vrr:hha", "6", "4", "U76");
   const samePlatform = viaTransfer("12:02", "12:43", "vrr:schlueter", "1", "1", "U72");
@@ -273,10 +290,12 @@ describe("API journeys", () => {
     });
     expect(body.to).toMatchObject({ id: ESSEN, name: "Essen Hauptbahnhof" });
     expect(body.later).not.toBeNull();
-    // zweite Abfrage mit langsamem Umsteigen für Umstiege am selben Steig (#97)
+    // zweite Abfrage „wenig Fußweg“ für Umstiege am selben Steig (#97)
     const vrrCalls = calls.filter((u) => u.includes("openservice.vrr.de"));
     expect(vrrCalls).toHaveLength(2);
-    expect(vrrCalls.filter((u) => u.includes("changeSpeed=slow"))).toHaveLength(1);
+    expect(
+      vrrCalls.filter((u) => u.includes("ptOptionsActive=1&routeType=LEASTWALKING")),
+    ).toHaveLength(1);
     expect(calls.some((u) => u.includes("v5/plan"))).toBe(false);
     const subway = body.journeys.flatMap((j) => j.legs).find((l) => l.mode === "subway");
     expect(subway?.lineColor).toMatch(/^[0-9a-f]{6}$/);
