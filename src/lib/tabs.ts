@@ -23,7 +23,7 @@ export function tabForPath(pathname: string): TabKey | null {
   if (pathname === "/verbindung" || pathname === "/fahrt") return "verbindung";
   if (pathname === "/karte") return "karte";
   if (pathname === "/stoerungen") return "stoerungen";
-  if (pathname === "/mehr" || pathname === "/ueber") return "mehr";
+  if (pathname === "/mehr" || pathname === "/ueber" || pathname === "/einstellungen") return "mehr";
   return null;
 }
 

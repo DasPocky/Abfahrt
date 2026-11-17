@@ -18,10 +18,8 @@ import { fetchDepartures, stopPath } from "@/lib/api";
 import { sortDepartures, upcomingDepartures } from "@/lib/departures";
 import type { Favorite } from "@/lib/favorites";
 import { describeFilter, filterDepartures, filterToParams } from "@/lib/filters";
+import { useSettings } from "@/hooks/use-settings";
 import { DEPARTURES_REFETCH_MS } from "@/pages/stop-page";
-
-/** Abfahrten pro Favorit auf der Startseite */
-export const FAVORITE_PREVIEW_COUNT = 4;
 
 export function FavoriteCard({
   favorite,
@@ -43,6 +41,8 @@ export function FavoriteCard({
   onRename: (label: string) => void;
 }) {
   const [renaming, setRenaming] = useState(false);
+  // Abfahrten je Favorit aus den Einstellungen (#37)
+  const { favoriteCount } = useSettings();
   const [draft, setDraft] = useState(favorite.label ?? "");
   const { data, isPending, isError } = useQuery({
     // gleicher Schlüssel wie auf der Haltestellenseite: Daten werden geteilt
@@ -55,7 +55,7 @@ export function FavoriteCard({
     ? upcomingDepartures(
         sortDepartures(filterDepartures(data.departures, favorite.filter)),
         now,
-      ).slice(0, FAVORITE_PREVIEW_COUNT)
+      ).slice(0, favoriteCount)
     : [];
   const params = filterToParams(favorite.filter, false).toString();
   const to = params ? `${stopPath(favorite.stopId)}?${params}` : stopPath(favorite.stopId);

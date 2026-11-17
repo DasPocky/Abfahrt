@@ -15,6 +15,7 @@ import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { CHIP_BASE, CHIP_OFF, CHIP_ON } from "@/components/chip";
 import { ModeIcon } from "@/components/mode-icon";
+import { ACCENT_ON, Segmented } from "@/components/segmented";
 import { Button } from "@/components/ui/button";
 import { countJourneyOptions } from "@/lib/journeys";
 import { MODE_BADGE_CLASS } from "@/lib/line-colors";
@@ -47,9 +48,6 @@ const ROUTE_CHOICES: { value: RoutePreference; label: string }[] = [
   { value: "lessWalking", label: "Wenig Fußweg" },
 ];
 
-/** Akzentfarbe für gewählte Optionen (#101: mehr farbliche Klarheit) */
-const ACCENT_ON = "bg-blue-600 text-white shadow-xs dark:bg-blue-500";
-
 /** Abschnitt mit Symbol, Überschrift und optionalem Hinweis */
 function Section({
   icon: Icon,
@@ -77,36 +75,6 @@ function Section({
         </p>
       )}
     </section>
-  );
-}
-
-/** Einzelauswahl als Segmentschalter: der gewählte Teil blau */
-function Segmented<T>({
-  choices,
-  value,
-  onChange,
-}: {
-  choices: readonly { value: T; label: string }[];
-  value: T;
-  onChange: (value: T) => void;
-}) {
-  return (
-    <div className="flex rounded-lg bg-muted p-0.5">
-      {choices.map((choice) => (
-        <button
-          key={choice.label}
-          type="button"
-          aria-pressed={choice.value === value}
-          onClick={() => onChange(choice.value)}
-          className={cn(
-            "min-h-8 min-w-0 flex-1 rounded-md px-1.5 py-1 text-sm leading-tight font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            choice.value === value ? ACCENT_ON : "text-muted-foreground hover:text-foreground",
-          )}
-        >
-          {choice.label}
-        </button>
-      ))}
-    </div>
   );
 }
 
