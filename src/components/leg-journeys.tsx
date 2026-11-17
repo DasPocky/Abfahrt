@@ -236,13 +236,13 @@ export function LegJourneys({
         </p>
       )}
       <Card aria-label="Gesamtroute" className="gap-1 px-3 py-2.5">
-        <p className="flex items-baseline gap-2">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <span className="text-lg font-semibold tabular-nums">
             {first ? clock(departureOf(first)) : "…"} →{" "}
             {complete && final ? clock(arrivalOf(final)) : "…"}
           </span>
-          <span className="text-sm text-muted-foreground">
-            {total !== null ? `${formatDuration(total)} · ` : ""}
+          <span className="inline-flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
+            {total !== null && <>{formatDuration(total)} ·</>}
             <Flag className="size-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
             {legs.length - 1} Zwischenhalte
           </span>
