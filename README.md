@@ -39,6 +39,7 @@ Abfahrt nutzt mehrere Quellen und nimmt je Region die beste. Fällt eine aus, sp
 | Quelle                                                                                            | Wofür                                                     |
 | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | [VRR OpenService](https://www.opendata-oepnv.de)                                                  | Abfahrten, Verbindungen, Störungen im VRR (sekundengenau) |
+| [EFA-BW](https://www.mobidata-bw.de) (NVBW, MobiData BW)                                          | Abfahrten mit Echtzeit in Baden-Württemberg               |
 | [Transitous](https://transitous.org)                                                              | ganz Deutschland, Karte, Live-Fahrzeuge, Linienfarben     |
 | [OpenFreeMap](https://openfreemap.org) / [OpenStreetMap](https://www.openstreetmap.org/copyright) | Kartenkacheln                                             |
 

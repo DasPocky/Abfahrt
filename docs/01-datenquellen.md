@@ -14,7 +14,7 @@ Stand: 30.10.2026. Alle Quellen wurden an diesem Tag live angetestet, die Testan
 | gtfs.de GTFS-RT                      | Deutschland                                      | ✅                                  | Roh-Feed TripUpdates/Alerts                                               | frei, CC BY-SA 4.0                              | ❌ nicht nutzbar (s. u.)        |
 | v6.db.transport.rest                 | Deutschland (DB)                                 | ✅                                  | Abfahrten, Verbindungen                                                   | frei                                            | ❌ Dienst down (503)            |
 
-**Strategie:** Ein Adapter-Muster im Worker. Jede Quelle liefert in ein gemeinsames internes Format. Grundsatz: **immer mehrere Quellen nutzen, wo möglich, und je Region die beste wählen**. Heute: Haltestellen im VRR-Gebiet fragen wir beim VRR ab, sonst bei Transitous. Fällt eine Quelle aus, springt die andere ein. Weitere regionale Quellen sind geprüft und geplant, siehe [Echtzeit-Abdeckung](05-echtzeit-abdeckung.md).
+**Strategie:** Ein Adapter-Muster im Worker. Jede Quelle liefert in ein gemeinsames internes Format. Grundsatz: **immer mehrere Quellen nutzen, wo möglich, und je Region die beste wählen**. Heute: Haltestellen im VRR-Gebiet fragen wir beim VRR ab, sonst bei Transitous. Fällt eine Quelle aus, springt die andere ein. In Baden-Württemberg kommt die landesweite Auskunft EFA-BW der NVBW (offen über MobiData BW) davor, wenn sie Echtzeit hat (#104). Weitere regionale Quellen sind geprüft und geplant, siehe [Echtzeit-Abdeckung](05-echtzeit-abdeckung.md).
 
 ## VRR OpenService (EFA)
 

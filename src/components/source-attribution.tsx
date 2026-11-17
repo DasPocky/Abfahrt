@@ -10,6 +10,18 @@ export function SourceAttribution({ source }: { source: DataSource }) {
       </p>
       {source === "vrr" ? (
         <p>Daten: VRR</p>
+      ) : source === "efa-bw" ? (
+        <p>
+          Daten: NVBW (EFA-BW) über{" "}
+          <a
+            href="https://www.mobidata-bw.de"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            MobiData BW
+          </a>
+        </p>
       ) : (
         <p>
           Daten:{" "}

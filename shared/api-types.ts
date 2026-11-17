@@ -3,7 +3,10 @@
 export type TransportMode =
   "tram" | "subway" | "bus" | "suburban" | "regional" | "longdistance" | "ferry" | "other";
 
-export type DataSource = "vrr" | "transitous";
+/** Quelle einer Antwort; „efa-bw“ = landesweite Auskunft Baden-Württemberg (NVBW, #104) */
+export type DataSource = "vrr" | "transitous" | "efa-bw";
+
+export const DATA_SOURCES: readonly DataSource[] = ["vrr", "transitous", "efa-bw"];
 
 /** Art eines Suchtreffers: Haltestelle, Adresse (Straße/Hausnummer) oder Ort (POI) */
 export type PlaceKind = "stop" | "address" | "poi";

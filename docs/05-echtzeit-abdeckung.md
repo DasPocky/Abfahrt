@@ -143,6 +143,24 @@ VBB, VBN, NAH.SH, saarVV); sie antworten, sind aber nicht für Dritte freigegebe
 
 **Nicht erreichbar:** `v6.db.transport.rest` (Community-Dienst zu DB-Navigator-Daten, 502 am 17.11.2026).
 
+## Umsetzung (#104)
+
+**Rechtliche Prüfung (17.11.2026):** Technisch erreichbar heißt nicht freigegeben.
+
+| Quelle                  | Status                                                                                | Nächster Schritt                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| EFA-BW (NVBW)           | offen über MobiData BW (EFA-JSON-API dokumentiert) → **angebunden**                   | Nutzungsbedingungen der EFA-JSON-API bei mobidata-bw@nvbw.de bestätigen lassen |
+| MVV                     | eigene Nutzungsbedingungen für die TRIAS-Schnittstelle, interne EFA nicht freigegeben | Vereinbarung mit dem MVV (Entwicklerseite)                                     |
+| Bayern-Fahrplan (DEFAS) | Echtzeit nur mit Datenlieferungsvertrag der BEG                                       | Vertrag mit der BEG                                                            |
+| Westfalenfahrplan       | keine offene Schnittstelle dokumentiert                                               | Anfrage beim NWL bzw. bei der WestfalenTarif GmbH                              |
+
+**Technik:** `worker/sources/regional.ts` listet regionale EFA-Quellen mit Zuständigkeit (Landes- bzw.
+Kreisschlüssel der Haltestellen-ID). Für Abfahrten fragt der Worker zuerst die regionale Quelle (gleiches
+Format wie der VRR, `vrr.departures` mit anderer Basis-URL). Hat sie Abfahrten mit Echtzeit (oder geht es um
+eine Zeit in mehr als einer Stunde), gewinnt sie, sonst geht es weiter wie bisher (VRR, dann Transitous).
+Das gilt auch für Haltestellen aus der Karte (`transitous:`-IDs, die DHID steckt in der ID). Weitere Quellen
+kommen als Eintrag in die Liste, sobald ihre Nutzung geklärt ist.
+
 ## Übersicht möglicher Quellen
 
 | Region                         | Quelle                          | Art           | Zugang                    |
