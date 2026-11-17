@@ -39,7 +39,8 @@ Die App läuft wie Spieltisch und Tasto als Worker-Route `endlab.de/abfahrt*` au
   - `/abfahrt/karte` – Karte mit Haltestellen (lazy geladen, siehe [Karte](#karte))
   - `/abfahrt/verbindung` – Verbindungssuche (Parameter in der URL, siehe unten)
   - `/abfahrt/stoerungen` – Störungsübersicht einer Gemeinde (siehe unten)
-  - `/abfahrt/ueber` – Über die App: Zweck, Pflicht-Quellhinweise, Datenschutz, Quellcode (verlinkt im Fußbereich jeder Seite)
+  - `/abfahrt/mehr` – Benachrichtigungen, Installieren, Link zu „Über“ (#106)
+  - `/abfahrt/ueber` – Über die App: Zweck, Pflicht-Quellhinweise, Datenschutz, Quellcode (verlinkt unter „Mehr“)
   - alles andere – „Seite nicht gefunden“. Direktaufrufe und Reloads funktionieren, weil der Worker für alle App-Seiten die `index.html` liefert (siehe oben, #76).
 - **Datenabruf:** TanStack Query, Zugriff auf die API nur über `src/lib/api.ts` (Vertrag `shared/api-types.ts`, Antworten werden grob auf ihre Form geprüft). 4xx-Fehler werden nicht wiederholt, andere höchstens zweimal.
   - Suche: Debounce 250 ms, ab 2 Zeichen, Treffer 5 min gecacht
@@ -135,7 +136,7 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 - Abos in **D1** `abfahrt-push` (Bindung `PUSH_DB`, Schema in `migrations/`, angewendet vom Deploy-Workflow): Kennung = SHA-256 des Endpunkts, Endpunkt, Schlüssel des Browsers, `topics` (für #72), Zeitstempel, Fehlerzähler. Keine personenbezogenen Daten.
 - `POST push/subscribe`, `push/unsubscribe`, `push/test` (Body `{ subscription }` aus `PushSubscription.toJSON()`): nur mit `Origin` der eigenen Seite, JSON bis 4 KB, Endpunkt nur bei bekannten Push-Diensten (Google FCM, Mozilla, Apple, Microsoft), sonst `400`. Antwortet der Push-Dienst mit 404/410, wird das Abo gelöscht.
 - Service Worker: `push` zeigt die Nachricht (Titel, Text, Kennung `tag` ersetzt ältere), `notificationclick` öffnet bzw. fokussiert die Seite aus `url` (nur Seiten unter `/abfahrt/`).
-- App: „Benachrichtigungen“ auf der Über-Seite (`src/components/push-settings.tsx`) mit Einschalten (Erlaubnis nur nach Antippen), Testnachricht, Ausschalten. Am iPhone geht Push nur in der installierten App (Homescreen), im Browser erklärt die Seite das.
+- App: „Benachrichtigungen“ im Bereich „Mehr“ (`/mehr`, `src/components/push-settings.tsx`) mit Einschalten (Erlaubnis nur nach Antippen), Testnachricht, Ausschalten. Am iPhone geht Push nur in der installierten App (Homescreen), im Browser erklärt die Seite das.
 - **Auslöser** (#72, `worker/push/cron.ts`, Logik in `worker/push/triggers.ts`): Cron alle 5 Minuten (`triggers.crons` in `wrangler.jsonc`). Die App hält per `POST push/topics` die Interessen aktuell (`shared/push-topics.ts`, `src/components/push-sync.tsx`, nur bei Änderungen): Favoriten-Haltestellen (nur VRR, höchstens 10, mit Linien aus den Filtern), gemerkte Fahrt (Start, Ziel, Optionen, Signatur, Planzeiten), Ruhezeit. Je Abo merkt sich D1 die schon gemeldeten Störungs-IDs (`seen_alerts`, beim ersten Lauf nur erfasst) und den Stand der Fahrt (`trip_state`), gemeldet werden nur Änderungen: neue Störungen (einzeln oder gesammelt, nicht in der Ruhezeit 22–6 Uhr), bei der Fahrt ab 60 Minuten vor der Abfahrt bis 10 Minuten nach der Ankunft Verspätung ab 5 Minuten (erneut ab 3 Minuten Änderung), gefährdeter oder nicht erreichbarer Anschluss, Ausfall, Verbindung nicht mehr gefunden. Die Anschluss- und Ausfall-Logik liegt dafür in `shared/transfers.ts` (App und Worker). Free-Plan: höchstens 40 Unteranfragen je Lauf (Limit 50), 50 Abos, 2 Nachrichten je Abo und Lauf; Störungen und Gemeinden kommen aus demselben Cache wie `api/alerts`.
 
 **Quellenwahl für Abfahrten** (`worker/api.ts`):
