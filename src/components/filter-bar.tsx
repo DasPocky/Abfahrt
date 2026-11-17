@@ -1,8 +1,9 @@
-import { useId } from "react";
-import { Clock, SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { Chip, CHIP_BASE, CHIP_OFF, CHIP_ON } from "@/components/chip";
+import { TimePicker } from "@/components/time-picker";
+import { useNow } from "@/hooks/use-now";
 import { Button } from "@/components/ui/button";
 import {
   availableLines,
@@ -12,7 +13,6 @@ import {
   toggle,
 } from "@/lib/filters";
 import { MODE_LABEL, MODE_SHORT } from "@/lib/modes";
-import { toLocalInputValue } from "@/lib/time";
 import type { Departure } from "../../shared/api-types";
 
 function withoutTime(filter: DepartureFilter): DepartureFilter {
@@ -29,7 +29,8 @@ export function FilterBar({
   filter: DepartureFilter;
   onChange: (filter: DepartureFilter) => void;
 }) {
-  const timeId = useId();
+  // für Tag-Chips und Schnellwahl; minütlich reicht
+  const now = useNow(60_000);
   // Auswahl auch zeigen, wenn sie gerade nicht in den Abfahrten vorkommt
   const modes = [...new Set([...availableModes(departures), ...filter.modes])];
   const lines = [...new Set([...availableLines(departures, filter.modes), ...filter.lines])];
@@ -116,40 +117,16 @@ export function FilterBar({
             </div>
           )}
           <div className="space-y-2">
-            <label
-              htmlFor={timeId}
-              className="text-xs font-semibold tracking-wide text-muted-foreground uppercase"
-            >
+            <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
               Abfahrten ab
-            </label>
-            <div className="flex items-center gap-2">
-              <Clock className="size-4 text-muted-foreground" aria-hidden="true" />
-              <input
-                id={timeId}
-                type="datetime-local"
-                className="h-9 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm"
-                value={filter.time ? toLocalInputValue(filter.time) : ""}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  onChange(
-                    value
-                      ? { ...withoutTime(filter), time: new Date(value).toISOString() }
-                      : withoutTime(filter),
-                  );
-                }}
-              />
-              {filter.time && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onChange(withoutTime(filter))}
-                >
-                  <X aria-hidden="true" />
-                  Jetzt
-                </Button>
-              )}
-            </div>
+            </p>
+            <TimePicker
+              time={filter.time}
+              now={now}
+              onChange={(time) =>
+                onChange(time ? { ...withoutTime(filter), time } : withoutTime(filter))
+              }
+            />
           </div>
           {moreCount > 0 && (
             <Button
