@@ -4,7 +4,7 @@ Jeder Punkt wird ein eigenes Issue. Ich schlage die Issues vor, du nickst sie ab
 
 ## M0 – Fundament
 
-Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
+✅ Erledigt. Live seit 13.11.2026, heute unter https://endlab.de/abfahrt
 
 - Repo-Regeln: Issue-/PR-Vorlagen, Labels, `CONTRIBUTING.md`, `SECURITY.md`, Lizenz AGPL-3.0
 - Mailtext VRR-Produktivzugang
@@ -14,6 +14,8 @@ Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
 - Deploy-Pipeline: Preview pro PR, Produktion bei Merge auf `main`. Cache API auf `workers.dev` getestet: funktioniert.
 
 ## M1 – Abfahrtsmonitor + Favoriten (MVP)
+
+✅ Erledigt.
 
 - Worker: Adapter VRR + Transitous, internes Format, Cache, Rate-Limit, Security-Header
 - Haltestellensuche mit Autovervollständigung
@@ -30,6 +32,8 @@ Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
 
 ## M2 – Verbindungssuche
 
+✅ Erledigt.
+
 - Von/Nach mit Haltestellen, Adressen, POIs und aktuellem Standort
 - Ab-/An-Zeit, Datum, Verkehrsmittel ausschließen (z. B. ohne Fernverkehr), maximale Umstiege, Umstiegszeit, Barrierefreiheit
 - Echtzeit pro Abschnitt, Warnung bei gefährdetem Anschluss
@@ -38,6 +42,8 @@ Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
 
 ## M3 – Störungen & Push
 
+✅ Erledigt.
+
 - Störungen bei Haltestelle/Linie, eigene Übersichtsseite, Banner für Favoriten
 - Aufzugsstörungen (VRR MIP)
 - Web Push: Cron-Trigger + D1, VAPID-Signatur im Worker. Unter iOS nur, wenn die App installiert ist.
@@ -45,7 +51,15 @@ Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
 ## M4 – Extras
 
 - ✅ Live-Fahrzeugkarte (#92, Transitous `map/trips`, Position aus Fahrplan/Echtzeit geschätzt, siehe [Architektur](02-architektur.md))
-- Wagenreihung/Auslastung (DB RIS::Transports, Registrierung nötig)
+- ✅ Steige auf der Karte, Zoomstufen, Abgleich der Verkehrsmittel mit dem VRR (#84, #86, #88)
+- ✅ Orte bei Halten und Zielen in anderen Städten (#94)
+- ✅ Umstieg am selben Steig bevorzugen, alle VRR-Optionen, einfachere Zeitauswahl (#97, #101, #102)
+- ✅ Deutschlandweite Prüfung der Echtzeit (#104, [Echtzeit-Abdeckung](05-echtzeit-abdeckung.md))
+- App-Struktur mit Navigation unten, Hauptbereiche gleichwertig (#106)
+- Regionale Echtzeit-Quellen anbinden: Westfalen, MVV, Bayern-Fahrplan, Baden-Württemberg (frei), danach DB
+  Timetables, RMV, VBN, HVV (Registrierung bzw. Anfrage) (#104)
+- Kartendaten in festen Kacheln laden und länger cachen (#98)
+- Darstellungsvarianten der Abfahrtszeile in den Einstellungen (#37)
+- Wagenreihung/Auslastung (DB API Marketplace, Registrierung nötig)
 - Widget-/Tafel-Ansicht (z. B. Tablet an der Wand)
 - Teilen per Link
-- Ausbau NRW: VRS, AVV mit eigenen Keys

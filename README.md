@@ -1,24 +1,92 @@
 # Abfahrt
 
-Echtzeit-ÖPNV-Auskunft als Progressive Web App – Fokus Düsseldorf/Rheinland, Ziel ganz Deutschland.
+[![CI](https://github.com/DasPocky/Abfahrt/actions/workflows/ci.yml/badge.svg)](https://github.com/DasPocky/Abfahrt/actions/workflows/ci.yml)
+[![Deploy](https://github.com/DasPocky/Abfahrt/actions/workflows/deploy.yml/badge.svg)](https://github.com/DasPocky/Abfahrt/actions/workflows/deploy.yml)
+[![Lizenz: AGPL-3.0](https://img.shields.io/badge/Lizenz-AGPL--3.0-blue.svg)](LICENSE)
 
-- Minutengenaue Live-Abfahrten
-- Verbindungssuche mit Echtzeit
-- Störungen & Meldungen
-- Favoriten & Pendlerstrecken
+Echtzeit-Auskunft für Bus und Bahn als Progressive Web App: Abfahrten, Verbindungen, Karte mit Live-Fahrzeugen
+und Störungen. Schwerpunkt Düsseldorf/Rheinland, nutzbar in ganz Deutschland. Läuft komplett im Free-Plan von
+Cloudflare, ohne Konto und ohne Werbung.
 
-Läuft komplett auf Cloudflare (Free-Plan). Konzept und Datenquellen: siehe [`docs/`](docs/).
+**👉 Live: [endlab.de/abfahrt](https://endlab.de/abfahrt)**
 
-## Bedienung
+<p align="center">
+  <img src="docs/images/abfahrten.webp" width="260" alt="Abfahrten an Heinrich-Heine-Allee mit Linien, Steigen und Verspätungen">
+  <img src="docs/images/verbindung.webp" width="260" alt="Verbindung Auf der Hardt nach Holthausen mit Zeitleiste und Umstieg am selben Steig">
+  <img src="docs/images/karte.webp" width="260" alt="Karte der Düsseldorfer Innenstadt mit Haltestellen und Live-Fahrzeugen">
+</p>
 
-1. Auf der Startseite den Namen einer Haltestelle eingeben (ab 2 Zeichen erscheinen Vorschläge). Beim Öffnen fordert die App den **Standort** an (der Browser fragt um Erlaubnis): Mit Erlaubnis stehen Treffer in deiner Nähe oben (z. B. „Holthausen“ in Düsseldorf vor Essen), jeweils mit Entfernung. Das 📍-Symbol im Suchfeld schaltet das an und aus, ausgeschaltet fragt die App nicht mehr. Lehnt man im Browser ab, fragt sie beim nächsten Öffnen wieder; wird der Standort in den Einstellungen freigegeben, holt sie ihn sofort. Für die Suche wird der Standort nur im Gerät verwendet. Blockiert der Browser den Standort (am iPhone oft über die Ortungsdienste), zeigt die App „So gibst du ihn frei“ mit den Schritten für iPhone, Android und Computer.
-   Unter **„In der Nähe“** zeigt die Startseite die Haltestellen im Umkreis von 1 km, die nächste zuerst. Dafür geht der Standort auf ~100 m gerundet an den Worker.
-2. Treffer antippen – oder per Tastatur: Pfeil runter/hoch wählt, Enter öffnet, Esc leert die Suche.
-3. Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen weiter. Der Link lässt sich als Lesezeichen speichern.
-4. **Filtern:** Über der Liste stehen die Verkehrsmittel, die an der Haltestelle fahren (z. B. S-Bahn, U-Bahn, Bus). Antippen filtert, mehrere sind möglich. Über das **Filter-Symbol** rechts gibt es Linien, Gleis/Steig und „Abfahrten ab“ (Uhrzeit). Der Filter steht in der Adresse, der Link lässt sich also teilen.
-5. Mit dem **Stern** wird die aktuelle Ansicht zum Favoriten, inklusive Filter. Dieselbe Haltestelle kann mehrfach gespeichert werden (z. B. „Hbf · S-Bahn“ und „Hbf · U-Bahn“). Favoriten erscheinen auf der Startseite unter „Meine Haltestellen“ mit den nächsten Abfahrten. Über **Bearbeiten** lassen sie sich umbenennen, verschieben und entfernen. Sie werden nur im eigenen Browser gespeichert.
-6. **Karte:** Unter der Suche führt „Karte“ zu `/abfahrt/karte`. Ab Straßenzoom erscheinen die Haltestellen als Punkte (ab Zoomstufe 16 mit Namen), beim Herauszoomen bittet die Karte ums Heranzoomen. Jeder Steig ist ein eigener Punkt an seiner echten Position; nur Steige, die bei der aktuellen Zoomstufe auf dem Bildschirm zusammenfallen würden, werden ein gemeinsamer Punkt (antippen öffnet dann die ganze Haltestelle). Der Punkt ist ein Kreis mit einem Segment je Verkehrsmittel (z. B. halb blau, halb rot für U-Bahn + Straßenbahn), herangezoomt mit Steig-Nummer; antippen zeigt Haltestelle und Steig, **Abfahrten** öffnet die Abfahrten nur dieses Steigs. **Live-Fahrzeuge:** Busse und Bahnen im Ausschnitt bewegen sich auf der Karte (Kreis in Linienfarbe mit Liniennummer). Die Position ist aus Fahrplan und Echtzeit geschätzt, ohne Echtzeit erscheint der Punkt blasser. Antippen zeigt Linie, nächsten Halt und Verspätung; das Straßenbahn-Symbol oben links blendet die Fahrzeuge aus. Die Karte startet am Standort, wenn er in der App schon erlaubt ist (sonst Düsseldorf Innenstadt), das Fadenkreuz oben links springt dorthin. An unseren Server geht nur der sichtbare Ausschnitt, nicht der Standort.
-7. **Verbindung suchen:** Unter der Suche führt „Verbindung suchen“ zu `/abfahrt/verbindung`. **Von** und **Nach** wie in der Suche eintippen: Haltestellen, aber auch Adressen (🏠, z. B. „Königsallee 1“) und Orte (🏛, z. B. „Rheinturm“), Treffer in deiner Nähe zuerst. Bei Adressen und Orten beginnt bzw. endet die Verbindung mit einem Fußweg. Oder „Mein Standort“ wählen, dann gilt die nächste Haltestelle. Von und Nach stehen gemeinsam in einem Kasten, der runde Pfeil-Knopf tauscht sie. Darunter öffnet der Chip **„Ab jetzt ▾“** Abfahrt/Ankunft, den Tag per Antippen (Heute, Morgen, Wochentage, Kalender), die Uhrzeit mit −15/+15 Minuten und die Schnellwahl „in 15 Min“, „in 30 Min“, „in 1 Std“ (der Chip zeigt dann z. B. „An morgen 08:15“, „Jetzt“ setzt zurück). Dieselbe Auswahl hat der Zeitfilter der Abfahrten. Das **Optionen-Symbol** daneben öffnet alle Einstellungen, die der VRR anbietet: Route (schnellste, wenige Umstiege, wenig Fußweg), Verkehrsmittel (z. B. ohne Fernzug für das Deutschlandticket), Umstiege (beliebig, direkt, max. 1/2), Umstiegszeit (kurz, normal, mehr Zeit), **über** einen Zwischenhalt mit Aufenthalt, Barrierefreiheit (Rollstuhl oder einzeln: ohne Treppen, ohne Rolltreppen, Niederflur), Fahrrad mitnehmen und Haltestellen in der Nähe. Aktive Optionen stehen kurz unter der Zeile. Jede Verbindung zeigt oben Ab → An mit Verspätung, Dauer und Umstiege, darunter einen **Balken** mit den Fahrten in Linienfarbe (Länge nach Fahrzeit, Fußwege gepunktet) und „ab 14:53 Gleis 2“ der ersten Fahrt (mit Fußweg davor: „4 Min, dann ab …“). Ausfälle sind rot markiert. Knappe Umstiege (unter 2 Minuten Puffer nach Echtzeit und Fußweg) zeigt die Zeile als „Anschluss gefährdet“ (gelb) bzw. „Anschluss nicht erreichbar“ (rot). Antippen klappt die Details als **Zeitleiste** auf: Zeiten links, eine Linie in Linienfarbe von Halt zu Halt, je Fahrt Linie, Richtung, Ab/An mit Verspätung und Gleis/Steig (Gleiswechsel in Orange), „N Zwischenhalte“ zum Aufklappen, Fußwege mit Dauer und Länge, die Umstiegszeit vor jeder Anschlussfahrt sowie Hinweise (antippen für den vollen Text). Ausgefallene Fahrten und Halte sind rot bzw. durchgestrichen. Oben in den Details öffnet **Karte** die Routenkarte: jede Fahrt als Linie in Linienfarbe, Fußwege grau gestrichelt, Start und Ziel als gefüllte Punkte mit Namen, Umstiege als kleine Kreise, auf die ganze Strecke gezoomt. Verschieben mit zwei Fingern (am Rechner Strg + Mausrad zum Zoomen), damit die Seite mit einem Finger weiter scrollt; per Tastatur Tab auf die Karte, dann Pfeiltasten und +/−. Fehlt der Streckenverlauf, verbindet die Karte die Halte. **Früher**/**Später** blättern. Alle Angaben stehen in der Adresse (`?von=…&nach=…&zeit=…&ankunft=1&ohne=longdistance,bus&umstiege=1&umstiegszeit=mehr&barrierefrei=1`), der Link lässt sich teilen. Gibt es zur selben Abfahrt eine bequemere Variante (Umstieg am selben Steig, weniger Fußweg), die höchstens 5 Minuten später ankommt, steht sie vorn („3 Min Umstieg · selber Steig“). Halte in einer anderen Stadt als dem Start stehen mit Ort („Holthausen, Düsseldorf“ auf dem Weg von Dortmund); Fahrtziele in anderen Städten ebenso („Düsseldorf Holthausen“), in der eigenen Stadt ohne Ort („Benrath Btf“).
-8. **Live-Begleitung:** In den Details einer Verbindung merkt **„Merken & live verfolgen“** sie und öffnet `/abfahrt/fahrt`. Dort steht groß der nächste Schritt („U76 ab Holthausen · Gleis 2 – Abfahrt in 5 Min“, unterwegs „Ankunft in 12 Min“, beim Umstieg „Umsteigen: S6 ab … in 6 Min“), darunter die Zeitleiste. Die Seite fragt alle 30 Sekunden neu ab und erkennt die Verbindung an Linien und Planzeiten wieder. Ist ein Anschluss gefährdet, fällt etwas aus oder ist die Verbindung nicht mehr im Fahrplan, erscheint eine Warnung mit **Alternativen suchen** (ab dem nächsten Einstieg). Die Startseite zeigt die Fahrt oben, bis 30 Minuten nach der Ankunft. **Begleitung beenden** löscht sie. Gespeichert wird nur im Browser (`abfahrt:trip`).
-9. **Störungen:** Unter der Suche führt „Störungen“ zu `/abfahrt/stoerungen`: Sperrungen, Aufzüge/Rolltreppen und Infos des VRR für eine Gemeinde, Sperrungen zuerst. Die Gemeinde ergibt sich aus der ersten Favoriten-Haltestelle, sonst aus der nächsten Haltestelle (Standort), sonst Düsseldorf; über das Suchfeld lässt sich eine andere Haltestelle (und damit Gemeinde) wählen. Jede Zeile zeigt Art (Symbol), Titel, betroffene Linien und Gültigkeit („bis 21.11.“, „seit 10.10.“, „ab 30.11.“); Meldungen zu deinen Favoriten stehen oben und tragen einen ★. Die Chips filtern nach Verkehrsmittel, Antippen öffnet den vollen Text mit Link zur Quelle. Gibt es Störungen bei deinen Favoriten (Haltestelle oder eine Linie aus dem Favoriten-Filter), zeigt die Startseite über „Meine Haltestellen“ einen Hinweis („2 Störungen bei deinen Favoriten“). Auf der Abfahrtsseite stehen Meldungen der Haltestelle als schlanke Zeile über den Abfahrten; was schon als Hinweis an den Abfahrten steht, erscheint nicht doppelt. Meldungen gibt es nur für Haltestellen im VRR. Defekte **Aufzüge und Rolltreppen** stehen an der Haltestelle in einer eigenen Zeile (z. B. „Aufzug/Rolltreppe: Rolltreppe außer Betrieb“), nicht zusätzlich als Hinweis an den Abfahrten.
-10. **Benachrichtigungen:** Auf der Seite [Über Abfahrt](https://endlab.de/abfahrt/ueber) lassen sie sich einschalten und mit einer **Testnachricht** prüfen. Am iPhone geht das nur, wenn Abfahrt auf dem Homescreen installiert ist. Darunter wählst du, wofür Nachrichten kommen: **Störungen bei Favoriten** (neue Meldungen zu deinen Haltestellen und den Linien aus deren Filtern), **Gemerkte Fahrt** (ab 60 Minuten vor der Abfahrt: Verspätung ab 5 Minuten, gefährdeter Anschluss, Ausfall, Verbindung nicht mehr im Fahrplan) und **Ruhe 22–6 Uhr** (dann keine Störungsmeldungen). Geprüft wird alle 5 Minuten; gemeldet wird nur, was neu ist.
+## Funktionen
+
+- **Abfahrten** mit Echtzeit, Verspätung, Gleis/Steig, Ausfällen und Hinweisen; Filter nach Verkehrsmittel,
+  Linie, Steig und Uhrzeit
+- **Favoriten** mit eigenem Filter und Live-Abfahrten auf der Startseite
+- **Haltestellen in der Nähe** und Suche mit Treffern in deiner Nähe zuerst
+- **Verbindungssuche** von Haltestellen, Adressen und Orten, mit allen Optionen des VRR (Route, Verkehrsmittel,
+  Umstiege, Zwischenhalt, Barrierefreiheit, Fahrrad); bevorzugt bequeme Umstiege am selben Steig
+- **Live-Begleitung** einer gemerkten Verbindung mit Warnung bei gefährdetem Anschluss
+- **Karte** mit jedem Steig an seiner echten Position und **Live-Fahrzeugen**
+- **Störungen**, Aufzüge und Rolltreppen, mit Hinweis bei deinen Favoriten
+- **Benachrichtigungen** (Web Push) bei Störungen und Änderungen deiner gemerkten Fahrt
+- **Installierbar** auf iPhone und Android, funktioniert offline mit dem letzten Stand, hell und dunkel
+
+Wie alles im Detail funktioniert: [Bedienung](docs/06-bedienung.md).
+
+## Datenquellen
+
+Abfahrt nutzt mehrere Quellen und nimmt je Region die beste. Fällt eine aus, springt die nächste ein.
+
+| Quelle                                                                                            | Wofür                                                     |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [VRR OpenService](https://www.opendata-oepnv.de)                                                  | Abfahrten, Verbindungen, Störungen im VRR (sekundengenau) |
+| [Transitous](https://transitous.org)                                                              | ganz Deutschland, Karte, Live-Fahrzeuge, Linienfarben     |
+| [OpenFreeMap](https://openfreemap.org) / [OpenStreetMap](https://www.openstreetmap.org/copyright) | Kartenkacheln                                             |
+
+Wie gut die Echtzeit deutschlandweit abgedeckt ist und welche regionalen Quellen dazukommen sollen:
+[Echtzeit-Abdeckung](docs/05-echtzeit-abdeckung.md). Alle Quellen mit Nutzungsbedingungen:
+[Datenquellen](docs/01-datenquellen.md). Fahrplanauskünfte werden durch die Lizenzgeber zur Verfügung gestellt,
+alle Angaben ohne Gewähr.
+
+## Technik
+
+- **App:** React, TypeScript, Vite, Tailwind, TanStack Query, MapLibre
+- **Server:** ein Cloudflare Worker (API, Cache, Rate-Limit, Security-Header) mit Static Assets; D1 und
+  Cron-Trigger für Push
+- **Qualität:** Vitest (App und Worker), oxlint mit Typprüfung, Prettier, CodeQL, Dependabot
+
+Aufbau und Entscheidungen: [Architektur](docs/02-architektur.md).
+
+## Entwicklung
+
+Voraussetzung: Node.js ≥ 26 (siehe `.nvmrc`).
+
+```sh
+npm ci              # Abhängigkeiten installieren (ohne Installationsskripte)
+npm run dev         # App und Worker lokal starten (http://localhost:5173/abfahrt/)
+npm test            # Tests für App und Worker
+npm run lint        # oxlint + Prettier
+npm run typecheck   # TypeScript
+npm run build       # Produktions-Build
+```
+
+Deploy läuft über GitHub Actions: jeder Pull Request bekommt eine eigene Vorschau, ein Merge auf `main`
+geht in Produktion. Secrets (Cloudflare-Token, Push-Schlüssel) liegen nur in GitHub bzw. als Worker-Secret,
+nie im Repo.
+
+```text
+src/        App (Seiten, Komponenten, reine Logik in src/lib)
+worker/     Cloudflare Worker (API, Quellen-Adapter, Push)
+shared/     Typen und Logik für App und Worker
+test/       Worker-Tests mit aufgezeichneten Antworten der Quellen
+docs/       Konzept, Datenquellen, Architektur, Roadmap, Bedienung
+```
+
+## Mitmachen
+
+Ablauf, Regeln und Commit-Stil: [CONTRIBUTING.md](CONTRIBUTING.md). Was geplant ist: [Roadmap](docs/03-roadmap.md).
+Sicherheitslücken bitte vertraulich melden: [SECURITY.md](SECURITY.md).
+
+## Lizenz
+
+[AGPL-3.0](LICENSE). Abfahrt ist ein privates Hobbyprojekt ohne Gewähr und ohne Verbindung zu den
+Verkehrsunternehmen.
