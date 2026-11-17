@@ -317,7 +317,7 @@ function addOwnLayers(
         ["linear"],
         ["zoom"],
         14,
-        ["case", ["get", "selected"], 9, 6],
+        ["case", ["get", "selected"], 11, 8],
         17,
         ["case", ["get", "selected"], 14, 11],
       ],
@@ -331,11 +331,11 @@ function addOwnLayers(
     id: "abfahrt-vehicle-labels",
     type: "symbol",
     source: VEHICLES_LAYER,
-    minzoom: 15,
+    // Liniennummer immer im Kreis: so unterscheidet man Fahrzeuge von Steigen
     layout: {
       "text-field": ["get", "line"],
       "text-font": ["Noto Sans Bold"],
-      "text-size": ["interpolate", ["linear"], ["zoom"], 15, 8, 17, 10],
+      "text-size": ["interpolate", ["linear"], ["zoom"], 14, 7, 17, 10],
       "text-allow-overlap": true,
       "text-ignore-placement": true,
     },

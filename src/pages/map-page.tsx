@@ -52,15 +52,16 @@ function writeLive(on: boolean) {
   }
 }
 
-/** „nächster Halt X · Echtzeit +2“ bzw. „hält an X · nach Fahrplan“ */
-function vehicleSummary(v: VehiclePosition): string {
-  const where = v.nextStop ? `${v.atStop ? "hält an" : "nächster Halt"} ${v.nextStop}` : null;
-  let time = "nach Fahrplan";
-  if (v.realtime) {
-    const delay = v.delayMinutes ?? 0;
-    time = delay > 0 ? `Echtzeit · +${delay} Min` : "Echtzeit · pünktlich";
-  }
-  return [where, time].filter(Boolean).join(" · ");
+/** „nächster Halt X“ bzw. „hält an X“ */
+function vehicleWhere(v: VehiclePosition): string | null {
+  return v.nextStop ? `${v.atStop ? "Hält an" : "Nächster Halt"} ${v.nextStop}` : null;
+}
+
+/** „Echtzeit · +2 Min“ bzw. „nach Fahrplan“ */
+function vehicleTime(v: VehiclePosition): string {
+  if (!v.realtime) return "nach Fahrplan";
+  const delay = v.delayMinutes ?? 0;
+  return delay > 0 ? `Echtzeit · +${delay} Min` : "Echtzeit · pünktlich";
 }
 
 function mergeStops(known: Map<string, Stop>, incoming: readonly Stop[]): Map<string, Stop> {
@@ -237,9 +238,13 @@ export function MapPage() {
               }}
             />
             <p className="min-w-0 flex-1 leading-snug">
-              <span className="line-clamp-2 text-sm">{vehicleSummary(selectedVehicle)}</span>
+              {vehicleWhere(selectedVehicle) && (
+                <span className="line-clamp-2 text-sm font-medium">
+                  {vehicleWhere(selectedVehicle)}
+                </span>
+              )}
               <span className="block text-xs text-muted-foreground">
-                Position geschätzt aus Fahrplan und Echtzeit
+                {vehicleTime(selectedVehicle)} · Position geschätzt
               </span>
             </p>
             <Button
