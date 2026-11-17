@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Star } from "lucide-react";
 import { FavoriteAlertsBanner } from "@/components/favorite-alerts-banner";
 import { FavoriteCard } from "@/components/favorite-card";
-import { MapLink } from "@/components/map-link";
 import { NearbyStops } from "@/components/nearby-stops";
 import { SavedTripCard } from "@/components/saved-trip-card";
 import { StopSearch } from "@/components/stop-search";
@@ -22,11 +21,10 @@ export function HomePage() {
   return (
     <div className="space-y-6">
       <section aria-labelledby="home-title" className="space-y-2">
-        <h1 id="home-title" className="sr-only">
-          Abfahrten suchen
+        <h1 id="home-title" className="text-2xl font-semibold tracking-tight">
+          Abfahrten
         </h1>
         <StopSearch location={location} />
-        <MapLink />
       </section>
 
       <SavedTripCard />

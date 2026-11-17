@@ -5,6 +5,7 @@ import { AlertsPage } from "@/pages/alerts-page";
 import { HomePage } from "@/pages/home-page";
 import { JourneyPage } from "@/pages/journey-page";
 import { LazyMapPage } from "@/pages/lazy-map-page";
+import { MorePage } from "@/pages/more-page";
 import { NotFoundPage } from "@/pages/not-found-page";
 import { StopPage } from "@/pages/stop-page";
 import { TripPage } from "@/pages/trip-page";
@@ -20,6 +21,7 @@ export const routes: RouteObject[] = [
       { path: "verbindung", element: <JourneyPage /> },
       { path: "fahrt", element: <TripPage /> },
       { path: "stoerungen", element: <AlertsPage /> },
+      { path: "mehr", element: <MorePage /> },
       { path: "ueber", element: <AboutPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useSearchParams } from "react-router";
-import { ArrowLeft, CircleCheck, LoaderCircle, TriangleAlert } from "lucide-react";
+import { useSearchParams } from "react-router";
+import { CircleCheck, LoaderCircle, TriangleAlert } from "lucide-react";
 import { AlertRow } from "@/components/alert-list";
 import { Chip } from "@/components/chip";
 import { SourceAttribution } from "@/components/source-attribution";
@@ -133,13 +133,6 @@ export function AlertsPage() {
 
   return (
     <section aria-labelledby="alerts-title" className="space-y-3">
-      <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-        <Link to="/">
-          <ArrowLeft aria-hidden="true" />
-          Start
-        </Link>
-      </Button>
-
       <div>
         <h1 id="alerts-title" className="text-2xl font-semibold tracking-tight">
           Störungen{areaName ? ` in ${areaName}` : ""}

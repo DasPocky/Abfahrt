@@ -2,6 +2,16 @@
 
 So funktioniert Abfahrt im Alltag. Technische Details stehen in der [Architektur](02-architektur.md).
 
+## Navigation
+
+Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störungen** und **Mehr**.
+
+- Jeder Bereich merkt sich, wo du warst, z. B. die offene Haltestelle oder die letzte Suche.
+- Tippst du auf den Bereich, in dem du gerade bist, geht es an dessen Anfang.
+- **Mehr** enthält Benachrichtigungen, die Anleitung zum Installieren und „Über Abfahrt“ mit Datenquellen
+  und Datenschutz.
+- Android: Lange auf das App-Symbol tippen öffnet direkt Abfahrten, Verbindung, Karte oder Störungen.
+
 ## Haltestelle suchen
 
 - Auf der Startseite den Namen einer Haltestelle eingeben, ab 2 Zeichen erscheinen Vorschläge.
@@ -40,7 +50,7 @@ So funktioniert Abfahrt im Alltag. Technische Details stehen in der [Architektur
 
 ## Verbindung suchen
 
-Unter der Suche führt „Verbindung suchen“ zu `/abfahrt/verbindung`.
+Bereich **Verbindung** (`/abfahrt/verbindung`).
 
 ### Start und Ziel
 
@@ -117,7 +127,7 @@ Aktive Optionen stehen kurz unter der Zeile. Routenwahl, Fahrrad und Umgebung wi
 
 ## Karte
 
-Unter der Suche führt „Karte“ zu `/abfahrt/karte`.
+Bereich **Karte** (`/abfahrt/karte`).
 
 - **Haltestellen** erscheinen ab Straßenzoom, ab Zoomstufe 16 mit Namen. Weiter herausgezoomt bittet die
   Karte ums Heranzoomen.
@@ -136,7 +146,7 @@ Unter der Suche führt „Karte“ zu `/abfahrt/karte`.
 
 ## Störungen
 
-Unter der Suche führt „Störungen“ zu `/abfahrt/stoerungen`.
+Bereich **Störungen** (`/abfahrt/stoerungen`).
 
 - Sperrungen, Aufzüge/Rolltreppen und Infos des VRR für eine Gemeinde, Sperrungen zuerst.
 - Die Gemeinde ergibt sich aus der ersten Favoriten-Haltestelle, sonst aus der nächsten Haltestelle
@@ -151,7 +161,7 @@ Unter der Suche führt „Störungen“ zu `/abfahrt/stoerungen`.
 
 ## Benachrichtigungen
 
-- Auf der Seite [Über Abfahrt](https://endlab.de/abfahrt/ueber) einschalten und mit einer **Testnachricht**
+- Im Bereich [Mehr](https://endlab.de/abfahrt/mehr) einschalten und mit einer **Testnachricht**
   prüfen. Am iPhone geht das nur, wenn Abfahrt auf dem Home-Bildschirm installiert ist.
 - Darunter wählst du, wofür Nachrichten kommen:
   - **Störungen bei Favoriten:** neue Meldungen zu deinen Haltestellen und den Linien aus deren Filtern

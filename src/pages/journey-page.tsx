@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate, useSearchParams } from "react-router";
-import {
-  ArrowLeft,
-  ArrowUpDown,
-  ChevronDown,
-  ChevronUp,
-  LoaderCircle,
-  TriangleAlert,
-} from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router";
+import { ArrowUpDown, ChevronDown, ChevronUp, LoaderCircle, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { JourneyList } from "@/components/journey-list";
 import { JourneyOptionsSheet } from "@/components/journey-options";
@@ -167,15 +160,8 @@ export function JourneyPage() {
 
   return (
     <section aria-labelledby="journey-title" className="space-y-3">
-      <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-        <Link to="/" aria-label="Zurück zur Suche">
-          <ArrowLeft aria-hidden="true" />
-          Suche
-        </Link>
-      </Button>
-
-      <h1 id="journey-title" className="text-xl font-semibold tracking-tight">
-        Verbindung suchen
+      <h1 id="journey-title" className="text-2xl font-semibold tracking-tight">
+        Verbindung
       </h1>
 
       <div className="space-y-2">

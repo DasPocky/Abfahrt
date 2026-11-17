@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { departure, departuresResponse, renderAt, requestUrl } from "./test-utils";
 
@@ -9,11 +9,7 @@ describe("App", () => {
 
   it("zeigt auf der Startseite die Haltestellensuche", () => {
     renderAt("/");
-    expect(screen.getByRole("link", { name: "Abfahrt – Startseite" })).toHaveAttribute(
-      "href",
-      "/abfahrt",
-    );
-    expect(screen.getByRole("heading", { name: "Abfahrten suchen" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Abfahrten" })).toBeInTheDocument();
     expect(screen.getByRole("searchbox", { name: "Haltestelle suchen" })).toBeInTheDocument();
   });
 
@@ -79,5 +75,31 @@ describe("App", () => {
   it("zeigt für unbekannte Pfade eine Fehlerseite", () => {
     renderAt("/gibt-es-nicht");
     expect(screen.getByRole("heading", { name: "Seite nicht gefunden" })).toBeInTheDocument();
+  });
+});
+
+describe("Navigation unten (#106)", () => {
+  it("markiert den aktiven Bereich und führt zurück zur letzten Seite eines Bereichs", async () => {
+    const { router } = renderAt("/stoerungen");
+    const nav = screen.getByRole("navigation", { name: "Hauptnavigation" });
+    expect(within(nav).getByRole("link", { name: "Störungen" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    await router.navigate("/verbindung?von=vrr%3Ade%3A05111%3A18235");
+    // erst weiter, wenn die Seite gerendert ist (die Leiste merkt sich, was sie gezeigt hat)
+    await waitFor(() =>
+      expect(within(nav).getByRole("link", { name: "Verbindung" })).toHaveAttribute(
+        "aria-current",
+        "page",
+      ),
+    );
+    await router.navigate("/mehr");
+    await waitFor(() =>
+      expect(within(nav).getByRole("link", { name: "Verbindung" })).toHaveAttribute(
+        "href",
+        "/abfahrt/verbindung?von=vrr%3Ade%3A05111%3A18235",
+      ),
+    );
   });
 });

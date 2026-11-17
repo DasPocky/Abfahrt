@@ -2,7 +2,7 @@
   "id": "/abfahrt/",
   "name": "Abfahrt",
   "short_name": "Abfahrt",
-  "description": "Echtzeit-Abfahrten für Bus und Bahn",
+  "description": "Echtzeit-Abfahrten, Verbindungen und Karte für Bus und Bahn",
   "lang": "de",
   "dir": "ltr",
   "start_url": "/abfahrt/",
@@ -12,7 +12,12 @@
   "background_color": "#ffffff",
   "categories": ["travel", "navigation"],
   "icons": [
-    { "src": "/abfahrt/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    {
+      "src": "/abfahrt/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "/abfahrt/icons/icon-192.png",
       "sizes": "192x192",
@@ -36,6 +41,49 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Abfahrten",
+      "url": "/abfahrt/",
+      "icons": [
+        {
+          "src": "/abfahrt/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Verbindung suchen",
+      "short_name": "Verbindung",
+      "url": "/abfahrt/verbindung",
+      "icons": [
+        {
+          "src": "/abfahrt/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Karte",
+      "url": "/abfahrt/karte",
+      "icons": [
+        {
+          "src": "/abfahrt/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Störungen",
+      "url": "/abfahrt/stoerungen",
+      "icons": [
+        {
+          "src": "/abfahrt/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }
