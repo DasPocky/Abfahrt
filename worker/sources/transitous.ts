@@ -1,6 +1,5 @@
 import type { Departure, Stop, TransportMode } from "../../shared/api-types";
 import { fetchJson } from "../http";
-import { stripCityPrefix } from "../stop-names";
 import { normalizeHex, normalizeLineName, type LineColorMap } from "../line-colors";
 
 // Transitous (MOTIS 2), siehe docs/01-datenquellen.md – nur leichte, gecachte Nutzung.
@@ -139,7 +138,8 @@ export function toDeparture(st: TransitousStopTime, index: number): Departure | 
     id: `${index}-${line}-${planned}`,
     line,
     mode: MODE_MAP[st.mode ?? ""] ?? "other",
-    direction: stripCityPrefix(st.headsign ?? ""),
+    // Rohform; Ort je nach Haltestelle setzt api.ts (directionAt)
+    direction: st.headsign ?? "",
     plannedTime: planned,
     realtimeTime: st.realTime ? (st.place.departure ?? planned) : null,
     platform,

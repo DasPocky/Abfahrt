@@ -3,7 +3,7 @@ import { parseGeoId } from "../../shared/geo-id";
 import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
 import { legPath } from "../geometry";
 import { fetchJson } from "../http";
-import { stripCityPrefix } from "../stop-names";
+import { directionAt, stripCityPrefix } from "../stop-names";
 import { efaDateTime, MODE_BY_CLASS } from "./vrr";
 
 // VRR OpenService, Verbindungen (XML_TRIP_REQUEST2), siehe docs/01-datenquellen.md
@@ -146,7 +146,7 @@ export function toLeg(leg: VrrLeg): JourneyLeg {
     distanceMeters: walk ? (leg.distance ?? null) : null,
     line: walk ? null : lineName(t),
     mode: walk ? null : (MODE_BY_CLASS[cls] ?? "other"),
-    direction: walk ? null : stripCityPrefix(t.destination?.name ?? "") || null,
+    direction: walk ? null : directionAt(t.destination?.name ?? "", origin.place) || null,
     lineColor: null,
     lineTextColor: null,
     intermediateStops,

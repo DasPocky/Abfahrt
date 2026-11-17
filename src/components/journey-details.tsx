@@ -1,5 +1,5 @@
 // Aufgeklappte Verbindung: Abschnitte mit Gleis, Zwischenhalten, Fußwegen, Umstiegen und Hinweisen
-import { useId, useState, type ReactNode } from "react";
+import { createContext, useContext, useId, useState, type ReactNode } from "react";
 import {
   ArrowLeftRight,
   Bookmark,
@@ -24,6 +24,7 @@ import {
 } from "@/lib/connections";
 import { isLegCancelled } from "@/lib/journeys";
 import { platformLabel } from "@/lib/modes";
+import { otherPlace } from "@/lib/stop-label";
 import { hasRoute } from "@/lib/route-map";
 import { lineBadgeColors, type LineBadgeColors } from "@/lib/line-colors";
 import { DELAY_TONE_CLASS, delayMinutes, delayTone, formatClock, formatDelay } from "@/lib/time";
@@ -82,6 +83,9 @@ function Node({ colors, small = false }: { colors: LineBadgeColors | null; small
 }
 
 /** Halt in der Zeitleiste: Zeit, Punkt, Name mit Gleis/Steig (Gleiswechsel in Orange) */
+/** Stadt des Starts; Halte in anderen Städten zeigen ihren Ort (#94) */
+const HomePlace = createContext<string | undefined>(undefined);
+
 function StopRow({
   stop,
   mode,
@@ -95,6 +99,7 @@ function StopRow({
   colors: LineBadgeColors | null;
   small?: boolean;
 }) {
+  const place = otherPlace(stop.place, useContext(HomePlace));
   const useDeparture = time === "departure" || (time === "auto" && stop.plannedDeparture !== null);
   const planned = useDeparture ? stop.plannedDeparture : stop.plannedArrival;
   const realtime = useDeparture ? stop.realtimeDeparture : stop.realtimeArrival;
@@ -112,6 +117,7 @@ function StopRow({
         <span className={cn(!small && "font-semibold", stop.cancelled && "line-through")}>
           {stop.name}
         </span>
+        {place && <span className="text-muted-foreground">, {place}</span>}
         {stop.platform !== null && !stop.cancelled && (
           <span
             className={cn(
@@ -338,42 +344,47 @@ export function JourneyDetails({
 }) {
   const transfers = new Map(journeyTransfers(journey).map((t) => [t.toLeg, t]));
   const last = journey.legs.length - 1;
+  // Startstadt: erste Fahrt (ein Fußweg beginnt oft an einer Adresse ohne Ort)
+  const home =
+    journey.legs.find((l) => l.kind === "transit")?.origin.place ?? journey.legs[0]?.origin.place;
   return (
-    <div id={id} className="space-y-2 border-t bg-muted/40 px-3 py-2.5 text-xs">
-      <RouteMapToggle
-        journey={journey}
-        action={
-          onSave && (
-            <button
-              type="button"
-              onClick={onSave}
-              aria-pressed={saved}
-              className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-foreground"
-            >
-              {saved ? (
-                <BookmarkCheck className="size-3.5 shrink-0" aria-hidden="true" />
+    <HomePlace value={home}>
+      <div id={id} className="space-y-2 border-t bg-muted/40 px-3 py-2.5 text-xs">
+        <RouteMapToggle
+          journey={journey}
+          action={
+            onSave && (
+              <button
+                type="button"
+                onClick={onSave}
+                aria-pressed={saved}
+                className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-foreground"
+              >
+                {saved ? (
+                  <BookmarkCheck className="size-3.5 shrink-0" aria-hidden="true" />
+                ) : (
+                  <Bookmark className="size-3.5 shrink-0" aria-hidden="true" />
+                )}
+                {saved ? "Gemerkt · live ansehen" : "Merken & live verfolgen"}
+              </button>
+            )
+          }
+        />
+        <ol aria-label="Abschnitte" className="space-y-2">
+          {journey.legs.map((leg, index) => {
+            const transfer = transfers.get(index);
+            const position = index === 0 ? "first" : index === last ? "last" : "middle";
+            return [
+              transfer && <TransferRow key={`t${index}`} transfer={transfer} />,
+              leg.kind === "walk" ? (
+                <WalkLeg key={index} leg={leg} position={position} />
               ) : (
-                <Bookmark className="size-3.5 shrink-0" aria-hidden="true" />
-              )}
-              {saved ? "Gemerkt · live ansehen" : "Merken & live verfolgen"}
-            </button>
-          )
-        }
-      />
-      <ol aria-label="Abschnitte" className="space-y-2">
-        {journey.legs.map((leg, index) => {
-          const transfer = transfers.get(index);
-          const position = index === 0 ? "first" : index === last ? "last" : "middle";
-          return [
-            transfer && <TransferRow key={`t${index}`} transfer={transfer} />,
-            leg.kind === "walk" ? (
-              <WalkLeg key={index} leg={leg} position={position} />
-            ) : (
-              <TransitLeg key={index} leg={leg} />
-            ),
-          ];
-        })}
-      </ol>
-    </div>
+                <TransitLeg key={index} leg={leg} />
+              ),
+            ];
+          })}
+        </ol>
+      </div>
+    </HomePlace>
   );
 }

@@ -94,6 +94,9 @@ describe("Transitous-Verbindungen", () => {
     const [u75, walk, ice] = journey?.legs ?? [];
     expect(u75).toMatchObject({ line: "U75", mode: "subway", lineColor: expect.any(String) });
     expect(u75?.origin.id).toBe("vrr:de:05111:18036");
+    // Ort aus dem Städtekürzel, Ziel in derselben Stadt ohne Ort (#94)
+    expect(u75?.origin).toMatchObject({ name: "Heinrich-Heine-Allee U", place: "Düsseldorf" });
+    expect(u75?.direction).toBe("Lierenfeld Btf");
     expect(walk).toMatchObject({ line: null, mode: null, distanceMeters: 120 });
     expect(walk?.origin.plannedArrival).toBeNull();
     expect(ice).toMatchObject({ line: "ICE 1541", mode: "longdistance" });

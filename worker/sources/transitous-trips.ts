@@ -5,7 +5,7 @@ import { decodePolyline, legPath } from "../geometry";
 import { fetchJson } from "../http";
 import { normalizeHex } from "../line-colors";
 import { MODE_MAP } from "./transitous";
-import { stripCityPrefix } from "../stop-names";
+import { directionAt, splitCityPrefix } from "../stop-names";
 import { dhidOf } from "./transitous-map";
 import { isVrrArea } from "./vrr";
 
@@ -68,10 +68,16 @@ export function appStopId(place: PlanPlace): string | null {
   return dhid && isVrrArea(dhid) ? `vrr:${dhid}` : `transitous:${id}`;
 }
 
+/** Name ohne Städtekürzel, der Ort daraus (nur bei bekanntem Kürzel, #94) */
+function nameAndPlace(raw: string): { name: string; place?: string } {
+  const { name, city } = splitCityPrefix(raw);
+  return city ? { name, place: city } : { name };
+}
+
 function toStop(place: PlanPlace): Stop {
   return {
     id: appStopId(place) ?? "",
-    name: stripCityPrefix(place.name),
+    ...nameAndPlace(place.name),
     lat: place.lat,
     lon: place.lon,
   };
@@ -82,7 +88,7 @@ function toJourneyStop(place: PlanPlace, realtime: boolean): JourneyStop {
   const plannedPlatform = place.scheduledTrack ?? null;
   return {
     id: appStopId(place),
-    name: stripCityPrefix(place.name),
+    ...nameAndPlace(place.name),
     lat: place.lat,
     lon: place.lon,
     plannedArrival: place.scheduledArrival ?? null,
@@ -119,7 +125,7 @@ export function toLeg(leg: PlanLeg): JourneyLeg {
     distanceMeters: walk && leg.distance !== undefined ? Math.round(leg.distance) : null,
     line: walk ? null : (leg.displayName ?? leg.routeShortName ?? "?"),
     mode: walk ? null : (MODE_MAP[leg.mode] ?? "other"),
-    direction: walk ? null : leg.headsign ? stripCityPrefix(leg.headsign) : null,
+    direction: walk ? null : leg.headsign ? directionAt(leg.headsign, origin.place) : null,
     lineColor: walk ? null : normalizeHex(leg.routeColor),
     lineTextColor: walk ? null : normalizeHex(leg.routeTextColor),
     intermediateStops,
