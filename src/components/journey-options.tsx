@@ -1,10 +1,27 @@
-import { SlidersHorizontal, X } from "lucide-react";
+import {
+  Accessibility,
+  ArrowLeftRight,
+  Bike,
+  Check,
+  Info,
+  MapPin,
+  RotateCcw,
+  Route,
+  SlidersHorizontal,
+  Timer,
+  TramFront,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
-import { Chip, CHIP_BASE, CHIP_OFF, CHIP_ON } from "@/components/chip";
+import { CHIP_BASE, CHIP_OFF, CHIP_ON } from "@/components/chip";
+import { ModeIcon } from "@/components/mode-icon";
 import { Button } from "@/components/ui/button";
 import { countJourneyOptions } from "@/lib/journeys";
+import { MODE_BADGE_CLASS } from "@/lib/line-colors";
 import { MODE_LABEL } from "@/lib/modes";
+import type { TransportMode } from "../../shared/api-types";
 import { StopPicker } from "@/components/stop-picker";
 import type { LocationState } from "@/hooks/use-location";
 import type { PickedStop } from "@/lib/journeys";
@@ -38,22 +55,116 @@ const ROUTE_CHOICES: { value: RoutePreference; label: string }[] = [
 /** Aufenthalt am Zwischenhalt (Minuten) */
 const VIA_STAY_CHOICES = [0, 5, 10, 15, 30, 60] as const;
 
-function Group({
+/** Akzentfarbe für gewählte Optionen (#101: mehr farbliche Klarheit) */
+const ACCENT_ON = "bg-blue-600 text-white shadow-xs dark:bg-blue-500";
+
+/** Abschnitt mit Symbol, Überschrift und optionalem Hinweis */
+function Section({
+  icon: Icon,
   label,
   hint,
   children,
 }: {
+  icon: LucideIcon;
   label: string;
-  /** kleiner Hinweis unter den Chips, z. B. „nur im VRR-Gebiet“ */
+  /** kleiner Hinweis darunter, z. B. „nur im VRR-Gebiet“ */
   hint?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div role="group" aria-label={label} className="space-y-2">
-      <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{label}</p>
-      <div className="flex flex-wrap gap-1.5">{children}</div>
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    <section role="group" aria-label={label} className="space-y-2">
+      <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+        <Icon className="size-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+        {label}
+      </p>
+      {children}
+      {hint && (
+        <p className="flex items-start gap-1 text-xs text-muted-foreground">
+          <Info className="mt-px size-3.5 shrink-0" aria-hidden="true" />
+          {hint}
+        </p>
+      )}
+    </section>
+  );
+}
+
+/** Einzelauswahl als Segmentschalter: der gewählte Teil blau */
+function Segmented<T>({
+  choices,
+  value,
+  onChange,
+}: {
+  choices: readonly { value: T; label: string }[];
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div className="flex rounded-lg bg-muted p-0.5">
+      {choices.map((choice) => (
+        <button
+          key={choice.label}
+          type="button"
+          aria-pressed={choice.value === value}
+          onClick={() => onChange(choice.value)}
+          className={cn(
+            "min-h-8 min-w-0 flex-1 rounded-md px-1.5 py-1 text-sm leading-tight font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            choice.value === value ? ACCENT_ON : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {choice.label}
+        </button>
+      ))}
     </div>
+  );
+}
+
+/** An/Aus-Option: aktiv blau mit Häkchen */
+function Toggle({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      onClick={onClick}
+      className={cn(CHIP_BASE, active ? ACCENT_ON : CHIP_OFF)}
+    >
+      {active && <Check className="size-3.5" aria-hidden="true" />}
+      {children}
+    </button>
+  );
+}
+
+/** Verkehrsmittel in seiner Linienfarbe; abgewählt grau und durchgestrichen */
+function ModeToggle({
+  mode,
+  active,
+  onClick,
+}: {
+  mode: TransportMode;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      aria-label={`${MODE_LABEL[mode]} nutzen`}
+      onClick={onClick}
+      className={cn(
+        CHIP_BASE,
+        active ? MODE_BADGE_CLASS[mode] : "bg-muted text-muted-foreground line-through opacity-70",
+      )}
+    >
+      <ModeIcon mode={mode} className="size-4" aria-hidden="true" />
+      {MODE_LABEL[mode]}
+    </button>
   );
 }
 
@@ -101,56 +212,50 @@ export function JourneyOptionsSheet({
       }
     >
       <div className="space-y-5">
-        <Group label="Route" hint="„Wenig Fußweg“ bevorzugt Umstiege am selben Steig (VRR-Gebiet)">
-          {ROUTE_CHOICES.map((choice) => (
-            <Chip
-              key={choice.value}
-              active={options.route === choice.value}
-              onClick={() => onChange({ ...options, route: choice.value })}
-            >
-              {choice.label}
-            </Chip>
-          ))}
-        </Group>
-        <Group label="Verkehrsmittel" hint="Deutschlandticket: Fernzug abwählen">
-          {EXCLUDABLE_MODES.map((mode) => (
-            <Chip
-              key={mode}
-              active={!options.exclude.includes(mode)}
-              label={`${MODE_LABEL[mode]} nutzen`}
-              onClick={() => toggleMode(mode)}
-            >
-              {MODE_LABEL[mode]}
-            </Chip>
-          ))}
-        </Group>
-        <Group label="Umstiege">
-          {TRANSFER_CHOICES.map((choice) => (
-            <Chip
-              key={choice.label}
-              active={options.maxTransfers === choice.value}
-              onClick={() => onChange({ ...options, maxTransfers: choice.value })}
-            >
-              {choice.label}
-            </Chip>
-          ))}
-        </Group>
-        <Group label="Umstiegszeit">
-          {SPEED_CHOICES.map((choice) => (
-            <Chip
-              key={choice.value}
-              active={options.transferSpeed === choice.value}
-              onClick={() => onChange({ ...options, transferSpeed: choice.value })}
-            >
-              {choice.label}
-            </Chip>
-          ))}
-        </Group>
-        <div role="group" aria-label="Über" className="space-y-2">
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-            Über
-          </p>
-          <div className="flex items-center gap-2 rounded-md border">
+        <Section
+          icon={Route}
+          label="Route"
+          hint="„Wenig Fußweg“ bevorzugt Umstiege am selben Steig (VRR-Gebiet)"
+        >
+          <Segmented
+            choices={ROUTE_CHOICES}
+            value={options.route}
+            onChange={(route) => onChange({ ...options, route })}
+          />
+        </Section>
+        <Section icon={TramFront} label="Verkehrsmittel" hint="Deutschlandticket: Fernzug abwählen">
+          <div className="flex flex-wrap gap-1.5">
+            {EXCLUDABLE_MODES.map((mode) => (
+              <ModeToggle
+                key={mode}
+                mode={mode}
+                active={!options.exclude.includes(mode)}
+                onClick={() => toggleMode(mode)}
+              />
+            ))}
+          </div>
+        </Section>
+        <Section icon={ArrowLeftRight} label="Umstiege">
+          <Segmented
+            choices={TRANSFER_CHOICES}
+            value={options.maxTransfers}
+            onChange={(maxTransfers) => onChange({ ...options, maxTransfers })}
+          />
+        </Section>
+        <Section icon={Timer} label="Umstiegszeit">
+          <Segmented
+            choices={SPEED_CHOICES}
+            value={options.transferSpeed}
+            onChange={(transferSpeed) => onChange({ ...options, transferSpeed })}
+          />
+        </Section>
+        <Section icon={MapPin} label="Über">
+          <div
+            className={cn(
+              "flex items-center gap-2 rounded-md border",
+              via && "border-blue-600 dark:border-blue-500",
+            )}
+          >
             <div className="min-w-0 flex-1">
               <StopPicker
                 label="Über"
@@ -175,44 +280,55 @@ export function JourneyOptionsSheet({
           {via && (
             <div role="group" aria-label="Aufenthalt" className="flex flex-wrap gap-1.5">
               {VIA_STAY_CHOICES.map((minutes) => (
-                <Chip
+                <Toggle
                   key={minutes}
                   active={options.viaMinutes === minutes}
                   onClick={() => onChange({ ...options, viaMinutes: minutes })}
                 >
                   {minutes === 0 ? "Ohne Aufenthalt" : `${minutes} Min`}
-                </Chip>
+                </Toggle>
               ))}
             </div>
           )}
-        </div>
-        <Group label="Barrierefreiheit">
-          <Chip active={options.accessible} onClick={() => flip("accessible")}>
-            Rollstuhl
-          </Chip>
-          <Chip active={options.accessible || options.noStairs} onClick={() => flip("noStairs")}>
-            Ohne Treppen
-          </Chip>
-          <Chip
-            active={options.accessible || options.noEscalators}
-            onClick={() => flip("noEscalators")}
-          >
-            Ohne Rolltreppen
-          </Chip>
-          <Chip active={options.accessible || options.lowFloor} onClick={() => flip("lowFloor")}>
-            Niederflur
-          </Chip>
-        </Group>
-        <Group label="Weiteres" hint="Fahrrad und Umgebung wirken im VRR-Gebiet">
-          <Chip active={options.bike} onClick={() => flip("bike")}>
-            Fahrrad mitnehmen
-          </Chip>
-          <Chip active={options.nearbyStops} onClick={() => flip("nearbyStops")}>
-            Haltestellen in der Nähe
-          </Chip>
-        </Group>
+        </Section>
+        <Section icon={Accessibility} label="Barrierefreiheit">
+          <div className="flex flex-wrap gap-1.5">
+            <Toggle active={options.accessible} onClick={() => flip("accessible")}>
+              Rollstuhl
+            </Toggle>
+            <Toggle
+              active={options.accessible || options.noStairs}
+              onClick={() => flip("noStairs")}
+            >
+              Ohne Treppen
+            </Toggle>
+            <Toggle
+              active={options.accessible || options.noEscalators}
+              onClick={() => flip("noEscalators")}
+            >
+              Ohne Rolltreppen
+            </Toggle>
+            <Toggle
+              active={options.accessible || options.lowFloor}
+              onClick={() => flip("lowFloor")}
+            >
+              Niederflur
+            </Toggle>
+          </div>
+        </Section>
+        <Section icon={Bike} label="Weiteres" hint="Fahrrad und Umgebung wirken im VRR-Gebiet">
+          <div className="flex flex-wrap gap-1.5">
+            <Toggle active={options.bike} onClick={() => flip("bike")}>
+              Fahrrad mitnehmen
+            </Toggle>
+            <Toggle active={options.nearbyStops} onClick={() => flip("nearbyStops")}>
+              Haltestellen in der Nähe
+            </Toggle>
+          </div>
+        </Section>
         {count > 0 && (
-          <Button variant="ghost" size="sm" onClick={() => onChange(DEFAULT_JOURNEY_OPTIONS, "")}>
+          <Button variant="outline" size="sm" onClick={() => onChange(DEFAULT_JOURNEY_OPTIONS, "")}>
+            <RotateCcw aria-hidden="true" />
             Zurücksetzen
           </Button>
         )}
