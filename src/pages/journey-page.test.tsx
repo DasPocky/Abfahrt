@@ -392,8 +392,10 @@ describe("Verbindungssuche", () => {
     expect(second?.searchParams.get("when")).toBe("2026-11-13T12:12:00.000Z");
     expect(third?.searchParams.get("from")).toBe("vrr:de:05111:2");
     expect(third?.searchParams.get("when")).toBe("2026-11-13T12:22:00.000Z");
-    expect(await screen.findByText("Etappe 3")).toBeInTheDocument();
-    expect(screen.getByLabelText("Gesamtroute")).toHaveTextContent("3 Etappen");
+    expect(
+      await screen.findByRole("heading", { name: /^Abschnitt 3: Halt 2 nach/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Gesamtroute")).toHaveTextContent("2 Zwischenhalte");
   });
 
   it("fügt Zwischenhalte hinzu, höchstens fünf (#110)", () => {

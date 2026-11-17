@@ -1,9 +1,10 @@
-// Mehrere eigene Zwischenhalte (#110): Etappen nacheinander suchen. Jede Etappe ist eine normale
-// Verbindungssuche (beste Quelle je Etappe, eigener Cache) ab der Ankunft der vorigen Etappe plus
-// Aufenthalt. Oben die Gesamtroute, darunter jede Etappe mit Auswahl einer anderen Verbindung.
+// Mehrere eigene Zwischenhalte (#110): Abschnitte nacheinander suchen. Jeder Abschnitt ist eine
+// normale Verbindungssuche (beste Quelle, eigener Cache) ab der Ankunft des vorigen plus Aufenthalt.
+// Oben die Gesamtroute, darunter jeder Abschnitt (blaue Nummer statt Wort) mit Auswahl einer anderen
+// Verbindung.
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Flag, LoaderCircle, TriangleAlert } from "lucide-react";
+import { ArrowRight, Flag, Hourglass, LoaderCircle, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { JourneyList } from "@/components/journey-list";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,21 @@ export interface Leg {
   to: PickedStop;
   /** Aufenthalt am Start der Etappe (Minuten) */
   stay: number;
+}
+
+/** Symbole wie im Von/Nach-Kasten: Start hohl, Zwischenhalt Fähnchen, Ziel gefüllt */
+function PointIcon({ kind }: { kind: "start" | "via" | "end" }) {
+  if (kind === "via") {
+    return <Flag className="size-3.5 shrink-0 text-blue-600 dark:text-blue-400" />;
+  }
+  return (
+    <span
+      className={cn(
+        "size-2.5 shrink-0 rounded-full border-2 border-foreground",
+        kind === "end" && "bg-foreground",
+      )}
+    />
+  );
 }
 
 function clock(ms: number): string {
@@ -45,6 +61,7 @@ function LegSection({
   onResolved: (index: number, journey: Journey | null) => void;
 }) {
   const leg = legs[index]!;
+  const last = index === legs.length - 1;
   const [showAll, setShowAll] = useState(false);
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["journeys", leg.from.id, leg.to.id, when ?? "now", false, options],
@@ -64,36 +81,52 @@ function LegSection({
     // oxlint-disable-next-line react/exhaustive-deps
   }, [index, chosenId]);
 
-  const last = index === legs.length - 1;
   const next = chosen ? nextLegStart(chosen, legs[index + 1]?.stay ?? 0) : undefined;
 
   return (
     <>
       <Card className="gap-0 overflow-hidden py-0">
-        <div className="flex items-baseline gap-2 border-b px-3 py-2">
-          <span className="text-xs font-semibold tracking-wide text-blue-600 uppercase dark:text-blue-400">
-            Etappe {index + 1}
+        <h2
+          aria-label={`Abschnitt ${index + 1}: ${leg.from.name} nach ${leg.to.name}`}
+          className="flex items-center gap-2 border-b px-3 py-2 text-sm font-medium"
+        >
+          {/* Nummer statt Wort: Abschnitt 1, 2, 3 … */}
+          <span
+            className="flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-semibold text-white tabular-nums dark:bg-blue-500"
+            aria-hidden="true"
+          >
+            {index + 1}
           </span>
-          <span className="min-w-0 flex-1 truncate text-sm font-medium">
-            {leg.from.name} → {leg.to.name}
+          <span className="flex min-w-0 flex-1 items-center gap-1" aria-hidden="true">
+            <PointIcon kind={index === 0 ? "start" : "via"} />
+            <span className="min-w-0 truncate">{leg.from.name}</span>
+            <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" />
+            <PointIcon kind={last ? "end" : "via"} />
+            <span className="min-w-0 truncate">{leg.to.name}</span>
           </span>
           {leg.stay > 0 && (
-            <span className="shrink-0 text-xs text-muted-foreground">nach {leg.stay} Min</span>
+            <span
+              className="flex shrink-0 items-center gap-0.5 text-xs font-normal text-muted-foreground"
+              title={`${leg.stay} Min Aufenthalt`}
+            >
+              <Hourglass className="size-3" aria-hidden="true" />
+              {leg.stay} Min
+            </span>
           )}
-        </div>
+        </h2>
         {isPending && (
           <p
             role="status"
             className="flex items-center justify-center gap-2 py-5 text-sm text-muted-foreground"
           >
             <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-            Etappe wird gesucht …
+            Abschnitt wird gesucht …
           </p>
         )}
         {isError && (
           <div role="alert" className="flex flex-col items-center gap-2 py-5 text-sm">
             <TriangleAlert className="size-5 text-destructive" aria-hidden="true" />
-            <p>Diese Etappe konnte nicht geladen werden.</p>
+            <p>Dieser Abschnitt konnte nicht geladen werden.</p>
             <Button variant="outline" size="sm" onClick={() => void refetch()}>
               Erneut versuchen
             </Button>
@@ -101,7 +134,7 @@ function LegSection({
         )}
         {data && !chosen && (
           <p role="status" className="py-5 text-center text-sm text-muted-foreground">
-            Keine Verbindung für diese Etappe gefunden.
+            Keine Verbindung für diesen Abschnitt gefunden.
           </p>
         )}
         {chosen && <JourneyList journeys={[chosen]} />}
@@ -210,7 +243,8 @@ export function LegJourneys({
           </span>
           <span className="text-sm text-muted-foreground">
             {total !== null ? `${formatDuration(total)} · ` : ""}
-            {legs.length} Etappen
+            <Flag className="size-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+            {legs.length - 1} Zwischenhalte
           </span>
         </p>
         <ol aria-label="Halte" className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">

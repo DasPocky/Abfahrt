@@ -67,10 +67,11 @@ Bereich **Verbindung** (`/abfahrt/verbindung`).
   Verschieben und ein ✕ zum Entfernen. Tauschen dreht auch die Reihenfolge der Zwischenhalte um.
 - **Ein Zwischenhalt:** Die Suche läuft in einer Abfrage, die Ergebnisse sind ganz normale Verbindungen über
   diesen Halt.
-- **Mehrere Zwischenhalte:** Die App sucht in **Etappen** (Start → 1, 1 → 2, …). Jede Etappe beginnt nach der
-  Ankunft der vorigen plus Aufenthalt. Oben steht die Gesamtroute mit Ab, An, Dauer und allen Halten,
-  darunter jede Etappe mit ihrer Verbindung. **Andere Verbindung** wählt eine frühere oder spätere, die
-  folgenden Etappen rechnen dann neu. Die Zeit gilt dabei immer als Abfahrt.
+- **Mehrere Zwischenhalte:** Die App sucht in **Abschnitten** (Start → 1, 1 → 2, …), vorne mit blauer Nummer
+  (①, ②, …), Zwischenhalte mit Fähnchen. Jeder Abschnitt beginnt nach der
+  Ankunft des vorigen plus Aufenthalt. Oben steht die Gesamtroute mit Ab, An, Dauer und allen Halten,
+  darunter jeder Abschnitt mit seiner Verbindung. **Andere Verbindung** wählt eine frühere oder spätere, die
+  folgenden Abschnitte rechnen dann neu. Die Zeit gilt dabei immer als Abfahrt.
 - Die Zwischenhalte stehen in der Adresse (`ueber`, `ueberName`, `aufenthalt` je Halt), der Link lässt sich
   teilen.
 
