@@ -55,6 +55,12 @@ describe("transferStatus", () => {
   });
 });
 
+/** Halt eines Abschnitts an einen Steig von Schlüterstraße setzen */
+const atPlatform = (leg: JourneyLeg, side: "origin" | "destination", platform: string | null) => ({
+  ...leg,
+  [side]: { ...leg[side], id: "vrr:de:05111:18231", platform },
+});
+
 describe("journeyTransfers", () => {
   it("hat bei nur einem Abschnitt keine Umstiege", () => {
     expect(journeyTransfers(journey({ id: "j", legs: [ride("12:00", "12:10")] }))).toEqual([]);
@@ -104,24 +110,20 @@ describe("journeyTransfers", () => {
   it("erkennt Umstiege am selben Steig (#97)", () => {
     const arrive = ride("12:00", "12:10");
     const leave = ride("12:13", "12:30");
-    const at = (leg: JourneyLeg, side: "origin" | "destination", platform: string | null) => ({
-      ...leg,
-      [side]: { ...leg[side], id: "vrr:de:05111:18231", platform },
-    });
     const same = journey({
       id: "j",
-      legs: [at(arrive, "destination", "1"), at(leave, "origin", "1")],
+      legs: [atPlatform(arrive, "destination", "1"), atPlatform(leave, "origin", "1")],
     });
     expect(journeyTransfers(same)[0]?.samePlatform).toBe(true);
     const other = journey({
       id: "j",
-      legs: [at(arrive, "destination", "6"), at(leave, "origin", "4")],
+      legs: [atPlatform(arrive, "destination", "6"), atPlatform(leave, "origin", "4")],
     });
     expect(journeyTransfers(other)[0]?.samePlatform).toBe(false);
     // Fußweg dazwischen: nie „selber Steig“
     const walked = journey({
       id: "j",
-      legs: [at(arrive, "destination", "1"), walk(1), at(leave, "origin", "1")],
+      legs: [atPlatform(arrive, "destination", "1"), walk(1), atPlatform(leave, "origin", "1")],
     });
     expect(journeyTransfers(walked)[0]?.samePlatform).toBe(false);
   });
