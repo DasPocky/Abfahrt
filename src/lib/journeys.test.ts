@@ -2,16 +2,19 @@ import { describe, expect, it } from "vitest";
 import { journey, journeyLeg, journeyStop } from "../test-utils";
 import { DEFAULT_JOURNEY_OPTIONS } from "../../shared/journey-options";
 import {
+  apiOptions,
   countJourneyOptions,
   describeJourneyOptions,
   EMPTY_JOURNEY_QUERY,
   formatDuration,
   formatTransfers,
   isJourneyCancelled,
+  journeyLegs,
   journeyPath,
   journeyQueryFromParams,
   journeyQueryToParams,
   journeyTimes,
+  MAX_VIAS,
   swapJourneyQuery,
   timeChipLabel,
 } from "./journeys";
@@ -32,6 +35,7 @@ describe("URL-Parameter der Verbindungssuche", () => {
       time: "2026-11-13T12:00:00.000Z",
       arrive: true,
       options: DEFAULT_JOURNEY_OPTIONS,
+      vias: [],
     });
   });
 
@@ -54,6 +58,7 @@ describe("URL-Parameter der Verbindungssuche", () => {
         transferSpeed: "slow" as const,
         accessible: true,
       },
+      vias: [],
     };
     expect(journeyQueryFromParams(journeyQueryToParams(query))).toEqual(query);
     expect(journeyQueryToParams({ ...query, time: undefined }).has("ankunft")).toBe(false);
@@ -89,23 +94,48 @@ describe("URL-Parameter der Verbindungssuche", () => {
 
   it("liest die neuen Optionen aus der URL (#101)", () => {
     const query = journeyQueryFromParams(
-      new URLSearchParams(
-        "route=wenig-fussweg&fahrrad=1&umgebung=1&ohneTreppen=1&ueber=vrr:de:05111:18036&ueberName=Heinrich-Heine-Allee&aufenthalt=15",
-      ),
+      new URLSearchParams("route=wenig-fussweg&fahrrad=1&umgebung=1&ohneTreppen=1"),
     );
     expect(query.options).toMatchObject({
       route: "lessWalking",
       bike: true,
       nearbyStops: true,
       noStairs: true,
-      via: "vrr:de:05111:18036",
-      viaMinutes: 15,
     });
-    expect(query.viaName).toBe("Heinrich-Heine-Allee");
     expect(journeyQueryFromParams(journeyQueryToParams(query))).toEqual(query);
     expect(describeJourneyOptions(query.options)).toBe(
-      "ohne Treppen · wenig Fußweg · mit Fahrrad · Haltestellen in der Nähe · über Halt (15 Min)",
+      "ohne Treppen · wenig Fußweg · mit Fahrrad · Haltestellen in der Nähe",
     );
+  });
+
+  it("liest mehrere Zwischenhalte in Reihenfolge, höchstens MAX_VIAS (#110)", () => {
+    const params = new URLSearchParams("von=vrr:a&nach=vrr:z");
+    for (let i = 1; i <= MAX_VIAS + 2; i++) {
+      params.append("ueber", `vrr:de:05111:${i}`);
+      params.append("ueberName", `Halt ${i}`);
+      params.append("aufenthalt", i === 2 ? "10" : "0");
+    }
+    const query = journeyQueryFromParams(params);
+    expect(query.vias).toHaveLength(MAX_VIAS);
+    expect(query.vias[1]).toEqual({ id: "vrr:de:05111:2", name: "Halt 2", minutes: 10 });
+    expect(journeyQueryFromParams(journeyQueryToParams(query))).toEqual(query);
+    // ungültige IDs fallen weg, mehrere Zwischenhalte gehen nicht als `via` an die API
+    expect(apiOptions(query).via).toBeNull();
+    const legs = journeyLegs(query);
+    expect(legs).toHaveLength(MAX_VIAS + 1);
+    expect(legs[0]).toMatchObject({ from: { id: "vrr:a" }, to: { id: "vrr:de:05111:1" }, stay: 0 });
+    // Aufenthalt am Zwischenhalt 2 gilt für die Etappe, die dort beginnt
+    expect(legs[2]?.stay).toBe(10);
+    expect(swapJourneyQuery(query).vias[0]?.id).toBe(`vrr:de:05111:${MAX_VIAS}`);
+  });
+
+  it("schickt genau einen Zwischenhalt als `via` an die API (#110)", () => {
+    const query = journeyQueryFromParams(
+      new URLSearchParams("von=vrr:a&nach=vrr:z&ueber=vrr:de:05111:18036&aufenthalt=15&ueber=xyz"),
+    );
+    expect(query.vias).toHaveLength(1);
+    expect(apiOptions(query)).toMatchObject({ via: "vrr:de:05111:18036", viaMinutes: 15 });
+    expect(journeyLegs({ ...query, vias: [] })).toHaveLength(1);
   });
 
   it("beschreibt und zählt Optionen", () => {

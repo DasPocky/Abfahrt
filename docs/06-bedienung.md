@@ -60,6 +60,21 @@ Bereich **Verbindung** (`/abfahrt/verbindung`).
 - „Mein Standort“ nimmt die nächste Haltestelle.
 - Der runde Pfeil-Knopf tauscht Start und Ziel.
 
+### Zwischenhalte
+
+- **„+ Zwischenhalt“** unter dem Kasten fügt einen Halt zwischen Start und Ziel ein, bis zu 5.
+- Jeder Zwischenhalt hat eine Haltestellensuche, einen **Aufenthalt** (kein Halt, 5–60 Min), Pfeile zum
+  Verschieben und ein ✕ zum Entfernen. Tauschen dreht auch die Reihenfolge der Zwischenhalte um.
+- **Ein Zwischenhalt:** Die Suche läuft in einer Abfrage, die Ergebnisse sind ganz normale Verbindungen über
+  diesen Halt.
+- **Mehrere Zwischenhalte:** Die App sucht in **Abschnitten** (Start → 1, 1 → 2, …), vorne mit blauer Nummer
+  (①, ②, …), Zwischenhalte mit Fähnchen. Jeder Abschnitt beginnt nach der
+  Ankunft des vorigen plus Aufenthalt. Oben steht die Gesamtroute mit Ab, An, Dauer und allen Halten,
+  darunter jeder Abschnitt mit seiner Verbindung. **Andere Verbindung** wählt eine frühere oder spätere, die
+  folgenden Abschnitte rechnen dann neu. Die Zeit gilt dabei immer als Abfahrt.
+- Die Zwischenhalte stehen in der Adresse (`ueber`, `ueberName`, `aufenthalt` je Halt), der Link lässt sich
+  teilen.
+
 ### Zeitpunkt
 
 Der Chip **„Ab jetzt ▾“** öffnet:
@@ -80,7 +95,6 @@ Das **Optionen-Symbol** öffnet alle Einstellungen, die der VRR anbietet:
   Fernzug abwählen)
 - **Umstiege:** beliebig, direkt, max. 1 oder 2
 - **Umstiegszeit:** kurz, normal, mehr Zeit
-- **Über** einen Zwischenhalt, mit Aufenthalt
 - **Barrierefreiheit:** Rollstuhl oder einzeln ohne Treppen, ohne Rolltreppen, Niederflur
 - **Fahrrad mitnehmen** und **Haltestellen in der Nähe**
 

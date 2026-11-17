@@ -4,13 +4,11 @@ import {
   Bike,
   Check,
   Info,
-  MapPin,
   RotateCcw,
   Route,
   SlidersHorizontal,
   Timer,
   TramFront,
-  X,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "cn";
@@ -22,9 +20,6 @@ import { countJourneyOptions } from "@/lib/journeys";
 import { MODE_BADGE_CLASS } from "@/lib/line-colors";
 import { MODE_LABEL } from "@/lib/modes";
 import type { TransportMode } from "../../shared/api-types";
-import { StopPicker } from "@/components/stop-picker";
-import type { LocationState } from "@/hooks/use-location";
-import type { PickedStop } from "@/lib/journeys";
 import {
   DEFAULT_JOURNEY_OPTIONS,
   EXCLUDABLE_MODES,
@@ -51,9 +46,6 @@ const ROUTE_CHOICES: { value: RoutePreference; label: string }[] = [
   { value: "fewTransfers", label: "Wenige Umstiege" },
   { value: "lessWalking", label: "Wenig Fußweg" },
 ];
-
-/** Aufenthalt am Zwischenhalt (Minuten) */
-const VIA_STAY_CHOICES = [0, 5, 10, 15, 30, 60] as const;
 
 /** Akzentfarbe für gewählte Optionen (#101: mehr farbliche Klarheit) */
 const ACCENT_ON = "bg-blue-600 text-white shadow-xs dark:bg-blue-500";
@@ -169,26 +161,19 @@ function ModeToggle({
 }
 
 /**
- * Optionen-Knopf mit Panel (#101): Route, Verkehrsmittel, Umstiege, Umstiegszeit, über einen Halt,
- * Barrierefreiheit, Fahrrad und Haltestellen in der Nähe – alles, was der VRR anbietet.
+ * Optionen-Knopf mit Panel (#101): Route, Verkehrsmittel, Umstiege, Umstiegszeit, Barrierefreiheit,
+ * Fahrrad und Haltestellen in der Nähe. Zwischenhalte stehen direkt im Von/Nach-Kasten (#110).
  */
 export function JourneyOptionsSheet({
   options,
-  viaName,
-  location,
   onChange,
 }: {
   options: JourneyOptions;
-  /** Anzeigename des Zwischenhalts */
-  viaName: string | undefined;
-  location: LocationState;
-  /** `viaName` nur, wenn sich der Zwischenhalt ändert */
-  onChange: (next: JourneyOptions, viaName?: string) => void;
+  onChange: (next: JourneyOptions) => void;
 }) {
   const flip = (
     key: "accessible" | "noStairs" | "noEscalators" | "lowFloor" | "bike" | "nearbyStops",
   ) => onChange({ ...options, [key]: !options[key] });
-  const via: PickedStop | null = options.via ? { id: options.via, name: viaName ?? "" } : null;
   const count = countJourneyOptions(options);
   const toggleMode = (mode: (typeof EXCLUDABLE_MODES)[number]) => {
     const exclude = options.exclude.includes(mode)
@@ -201,7 +186,7 @@ export function JourneyOptionsSheet({
   return (
     <BottomSheet
       title="Optionen"
-      description="Route, Verkehrsmittel, Umstiege, Zwischenhalt und Barrierefreiheit"
+      description="Route, Verkehrsmittel, Umstiege und Barrierefreiheit"
       triggerLabel={count > 0 ? `Optionen (${count} aktiv)` : "Optionen"}
       triggerClassName={cn(CHIP_BASE, "h-8 px-2.5", count > 0 ? CHIP_ON : CHIP_OFF)}
       trigger={
@@ -249,48 +234,6 @@ export function JourneyOptionsSheet({
             onChange={(transferSpeed) => onChange({ ...options, transferSpeed })}
           />
         </Section>
-        <Section icon={MapPin} label="Über">
-          <div
-            className={cn(
-              "flex items-center gap-2 rounded-md border",
-              via && "border-blue-600 dark:border-blue-500",
-            )}
-          >
-            <div className="min-w-0 flex-1">
-              <StopPicker
-                label="Über"
-                placeholder="Zwischenhalt (optional)"
-                value={via}
-                location={location}
-                stopsOnly
-                onSelect={(stop) => onChange({ ...options, via: stop.id }, stop.name)}
-              />
-            </div>
-            {via && (
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="Zwischenhalt entfernen"
-                onClick={() => onChange({ ...options, via: null, viaMinutes: 0 }, "")}
-              >
-                <X aria-hidden="true" />
-              </Button>
-            )}
-          </div>
-          {via && (
-            <div role="group" aria-label="Aufenthalt" className="flex flex-wrap gap-1.5">
-              {VIA_STAY_CHOICES.map((minutes) => (
-                <Toggle
-                  key={minutes}
-                  active={options.viaMinutes === minutes}
-                  onClick={() => onChange({ ...options, viaMinutes: minutes })}
-                >
-                  {minutes === 0 ? "Ohne Aufenthalt" : `${minutes} Min`}
-                </Toggle>
-              ))}
-            </div>
-          )}
-        </Section>
         <Section icon={Accessibility} label="Barrierefreiheit">
           <div className="flex flex-wrap gap-1.5">
             <Toggle active={options.accessible} onClick={() => flip("accessible")}>
@@ -327,7 +270,7 @@ export function JourneyOptionsSheet({
           </div>
         </Section>
         {count > 0 && (
-          <Button variant="outline" size="sm" onClick={() => onChange(DEFAULT_JOURNEY_OPTIONS, "")}>
+          <Button variant="outline" size="sm" onClick={() => onChange(DEFAULT_JOURNEY_OPTIONS)}>
             <RotateCcw aria-hidden="true" />
             Zurücksetzen
           </Button>

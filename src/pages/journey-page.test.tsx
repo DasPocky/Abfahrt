@@ -376,6 +376,38 @@ describe("Verbindungssuche", () => {
     expect(journeyCalls(fetchMock)).toHaveLength(2);
   });
 
+  it("sucht mehrere Zwischenhalte in Etappen nacheinander (#110)", async () => {
+    const fetchMock = mockApi(() => Response.json(journeysResponse([journey({ id: "j1" })])));
+    renderAt(
+      `/verbindung?von=${HBF}&nach=vrr:de:05111:18036&ueber=vrr:de:05111:1&ueberName=Halt+1&aufenthalt=0&ueber=vrr:de:05111:2&ueberName=Halt+2&aufenthalt=10&zeit=2026-11-13T12:00:00Z`,
+    );
+    expect(screen.getByRole("group", { name: "Zwischenhalt 1" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Zwischenhalt 2" })).toBeInTheDocument();
+    await waitFor(() => expect(journeyCalls(fetchMock)).toHaveLength(3));
+    const [first, second, third] = journeyCalls(fetchMock);
+    expect(first?.searchParams.get("to")).toBe("vrr:de:05111:1");
+    expect(first?.searchParams.get("via")).toBeNull();
+    // Etappe 2 ab der Ankunft der ersten (12:12), Etappe 3 dazu 10 Min Aufenthalt an Halt 2
+    expect(second?.searchParams.get("from")).toBe("vrr:de:05111:1");
+    expect(second?.searchParams.get("when")).toBe("2026-11-13T12:12:00.000Z");
+    expect(third?.searchParams.get("from")).toBe("vrr:de:05111:2");
+    expect(third?.searchParams.get("when")).toBe("2026-11-13T12:22:00.000Z");
+    expect(
+      await screen.findByRole("heading", { name: /^Abschnitt 3: Halt 2 nach/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Gesamtroute")).toHaveTextContent("2 Zwischenhalte");
+  });
+
+  it("fügt Zwischenhalte hinzu, höchstens fünf (#110)", () => {
+    mockApi();
+    renderAt(SEARCH);
+    for (let i = 0; i < 5; i++)
+      fireEvent.click(screen.getByRole("button", { name: "Zwischenhalt" }));
+    expect(screen.getByRole("group", { name: "Zwischenhalt 5" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Zwischenhalt" })).toBeNull();
+    expect(screen.getByText(/Höchstens 5 Zwischenhalte/)).toBeInTheDocument();
+  });
+
   it("gibt Route, Fahrrad und Einzelmerkmale weiter (#101)", async () => {
     const fetchMock = mockApi();
     const { router } = renderAt(SEARCH);
