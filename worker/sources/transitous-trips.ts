@@ -166,7 +166,13 @@ export function optionParams(options: JourneyOptions): string {
   if (options.maxTransfers !== null) params += `&maxTransfers=${options.maxTransfers}`;
   const minTransfer = MIN_TRANSFER_MINUTES[options.transferSpeed];
   if (minTransfer > 0) params += `&minTransferTime=${minTransfer}`;
-  if (options.accessible) params += "&pedestrianProfile=WHEELCHAIR";
+  if (options.accessible || options.noStairs) params += "&pedestrianProfile=WHEELCHAIR";
+  // Zwischenhalt mit Aufenthalt (#101); Fahrrad, Routenwahl und nahe Haltestellen kann MOTIS
+  // hier nicht (requireBikeTransport liefert mangels Daten nichts, getestet 17.11.2026)
+  if (options.via) {
+    params += `&via=${encodeURIComponent(planPlaceId(options.via))}`;
+    if (options.viaMinutes > 0) params += `&viaMinimumStay=${options.viaMinutes}`;
+  }
   return params;
 }
 

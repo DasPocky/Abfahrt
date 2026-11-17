@@ -42,6 +42,7 @@ export function StopPicker({
   marker,
   onSelect,
   onPickLocation,
+  stopsOnly = false,
 }: {
   /** Beschriftung für Screenreader, z. B. „Von“ */
   label: string;
@@ -53,7 +54,10 @@ export function StopPicker({
   /** „Mein Standort“ wird gerade aufgelöst */
   locating?: boolean;
   onSelect: (stop: PickedStop) => void;
-  onPickLocation: () => void;
+  /** ohne: kein Eintrag „Mein Standort“ (z. B. Zwischenhalt) */
+  onPickLocation?: () => void;
+  /** nur Haltestellen, keine Adressen/Orte (z. B. Zwischenhalt, #101) */
+  stopsOnly?: boolean;
 }) {
   // null = Name der gewählten Haltestelle anzeigen, sonst den eingetippten Text
   const [editing, setEditing] = useState<string | null>(null);
@@ -75,9 +79,14 @@ export function StopPicker({
   });
 
   const searching = query.length >= SEARCH_MIN_LENGTH;
-  const ranked = enabled && searching ? rankStops(data?.stops ?? [], location.position, 8) : [];
+  const found = (data?.stops ?? []).filter(
+    (s) => !stopsOnly || s.kind === undefined || s.kind === "stop",
+  );
+  const ranked = enabled && searching ? rankStops(found, location.position, 8) : [];
   const options: Option[] = [
-    { key: "location", label: "Mein Standort", detail: "nächste Haltestelle", stop: null },
+    ...(onPickLocation
+      ? [{ key: "location", label: "Mein Standort", detail: "nächste Haltestelle", stop: null }]
+      : []),
     ...ranked.map(({ stop, distanceKm }) => ({
       key: stop.id,
       label: stop.name,
@@ -100,7 +109,7 @@ export function StopPicker({
     setEditing(null);
     setActive(-1);
     if (option.stop) onSelect(option.stop);
-    else onPickLocation();
+    else onPickLocation?.();
     inputRef.current?.blur();
   }
 

@@ -210,8 +210,9 @@ export async function loadJourneys(
   const viaVrr = async (): Promise<Loaded> => {
     const [r, comfy] = await Promise.all([
       vrrTrips.trips(from, to, when, arrive, options),
-      samePlatformVariants
-        ? vrrTrips.trips(from, to, when, arrive, options, "LEASTWALKING").catch((err: unknown) => {
+      // nur bei „schnellste“: eine eigene Routenwahl gilt so, wie gewählt
+      samePlatformVariants && options.route === "fastest"
+        ? vrrTrips.trips(from, to, when, arrive, options, "lessWalking").catch((err: unknown) => {
             if (err instanceof UpstreamError) return null;
             throw err;
           })
@@ -230,7 +231,9 @@ export async function loadJourneys(
   // Im VRR (beide Enden) mit VRR-Echtzeit, sonst Transitous; die jeweils andere Quelle ist Fallback.
   // Der VRR kennt nur eigene IDs (DHID) und Koordinaten; mit Transitous-IDs bleibt Transitous
   // allein zuständig. VRR zuerst, wenn beide Enden im VRR-Gebiet liegen oder Adressen/POIs sind.
-  const vrrPossible = vrrCapable(from) && vrrCapable(to);
+  // Ein Zwischenhalt aus Transitous lässt sich dem VRR nicht übergeben
+  const vrrPossible =
+    vrrCapable(from) && vrrCapable(to) && (options.via === null || options.via.startsWith("vrr:"));
   const primary = vrrPossible && vrrSide(from) && vrrSide(to) ? viaVrr : viaTransitous;
   const secondary = primary === viaVrr ? viaTransitous : vrrPossible ? viaVrr : null;
   if (!secondary) return primary();
