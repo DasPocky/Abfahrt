@@ -1,14 +1,16 @@
 // Karte mit Haltestellen (/abfahrt/karte). Lazy geladen, siehe src/pages/lazy-map-page.tsx.
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
-import { ChevronRight, LoaderCircle, LocateFixed, X } from "lucide-react";
+import { ChevronRight, LoaderCircle, LocateFixed, TramFront, X } from "lucide-react";
 import type { Stop } from "../../shared/api-types";
+import { LineBadge } from "@/components/line-badge";
 import { MapAttribution } from "@/components/map-attribution";
 import { StopMap, type MapSelection, type MapView } from "@/components/stop-map";
 import { Button } from "@/components/ui/button";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useLocation } from "@/hooks/use-location";
+import { useNow } from "@/hooks/use-now";
 import { usePrefersDark } from "@/hooks/use-prefers-dark";
 import { stopPath } from "@/lib/api";
 import type { Position } from "@/lib/geo";
@@ -19,6 +21,7 @@ import {
   platformSummary,
   selectionKey,
 } from "@/lib/map-area";
+import { fetchVehicles, vehiclePositions, type VehiclePosition } from "@/lib/vehicles";
 
 /** Startpunkt ohne Standort: Düsseldorf Innenstadt (Heinrich-Heine-Allee) */
 const DEFAULT_CENTER: Position = { lat: 51.2255, lon: 6.7775 };
@@ -27,6 +30,39 @@ const DEFAULT_ZOOM = 15;
 const MAP_DEBOUNCE_MS = 400;
 /** Bereits geladene Haltestellen behalten (flüssiges Verschieben), aber nicht unbegrenzt */
 const MAX_KEPT_STOPS = 2000;
+
+/** Live-Fahrzeuge an/aus, je Gerät gemerkt (#92) */
+const LIVE_KEY = "abfahrt:map-live";
+/** Neue Abschnitte je Minute; dazwischen rechnet die App die Positionen jede Sekunde */
+const VEHICLES_REFRESH_MS = 60_000;
+
+function readLive(): boolean {
+  try {
+    return localStorage.getItem(LIVE_KEY) !== "off";
+  } catch {
+    return true;
+  }
+}
+
+function writeLive(on: boolean) {
+  try {
+    localStorage.setItem(LIVE_KEY, on ? "on" : "off");
+  } catch {
+    // ohne Speicher gilt die Wahl nur für diesen Besuch
+  }
+}
+
+/** „nächster Halt X“ bzw. „hält an X“ */
+function vehicleWhere(v: VehiclePosition): string | null {
+  return v.nextStop ? `${v.atStop ? "Hält an" : "Nächster Halt"} ${v.nextStop}` : null;
+}
+
+/** „Echtzeit · +2 Min“ bzw. „nach Fahrplan“ */
+function vehicleTime(v: VehiclePosition): string {
+  if (!v.realtime) return "nach Fahrplan";
+  const delay = v.delayMinutes ?? 0;
+  return delay > 0 ? `Echtzeit · +${delay} Min` : "Echtzeit · pünktlich";
+}
 
 function mergeStops(known: Map<string, Stop>, incoming: readonly Stop[]): Map<string, Stop> {
   const next = new Map(known);
@@ -51,6 +87,9 @@ export function MapPage() {
   const tooFar = view !== null && areaForBounds(view.bounds, view.zoom) === null;
   const [known, setKnown] = useState<Map<string, Stop>>(() => new Map());
   const [selection, setSelection] = useState<MapSelection | null>(null);
+  const [live, setLive] = useState(readLive);
+  const [selectedTrip, setSelectedTrip] = useState<string | null>(null);
+  const now = useNow(live ? 1000 : 60_000);
   const selected = selection?.stop ?? null;
   // Antippen von „Mein Standort“; sonst fährt die Karte einmal zum Standort, sobald er da ist
   // (nur wenn in der App schon erlaubt, siehe useLocation)
@@ -69,6 +108,40 @@ export function MapPage() {
     staleTime: 60 * 60_000,
   });
 
+  const vehiclesQuery = useQuery({
+    queryKey: ["vehicles", area?.min, area?.max],
+    queryFn: ({ signal }) => fetchVehicles(area!, signal),
+    enabled: live && area !== null,
+    refetchInterval: VEHICLES_REFRESH_MS,
+    staleTime: 30_000,
+    placeholderData: keepPreviousData,
+  });
+  const segments = live && !tooFar ? vehiclesQuery.data?.segments : undefined;
+  const nowMs = now.getTime();
+  const vehicles = useMemo(
+    () => (segments ? vehiclePositions(segments, nowMs) : []),
+    [segments, nowMs],
+  );
+  const selectedVehicle = vehicles.find((v) => v.trip === selectedTrip) ?? null;
+
+  function toggleLive() {
+    setLive((on) => {
+      writeLive(!on);
+      return !on;
+    });
+    setSelectedTrip(null);
+  }
+
+  function onSelectStop(next: MapSelection | null) {
+    setSelection(next);
+    setSelectedTrip(null);
+  }
+
+  function onSelectVehicle(vehicle: VehiclePosition) {
+    setSelectedTrip(vehicle.trip);
+    setSelection(null);
+  }
+
   function onLocate() {
     if (location.position) setManualFocus({ ...location.position });
     else if (location.status !== "locating") location.toggle();
@@ -81,6 +154,7 @@ export function MapPage() {
   let hint: string | null = null;
   if (tooFar) hint = "Zum Anzeigen der Haltestellen näher heranzoomen";
   else if (isError) hint = "Haltestellen konnten nicht geladen werden";
+  else if (live && vehiclesQuery.isError) hint = "Fahrzeuge konnten nicht geladen werden";
 
   return (
     <section aria-labelledby="map-title" className="space-y-2">
@@ -99,7 +173,10 @@ export function MapPage() {
           userPosition={location.position}
           dark={dark}
           onViewChange={setView}
-          onSelect={setSelection}
+          onSelect={onSelectStop}
+          vehicles={vehicles}
+          selectedTrip={selectedVehicle?.trip ?? null}
+          onSelectVehicle={onSelectVehicle}
         />
 
         <div className="pointer-events-none absolute inset-x-0 top-2 flex justify-center px-14">
@@ -129,6 +206,57 @@ export function MapPage() {
             <LocateFixed aria-hidden="true" />
           )}
         </Button>
+
+        <Button
+          variant={live ? "default" : "outline"}
+          size="icon"
+          className={
+            live
+              ? "absolute top-13 left-2 shadow-sm"
+              : "absolute top-13 left-2 bg-background shadow-sm"
+          }
+          aria-label="Live-Fahrzeuge"
+          aria-pressed={live}
+          title={live ? "Live-Fahrzeuge ausblenden" : "Live-Fahrzeuge zeigen"}
+          onClick={toggleLive}
+        >
+          <TramFront aria-hidden="true" />
+        </Button>
+
+        {selectedVehicle && (
+          <div
+            role="group"
+            aria-label={`Linie ${selectedVehicle.line}`}
+            className="absolute inset-x-2 bottom-7 flex items-center gap-2 rounded-xl border bg-background p-3 shadow-lg"
+          >
+            <LineBadge
+              departure={{
+                line: selectedVehicle.line,
+                mode: selectedVehicle.mode,
+                lineColor: selectedVehicle.color,
+                lineTextColor: null,
+              }}
+            />
+            <p className="min-w-0 flex-1 leading-snug">
+              {vehicleWhere(selectedVehicle) && (
+                <span className="line-clamp-2 text-sm font-medium">
+                  {vehicleWhere(selectedVehicle)}
+                </span>
+              )}
+              <span className="block text-xs text-muted-foreground">
+                {vehicleTime(selectedVehicle)} · Position geschätzt
+              </span>
+            </p>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Schließen"
+              onClick={() => setSelectedTrip(null)}
+            >
+              <X aria-hidden="true" />
+            </Button>
+          </div>
+        )}
 
         {selected && (
           <div

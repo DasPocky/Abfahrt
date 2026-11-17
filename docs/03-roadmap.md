@@ -44,7 +44,7 @@ Live seit 13.11.2026: https://abfahrt.bjoern-ef9.workers.dev
 
 ## M4 – Extras
 
-- Live-Fahrzeugkarte (Transitous `map/trips`, Machbarkeit am 07.11.2026 getestet, siehe [Datenquellen](01-datenquellen.md#transitous-motis-2))
+- ✅ Live-Fahrzeugkarte (#92, Transitous `map/trips`, Position aus Fahrplan/Echtzeit geschätzt, siehe [Architektur](02-architektur.md))
 - Wagenreihung/Auslastung (DB RIS::Transports, Registrierung nötig)
 - Widget-/Tafel-Ansicht (z. B. Tablet an der Wand)
 - Teilen per Link

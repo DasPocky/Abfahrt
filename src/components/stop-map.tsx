@@ -11,9 +11,11 @@ import type { FeatureCollection, Point } from "geojson";
 import type { Stop, StopPlatform, TransportMode } from "../../shared/api-types";
 import { MAP_LOCALE, mapStyle } from "@/components/map-base";
 import type { Position } from "@/lib/geo";
+import type { VehiclePosition } from "@/lib/vehicles";
 import { mergeRadiusMeters, platformGroups, selectionKey, type Bounds } from "@/lib/map-area";
 
 const STOPS_LAYER = "abfahrt-stops";
+const VEHICLES_LAYER = "abfahrt-vehicles";
 /** Ab hier stehen Steig-Nummern im Punkt und Haltestellennamen daneben */
 const DETAIL_MIN_ZOOM = 16;
 
@@ -129,6 +131,11 @@ interface StopMapProps {
   dark: boolean;
   onViewChange: (view: MapView) => void;
   onSelect: (selection: MapSelection | null) => void;
+  /** Live-Fahrzeuge (#92), leer wenn ausgeschaltet */
+  vehicles: readonly VehiclePosition[];
+  /** Fahrt-ID des ausgewählten Fahrzeugs */
+  selectedTrip: string | null;
+  onSelectVehicle: (vehicle: VehiclePosition) => void;
 }
 
 type Collection = FeatureCollection<Point>;
@@ -198,6 +205,27 @@ function namesToGeoJson(stops: readonly Stop[]): Collection {
   };
 }
 
+/** Fahrzeuge als Punkte; Farbe der Linie, sonst des Verkehrsmittels */
+function vehiclesToGeoJson(
+  vehicles: readonly VehiclePosition[],
+  selectedTrip: string | null,
+): Collection {
+  return {
+    type: "FeatureCollection",
+    features: vehicles.map((v) => ({
+      type: "Feature" as const,
+      geometry: { type: "Point" as const, coordinates: [v.lon, v.lat] },
+      properties: {
+        trip: v.trip,
+        line: v.line,
+        color: v.color ? `#${v.color}` : MODE_HEX[v.mode],
+        realtime: v.realtime,
+        selected: v.trip === selectedTrip,
+      },
+    })),
+  };
+}
+
 function positionToGeoJson(position: Position | null): Collection {
   return {
     type: "FeatureCollection",
@@ -220,6 +248,7 @@ function addOwnLayers(
   stops: Collection,
   names: Collection,
   me: Collection,
+  vehicles: Collection,
 ) {
   const c = dark ? COLORS.dark : COLORS.light;
   map.addSource("abfahrt-me", { type: "geojson", data: me });
@@ -276,6 +305,46 @@ function addOwnLayers(
     },
     paint: { "text-color": c.text, "text-halo-color": c.halo, "text-halo-width": 1.5 },
   });
+  // Fahrzeuge über den Haltestellen; ohne Echtzeit etwas blasser
+  map.addSource(VEHICLES_LAYER, { type: "geojson", data: vehicles });
+  map.addLayer({
+    id: VEHICLES_LAYER,
+    type: "circle",
+    source: VEHICLES_LAYER,
+    paint: {
+      "circle-radius": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        14,
+        ["case", ["get", "selected"], 11, 8],
+        17,
+        ["case", ["get", "selected"], 14, 11],
+      ],
+      "circle-color": ["get", "color"],
+      "circle-opacity": ["case", ["get", "realtime"], 1, 0.7],
+      "circle-stroke-color": ["case", ["get", "selected"], c.stroke, c.fill],
+      "circle-stroke-width": ["case", ["get", "selected"], 3, 1.5],
+    },
+  });
+  map.addLayer({
+    id: "abfahrt-vehicle-labels",
+    type: "symbol",
+    source: VEHICLES_LAYER,
+    // Liniennummer immer im Kreis: so unterscheidet man Fahrzeuge von Steigen
+    layout: {
+      "text-field": ["get", "line"],
+      "text-font": ["Noto Sans Bold"],
+      "text-size": ["interpolate", ["linear"], ["zoom"], 14, 7, 17, 10],
+      "text-allow-overlap": true,
+      "text-ignore-placement": true,
+    },
+    paint: {
+      "text-color": "#ffffff",
+      "text-halo-color": "rgba(0,0,0,0.35)",
+      "text-halo-width": 1,
+    },
+  });
 }
 
 function viewOf(map: MapLibreMap): MapView {
@@ -296,14 +365,37 @@ export function StopMap({
   dark,
   onViewChange,
   onSelect,
+  vehicles,
+  selectedTrip,
+  onSelectVehicle,
 }: StopMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   /** Zoomstufe (halbe Stufen), für die die Punkte gerade gruppiert sind */
   const shownBucket = useRef(0);
   // Aktuelle Werte für die MapLibre-Ereignisse, ohne die Karte neu anzulegen
-  const latest = useRef({ stops, selectedKey, userPosition, dark, onViewChange, onSelect });
-  latest.current = { stops, selectedKey, userPosition, dark, onViewChange, onSelect };
+  const latest = useRef({
+    stops,
+    selectedKey,
+    userPosition,
+    dark,
+    onViewChange,
+    onSelect,
+    vehicles,
+    selectedTrip,
+    onSelectVehicle,
+  });
+  latest.current = {
+    stops,
+    selectedKey,
+    userPosition,
+    dark,
+    onViewChange,
+    onSelect,
+    vehicles,
+    selectedTrip,
+    onSelectVehicle,
+  };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -328,6 +420,7 @@ export function StopMap({
 
     map.on("style.load", () => {
       const { stops: s, selectedKey: sel, userPosition: me, dark: d } = latest.current;
+      const { vehicles: v, selectedTrip: trip } = latest.current;
       shownBucket.current = zoomBucket(map.getZoom());
       addOwnLayers(
         map,
@@ -335,6 +428,7 @@ export function StopMap({
         stopsToGeoJson(s, sel, map.getZoom(), d),
         namesToGeoJson(s),
         positionToGeoJson(me),
+        vehiclesToGeoJson(v, trip),
       );
     });
     // Marker-Bilder bei Bedarf zeichnen (auch nach jedem Stilwechsel). Nur der Resolver kann
@@ -357,17 +451,27 @@ export function StopMap({
     map.on("moveend", () => latest.current.onViewChange(viewOf(map)));
     map.on("click", (event) => {
       const { x, y } = event.point;
+      const box: [[number, number], [number, number]] = [
+        [x - TAP_TOLERANCE_PX, y - TAP_TOLERANCE_PX],
+        [x + TAP_TOLERANCE_PX, y + TAP_TOLERANCE_PX],
+      ];
+      // Fahrzeuge liegen oben und haben Vorrang
+      if (map.getLayer(VEHICLES_LAYER)) {
+        const [car] = map.queryRenderedFeatures(box, { layers: [VEHICLES_LAYER] });
+        const carProps: unknown = car?.properties;
+        const trip =
+          typeof carProps === "object" && carProps !== null && "trip" in carProps
+            ? carProps.trip
+            : null;
+        const vehicle = latest.current.vehicles.find((v) => v.trip === trip);
+        if (vehicle) {
+          latest.current.onSelectVehicle(vehicle);
+          return;
+        }
+      }
       const layers = map.getLayer(STOPS_LAYER) ? [STOPS_LAYER] : [];
       const hits: MapGeoJSONFeature[] =
-        layers.length > 0
-          ? map.queryRenderedFeatures(
-              [
-                [x - TAP_TOLERANCE_PX, y - TAP_TOLERANCE_PX],
-                [x + TAP_TOLERANCE_PX, y + TAP_TOLERANCE_PX],
-              ],
-              { layers },
-            )
-          : [];
+        layers.length > 0 ? map.queryRenderedFeatures(box, { layers }) : [];
       const props: unknown = hits[0]?.properties;
       const id = typeof props === "object" && props !== null && "id" in props ? props.id : null;
       const track =
@@ -385,12 +489,14 @@ export function StopMap({
         stop && single ? (platformsOf(stop).find((p) => (p.track ?? "") === track) ?? null) : null;
       latest.current.onSelect(stop ? { stop, platform } : null);
     });
-    map.on("mousemove", STOPS_LAYER, () => {
-      map.getCanvas().style.cursor = "pointer";
-    });
-    map.on("mouseleave", STOPS_LAYER, () => {
-      map.getCanvas().style.cursor = "";
-    });
+    for (const layer of [STOPS_LAYER, VEHICLES_LAYER]) {
+      map.on("mousemove", layer, () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+      map.on("mouseleave", layer, () => {
+        map.getCanvas().style.cursor = "";
+      });
+    }
 
     return () => {
       mapRef.current = null;
@@ -407,6 +513,12 @@ export function StopMap({
     const names = mapRef.current?.getSource<GeoJSONSource>("abfahrt-stop-names");
     void names?.setData(namesToGeoJson(stops));
   }, [stops, selectedKey, dark]);
+
+  useEffect(() => {
+    void mapRef.current
+      ?.getSource<GeoJSONSource>(VEHICLES_LAYER)
+      ?.setData(vehiclesToGeoJson(vehicles, selectedTrip));
+  }, [vehicles, selectedTrip]);
 
   useEffect(() => {
     void mapRef.current

@@ -186,6 +186,37 @@ export interface AlertsResponse {
   generatedAt: string;
 }
 
+/**
+ * Live-Karte (#92): ein Fahrtabschnitt von Halt zu Halt. Die App berechnet die Position aus der
+ * Zeit (Anteil zwischen Abfahrt und Ankunft) entlang `path`, ein Fahrzeug-GPS gibt es nicht.
+ */
+export interface VehicleSegment {
+  /** Fahrt-ID der Quelle; gleiche ID = dasselbe Fahrzeug über mehrere Abschnitte */
+  trip: string;
+  line: string;
+  mode: TransportMode;
+  /** Linienfarbe als Hex ohne "#", falls bekannt */
+  color: string | null;
+  /** ISO-8601, Abfahrt am Start bzw. Ankunft am Ende des Abschnitts (mit Echtzeit, falls da) */
+  departure: string;
+  arrival: string;
+  /** Abfahrt laut Echtzeit statt nur Fahrplan */
+  realtime: boolean;
+  /** Verspätung in Minuten (nur mit Echtzeit) */
+  delayMinutes: number | null;
+  /** Halt am Ende des Abschnitts */
+  nextStop: string;
+  /** Streckenverlauf `[lat, lon]`, mindestens 2 Punkte */
+  path: [number, number][];
+}
+
+export interface VehiclesResponse {
+  segments: VehicleSegment[];
+  /** Zeitfenster der Abschnitte (ISO-8601) */
+  from: string;
+  to: string;
+}
+
 export interface ApiError {
   error: string;
   message?: string;

@@ -9,6 +9,7 @@ import { apiError, json, UpstreamError } from "./http";
 import { isRateLimited } from "./rate-limit";
 import { PAGE_SECURITY_HEADERS, withSecurityHeaders } from "./security-headers";
 import { getStopsInArea } from "./stops-area";
+import { getVehicles } from "./vehicles";
 
 const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
 
@@ -41,6 +42,8 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
       case "push/test":
       case "push/topics":
         return await handlePush(request, env, route);
+      case "vehicles":
+        return await getVehicles(request, ctx, url.searchParams);
       case "alerts":
         return await getAlerts(request, ctx, url.searchParams);
       case "journeys":
