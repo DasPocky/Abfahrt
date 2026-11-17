@@ -41,6 +41,14 @@ export interface Transfer {
   /** Puffer: Abfahrt − Ankunft − Fußwege in ganzen Minuten, null ohne Zeiten */
   minutes: number | null;
   status: TransferStatus;
+  /** Ankunft und Abfahrt an derselben Haltestelle und am selben Steig/Gleis, ohne Fußweg (#97) */
+  samePlatform: boolean;
+}
+
+/** Gleicher Halt (ID, sonst Name) und gleicher Steig laut Echtzeit bzw. Plan */
+function sameStopAndPlatform(a: JourneyStop, b: JourneyStop): boolean {
+  const sameStop = a.id !== null && b.id !== null ? a.id === b.id : a.name === b.name;
+  return sameStop && a.platform !== null && a.platform === b.platform;
 }
 
 /** Echtzeit, sonst Plan */
@@ -82,6 +90,7 @@ export function journeyTransfers(journey: Journey): Transfer[] {
       const arrival = arrivalAt(from.destination);
       const departure = departureAt(leg.origin);
       const cancelled = isLegCancelled(from) || isLegCancelled(leg);
+      const walked = index - previous > 1;
       const minutes =
         arrival === null || departure === null
           ? null
@@ -92,6 +101,7 @@ export function journeyTransfers(journey: Journey): Transfer[] {
         walkMinutes,
         minutes,
         status: cancelled ? "unknown" : transferStatus(minutes),
+        samePlatform: !walked && sameStopAndPlatform(from.destination, leg.origin),
       });
     }
     previous = index;
@@ -106,4 +116,10 @@ export function journeyTransferRisk(journey: Journey): "tight" | "missed" | null
   if (statuses.includes("missed")) return "missed";
   if (statuses.includes("tight")) return "tight";
   return null;
+}
+
+/** Mindestens ein Umstieg, und alle am selben Steig (#97) */
+export function hasOnlySamePlatformTransfers(journey: Journey): boolean {
+  const transfers = journeyTransfers(journey);
+  return transfers.length > 0 && transfers.every((t) => t.samePlatform);
 }

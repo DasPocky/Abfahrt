@@ -2,7 +2,7 @@ import { exports } from "cloudflare:workers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Journey, JourneysResponse } from "../../shared/api-types";
 import { API_PREFIX } from "../../shared/base-path";
-import { dedupeJourneys, dropDeparted, paging } from "../../worker/journeys";
+import { dedupeJourneys, dropDeparted, orderJourneys, paging } from "../../worker/journeys";
 import { resetRateLimit } from "../../worker/rate-limit";
 import * as transitousTrips from "../../worker/sources/transitous-trips";
 import * as vrrTrips from "../../worker/sources/vrr-trips";
@@ -156,6 +156,70 @@ function at(iso: string): Journey {
   };
 }
 
+/** Zwei Fahrten mit Umstieg an `stop`: an Steig `arrPlatform`, ab Steig `depPlatform` */
+function viaTransfer(
+  dep: string,
+  arr: string,
+  stop: string,
+  arrPlatform: string,
+  depPlatform: string,
+  second: string,
+): Journey {
+  const [first] = at(`2026-11-17T${dep}:00Z`).legs;
+  const [next] = at(`2026-11-17T${arr}:00Z`).legs;
+  return {
+    id: `${dep}-${stop}`,
+    transfers: 1,
+    durationMinutes: 40,
+    legs: [
+      {
+        ...first!,
+        line: "U83",
+        destination: { ...first!.destination, id: stop, platform: arrPlatform },
+      },
+      {
+        ...next!,
+        line: second,
+        origin: {
+          ...next!.origin,
+          id: stop,
+          platform: depPlatform,
+          plannedDeparture: `2026-11-17T${dep.slice(0, 3)}30:00Z`,
+        },
+      },
+    ],
+  };
+}
+
+describe("Umstieg am selben Steig (#97)", () => {
+  // Auf der Hardt → Holthausen, 12:02 mit der U83 (Zeiten vereinfacht)
+  const platformChange = viaTransfer("12:02", "12:40", "vrr:hha", "6", "4", "U76");
+  const samePlatform = viaTransfer("12:02", "12:43", "vrr:schlueter", "1", "1", "U72");
+
+  it("stellt die Variante am selben Steig vor, wenn sie höchstens 5 Min später ankommt", () => {
+    expect(orderJourneys([platformChange, samePlatform]).map((j) => j.legs[1]?.line)).toEqual([
+      "U72",
+      "U76",
+    ]);
+  });
+
+  it("lässt die schnellere vorn, wenn die bequeme deutlich später ankommt", () => {
+    const late = viaTransfer("12:02", "12:50", "vrr:schlueter", "1", "1", "U72");
+    expect(orderJourneys([late, platformChange]).map((j) => j.legs[1]?.line)).toEqual([
+      "U76",
+      "U72",
+    ]);
+  });
+
+  it("sortiert sonst nach Abfahrt", () => {
+    const later = viaTransfer("12:09", "12:50", "vrr:hha", "6", "4", "U76");
+    expect(orderJourneys([later, platformChange]).map((j) => j.id)).toEqual([
+      platformChange.id,
+      later.id,
+    ]);
+  });
+});
+
 describe("Früher/Später", () => {
   it("springt eine Listenlänge zurück und hinter die letzte Abfahrt", () => {
     expect(paging([at("2026-11-14T20:00:00Z"), at("2026-11-14T20:40:00Z")])).toEqual({
@@ -209,7 +273,10 @@ describe("API journeys", () => {
     });
     expect(body.to).toMatchObject({ id: ESSEN, name: "Essen Hauptbahnhof" });
     expect(body.later).not.toBeNull();
-    expect(calls.filter((u) => u.includes("openservice.vrr.de"))).toHaveLength(1);
+    // zweite Abfrage mit langsamem Umsteigen für Umstiege am selben Steig (#97)
+    const vrrCalls = calls.filter((u) => u.includes("openservice.vrr.de"));
+    expect(vrrCalls).toHaveLength(2);
+    expect(vrrCalls.filter((u) => u.includes("changeSpeed=slow"))).toHaveLength(1);
     expect(calls.some((u) => u.includes("v5/plan"))).toBe(false);
     const subway = body.journeys.flatMap((j) => j.legs).find((l) => l.mode === "subway");
     expect(subway?.lineColor).toMatch(/^[0-9a-f]{6}$/);

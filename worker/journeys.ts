@@ -12,6 +12,7 @@ import * as transitousTrips from "./sources/transitous-trips";
 import { isVrrArea } from "./sources/vrr";
 import { parseGeoId } from "../shared/geo-id";
 import * as vrrTrips from "./sources/vrr-trips";
+import { hasOnlySamePlatformTransfers } from "../shared/transfers";
 
 const STOP_ID = /^(vrr|transitous):[A-Za-z0-9:_.-]{1,160}$/;
 
@@ -111,6 +112,48 @@ export function paging(journeys: readonly Journey[]): {
   };
 }
 
+/** So viel später darf eine Variante mit Umstieg am selben Steig ankommen, um vorne zu stehen */
+export const SAME_PLATFORM_EXTRA_MS = 5 * 60_000;
+
+function arrivalOf(j: Journey): number {
+  const d = j.legs.at(-1)?.destination;
+  return Date.parse(d?.plannedArrival ?? d?.plannedDeparture ?? "");
+}
+
+/** Erste Fahrt (Linie und Abfahrt), daran erkennt man Varianten derselben Abfahrt */
+function firstRide(j: Journey): string {
+  const leg = j.legs.find((l) => l.kind === "transit");
+  return `${leg?.line ?? ""}@${leg?.origin.plannedDeparture ?? ""}`;
+}
+
+/**
+ * Sortiert nach Abfahrt, dann Ankunft. Varianten derselben ersten Fahrt: Liegen alle Umstiege am
+ * selben Steig und kommt sie höchstens SAME_PLATFORM_EXTRA_MS später an, steht sie vor der
+ * Variante mit Steigwechsel (#97, U83 → U72 an Schlüterstraße statt U76 an Heinrich-Heine-Allee).
+ */
+export function orderJourneys(journeys: readonly Journey[]): Journey[] {
+  const sorted = journeys.toSorted(
+    (a, b) => departureOf(a) - departureOf(b) || arrivalOf(a) - arrivalOf(b),
+  );
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const fast = sorted[i]!;
+    for (let k = i + 1; k < sorted.length; k++) {
+      const comfy = sorted[k]!;
+      if (firstRide(comfy) !== firstRide(fast)) break;
+      if (
+        !hasOnlySamePlatformTransfers(fast) &&
+        hasOnlySamePlatformTransfers(comfy) &&
+        arrivalOf(comfy) - arrivalOf(fast) <= SAME_PLATFORM_EXTRA_MS
+      ) {
+        sorted.splice(k, 1);
+        sorted.splice(i, 0, comfy);
+        break;
+      }
+    }
+  }
+  return sorted;
+}
+
 /** Höchstens so viele Haltestellen je Antwort nach Linienfarben fragen */
 const MAX_COLOR_STOPS = 6;
 
@@ -143,6 +186,11 @@ export async function loadJourneys(
   when: Date | undefined,
   arrive: boolean,
   options: JourneyOptions,
+  /**
+   * Beim VRR zusätzlich mit langsamem Umsteigen fragen: Nur so liefert er Varianten mit Umstieg
+   * am selben Steig (#97). Kostet eine zweite, parallele Abfrage; die Push-Prüfung braucht es nicht.
+   */
+  samePlatformVariants = false,
 ): Promise<Loaded> {
   const viaTransitous = async (): Promise<Loaded> => {
     const r = await transitousTrips.trips(from, to, when, arrive, options);
@@ -154,11 +202,24 @@ export async function loadJourneys(
     };
   };
   const viaVrr = async (): Promise<Loaded> => {
-    const r = await vrrTrips.trips(from, to, when, arrive, options);
+    const withVariants = samePlatformVariants && options.transferSpeed === "normal";
+    const [r, slow] = await Promise.all([
+      vrrTrips.trips(from, to, when, arrive, options),
+      withVariants
+        ? vrrTrips
+            .trips(from, to, when, arrive, { ...options, transferSpeed: "slow" })
+            .catch((err: unknown) => {
+              if (err instanceof UpstreamError) return null;
+              throw err;
+            })
+        : null,
+    ]);
     return {
       from: endpoint(from, r.from),
       to: endpoint(to, r.to),
-      journeys: r.journeys,
+      journeys: slow
+        ? orderJourneys(dedupeJourneys([...r.journeys, ...slow.journeys]))
+        : r.journeys,
       source: "vrr",
     };
   };
@@ -218,9 +279,9 @@ export async function getJourneys(
   // Minutengenauer Schlüssel: alle, die dieselbe Strecke zur selben Minute suchen, teilen sich
   // eine Abfrage (wichtig für das Transitous-Limit)
   const minute = Math.floor(at.getTime() / 60_000);
-  const key = `jrn:v2:${from}>${to}:${arrive ? "arr" : "dep"}:${minute}:${journeyOptionsKey(options)}`;
+  const key = `jrn:v3:${from}>${to}:${arrive ? "arr" : "dep"}:${minute}:${journeyOptionsKey(options)}`;
   const loaded = await cached(request, ctx, key, JOURNEYS_TTL, async () => {
-    const result = await loadJourneys(from, to, at, arrive, options);
+    const result = await loadJourneys(from, to, at, arrive, options, true);
     return result.source === "vrr"
       ? { ...result, journeys: await withLineColors(request, ctx, result.journeys) }
       : result;
