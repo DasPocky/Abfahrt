@@ -2,14 +2,17 @@ import { ChevronDown, Clock } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { CHIP_BASE, CHIP_OFF, CHIP_ON } from "@/components/chip";
-import { Button } from "@/components/ui/button";
+import { TimePicker } from "@/components/time-picker";
 import { timeChipLabel } from "@/lib/journeys";
-import { toLocalInputValue } from "@/lib/time";
+import { shiftMinutes } from "@/lib/journey-time";
 
 const SEGMENT_CLASS =
   "h-8 flex-1 rounded px-3 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-xs text-muted-foreground hover:text-foreground dark:aria-pressed:bg-input/50";
 
-/** Zeit-Chip „Ab jetzt ▾“ mit Panel: Abfahrt/Ankunft, Datum und Uhrzeit, „Jetzt“ */
+/**
+ * Zeit-Chip „Ab jetzt ▾“ mit Panel (#102): Abfahrt/Ankunft, Tag als Chips (Heute, Morgen,
+ * Wochentage, Datumsfeld), Uhrzeit mit −15/+15 Minuten und Schnellwahl. Jede Änderung gilt sofort.
+ */
 export function JourneyTimeSheet({
   time,
   arrive,
@@ -26,7 +29,7 @@ export function JourneyTimeSheet({
   return (
     <BottomSheet
       title="Zeitpunkt"
-      description="Abfahrt oder Ankunft, Datum und Uhrzeit"
+      description="Abfahrt oder Ankunft, Tag und Uhrzeit"
       triggerLabel={`Zeitpunkt: ${label}`}
       triggerClassName={cn(CHIP_BASE, "shrink-0", time ? CHIP_ON : CHIP_OFF)}
       trigger={
@@ -56,34 +59,19 @@ export function JourneyTimeSheet({
             className={SEGMENT_CLASS}
             aria-pressed={arrive}
             // Ankunft braucht einen Zeitpunkt: ohne Auswahl gilt die aktuelle Uhrzeit
-            onClick={() => onChange(time ?? new Date().toISOString(), true)}
+            onClick={() => onChange(time ?? shiftMinutes(undefined, 0, now), true)}
           >
             Ankunft
           </button>
         </div>
-        <div className="flex items-center gap-2">
-          <label htmlFor="journey-time" className="sr-only">
-            Datum und Uhrzeit
-          </label>
-          <input
-            id="journey-time"
-            type="datetime-local"
-            className="h-10 min-w-0 flex-1 rounded-md border bg-background px-2 text-base dark:bg-input/30"
-            value={toLocalInputValue(time ?? now.toISOString())}
-            onChange={(event) => {
-              const value = event.target.value;
-              if (value) onChange(new Date(value).toISOString(), arrive);
-              else onChange(undefined, false);
-            }}
-          />
-          <Button
-            variant="outline"
-            disabled={time === undefined}
-            onClick={() => onChange(undefined, false)}
-          >
-            Jetzt
-          </Button>
-        </div>
+
+        <TimePicker
+          time={time}
+          now={now}
+          onChange={(next) =>
+            next === undefined ? onChange(undefined, false) : onChange(next, arrive)
+          }
+        />
       </div>
     </BottomSheet>
   );

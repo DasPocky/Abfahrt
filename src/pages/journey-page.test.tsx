@@ -324,16 +324,20 @@ describe("Verbindungssuche", () => {
     expect(reset.has("ankunft")).toBe(false);
   });
 
-  it("übernimmt Datum und Uhrzeit in die URL", () => {
+  it("übernimmt Tag und Uhrzeit in die URL (#102)", () => {
     mockApi();
     const { router } = renderAt(SEARCH);
+    const zeit = () => new URLSearchParams(router.state.location.search).get("zeit");
     fireEvent.click(screen.getByRole("button", { name: "Zeitpunkt: Ab jetzt" }));
-    fireEvent.change(screen.getByLabelText("Datum und Uhrzeit"), {
-      target: { value: "2026-11-20T08:15" },
-    });
-    expect(new URLSearchParams(router.state.location.search).get("zeit")).toBe(
-      new Date("2026-11-20T08:15").toISOString(),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Morgen" }));
+    fireEvent.change(screen.getByLabelText("Uhrzeit"), { target: { value: "08:15" } });
+    const now = new Date();
+    const expected = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 8, 15);
+    expect(zeit()).toBe(expected.toISOString());
+    fireEvent.click(screen.getByRole("button", { name: "15 Minuten später" }));
+    expect(zeit()).toBe(new Date(expected.getTime() + 15 * 60_000).toISOString());
+    fireEvent.click(screen.getByRole("button", { name: "Jetzt" }));
+    expect(zeit()).toBeNull();
   });
 
   it("meldet gleiche Haltestelle für Start und Ziel", () => {
