@@ -3,8 +3,11 @@ import type { Stop, StopSearchResponse } from "../shared/api-types";
 import { cached } from "./cache";
 import { apiError, json } from "./http";
 import { stopsInArea, type Area } from "./sources/transitous-map";
+import { servingModes } from "./sources/vrr-lines";
 
 const AREA_TTL = 24 * 60 * 60;
+/** Linien einer Haltestelle ändern sich selten (#88) */
+const LINES_TTL = 7 * 24 * 60 * 60;
 /** Größter erlaubter Ausschnitt (nur bei ausreichendem Zoom, schont Transitous) */
 export const MAX_AREA_LAT = 0.05;
 export const MAX_AREA_LON = 0.08;
@@ -50,8 +53,12 @@ export async function getStopsInArea(
       `Ausschnitt als min=<lat,lon>&max=<lat,lon>, höchstens ${MAX_AREA_LAT}° × ${MAX_AREA_LON}°`,
     );
   }
-  const key = `area:v3:${[area.minLat, area.minLon, area.maxLat, area.maxLon].map((v) => v.toFixed(3)).join(",")}`;
-  const stops = await cached<Stop[]>(request, ctx, key, AREA_TTL, () => stopsInArea(area));
+  const key = `area:v4:${[area.minLat, area.minLon, area.maxLat, area.maxLon].map((v) => v.toFixed(3)).join(",")}`;
+  const stops = await cached<Stop[]>(request, ctx, key, AREA_TTL, () =>
+    stopsInArea(area, (dhid) =>
+      cached(request, ctx, `lines:v1:${dhid}`, LINES_TTL, () => servingModes(dhid)),
+    ),
+  );
   const body: StopSearchResponse = { stops };
   return json(body, { headers: { "Cache-Control": "public, max-age=3600" } });
 }
