@@ -138,6 +138,11 @@ describe("Abfahrten", () => {
     const body = await res.json<DeparturesResponse>();
     expect(body.source).toBe("vrr");
     expect(body.stop.name).toBe("Heinrich-Heine-Allee U");
+    // Ziele in Düsseldorf ohne Ort, andere Städte bleiben (#94)
+    const directions = body.departures.map((d) => d.direction);
+    expect(directions).toContain("Benrath Btf");
+    expect(directions).toContain("Neuss Hauptbahnhof");
+    expect(directions.some((d) => d.startsWith("D-"))).toBe(false);
     const times = body.departures.map((d) => Date.parse(d.realtimeTime ?? d.plannedTime));
     expect(times).toEqual(times.toSorted((a, b) => a - b));
   });

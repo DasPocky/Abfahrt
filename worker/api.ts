@@ -2,6 +2,7 @@ import type { Departure, DeparturesResponse, Stop, StopSearchResponse } from "..
 import { cached } from "./cache";
 import { apiError, json, UpstreamError } from "./http";
 import { applyLineColors, type LineColorMap } from "./line-colors";
+import { directionAt, splitCityPrefix } from "./stop-names";
 import * as transitous from "./sources/transitous";
 import * as vrr from "./sources/vrr";
 
@@ -128,6 +129,11 @@ export async function lineColorsForStop(
   }
 }
 
+/** Fahrtziele mit Ort, wenn sie in einer anderen Stadt liegen als die Haltestelle (#94) */
+function localize(departures: Departure[], city: string | null | undefined): Departure[] {
+  return departures.map((d) => ({ ...d, direction: directionAt(d.direction, city) }));
+}
+
 async function loadDepartures(
   request: Request,
   ctx: ExecutionContext,
@@ -142,9 +148,10 @@ async function loadDepartures(
 
   if (source === "transitous") {
     const result = await transitous.departures(rawId, when);
+    const { name, city } = splitCityPrefix(result.stopName ?? rawId);
     return {
-      stop: { id: stopId, name: result.stopName ?? rawId },
-      departures: result.departures,
+      stop: { id: stopId, name, ...(city ? { place: city } : {}) },
+      departures: localize(result.departures, city),
       source: "transitous",
       generatedAt,
     };
@@ -157,7 +164,7 @@ async function loadDepartures(
   const vrrResult = async (): Promise<DeparturesResponse> => ({
     stop: fromVrr.stop,
     departures: applyLineColors(
-      fromVrr.departures,
+      localize(fromVrr.departures, fromVrr.stop.place),
       await lineColorsForStop(request, ctx, fromVrr.stop),
     ),
     source: "vrr",
@@ -171,7 +178,7 @@ async function loadDepartures(
       if (result.departures.length > 0) {
         return {
           stop: fromVrr.stop,
-          departures: result.departures,
+          departures: localize(result.departures, fromVrr.stop.place),
           source: "transitous",
           generatedAt,
         };
