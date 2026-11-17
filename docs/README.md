@@ -8,6 +8,7 @@ Echtzeit-ÖPNV-PWA mit Fokus Düsseldorf/Rheinland und Abdeckung von ganz Deutsc
 | [02 – Architektur](02-architektur.md)                   | Aufbau, Worker-API, Cloudflare-Budget, App-Sicherheit |
 | [03 – Roadmap](03-roadmap.md)                           | Meilensteine M0–M4                                    |
 | [04 – Workflow & Sicherheit](04-workflow-sicherheit.md) | Issues, Branches, PRs, CI, Repo-Schutz                |
+| [05 – Echtzeit-Abdeckung](05-echtzeit-abdeckung.md)     | Deutschlandweite Prüfung, Lücken, mögliche Quellen    |
 
 ## Getroffene Entscheidungen
 
