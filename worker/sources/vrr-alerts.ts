@@ -1,7 +1,7 @@
 import type { Alert, AlertKind, AlertLine, AlertSeverity } from "../../shared/api-types";
 import { fetchJson } from "../http";
 import { htmlToText } from "../html-text";
-import { stripCityPrefix } from "./transitous-map";
+import { stripCityPrefix } from "../stop-names";
 import { MODE_BY_CLASS } from "./vrr";
 
 // VRR OpenService: Störungsmeldungen (XML_ADDINFO_REQUEST), siehe docs/01-datenquellen.md.

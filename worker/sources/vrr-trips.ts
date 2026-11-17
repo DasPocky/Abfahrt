@@ -3,7 +3,7 @@ import { parseGeoId } from "../../shared/geo-id";
 import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
 import { legPath } from "../geometry";
 import { fetchJson } from "../http";
-import { stripCityPrefix } from "./transitous-map";
+import { stripCityPrefix } from "../stop-names";
 import { efaDateTime, MODE_BY_CLASS } from "./vrr";
 
 // VRR OpenService, Verbindungen (XML_TRIP_REQUEST2), siehe docs/01-datenquellen.md

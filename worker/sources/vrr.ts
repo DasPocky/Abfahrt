@@ -1,6 +1,7 @@
 import type { Departure, PlaceKind, Stop, TransportMode } from "../../shared/api-types";
 import { toGeoId } from "../../shared/geo-id";
 import { fetchJson } from "../http";
+import { stripCityPrefix } from "../stop-names";
 
 // VRR OpenService (EFA rapidJSON), siehe docs/01-datenquellen.md
 const BASE = "https://openservice.vrr.de/openservice";
@@ -190,7 +191,7 @@ export function toDeparture(event: VrrStopEvent, index: number): Departure | nul
     id: `${index}-${line}-${planned}`,
     line,
     mode: MODE_BY_CLASS[t.product?.class ?? -1] ?? "other",
-    direction: t.destination?.name ?? "",
+    direction: stripCityPrefix(t.destination?.name ?? ""),
     plannedTime: planned,
     realtimeTime: event.isRealtimeControlled ? (event.departureTimeEstimated ?? planned) : null,
     platform,
