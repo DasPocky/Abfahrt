@@ -85,6 +85,8 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - je Abschnitt: Streckenverlauf (`polyline`), Plan- und Echtzeit für Abfahrt/Ankunft, Linie (`trips`)
 - Antwortgröße ca. 275 kB. Die Position wird im Browser entlang der Polyline interpoliert, der Worker cached pro Kachel. So entsteht eine flüssige Karte wie bei TRAVIC, aber mit eigenen Mitteln und offenen Daten.
 
+**Test 17.11.2026, Live-Fahrzeuge umgesetzt (#92)** (`v5/map/trips`, 0,05° × 0,08° Düsseldorf, 3 min): 436 Abschnitte, ca. 425 kB roh, rund 35.000 Punkte (ein ICE-Abschnitt allein 5.700). `polyline` hat Präzision 5. `zoom` ändert im kleinen Ausschnitt nichts (10, 13, 14, 16 gleich viele Abschnitte). Je Abschnitt ein Eintrag in `trips` (`tripId`, `displayName`), `routeColor` meist vorhanden, `to.name` ist der nächste Halt; eine Richtung (headsign) fehlt. Flugzeuge (`AIRPLANE`) kommen mit und fallen im Worker weg.
+
 **Test 16.11.2026, Linien einer Haltestelle** (VRR `XML_DM_REQUEST?outputFormat=JSON&type_dm=stop&name_dm=<DHID>&mode=line&lineReqType=1`): `servingLines.lines[].mode.type` ist die EFA-Produktklasse (2 U-Bahn, 4 Straßenbahn, 5 Bus …). rapidJSON liefert die Liste nicht. Auf der Hardt/LVR-Klinikum: U73, U83, 709 – kein Bus, obwohl Transitous `v1/map/stops` an Steig 2/5/6 `BUS` meldet und `v5/stoptimes` über eine Woche keinen Bus zeigt. Genutzt für den Abgleich der Steige auf der Karte (#88).
 
 **Test 14.11.2026, Haltestellen für die Karte** (`v1/map/stops`):
