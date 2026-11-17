@@ -228,7 +228,11 @@ export function JourneyPage() {
           />
           <JourneyOptionsSheet
             options={query.options}
-            onChange={(options) => update({ ...query, options })}
+            viaName={query.viaName}
+            location={location}
+            onChange={(options, viaName) =>
+              update({ ...query, options, viaName: viaName ?? query.viaName })
+            }
           />
           {optionsSummary && (
             <p className="min-w-0 flex-1 truncate text-xs text-muted-foreground">

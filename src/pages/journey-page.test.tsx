@@ -375,6 +375,27 @@ describe("Verbindungssuche", () => {
     expect(journeyCalls(fetchMock)).toHaveLength(2);
   });
 
+  it("gibt Route, Fahrrad und Einzelmerkmale weiter (#101)", async () => {
+    const fetchMock = mockApi();
+    const { router } = renderAt(SEARCH);
+    await screen.findByRole("list", { name: "Verbindungen" });
+    fireEvent.click(screen.getByRole("button", { name: "Optionen" }));
+    const options = screen.getByRole("dialog", { name: "Optionen" });
+    fireEvent.click(within(options).getByRole("button", { name: "Wenig Fußweg" }));
+    fireEvent.click(within(options).getByRole("button", { name: "Fahrrad mitnehmen" }));
+    fireEvent.click(within(options).getByRole("button", { name: "Ohne Treppen" }));
+    const search = new URLSearchParams(router.state.location.search);
+    expect(search.get("route")).toBe("wenig-fussweg");
+    expect(search.get("fahrrad")).toBe("1");
+    expect(search.get("ohneTreppen")).toBe("1");
+    await waitFor(() => {
+      const last = journeyCalls(fetchMock).at(-1);
+      expect(last?.searchParams.get("route")).toBe("lessWalking");
+      expect(last?.searchParams.get("bike")).toBe("1");
+      expect(last?.searchParams.get("noStairs")).toBe("1");
+    });
+  });
+
   it("gibt Optionen an die API weiter und zeigt sie kurz an", async () => {
     const fetchMock = mockApi();
     const { router } = renderAt(SEARCH);
@@ -384,7 +405,7 @@ describe("Verbindungssuche", () => {
     const options = screen.getByRole("dialog", { name: "Optionen" });
     fireEvent.click(within(options).getByRole("button", { name: "Bus nutzen" }));
     fireEvent.click(within(options).getByRole("button", { name: "Direkt" }));
-    fireEvent.click(within(options).getByRole("button", { name: "Stufenfrei" }));
+    fireEvent.click(within(options).getByRole("button", { name: "Rollstuhl" }));
 
     expect(router.state.location.search).toContain("ohne=bus");
     expect(router.state.location.search).toContain("umstiege=0");

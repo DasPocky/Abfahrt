@@ -400,14 +400,46 @@ describe("Optionen", () => {
     expect(url.searchParams.get("pedestrianProfile")).toBe("WHEELCHAIR");
   });
 
-  it.each(["exclude=auto", "maxTransfers=9", "transfer=turbo", "accessible=ja"])(
-    "lehnt ungültige Optionen ab (%s)",
-    async (query) => {
-      const res = await get(`from=${HHA}&to=${ESSEN}&${query}`);
-      expect(res.status).toBe(400);
-      expect(await res.json()).toMatchObject({ error: "invalid_options" });
-    },
-  );
+  it("gibt die neuen VRR-Optionen weiter (#101)", async () => {
+    const calls = mockUpstream({
+      XML_TRIP_REQUEST2: { journeys: [] },
+      "v5/plan": { itineraries: [] },
+    });
+    const extra =
+      "route=fewTransfers&noStairs=1&lowFloor=1&bike=1&nearby=1&via=vrr:de:05111:18235&viaStay=10";
+    await get(`from=${HHA}&to=${ESSEN}&${extra}`);
+    const vrr = calls.filter((u) => u.includes("XML_TRIP_REQUEST2"));
+    // eigene Routenwahl: keine bequeme Zusatzabfrage
+    expect(vrr).toHaveLength(1);
+    const url = vrr[0] ?? "";
+    expect(url).toContain("&ptOptionsActive=1&routeType=LEASTINTERCHANGE&bikeTakeAlong=1");
+    expect(url).toContain("&imparedOptionsActive=1&noSolidStairs=on&lowPlatformVhcl=on");
+    expect(url).not.toContain("wheelchair=on");
+    expect(url).toContain("&useProxFootSearch=1");
+    expect(url).toContain("&type_via=any&name_via=de%3A05111%3A18235&dwellTimeMinutes=10");
+  });
+
+  it("gibt den Zwischenhalt an Transitous weiter (#101)", async () => {
+    const calls = mockUpstream({ "v5/plan": { itineraries: [] } });
+    await get(`from=${HHA}&to=${BERLIN}&via=vrr:de:05111:18235&viaStay=5&noStairs=1`);
+    const url = new URL(calls.find((u) => u.includes("v5/plan")) ?? "https://x");
+    expect(url.searchParams.get("via")).toBe("de-DELFI_de:05111:18235");
+    expect(url.searchParams.get("viaMinimumStay")).toBe("5");
+    expect(url.searchParams.get("pedestrianProfile")).toBe("WHEELCHAIR");
+  });
+
+  it.each([
+    "exclude=auto",
+    "maxTransfers=9",
+    "transfer=turbo",
+    "accessible=ja",
+    "route=bequem",
+    "via=foo",
+  ])("lehnt ungültige Optionen ab (%s)", async (query) => {
+    const res = await get(`from=${HHA}&to=${ESSEN}&${query}`);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toMatchObject({ error: "invalid_options" });
+  });
 });
 
 describe("Adressen und POIs", () => {
