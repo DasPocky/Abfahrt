@@ -87,7 +87,9 @@ export function TripPage() {
     from: nextStop,
     to: trip.to,
     arrive: false,
+    // Zwischenhalt der gemerkten Fahrt (eine Abfrage mit `via`) bleibt in den Optionen erhalten
     options: trip.options,
+    vias: [],
   });
   const end = () => {
     setSavedTrip(null);

@@ -27,15 +27,28 @@ export interface JourneyQuery {
   arrive: boolean;
   /** Verkehrsmittel, Umstiege, Umstiegszeit, barrierefrei, Route, über … */
   options: JourneyOptions;
-  /** Anzeigename des Zwischenhalts (`options.via`) */
-  viaName?: string;
+  /** Eigene Zwischenhalte in Reihenfolge (#110), höchstens MAX_VIAS */
+  vias: ViaStop[];
 }
+
+/** Zwischenhalt mit Aufenthalt (#110) */
+export interface ViaStop extends PickedStop {
+  /** Aufenthalt in Minuten */
+  minutes: number;
+}
+
+/** Höchstens so viele Zwischenhalte (schont Worker und Quellen: je Etappe eine Suche) */
+export const MAX_VIAS = 5;
+
+/** Aufenthalt am Zwischenhalt zur Auswahl (Minuten) */
+export const VIA_STAY_CHOICES = [0, 5, 10, 15, 30, 60] as const;
 
 export const EMPTY_JOURNEY_QUERY: JourneyQuery = {
   from: null,
   to: null,
   arrive: false,
   options: DEFAULT_JOURNEY_OPTIONS,
+  vias: [],
 };
 
 /** Namen der URL-Parameter (deutsch, teilbar) */
@@ -92,9 +105,6 @@ export function journeyOptionsFromUrl(params: URLSearchParams): JourneyOptions {
       : routeRaw === ROUTE_PARAM.lessWalking
         ? "lessWalking"
         : "fastest";
-  const viaRaw = params.get(PARAM.via)?.trim() ?? "";
-  const via = VIA_ID.test(viaRaw) ? viaRaw : null;
-  const stay = Number(params.get(PARAM.viaMinutes));
   const on = (key: string) => params.get(key) === "1";
   return {
     // nicht alles ausschließen, sonst gibt es keine Verbindung
@@ -108,8 +118,9 @@ export function journeyOptionsFromUrl(params: URLSearchParams): JourneyOptions {
     route,
     bike: on(PARAM.bike),
     nearbyStops: on(PARAM.nearbyStops),
-    via,
-    viaMinutes: via && Number.isInteger(stay) && stay > 0 && stay <= MAX_VIA_MINUTES ? stay : 0,
+    // Zwischenhalte stehen in `JourneyQuery.vias`; `apiOptions` setzt sie für die API
+    via: null,
+    viaMinutes: 0,
   };
 }
 
@@ -127,10 +138,6 @@ function journeyOptionsToUrl(options: JourneyOptions, params: URLSearchParams): 
   if (options.route !== "fastest") params.set(PARAM.route, ROUTE_PARAM[options.route]);
   if (options.bike) params.set(PARAM.bike, "1");
   if (options.nearbyStops) params.set(PARAM.nearbyStops, "1");
-  if (options.via) {
-    params.set(PARAM.via, options.via);
-    if (options.viaMinutes > 0) params.set(PARAM.viaMinutes, String(options.viaMinutes));
-  }
 }
 
 /** Anzahl abweichender Optionen (für das Symbol am Optionen-Knopf) */
@@ -143,8 +150,7 @@ export function countJourneyOptions(options: JourneyOptions): number {
     (options.noStairs || options.noEscalators || options.lowFloor ? 1 : 0) +
     (options.route !== "fastest" ? 1 : 0) +
     (options.bike ? 1 : 0) +
-    (options.nearbyStops ? 1 : 0) +
-    (options.via ? 1 : 0)
+    (options.nearbyStops ? 1 : 0)
   );
 }
 
@@ -175,9 +181,54 @@ export function describeJourneyOptions(options: JourneyOptions): string {
   if (options.route === "lessWalking") parts.push("wenig Fußweg");
   if (options.bike) parts.push("mit Fahrrad");
   if (options.nearbyStops) parts.push("Haltestellen in der Nähe");
-  if (options.via)
-    parts.push(options.viaMinutes > 0 ? `über Halt (${options.viaMinutes} Min)` : "über Halt");
   return parts.join(" · ");
+}
+
+/** Zwischenhalte aus der URL: `ueber`, `ueberName`, `aufenthalt` je Halt wiederholt (#110) */
+function viasFromParams(params: URLSearchParams): ViaStop[] {
+  const names = params.getAll(PARAM.viaName);
+  const stays = params.getAll(PARAM.viaMinutes);
+  return params
+    .getAll(PARAM.via)
+    .map((raw, i) => {
+      const stay = Number(stays[i]);
+      return {
+        id: raw.trim(),
+        name: names[i]?.trim() ?? "",
+        minutes: Number.isInteger(stay) && stay > 0 && stay <= MAX_VIA_MINUTES ? stay : 0,
+      };
+    })
+    .filter((v) => VIA_ID.test(v.id))
+    .slice(0, MAX_VIAS);
+}
+
+/**
+ * Optionen für die API: genau ein Zwischenhalt geht in einer Abfrage mit (`via`), mehrere sucht die
+ * App in Etappen (`journeyLegs`).
+ */
+export function apiOptions(query: JourneyQuery): JourneyOptions {
+  const [only] = query.vias;
+  return query.vias.length === 1 && only
+    ? { ...query.options, via: only.id, viaMinutes: only.minutes }
+    : { ...query.options, via: null, viaMinutes: 0 };
+}
+
+/** Etappen bei mehreren Zwischenhalten: Start → 1, 1 → 2, …, letzter → Ziel */
+export function journeyLegs(
+  query: JourneyQuery,
+): { from: PickedStop; to: PickedStop; stay: number }[] {
+  if (!query.from || !query.to) return [];
+  const points: (PickedStop & { minutes: number })[] = [
+    { ...query.from, minutes: 0 },
+    ...query.vias,
+    { ...query.to, minutes: 0 },
+  ];
+  return points.slice(1).map((to, i) => ({
+    from: points[i]!,
+    to,
+    // Aufenthalt am Start der Etappe (am Zwischenhalt davor)
+    stay: points[i]!.minutes,
+  }));
 }
 
 function stopFromParams(params: URLSearchParams, idKey: string, nameKey: string) {
@@ -196,7 +247,7 @@ export function journeyQueryFromParams(params: URLSearchParams): JourneyQuery {
     // Ankunft ohne Zeitpunkt ergibt keinen Sinn, dann gilt „ab jetzt“
     arrive: parsed !== undefined && params.get(PARAM.arrive) === "1",
     options: journeyOptionsFromUrl(params),
-    ...(params.get(PARAM.viaName)?.trim() ? { viaName: params.get(PARAM.viaName)!.trim() } : {}),
+    vias: viasFromParams(params),
   };
 }
 
@@ -215,7 +266,11 @@ export function journeyQueryToParams(query: JourneyQuery): URLSearchParams {
     if (query.arrive) params.set(PARAM.arrive, "1");
   }
   journeyOptionsToUrl(query.options, params);
-  if (query.options.via && query.viaName) params.set(PARAM.viaName, query.viaName);
+  for (const via of query.vias.slice(0, MAX_VIAS)) {
+    params.append(PARAM.via, via.id);
+    params.append(PARAM.viaName, via.name);
+    params.append(PARAM.viaMinutes, String(via.minutes));
+  }
   return params;
 }
 
@@ -225,9 +280,9 @@ export function journeyPath(query: JourneyQuery = EMPTY_JOURNEY_QUERY): string {
   return search ? `/verbindung?${search}` : "/verbindung";
 }
 
-/** Start und Ziel vertauschen */
+/** Start und Ziel vertauschen, Zwischenhalte in umgekehrter Reihenfolge */
 export function swapJourneyQuery(query: JourneyQuery): JourneyQuery {
-  return { ...query, from: query.to, to: query.from };
+  return { ...query, from: query.to, to: query.from, vias: query.vias.toReversed() };
 }
 
 /** Dauer kompakt: „42 Min“, „1 Std“, „1 Std 5 Min“ */

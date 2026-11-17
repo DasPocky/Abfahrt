@@ -4,10 +4,12 @@ import { useNavigate, useSearchParams } from "react-router";
 import { ArrowUpDown, ChevronDown, ChevronUp, LoaderCircle, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { JourneyList } from "@/components/journey-list";
+import { LegJourneys } from "@/components/leg-journeys";
 import { JourneyOptionsSheet } from "@/components/journey-options";
 import { JourneyTimeSheet } from "@/components/journey-time";
 import { SourceAttribution } from "@/components/source-attribution";
 import { StopPicker } from "@/components/stop-picker";
+import { AddViaButton, ViaStopRows } from "@/components/via-stops";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLocation } from "@/hooks/use-location";
@@ -17,7 +19,11 @@ import { distanceKm } from "@/lib/geo";
 import {
   type JourneyQuery,
   type PickedStop,
+  type ViaStop,
+  apiOptions,
   describeJourneyOptions,
+  journeyLegs,
+  MAX_VIAS,
   journeyQueryFromParams,
   journeyQueryToParams,
   swapJourneyQuery,
@@ -53,6 +59,15 @@ export function JourneyPage() {
   // „Mein Standort“: wartet ggf. auf die Position, dann nächste Haltestelle übernehmen
   const [pending, setPending] = useState<Slot | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
+  // Neue, noch leere Zwischenhalt-Zeilen (gewählte stehen in der URL)
+  const [emptyVias, setEmptyVias] = useState(0);
+  const viaRows: (ViaStop | null)[] = [
+    ...query.vias,
+    ...Array.from(
+      { length: Math.max(0, Math.min(emptyVias, MAX_VIAS - query.vias.length)) },
+      () => null,
+    ),
+  ];
 
   function pickLocation(slot: Slot) {
     setLocationError(null);
@@ -122,9 +137,12 @@ export function JourneyPage() {
   const { from, to } = query;
   const sameStop = from !== null && to !== null && from.id === to.id;
   const ready = from !== null && to !== null && !sameStop;
+  // Mehrere Zwischenhalte: Etappen-Suche statt einer Abfrage (#110)
+  const legs = query.vias.length >= 2 ? journeyLegs(query) : [];
+  const options = apiOptions(query);
 
   const { data, error, isPending, isError, isFetching, isPlaceholderData, refetch } = useQuery({
-    queryKey: ["journeys", from?.id, to?.id, query.time ?? "now", query.arrive, query.options],
+    queryKey: ["journeys", from?.id, to?.id, query.time ?? "now", query.arrive, options],
     queryFn: ({ signal }) =>
       fetchJourneys(
         {
@@ -132,11 +150,11 @@ export function JourneyPage() {
           to: to?.id ?? "",
           when: query.time,
           arrive: query.arrive,
-          options: query.options,
+          options,
         },
         signal,
       ),
-    enabled: ready,
+    enabled: ready && legs.length === 0,
     staleTime: 60_000,
     // Bei „Früher“/„Später“ bleibt die alte Liste stehen, bis die neue da ist
     placeholderData: (previous, previousQuery) =>
@@ -176,7 +194,18 @@ export function JourneyPage() {
             onSelect={(stop) => update({ ...query, from: stop })}
             onPickLocation={() => pickLocation("from")}
           />
-          <div className="ml-8 border-t" aria-hidden="true" />
+          <ViaStopRows
+            vias={viaRows}
+            location={location}
+            onChange={(rows) => {
+              setEmptyVias(rows.filter((r) => r === null).length);
+              update({ ...query, vias: rows.filter((r): r is ViaStop => r !== null) });
+            }}
+          />
+          <div
+            className={cn(viaRows.length > 0 ? "border-t" : "ml-8 border-t")}
+            aria-hidden="true"
+          />
           <StopPicker
             label="Nach"
             marker="end"
@@ -187,23 +216,30 @@ export function JourneyPage() {
             onSelect={(stop) => update({ ...query, to: stop })}
             onPickLocation={() => pickLocation("to")}
           />
-          {/* gepunktete Verbindung zwischen Start- und Zielpunkt */}
-          <span
-            className="pointer-events-none absolute top-[1.6rem] left-[1.05rem] h-[1.15rem] border-l-2 border-dotted border-muted-foreground/60"
-            aria-hidden="true"
-          />
+          {/* gepunktete Verbindung zwischen Start- und Zielpunkt (ohne Zwischenhalte) */}
+          {viaRows.length === 0 && (
+            <span
+              className="pointer-events-none absolute top-[1.6rem] left-[1.05rem] h-[1.15rem] border-l-2 border-dotted border-muted-foreground/60"
+              aria-hidden="true"
+            />
+          )}
           <Button
             variant="outline"
             size="icon-sm"
             aria-label="Start und Ziel tauschen"
             title="Start und Ziel tauschen"
-            className="absolute top-1/2 right-2 z-10 -translate-y-1/2 rounded-full bg-card text-muted-foreground"
+            className={cn(
+              "absolute right-2 z-10 rounded-full bg-card text-muted-foreground",
+              viaRows.length === 0 ? "top-1/2 -translate-y-1/2" : "-top-3",
+            )}
             disabled={from === null && to === null}
             onClick={() => update(swapJourneyQuery({ ...query, from: fromStop, to: toStop }))}
           >
             <ArrowUpDown aria-hidden="true" />
           </Button>
         </div>
+
+        <AddViaButton count={viaRows.length} onAdd={() => setEmptyVias((n) => n + 1)} />
 
         <div className="flex items-center gap-1.5">
           <JourneyTimeSheet
@@ -214,11 +250,7 @@ export function JourneyPage() {
           />
           <JourneyOptionsSheet
             options={query.options}
-            viaName={query.viaName}
-            location={location}
-            onChange={(options, viaName) =>
-              update({ ...query, options, viaName: viaName ?? query.viaName })
-            }
+            onChange={(next) => update({ ...query, options: next })}
           />
           {optionsSummary && (
             <p className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
@@ -246,7 +278,11 @@ export function JourneyPage() {
         </p>
       )}
 
-      {ready && (
+      {ready && legs.length > 0 && (
+        <LegJourneys legs={legs} time={query.time} arrive={query.arrive} options={options} />
+      )}
+
+      {ready && legs.length === 0 && (
         <Card className="gap-0 overflow-hidden py-0">
           {isPending && (
             <p
@@ -296,7 +332,7 @@ export function JourneyPage() {
                         setSavedTrip({
                           from: fromStop,
                           to: toStop,
-                          options: query.options,
+                          options,
                           signature,
                           journey,
                           savedAt: new Date().toISOString(),
