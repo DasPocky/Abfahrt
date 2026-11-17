@@ -109,7 +109,8 @@ function StopRow({
     stop.platform !== stop.plannedPlatform;
   return (
     <div className={cn(GRID, small ? "text-muted-foreground" : "")}>
-      <span className={cn("text-right tabular-nums", !small && "font-semibold")}>
+      {/* linksbündig: die Uhrzeiten stehen untereinander, die Verspätung dahinter (#96) */}
+      <span className={cn("tabular-nums", !small && "font-semibold")}>
         <Clock planned={planned} realtime={realtime} cancelled={stop.cancelled} />
       </span>
       <Node colors={colors} small={small} />
@@ -197,33 +198,30 @@ function TransitLeg({ leg }: { leg: JourneyLeg }) {
               className={cn("h-5 w-auto max-w-20 text-[0.7rem]", cancelled && "opacity-60")}
             />
             {leg.direction && <span className="min-w-0 truncate">Richtung {leg.direction}</span>}
-            {stops.length > 0 && (
-              <button
-                type="button"
-                aria-expanded={stopsOpen}
-                aria-controls={stopsId}
-                onClick={() => setStopsOpen((v) => !v)}
-                className="-mx-1 inline-flex items-center gap-0.5 rounded px-1 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <span aria-hidden="true">· </span>
-                {stops.length === 1 ? "1 Zwischenhalt" : `${stops.length} Zwischenhalte`}
-                {cancelledStops > 0 && (
-                  <span className="font-semibold text-destructive">
-                    <span aria-hidden="true"> · </span>
-                    <span className="sr-only">, </span>
-                    {cancelledStops === 1 ? "1 entfällt" : `${cancelledStops} entfallen`}
-                  </span>
-                )}
-                <ChevronDown
-                  className={cn(
-                    "size-3.5 shrink-0 transition-transform",
-                    stopsOpen && "rotate-180",
-                  )}
-                  aria-hidden="true"
-                />
-              </button>
-            )}
           </p>
+          {/* eigene Zeile: bricht nicht mitten in Linie/Richtung um (#96) */}
+          {stops.length > 0 && (
+            <button
+              type="button"
+              aria-expanded={stopsOpen}
+              aria-controls={stopsId}
+              onClick={() => setStopsOpen((v) => !v)}
+              className="-mx-1 inline-flex items-center gap-0.5 rounded px-1 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {stops.length === 1 ? "1 Zwischenhalt" : `${stops.length} Zwischenhalte`}
+              {cancelledStops > 0 && (
+                <span className="font-semibold text-destructive">
+                  <span aria-hidden="true"> · </span>
+                  <span className="sr-only">, </span>
+                  {cancelledStops === 1 ? "1 entfällt" : `${cancelledStops} entfallen`}
+                </span>
+              )}
+              <ChevronDown
+                className={cn("size-3.5 shrink-0 transition-transform", stopsOpen && "rotate-180")}
+                aria-hidden="true"
+              />
+            </button>
+          )}
           {cancelled && <p className="font-semibold text-destructive">Fahrt fällt aus</p>}
           <LegNotices leg={leg} />
         </div>
