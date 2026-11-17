@@ -47,12 +47,21 @@ export function ViaStopRows({
                   }}
                 />
               </div>
-              <label className="sr-only" htmlFor={`via-stay-${index}`}>
-                Aufenthalt an {label}
-              </label>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={`${label} entfernen`}
+                onClick={() => onChange(vias.filter((_, i) => i !== index))}
+              >
+                <X aria-hidden="true" />
+              </Button>
+            </div>
+            {/* zweite, kleine Zeile: Aufenthalt und Reihenfolge, damit der Name Platz hat */}
+            <div className="-mt-1 flex items-center gap-1 pr-1 pb-1.5 pl-10 text-xs text-muted-foreground">
+              <label htmlFor={`via-stay-${index}`}>Aufenthalt</label>
               <select
                 id={`via-stay-${index}`}
-                className="h-8 rounded-md border bg-background px-1 text-xs dark:bg-input/30"
+                className="h-7 rounded-md border bg-background px-1 text-xs text-foreground dark:bg-input/30"
                 value={via?.minutes ?? 0}
                 disabled={via === null}
                 onChange={(event) => {
@@ -64,13 +73,15 @@ export function ViaStopRows({
               >
                 {VIA_STAY_CHOICES.map((minutes) => (
                   <option key={minutes} value={minutes}>
-                    {minutes === 0 ? "kein Halt" : `${minutes} Min`}
+                    {minutes === 0 ? "kein" : `${minutes} Min`}
                   </option>
                 ))}
               </select>
+              <span className="flex-1" />
               <Button
                 variant="ghost"
                 size="icon-sm"
+                className="size-7"
                 aria-label={`${label} nach oben`}
                 disabled={index === 0}
                 onClick={() => onChange(move(vias, index, -1))}
@@ -80,19 +91,12 @@ export function ViaStopRows({
               <Button
                 variant="ghost"
                 size="icon-sm"
+                className="size-7"
                 aria-label={`${label} nach unten`}
                 disabled={index === vias.length - 1}
                 onClick={() => onChange(move(vias, index, 1))}
               >
                 <ArrowDown aria-hidden="true" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`${label} entfernen`}
-                onClick={() => onChange(vias.filter((_, i) => i !== index))}
-              >
-                <X aria-hidden="true" />
               </Button>
             </div>
           </div>
