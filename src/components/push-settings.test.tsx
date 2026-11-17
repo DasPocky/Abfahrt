@@ -6,7 +6,7 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("Benachrichtigungen", () => {
   it("meldet fehlende Unterstützung", async () => {
-    renderAt("/ueber");
+    renderAt("/mehr");
     expect(await screen.findByText(/unterstützt keine Benachrichtigungen/)).toBeInTheDocument();
   });
 
@@ -14,7 +14,7 @@ describe("Benachrichtigungen", () => {
     vi.spyOn(navigator, "userAgent", "get").mockReturnValue(
       "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1",
     );
-    renderAt("/ueber");
+    renderAt("/mehr");
     expect(await screen.findByText(/Zum Home-Bildschirm/)).toBeInTheDocument();
   });
 });

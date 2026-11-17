@@ -84,9 +84,10 @@ beforeEach(() => localStorage.clear());
 afterEach(() => Reflect.deleteProperty(navigator, "geolocation"));
 
 describe("Verbindungssuche", () => {
-  it("ist von der Startseite aus erreichbar", () => {
+  it("ist als Bereich der Navigation erreichbar (#106)", () => {
     renderAt("/");
-    expect(screen.getByRole("link", { name: "Verbindung suchen" })).toHaveAttribute(
+    const nav = screen.getByRole("navigation", { name: "Hauptnavigation" });
+    expect(within(nav).getByRole("link", { name: "Verbindung" })).toHaveAttribute(
       "href",
       "/abfahrt/verbindung",
     );
@@ -95,7 +96,7 @@ describe("Verbindungssuche", () => {
   it("fragt ohne Start und Ziel nichts ab", () => {
     const fetchMock = mockApi();
     renderAt("/verbindung");
-    expect(screen.getByRole("heading", { name: "Verbindung suchen" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Verbindung" })).toBeInTheDocument();
     expect(screen.getByText(/Start und Ziel wählen/)).toBeInTheDocument();
     expect(journeyCalls(fetchMock)).toHaveLength(0);
   });

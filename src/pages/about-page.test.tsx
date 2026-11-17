@@ -51,8 +51,8 @@ describe("Über-Seite", () => {
     }
   });
 
-  it("ist aus dem Fußbereich jeder Seite erreichbar", () => {
-    renderAt("/");
+  it("ist über „Mehr“ erreichbar (#106)", () => {
+    renderAt("/mehr");
     expect(screen.getByRole("link", { name: /Über Abfahrt/ })).toHaveAttribute(
       "href",
       "/abfahrt/ueber",

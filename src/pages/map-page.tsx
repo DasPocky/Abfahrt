@@ -161,7 +161,7 @@ export function MapPage() {
       <h1 id="map-title" className="sr-only">
         Karte
       </h1>
-      <div className="relative h-[calc(100dvh-7.5rem)] min-h-96 overflow-hidden rounded-xl border bg-muted">
+      <div className="relative h-[calc(100dvh-8.5rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-96 overflow-hidden rounded-xl border bg-muted">
         <StopMap
           initialCenter={DEFAULT_CENTER}
           initialZoom={DEFAULT_ZOOM}

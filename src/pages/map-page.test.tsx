@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Stop, StopPlatform } from "../../shared/api-types";
 import { renderAt, requestUrl } from "../test-utils";
@@ -73,7 +73,7 @@ describe("Karte", () => {
     expect(card).toHaveTextContent("D-Heinrich-Heine-Allee U");
     // Antippen trifft einen Steig (#84): Nummer, Verkehrsmittel und Abfahrten nur dieses Steigs
     expect(card).toHaveTextContent("Steig 4 · U-Bahn, Straßenbahn");
-    expect(screen.getByRole("link", { name: /Abfahrten/ })).toHaveAttribute(
+    expect(within(card).getByRole("link", { name: /Abfahrten/ })).toHaveAttribute(
       "href",
       "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18036?gleis=4",
     );

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { LocationProbe } from "@/components/location-probe";
-import { PushSettings } from "@/components/push-settings";
 
 const REPO_URL = "https://github.com/DasPocky/Abfahrt";
 
@@ -106,10 +105,6 @@ export function AboutPage() {
             sieht OpenFreeMap deine IP-Adresse.
           </li>
         </ul>
-      </Section>
-
-      <Section id="about-push" title="Benachrichtigungen">
-        <PushSettings />
       </Section>
 
       <Section id="about-location" title="Standort testen">

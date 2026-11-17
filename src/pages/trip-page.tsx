@@ -97,9 +97,9 @@ export function TripPage() {
   return (
     <section aria-labelledby="trip-title" className="space-y-3">
       <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-        <Link to="/" aria-label="Zurück zur Startseite">
+        <Link to="/verbindung" aria-label="Zurück zur Verbindungssuche">
           <ArrowLeft aria-hidden="true" />
-          Start
+          Verbindung
         </Link>
       </Button>
 
