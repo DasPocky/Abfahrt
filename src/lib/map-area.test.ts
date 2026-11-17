@@ -7,10 +7,12 @@ import {
   STOPS_MIN_ZOOM,
   platformDeparturesPath,
   mergeRadiusMeters,
+  mergeStop,
   metersPerPixel,
   platformGroups,
   platformSummary,
   selectionKey,
+  tilesForBounds,
 } from "./map-area";
 
 const SMALL = { west: 6.77012, south: 51.22049, east: 6.78488, north: 51.22951 };
@@ -95,5 +97,31 @@ describe("Steiggruppen je Zoomstufe (#86)", () => {
       60,
     );
     expect(groups).toHaveLength(1);
+  });
+});
+
+describe("Kacheln für Haltestellen (#98)", () => {
+  it("deckt den Ausschnitt mit festen Kacheln ab", () => {
+    const tiles = tilesForBounds(SMALL, 15)!;
+    // 51.220–51.230 liegt in einer Kachelreihe (51.200–51.240), 6.770–6.785 in einer Spalte (6.720–6.780) und der nächsten
+    expect(tiles).toEqual([
+      { min: "51.200,6.720", max: "51.240,6.780" },
+      { min: "51.200,6.780", max: "51.240,6.840" },
+    ]);
+    // leicht verschoben: dieselben Kacheln (Cache trifft)
+    const moved = { ...SMALL, west: SMALL.west + 0.002, east: SMALL.east + 0.002 };
+    expect(tilesForBounds(moved, 15)).toEqual(tiles);
+    expect(tilesForBounds(SMALL, STOPS_MIN_ZOOM - 1)).toBeNull();
+  });
+
+  it("bleibt beim größten Ausschnitt bei wenigen Kacheln", () => {
+    const wide = { west: 6.7, south: 51.2, east: 6.9, north: 51.3 };
+    expect(tilesForBounds(wide, 14)!.length).toBeLessThanOrEqual(9);
+  });
+
+  it("führt die Steige einer Haltestelle auf der Kachelgrenze zusammen", () => {
+    const a = { id: "x", name: "X", platforms: [{ track: "1", lat: 51, lon: 6.78, modes: [] }] };
+    const b = { id: "x", name: "X", platforms: [{ track: "2", lat: 51, lon: 6.781, modes: [] }] };
+    expect(mergeStop(a, b).platforms?.map((p) => p.track)).toEqual(["1", "2"]);
   });
 });
