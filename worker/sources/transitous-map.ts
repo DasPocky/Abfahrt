@@ -2,6 +2,9 @@ import type { Stop, StopPlatform, TransportMode } from "../../shared/api-types";
 import { MODE_MAP } from "./transitous";
 import { fetchJson } from "../http";
 import { isVrrArea } from "./vrr";
+import { stripCityPrefix } from "../stop-names";
+
+export { stripCityPrefix };
 
 // Haltestellen im Kartenausschnitt über Transitous `v1/map/stops`, siehe docs/01-datenquellen.md
 const BASE = "https://api.transitous.org/api";
@@ -77,14 +80,6 @@ function transitousIdOf(group: Group, preferred: readonly TransitousMapStop[]): 
 }
 
 type AreaStop = Stop & { lat: number; lon: number; importance: number };
-
-/**
- * Entfernt das Städtekürzel aus DELFI-Namen („D-Heinrich-Heine-Allee U“ → „Heinrich-Heine-Allee U“,
- * „DU-Meiderich Süd Bf“ → „Meiderich Süd Bf“). „S-Bahnhof …“ und ähnliche bleiben unverändert.
- */
-export function stripCityPrefix(name: string): string {
-  return name.replace(/^[A-ZÄÖÜ]{1,3}-(?!Bahn)(?=[A-ZÄÖÜ0-9])/u, "");
-}
 
 const MODE_ORDER: TransportMode[] = [
   "longdistance",

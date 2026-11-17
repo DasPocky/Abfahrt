@@ -22,6 +22,11 @@ describe("VRR-Adapter", () => {
     expect(first).toMatchObject({ line: "U73", mode: "subway", platform: "6", cancelled: false });
     expect(first.realtimeTime).not.toBeNull();
     expect(deps.some((d) => d.notices.length > 0)).toBe(true);
+    // Städtekürzel weg (#90): „D-Benrath Btf“ → „Benrath Btf“, andere Städte bleiben
+    const directions = deps.map((d) => d.direction);
+    expect(directions).toContain("Benrath Btf");
+    expect(directions).toContain("Neuss Hauptbahnhof");
+    expect(directions.some((d) => d.startsWith("D-"))).toBe(false);
   });
 
   it("ordnet Produktklassen Verkehrsmitteln zu", () => {
@@ -68,6 +73,7 @@ describe("Transitous-Adapter", () => {
     expect(new Set(deps.map((d) => d.mode))).toContain("suburban");
     expect(deps.every((d) => d.notices.length === 0)).toBe(true);
     expect(deps.some((d) => d.realtimeTime !== null)).toBe(true);
+    expect(deps.some((d) => /^[A-ZÄÖÜ]{1,3}-(?!Bahn)[A-ZÄÖÜ0-9]/u.test(d.direction))).toBe(false);
   });
 });
 

@@ -5,7 +5,8 @@ import { decodePolyline, legPath } from "../geometry";
 import { fetchJson } from "../http";
 import { normalizeHex } from "../line-colors";
 import { MODE_MAP } from "./transitous";
-import { dhidOf, stripCityPrefix } from "./transitous-map";
+import { stripCityPrefix } from "../stop-names";
+import { dhidOf } from "./transitous-map";
 import { isVrrArea } from "./vrr";
 
 // Transitous (MOTIS 2) `v5/plan`. Limit: unter 720 Abfragen pro Tag, daher nur außerhalb des
