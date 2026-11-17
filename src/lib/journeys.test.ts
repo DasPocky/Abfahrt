@@ -48,6 +48,7 @@ describe("URL-Parameter der Verbindungssuche", () => {
       time: "2026-11-13T12:00:00.000Z",
       arrive: true,
       options: {
+        ...DEFAULT_JOURNEY_OPTIONS,
         exclude: ["longdistance" as const, "bus" as const],
         maxTransfers: 1,
         transferSpeed: "slow" as const,
@@ -75,6 +76,7 @@ describe("URL-Parameter der Verbindungssuche", () => {
       new URLSearchParams("ohne=bus,auto,longdistance&umstiege=0&umstiegszeit=kurz&barrierefrei=1"),
     );
     expect(query.options).toEqual({
+      ...DEFAULT_JOURNEY_OPTIONS,
       exclude: ["bus", "longdistance"],
       maxTransfers: 0,
       transferSpeed: "fast",
@@ -85,8 +87,30 @@ describe("URL-Parameter der Verbindungssuche", () => {
     ).toEqual(DEFAULT_JOURNEY_OPTIONS);
   });
 
+  it("liest die neuen Optionen aus der URL (#101)", () => {
+    const query = journeyQueryFromParams(
+      new URLSearchParams(
+        "route=wenig-fussweg&fahrrad=1&umgebung=1&ohneTreppen=1&ueber=vrr:de:05111:18036&ueberName=Heinrich-Heine-Allee&aufenthalt=15",
+      ),
+    );
+    expect(query.options).toMatchObject({
+      route: "lessWalking",
+      bike: true,
+      nearbyStops: true,
+      noStairs: true,
+      via: "vrr:de:05111:18036",
+      viaMinutes: 15,
+    });
+    expect(query.viaName).toBe("Heinrich-Heine-Allee");
+    expect(journeyQueryFromParams(journeyQueryToParams(query))).toEqual(query);
+    expect(describeJourneyOptions(query.options)).toBe(
+      "ohne Treppen · wenig Fußweg · mit Fahrrad · Haltestellen in der Nähe · über Halt (15 Min)",
+    );
+  });
+
   it("beschreibt und zählt Optionen", () => {
     const options = {
+      ...DEFAULT_JOURNEY_OPTIONS,
       exclude: ["bus" as const, "longdistance" as const],
       maxTransfers: 1,
       transferSpeed: "slow" as const,

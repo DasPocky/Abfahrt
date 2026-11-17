@@ -1,6 +1,10 @@
 import type { Journey, JourneyLeg, JourneyStop, Stop, TransportMode } from "../../shared/api-types";
 import { parseGeoId } from "../../shared/geo-id";
-import { DEFAULT_JOURNEY_OPTIONS, type JourneyOptions } from "../../shared/journey-options";
+import {
+  DEFAULT_JOURNEY_OPTIONS,
+  type JourneyOptions,
+  type RoutePreference,
+} from "../../shared/journey-options";
 import { legPath } from "../geometry";
 import { fetchJson } from "../http";
 import { directionAt, stripCityPrefix } from "../stop-names";
@@ -197,8 +201,19 @@ const CLASSES_BY_MODE: Record<TransportMode, number[]> = {
   other: [8, 11],
 };
 
-/** Optionen als EFA-Parameter */
-export function optionParams(options: JourneyOptions): string {
+/** EFA-Routenwahl je Präferenz */
+const ROUTE_TYPE: Record<RoutePreference, "LEASTTIME" | "LEASTINTERCHANGE" | "LEASTWALKING"> = {
+  fastest: "LEASTTIME",
+  fewTransfers: "LEASTINTERCHANGE",
+  lessWalking: "LEASTWALKING",
+};
+
+/**
+ * Optionen als EFA-Parameter (#101, getestet 17.11.2026). Routenwahl und Fahrrad wirken nur mit
+ * `ptOptionsActive=1`, die Barrierefreiheit nur mit `imparedOptionsActive=1`.
+ * `route` überschreibt die Routenwahl der Optionen (bequeme Zusatzabfrage, #97).
+ */
+export function optionParams(options: JourneyOptions, route = options.route): string {
   let params = "";
   const classes = options.exclude.flatMap((m) => CLASSES_BY_MODE[m]);
   if (classes.length > 0) {
@@ -206,9 +221,24 @@ export function optionParams(options: JourneyOptions): string {
   }
   if (options.maxTransfers !== null) params += `&maxChanges=${options.maxTransfers}`;
   if (options.transferSpeed !== "normal") params += `&changeSpeed=${options.transferSpeed}`;
-  if (options.accessible) {
-    params +=
-      "&imparedOptionsActive=1&wheelchair=on&noSolidStairs=on&noEscalators=on&lowPlatformVhcl=on";
+  const wheelchair = options.accessible;
+  const impaired = [
+    wheelchair && "wheelchair=on",
+    (wheelchair || options.noStairs) && "noSolidStairs=on",
+    (wheelchair || options.noEscalators) && "noEscalators=on",
+    (wheelchair || options.lowFloor) && "lowPlatformVhcl=on",
+  ].filter(Boolean);
+  if (impaired.length > 0) params += `&imparedOptionsActive=1&${impaired.join("&")}`;
+  const pt = [
+    route !== "fastest" && `routeType=${ROUTE_TYPE[route]}`,
+    options.bike && "bikeTakeAlong=1",
+  ].filter(Boolean);
+  if (pt.length > 0) params += `&ptOptionsActive=1&${pt.join("&")}`;
+  if (options.nearbyStops) params += "&useProxFootSearch=1";
+  // Zwischenhalt: der VRR kennt nur eigene Haltestellen (DHID)
+  if (options.via?.startsWith("vrr:")) {
+    params += `&type_via=any&name_via=${encodeURIComponent(dhid(options.via))}`;
+    if (options.viaMinutes > 0) params += `&dwellTimeMinutes=${options.viaMinutes}`;
   }
   return params;
 }
@@ -235,15 +265,14 @@ export async function trips(
   when: Date | undefined,
   arrive: boolean,
   options: JourneyOptions = DEFAULT_JOURNEY_OPTIONS,
-  /** EFA-Routenwahl; wirkt nur mit `ptOptionsActive=1` (getestet 17.11.2026) */
-  routeType?: "LEASTTIME" | "LEASTINTERCHANGE" | "LEASTWALKING",
+  /** Routenwahl statt der aus den Optionen (bequeme Zusatzabfrage, #97) */
+  route: RoutePreference = options.route,
 ): Promise<VrrTripResult> {
   let url =
     `${BASE}/XML_TRIP_REQUEST2?${COMMON}&useRealtime=1&calcNumberOfTrips=5` +
     pointParams("origin", fromId) +
     pointParams("destination", toId) +
-    optionParams(options) +
-    (routeType ? `&ptOptionsActive=1&routeType=${routeType}` : "");
+    optionParams(options, route);
   if (when) {
     const { date, time } = efaDateTime(when);
     url += `&itdDate=${date}&itdTime=${time}&itdTripDateTimeDepArr=${arrive ? "arr" : "dep"}`;

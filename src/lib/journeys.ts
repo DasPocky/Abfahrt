@@ -4,7 +4,9 @@ import {
   DEFAULT_JOURNEY_OPTIONS,
   EXCLUDABLE_MODES,
   MAX_TRANSFERS_LIMIT,
+  MAX_VIA_MINUTES,
   type JourneyOptions,
+  type RoutePreference,
   type TransferSpeed,
 } from "../../shared/journey-options";
 import { MODE_LABEL } from "./modes";
@@ -23,8 +25,10 @@ export interface JourneyQuery {
   time?: string;
   /** true = `time` ist die gewünschte Ankunftszeit */
   arrive: boolean;
-  /** Verkehrsmittel, Umstiege, Umstiegszeit, barrierefrei */
+  /** Verkehrsmittel, Umstiege, Umstiegszeit, barrierefrei, Route, über … */
   options: JourneyOptions;
+  /** Anzeigename des Zwischenhalts (`options.via`) */
+  viaName?: string;
 }
 
 export const EMPTY_JOURNEY_QUERY: JourneyQuery = {
@@ -46,7 +50,26 @@ const PARAM = {
   maxTransfers: "umstiege",
   transferSpeed: "umstiegszeit",
   accessible: "barrierefrei",
+  noStairs: "ohneTreppen",
+  noEscalators: "ohneRolltreppen",
+  lowFloor: "niederflur",
+  route: "route",
+  bike: "fahrrad",
+  nearbyStops: "umgebung",
+  via: "ueber",
+  viaName: "ueberName",
+  viaMinutes: "aufenthalt",
 } as const;
+
+/** Routenwahl in der URL auf Deutsch */
+const ROUTE_PARAM: Record<RoutePreference, string> = {
+  fastest: "",
+  fewTransfers: "wenig-umstiege",
+  lessWalking: "wenig-fussweg",
+};
+
+/** Haltestellen-ID für „über“ */
+const VIA_ID = /^(vrr|transitous):[A-Za-z0-9:_.-]{1,160}$/;
 
 /** Umstiegszeit in der URL auf Deutsch */
 const SPEED_PARAM: Record<TransferSpeed, string> = { fast: "kurz", normal: "", slow: "mehr" };
@@ -62,12 +85,31 @@ export function journeyOptionsFromUrl(params: URLSearchParams): JourneyOptions {
   const speed = params.get(PARAM.transferSpeed);
   const transferSpeed: TransferSpeed =
     speed === SPEED_PARAM.fast ? "fast" : speed === SPEED_PARAM.slow ? "slow" : "normal";
+  const routeRaw = params.get(PARAM.route) ?? "";
+  const route: RoutePreference =
+    routeRaw === ROUTE_PARAM.fewTransfers
+      ? "fewTransfers"
+      : routeRaw === ROUTE_PARAM.lessWalking
+        ? "lessWalking"
+        : "fastest";
+  const viaRaw = params.get(PARAM.via)?.trim() ?? "";
+  const via = VIA_ID.test(viaRaw) ? viaRaw : null;
+  const stay = Number(params.get(PARAM.viaMinutes));
+  const on = (key: string) => params.get(key) === "1";
   return {
     // nicht alles ausschließen, sonst gibt es keine Verbindung
     exclude: exclude.length < EXCLUDABLE_MODES.length ? [...new Set(exclude)] : [],
     maxTransfers,
     transferSpeed,
-    accessible: params.get(PARAM.accessible) === "1",
+    accessible: on(PARAM.accessible),
+    noStairs: on(PARAM.noStairs),
+    noEscalators: on(PARAM.noEscalators),
+    lowFloor: on(PARAM.lowFloor),
+    route,
+    bike: on(PARAM.bike),
+    nearbyStops: on(PARAM.nearbyStops),
+    via,
+    viaMinutes: via && Number.isInteger(stay) && stay > 0 && stay <= MAX_VIA_MINUTES ? stay : 0,
   };
 }
 
@@ -79,6 +121,16 @@ function journeyOptionsToUrl(options: JourneyOptions, params: URLSearchParams): 
     params.set(PARAM.transferSpeed, SPEED_PARAM[options.transferSpeed]);
   }
   if (options.accessible) params.set(PARAM.accessible, "1");
+  if (options.noStairs) params.set(PARAM.noStairs, "1");
+  if (options.noEscalators) params.set(PARAM.noEscalators, "1");
+  if (options.lowFloor) params.set(PARAM.lowFloor, "1");
+  if (options.route !== "fastest") params.set(PARAM.route, ROUTE_PARAM[options.route]);
+  if (options.bike) params.set(PARAM.bike, "1");
+  if (options.nearbyStops) params.set(PARAM.nearbyStops, "1");
+  if (options.via) {
+    params.set(PARAM.via, options.via);
+    if (options.viaMinutes > 0) params.set(PARAM.viaMinutes, String(options.viaMinutes));
+  }
 }
 
 /** Anzahl abweichender Optionen (für das Symbol am Optionen-Knopf) */
@@ -87,7 +139,12 @@ export function countJourneyOptions(options: JourneyOptions): number {
     (options.exclude.length > 0 ? 1 : 0) +
     (options.maxTransfers !== null ? 1 : 0) +
     (options.transferSpeed !== "normal" ? 1 : 0) +
-    (options.accessible ? 1 : 0)
+    (options.accessible ? 1 : 0) +
+    (options.noStairs || options.noEscalators || options.lowFloor ? 1 : 0) +
+    (options.route !== "fastest" ? 1 : 0) +
+    (options.bike ? 1 : 0) +
+    (options.nearbyStops ? 1 : 0) +
+    (options.via ? 1 : 0)
   );
 }
 
@@ -109,6 +166,17 @@ export function describeJourneyOptions(options: JourneyOptions): string {
   if (options.transferSpeed === "fast") parts.push("kurze Umstiege");
   if (options.transferSpeed === "slow") parts.push("mehr Umstiegszeit");
   if (options.accessible) parts.push("barrierefrei");
+  else {
+    if (options.noStairs) parts.push("ohne Treppen");
+    if (options.noEscalators) parts.push("ohne Rolltreppen");
+    if (options.lowFloor) parts.push("Niederflur");
+  }
+  if (options.route === "fewTransfers") parts.push("wenige Umstiege");
+  if (options.route === "lessWalking") parts.push("wenig Fußweg");
+  if (options.bike) parts.push("mit Fahrrad");
+  if (options.nearbyStops) parts.push("Haltestellen in der Nähe");
+  if (options.via)
+    parts.push(options.viaMinutes > 0 ? `über Halt (${options.viaMinutes} Min)` : "über Halt");
   return parts.join(" · ");
 }
 
@@ -128,6 +196,7 @@ export function journeyQueryFromParams(params: URLSearchParams): JourneyQuery {
     // Ankunft ohne Zeitpunkt ergibt keinen Sinn, dann gilt „ab jetzt“
     arrive: parsed !== undefined && params.get(PARAM.arrive) === "1",
     options: journeyOptionsFromUrl(params),
+    ...(params.get(PARAM.viaName)?.trim() ? { viaName: params.get(PARAM.viaName)!.trim() } : {}),
   };
 }
 
@@ -146,6 +215,7 @@ export function journeyQueryToParams(query: JourneyQuery): URLSearchParams {
     if (query.arrive) params.set(PARAM.arrive, "1");
   }
   journeyOptionsToUrl(query.options, params);
+  if (query.options.via && query.viaName) params.set(PARAM.viaName, query.viaName);
   return params;
 }
 
