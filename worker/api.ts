@@ -5,6 +5,8 @@ import { applyLineColors, type LineColorMap } from "./line-colors";
 import { directionAt, splitCityPrefix } from "./stop-names";
 import * as transitous from "./sources/transitous";
 import * as vrr from "./sources/vrr";
+import { regionalSourceFor } from "./sources/regional";
+import { dhidOf } from "./sources/transitous-map";
 
 const STOP_ID = /^(vrr|transitous):[A-Za-z0-9:_.-]{1,160}$/;
 const SEARCH_TTL = 24 * 60 * 60;
@@ -145,6 +147,35 @@ async function loadDepartures(
     stopId.slice(0, stopId.indexOf(":")),
     stopId.slice(stopId.indexOf(":") + 1),
   ];
+  const isFuture = when !== undefined && when.getTime() - Date.now() > 60 * 60 * 1000;
+
+  // Regionale Quelle zuerst, wenn es für die Region eine bessere gibt (#104): mit Echtzeit (oder
+  // für die Zukunft) gewinnt sie, sonst geht es weiter wie bisher. Ausfälle stören nicht.
+  const regional = regionalSourceFor(dhidOf(rawId));
+  if (regional) {
+    try {
+      const result = await vrr.departures(dhidOf(rawId)!, when, regional.base, regional.key);
+      if (result.departures.length > 0 && (result.hasRealtime || isFuture)) {
+        const stop = { ...result.stop, id: stopId };
+        return {
+          stop,
+          departures: applyLineColors(
+            localize(result.departures, stop.place),
+            await lineColorsForStop(request, ctx, stop),
+          ),
+          source: regional.key,
+          generatedAt,
+        };
+      }
+    } catch (err) {
+      if (
+        !(err instanceof UpstreamError) &&
+        !(err instanceof Error && err.message === "not_found")
+      ) {
+        throw err;
+      }
+    }
+  }
 
   if (source === "transitous") {
     const result = await transitous.departures(rawId, when);
@@ -160,7 +191,6 @@ async function loadDepartures(
   // VRR-Haltestelle: im VRR-Gebiet vom VRR (für die Zukunft gibt es dort noch keine
   // Echtzeit, dann trotzdem VRR), sonst über Transitous
   const fromVrr = await vrr.departures(rawId, when);
-  const isFuture = when !== undefined && when.getTime() - Date.now() > 60 * 60 * 1000;
   const vrrResult = async (): Promise<DeparturesResponse> => ({
     stop: fromVrr.stop,
     departures: applyLineColors(
@@ -171,9 +201,10 @@ async function loadDepartures(
     generatedAt,
   });
   if (vrr.isVrrArea(rawId) && (fromVrr.hasRealtime || isFuture)) return vrrResult();
-  const transitousId = await transitousForStop(request, ctx, fromVrr.stop);
-  if (transitousId) {
-    try {
+  try {
+    // Zuordnung und Abfahrten bei Transitous; fällt Transitous aus, bleibt der VRR-Fahrplan
+    const transitousId = await transitousForStop(request, ctx, fromVrr.stop);
+    if (transitousId) {
       const result = await transitous.departures(transitousId, when);
       if (result.departures.length > 0) {
         return {
@@ -183,9 +214,9 @@ async function loadDepartures(
           generatedAt,
         };
       }
-    } catch (err) {
-      if (!(err instanceof UpstreamError)) throw err;
     }
+  } catch (err) {
+    if (!(err instanceof UpstreamError)) throw err;
   }
   // Fallback: Fahrplandaten vom VRR (ohne Echtzeit)
   return vrrResult();

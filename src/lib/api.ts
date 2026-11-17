@@ -8,6 +8,7 @@ import type {
   JourneysResponse,
   StopSearchResponse,
 } from "../../shared/api-types";
+import { DATA_SOURCES } from "../../shared/api-types";
 import {
   DEFAULT_JOURNEY_OPTIONS,
   journeyOptionsToParams,
@@ -31,6 +32,10 @@ function isApiError(value: unknown): value is ApiError {
   return isObject(value) && typeof value.error === "string";
 }
 
+function isDataSource(value: unknown): boolean {
+  return DATA_SOURCES.some((s) => s === value);
+}
+
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -46,7 +51,7 @@ export function isDeparturesResponse(value: unknown): value is DeparturesRespons
     isObject(value.stop) &&
     typeof value.stop.name === "string" &&
     Array.isArray(value.departures) &&
-    (value.source === "vrr" || value.source === "transitous") &&
+    isDataSource(value.source) &&
     typeof value.generatedAt === "string"
   );
 }
@@ -75,7 +80,7 @@ export function isJourneysResponse(value: unknown): value is JourneysResponse {
     typeof value.to.name === "string" &&
     Array.isArray(value.journeys) &&
     value.journeys.every(isJourney) &&
-    (value.source === "vrr" || value.source === "transitous") &&
+    isDataSource(value.source) &&
     typeof value.generatedAt === "string" &&
     isNullableString(value.earlier) &&
     isNullableString(value.later)
@@ -114,7 +119,7 @@ export function isAlertsResponse(value: unknown): value is AlertsResponse {
     isNullableString(value.areaName) &&
     Array.isArray(value.alerts) &&
     value.alerts.every(isAlert) &&
-    (value.source === "vrr" || value.source === "transitous") &&
+    isDataSource(value.source) &&
     typeof value.generatedAt === "string"
   );
 }

@@ -249,3 +249,67 @@ describe("Rate-Limit", () => {
     expect(last).toBe(429);
   });
 });
+
+describe("Regionale Echtzeit-Quellen (#104)", () => {
+  const stuttgart = {
+    ...vrrDm,
+    locations: [{ ...vrrDm.locations[0], id: "de:08111:6115", name: "Stuttgart, Hauptbahnhof" }],
+  };
+
+  it("nimmt in Baden-Württemberg die EFA-BW, wenn sie Echtzeit hat", async () => {
+    const calls = mockUpstream({
+      "efa-bw.de/nvbw/XML_DM_REQUEST": shiftTimes(
+        stuttgart,
+        vrrDm.stopEvents[0]!.departureTimePlanned,
+      ),
+    });
+    const res = await get("departures?stop=vrr:de:08111:6115");
+    expect(res.status).toBe(200);
+    const body = await res.json<DeparturesResponse>();
+    expect(body.source).toBe("efa-bw");
+    // die angefragte ID bleibt (Favoriten, Links)
+    expect(body.stop.id).toBe("vrr:de:08111:6115");
+    expect(body.departures.length).toBeGreaterThan(0);
+    expect(calls[0]).toContain("https://www.efa-bw.de/nvbw/XML_DM_REQUEST");
+    expect(calls.some((u) => u.includes("openservice.vrr.de"))).toBe(false);
+  });
+
+  it("nutzt die EFA-BW auch für Haltestellen aus Transitous (Karte)", async () => {
+    mockUpstream({
+      "efa-bw.de/nvbw/XML_DM_REQUEST": shiftTimes(
+        stuttgart,
+        vrrDm.stopEvents[0]!.departureTimePlanned,
+      ),
+    });
+    const res = await get("departures?stop=transitous:de-DELFI_de:08111:6115");
+    const body = await res.json<DeparturesResponse>();
+    expect(body.source).toBe("efa-bw");
+    expect(body.stop.id).toBe("transitous:de-DELFI_de:08111:6115");
+  });
+
+  it("fällt bei einem Ausfall der EFA-BW auf die bisherigen Quellen zurück", async () => {
+    const calls = mockUpstream({
+      "openservice.vrr.de/openservice/XML_DM_REQUEST": shiftTimes(
+        {
+          ...stuttgart,
+          stopEvents: stuttgart.stopEvents.map((e) => ({ ...e, isRealtimeControlled: false })),
+        },
+        vrrDm.stopEvents[0]!.departureTimePlanned,
+      ),
+    });
+    // eigene Haltestelle, damit kein Cache-Eintrag eines anderen Tests greift
+    const res = await get("departures?stop=vrr:de:08111:7000");
+    expect(res.status).toBe(200);
+    const body = await res.json<DeparturesResponse>();
+    expect(body.source).not.toBe("efa-bw");
+    expect(calls[0]).toContain("efa-bw.de");
+  });
+
+  it("fragt im VRR-Gebiet keine regionale Quelle", async () => {
+    const calls = mockUpstream({
+      XML_DM_REQUEST: shiftTimes(vrrDm, vrrDm.stopEvents[0]!.departureTimePlanned),
+    });
+    await get("departures?stop=vrr:de:05111:18036");
+    expect(calls.some((u) => u.includes("efa-bw.de"))).toBe(false);
+  });
+});

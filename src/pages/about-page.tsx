@@ -61,6 +61,11 @@ export function AboutPage() {
             ): Abfahrten und Haltestellen im VRR-Gebiet über den VRR OpenService.
           </li>
           <li>
+            Nahverkehrsgesellschaft Baden-Württemberg (
+            <ExternalLink href="https://www.mobidata-bw.de">NVBW, MobiData BW</ExternalLink>):
+            Abfahrten mit Echtzeit in Baden-Württemberg über die landesweite Auskunft EFA-BW.
+          </li>
+          <li>
             <ExternalLink href="https://transitous.org/sources/">Transitous</ExternalLink>:
             Abfahrten in ganz Deutschland und Linienfarben, auf Basis offener Fahrplandaten vieler
             Datenlieferanten.

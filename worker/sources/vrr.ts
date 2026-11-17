@@ -203,17 +203,23 @@ export function toDeparture(event: VrrStopEvent, index: number): Departure | nul
   };
 }
 
+/**
+ * Abfahrten aus einer EFA im rapidJSON-Format: der VRR, aber auch regionale Systeme mit demselben
+ * Format (#104, `worker/sources/regional.ts`). `source` benennt die Quelle in Fehlermeldungen.
+ */
 export async function departures(
   globalId: string,
   when?: Date,
+  base = BASE,
+  source = "vrr",
 ): Promise<{ stop: Stop; departures: Departure[]; hasRealtime: boolean }> {
-  let url = `${BASE}/XML_DM_REQUEST?${COMMON}&type_dm=stop&mode=direct&useRealtime=1&limit=80&name_dm=${encodeURIComponent(globalId)}`;
+  let url = `${base}/XML_DM_REQUEST?${COMMON}&type_dm=stop&mode=direct&useRealtime=1&limit=80&name_dm=${encodeURIComponent(globalId)}`;
   if (when) {
     const { date, time } = efaDateTime(when);
     url += `&itdDate=${date}&itdTime=${time}`;
   }
   const data = await fetchJson<{ locations?: VrrLocation[]; stopEvents?: VrrStopEvent[] }>(
-    "vrr",
+    source,
     url,
   );
   const location = data.locations?.[0];
