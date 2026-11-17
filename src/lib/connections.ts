@@ -20,7 +20,7 @@ export const TRANSFER_RISK_TEXT = {
 /** „5 Min Umstieg“ (bei Fußweg der Puffer danach); null ohne Zeiten oder bei Ausfall */
 export function formatTransfer(transfer: Transfer): string | null {
   if (transfer.minutes === null || transfer.status === "unknown") return null;
-  const minutes = `${transfer.minutes} Min Umstieg`;
+  const minutes = `${transfer.minutes} Min Umstieg${transfer.samePlatform ? " · selber Steig" : ""}`;
   if (transfer.status === "missed") {
     return `${TRANSFER_RISK_TEXT.missed} · ${-transfer.minutes} Min zu knapp`;
   }

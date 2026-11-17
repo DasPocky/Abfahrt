@@ -235,12 +235,15 @@ export async function trips(
   when: Date | undefined,
   arrive: boolean,
   options: JourneyOptions = DEFAULT_JOURNEY_OPTIONS,
+  /** EFA-Routenwahl; wirkt nur mit `ptOptionsActive=1` (getestet 17.11.2026) */
+  routeType?: "LEASTTIME" | "LEASTINTERCHANGE" | "LEASTWALKING",
 ): Promise<VrrTripResult> {
   let url =
     `${BASE}/XML_TRIP_REQUEST2?${COMMON}&useRealtime=1&calcNumberOfTrips=5` +
     pointParams("origin", fromId) +
     pointParams("destination", toId) +
-    optionParams(options);
+    optionParams(options) +
+    (routeType ? `&ptOptionsActive=1&routeType=${routeType}` : "");
   if (when) {
     const { date, time } = efaDateTime(when);
     url += `&itdDate=${date}&itdTime=${time}&itdTripDateTimeDepArr=${arrive ? "arr" : "dep"}`;

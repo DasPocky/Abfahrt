@@ -55,6 +55,12 @@ describe("transferStatus", () => {
   });
 });
 
+/** Halt eines Abschnitts an einen Steig von Schlüterstraße setzen */
+const atPlatform = (leg: JourneyLeg, side: "origin" | "destination", platform: string | null) => ({
+  ...leg,
+  [side]: { ...leg[side], id: "vrr:de:05111:18231", platform },
+});
+
 describe("journeyTransfers", () => {
   it("hat bei nur einem Abschnitt keine Umstiege", () => {
     expect(journeyTransfers(journey({ id: "j", legs: [ride("12:00", "12:10")] }))).toEqual([]);
@@ -67,7 +73,7 @@ describe("journeyTransfers", () => {
       legs: [ride("12:00", "12:10", { arr: "12:14" }), ride("12:15", "12:30", { dep: "12:16" })],
     });
     expect(journeyTransfers(j)).toEqual([
-      { fromLeg: 0, toLeg: 1, walkMinutes: 0, minutes: 2, status: "ok" },
+      { fromLeg: 0, toLeg: 1, walkMinutes: 0, minutes: 2, status: "ok", samePlatform: false },
     ]);
   });
 
@@ -86,7 +92,7 @@ describe("journeyTransfers", () => {
       legs: [ride("12:00", "12:10"), walk(3), walk(2), ride("12:14", "12:30")],
     });
     expect(journeyTransfers(j)).toEqual([
-      { fromLeg: 0, toLeg: 3, walkMinutes: 5, minutes: -1, status: "missed" },
+      { fromLeg: 0, toLeg: 3, walkMinutes: 5, minutes: -1, status: "missed", samePlatform: false },
     ]);
     expect(journeyTransferRisk(j)).toBe("missed");
   });
@@ -97,8 +103,29 @@ describe("journeyTransfers", () => {
       legs: [walk(5), ride("12:00", "12:10"), ride("12:15", "12:30"), walk(8)],
     });
     expect(journeyTransfers(j)).toEqual([
-      { fromLeg: 1, toLeg: 2, walkMinutes: 0, minutes: 5, status: "ok" },
+      { fromLeg: 1, toLeg: 2, walkMinutes: 0, minutes: 5, status: "ok", samePlatform: false },
     ]);
+  });
+
+  it("erkennt Umstiege am selben Steig (#97)", () => {
+    const arrive = ride("12:00", "12:10");
+    const leave = ride("12:13", "12:30");
+    const same = journey({
+      id: "j",
+      legs: [atPlatform(arrive, "destination", "1"), atPlatform(leave, "origin", "1")],
+    });
+    expect(journeyTransfers(same)[0]?.samePlatform).toBe(true);
+    const other = journey({
+      id: "j",
+      legs: [atPlatform(arrive, "destination", "6"), atPlatform(leave, "origin", "4")],
+    });
+    expect(journeyTransfers(other)[0]?.samePlatform).toBe(false);
+    // Fußweg dazwischen: nie „selber Steig“
+    const walked = journey({
+      id: "j",
+      legs: [atPlatform(arrive, "destination", "1"), walk(1), atPlatform(leave, "origin", "1")],
+    });
+    expect(journeyTransfers(walked)[0]?.samePlatform).toBe(false);
   });
 
   it("bewertet Verspätung, die den Anschluss kostet", () => {
@@ -140,9 +167,17 @@ describe("journeyTransfers", () => {
 });
 
 describe("formatTransfer", () => {
-  const base: Transfer = { fromLeg: 0, toLeg: 1, walkMinutes: 0, minutes: 5, status: "ok" };
+  const base: Transfer = {
+    fromLeg: 0,
+    toLeg: 1,
+    walkMinutes: 0,
+    minutes: 5,
+    status: "ok",
+    samePlatform: false,
+  };
   it("formatiert je nach Status", () => {
     expect(formatTransfer(base)).toBe("5 Min Umstieg");
+    expect(formatTransfer({ ...base, samePlatform: true })).toBe("5 Min Umstieg · selber Steig");
     expect(formatTransfer({ ...base, minutes: 1, status: "tight" })).toBe(
       "Anschluss gefährdet · 1 Min Umstieg",
     );
