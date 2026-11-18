@@ -15,8 +15,20 @@ afterEach(() => {
 
 describe("Einstellungen (#37)", () => {
   it("liest gespeicherte Werte und ersetzt Ungültiges einzeln durch Standardwerte", () => {
-    const saved = serializeSettings({ rowStyle: "b", theme: "dark", favoriteCount: 6 });
-    expect(parseSettings(saved)).toEqual({ rowStyle: "b", theme: "dark", favoriteCount: 6 });
+    const saved = serializeSettings({
+      rowStyle: "b",
+      theme: "dark",
+      favoriteCount: 6,
+      speechRate: "slow",
+    });
+    expect(parseSettings(saved)).toEqual({
+      rowStyle: "b",
+      theme: "dark",
+      favoriteCount: 6,
+      speechRate: "slow",
+    });
+    // ältere Einträge ohne Tempo: Standard
+    expect(parseSettings('{"rowStyle":"b"}').speechRate).toBe("normal");
     expect(parseSettings('{"rowStyle":"z","theme":"dark","favoriteCount":99}')).toEqual({
       ...DEFAULT_SETTINGS,
       theme: "dark",

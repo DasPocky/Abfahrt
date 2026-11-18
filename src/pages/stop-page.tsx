@@ -4,6 +4,7 @@ import { ArrowLeft, LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react"
 import { StopAlertsBanner } from "@/components/alert-list";
 import { DepartureList, StopNoticesBanner } from "@/components/departure-list";
 import { FavoriteButton } from "@/components/favorite-button";
+import { SpeakButton } from "@/components/speak-button";
 import { FilterBar } from "@/components/filter-bar";
 import { SourceAttribution } from "@/components/source-attribution";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import {
   filterToParams,
   isEmptyFilter,
 } from "@/lib/filters";
+import { stopSpeech } from "@/lib/speech";
 import { formatClockWithSeconds } from "@/lib/time";
 
 /** Abruf der Abfahrten */
@@ -119,6 +121,12 @@ export function StopPage() {
           <FavoriteButton
             stop={{ id: stopId, name: knownName, place: data?.stop.place }}
             filter={filter}
+          />
+        )}
+        {data && (
+          <SpeakButton
+            label="Abfahrten vorlesen"
+            text={() => stopSpeech(title, shown, new Date())}
           />
         )}
         <Button

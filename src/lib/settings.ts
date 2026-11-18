@@ -1,15 +1,18 @@
 // Einstellungen (#37), nur im Browser: Darstellung der Abfahrtszeile, Hell/Dunkel, Abfahrten je
-// Favorit. Versioniert gespeichert unter `abfahrt:settings`, robust gelesen.
+// Favorit, Tempo der Sprachausgabe. Versioniert gespeichert unter `abfahrt:settings`, robust gelesen.
 
 /** A Linie mit Symbol, B Countdown links (Anzeigetafel), C Karten mit Farbstreifen */
 export type RowStyle = "a" | "b" | "c";
 export type ThemeChoice = "system" | "light" | "dark";
+/** Tempo der Sprachausgabe (#129) */
+export type SpeechRate = "slow" | "normal" | "fast";
 
 export interface Settings {
   rowStyle: RowStyle;
   theme: ThemeChoice;
   /** Abfahrten je Favorit auf der Startseite */
   favoriteCount: number;
+  speechRate: SpeechRate;
 }
 
 export const SETTINGS_KEY = "abfahrt:settings";
@@ -18,8 +21,14 @@ const VERSION = 1;
 export const ROW_STYLES: readonly RowStyle[] = ["a", "b", "c"];
 export const THEMES: readonly ThemeChoice[] = ["system", "light", "dark"];
 export const FAVORITE_COUNTS = [3, 4, 6, 8] as const;
+export const SPEECH_RATES: readonly SpeechRate[] = ["slow", "normal", "fast"];
 
-export const DEFAULT_SETTINGS: Settings = { rowStyle: "a", theme: "system", favoriteCount: 4 };
+export const DEFAULT_SETTINGS: Settings = {
+  rowStyle: "a",
+  theme: "system",
+  favoriteCount: 4,
+  speechRate: "normal",
+};
 
 function pick<T>(value: unknown, allowed: readonly T[], fallback: T): T {
   return allowed.find((a) => a === value) ?? fallback;
@@ -39,6 +48,7 @@ export function parseSettings(raw: string | null): Settings {
     rowStyle: pick(field("rowStyle"), ROW_STYLES, DEFAULT_SETTINGS.rowStyle),
     theme: pick(field("theme"), THEMES, DEFAULT_SETTINGS.theme),
     favoriteCount: pick(field("favoriteCount"), FAVORITE_COUNTS, DEFAULT_SETTINGS.favoriteCount),
+    speechRate: pick(field("speechRate"), SPEECH_RATES, DEFAULT_SETTINGS.speechRate),
   };
 }
 

@@ -16,6 +16,7 @@ import { DelayBadge } from "@/components/delay-badge";
 import { NOTICE_CLASS, NoticeList } from "@/components/departure-list";
 import { LazyRouteMap } from "@/components/lazy-route-map";
 import { LineBadge } from "@/components/line-badge";
+import { SpeakButton } from "@/components/speak-button";
 import {
   formatTransfer,
   journeyTransfers,
@@ -24,6 +25,7 @@ import {
   type Transfer,
 } from "@/lib/connections";
 import { isLegCancelled } from "@/lib/journeys";
+import { journeySpeech } from "@/lib/speech";
 import { platformLabel } from "@/lib/modes";
 import { otherPlace } from "@/lib/stop-label";
 import { hasRoute } from "@/lib/route-map";
@@ -376,21 +378,24 @@ export function JourneyDetails({
         <RouteMapToggle
           journey={journey}
           action={
-            onSave && (
-              <button
-                type="button"
-                onClick={onSave}
-                aria-pressed={saved}
-                className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-foreground"
-              >
-                {saved ? (
-                  <BookmarkCheck className="size-3.5 shrink-0" aria-hidden="true" />
-                ) : (
-                  <Bookmark className="size-3.5 shrink-0" aria-hidden="true" />
-                )}
-                {saved ? "Gemerkt · live ansehen" : "Merken & live verfolgen"}
-              </button>
-            )
+            <>
+              <SpeakButton pill text={() => journeySpeech(journey)} />
+              {onSave && (
+                <button
+                  type="button"
+                  onClick={onSave}
+                  aria-pressed={saved}
+                  className="inline-flex h-7 items-center gap-1 rounded-full border bg-card px-2.5 font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring aria-pressed:border-foreground"
+                >
+                  {saved ? (
+                    <BookmarkCheck className="size-3.5 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Bookmark className="size-3.5 shrink-0" aria-hidden="true" />
+                  )}
+                  {saved ? "Gemerkt · live ansehen" : "Merken & live verfolgen"}
+                </button>
+              )}
+            </>
           }
         />
         <ol aria-label="Abschnitte" className="space-y-2">
