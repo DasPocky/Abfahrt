@@ -31,6 +31,10 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 - Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen
   weiter. Der Link lässt sich als Lesezeichen speichern.
+- **Zeiten:** Der Countdown („5 Min“, „jetzt“) zählt bis zur tatsächlichen Abfahrt. Direkt darunter steht die
+  Verspätung als farbiges Kästchen (**+2** orange bis 4 Minuten, **+6** rot ab 5 Minuten, früher grün). In
+  der Zeile unter dem Ziel steht zuerst die tatsächliche Uhrzeit in derselben Farbe, die Planzeit klein und
+  durchgestrichen daneben („ab 12:17 ~~12:12~~“). Pünktliche Fahrten zeigen dezent „pünktlich“.
 - Fahrtziele in der eigenen Stadt stehen ohne Ort („Benrath Btf“), in anderen Städten mit Ort
   („Düsseldorf Holthausen“).
 - **Filtern:** Über der Liste stehen die Verkehrsmittel der Haltestelle (z. B. S-Bahn, U-Bahn, Bus).

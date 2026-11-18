@@ -69,6 +69,14 @@ export const DELAY_TONE_CLASS: Record<DelayTone, string> = {
   destructive: "text-destructive",
 };
 
+/** Gefülltes Kästchen je Farbton (Verspätung am Countdown, #124); Text mit genug Kontrast */
+export const DELAY_PILL_CLASS: Record<DelayTone, string> = {
+  unknown: "bg-muted text-muted-foreground",
+  success: "bg-success text-white dark:text-black",
+  warning: "bg-warning text-black",
+  destructive: "bg-destructive text-white dark:text-black",
+};
+
 /** Verspätungstext: „+2“, „-1“, „pünktlich“ statt „+0“; leer ohne Echtzeit */
 export function formatDelay(delay: number | null): string {
   if (delay === null) return "";

@@ -15,6 +15,7 @@ import { summarizeNotices } from "@/lib/notices";
 import type { RowStyle } from "@/lib/settings";
 import {
   delayMinutes,
+  DELAY_PILL_CLASS,
   DELAY_TONE_CLASS,
   delayTone,
   formatClock,
@@ -142,31 +143,77 @@ function DepartureNotices({
   );
 }
 
-/** Planzeit mit Verspätung bzw. „fällt aus“ */
+/**
+ * Abfahrtszeit: bei Verspätung zuerst die tatsächliche Zeit, die Planzeit klein durchgestrichen
+ * daneben (#124); pünktlich dezent grün; Ausfall mit durchgestrichener Planzeit.
+ */
 function Meta({ departure }: { departure: Departure }) {
-  const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
-  const tone = delayTone(delay);
+  const delay = departure.cancelled
+    ? null
+    : delayMinutes(departure.plannedTime, departure.realtimeTime);
+  const planned = (
+    <time
+      dateTime={departure.plannedTime}
+      className={cn(
+        delay !== null && delay !== 0
+          ? "ml-1.5 text-muted-foreground line-through"
+          : "text-foreground",
+        departure.cancelled && "line-through",
+      )}
+      aria-label={
+        delay !== null && delay !== 0
+          ? `geplant ${formatClock(new Date(departure.plannedTime))}`
+          : undefined
+      }
+    >
+      {formatClock(new Date(departure.plannedTime))}
+    </time>
+  );
   return (
     <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums">
       ab{" "}
-      <time
-        dateTime={departure.plannedTime}
-        className={cn("text-foreground", departure.cancelled && "line-through")}
-      >
-        {formatClock(new Date(departure.plannedTime))}
-      </time>
-      {delay !== null && !departure.cancelled && (
-        <span
-          className={cn("ml-1.5", delay === 0 ? "" : "font-semibold", DELAY_TONE_CLASS[tone])}
-          data-tone={tone}
-        >
-          {formatDelay(delay)}
+      {delay !== null && delay !== 0 && departure.realtimeTime !== null ? (
+        <>
+          <time
+            dateTime={departure.realtimeTime}
+            className={cn("font-semibold", DELAY_TONE_CLASS[delayTone(delay)])}
+          >
+            {formatClock(new Date(departure.realtimeTime))}
+          </time>
+          {planned}
+        </>
+      ) : (
+        planned
+      )}
+      {delay === 0 && (
+        <span className={cn("ml-1.5", DELAY_TONE_CLASS.success)} data-tone="success">
+          {formatDelay(0)}
         </span>
       )}
       {departure.cancelled && (
         <span className="ml-1.5 font-semibold text-destructive">fällt aus</span>
       )}
     </p>
+  );
+}
+
+/** Verspätung als farbiges Kästchen direkt am Countdown (#124), z. B. „+2“ */
+function DelayPill({ departure }: { departure: Departure }) {
+  if (departure.cancelled) return null;
+  const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
+  if (delay === null || delay === 0) return null;
+  const tone = delayTone(delay);
+  return (
+    <span
+      className={cn(
+        "mt-1 inline-block rounded px-1 py-0.5 text-[0.7rem] leading-none font-bold tabular-nums",
+        DELAY_PILL_CLASS[tone],
+      )}
+      data-tone={tone}
+      title={delay > 0 ? `${delay} Min später` : `${-delay} Min früher`}
+    >
+      {formatDelay(delay)}
+    </span>
   );
 }
 
@@ -205,6 +252,7 @@ function Countdown({
       ) : (
         <span className="text-sm">{countdown}</span>
       )}
+      <DelayPill departure={departure} />
     </div>
   );
 }
