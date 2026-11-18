@@ -34,6 +34,10 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 - Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen
   weiter. Der Link lässt sich als Lesezeichen speichern.
+- **Zeiten:** Der Countdown („5 Min“, „jetzt“) zählt bis zur tatsächlichen Abfahrt. Direkt darunter steht die
+  Verspätung als farbiges Kästchen (**+2** orange bis 4 Minuten, **+6** rot ab 5 Minuten, früher grün). In
+  der Zeile unter dem Ziel steht zuerst die tatsächliche Uhrzeit in derselben Farbe, die Planzeit klein und
+  durchgestrichen daneben („ab 12:17 ~~12:12~~“). Pünktliche Fahrten zeigen dezent „pünktlich“.
 - Fahrtziele in der eigenen Stadt stehen ohne Ort („Benrath Btf“), in anderen Städten mit Ort
   („Düsseldorf Holthausen“).
 - **Filtern:** Über der Liste stehen die Verkehrsmittel der Haltestelle (z. B. S-Bahn, U-Bahn, Bus).
@@ -109,7 +113,11 @@ Aktive Optionen stehen kurz unter der Zeile. Routenwahl, Fahrrad und Umgebung wi
 
 ### Ergebnisse
 
-- Jede Verbindung zeigt Ab → An mit Verspätung, Dauer und Umstiege.
+- Jede Verbindung zeigt Ab → An, Dauer und Umstiege. Bei Verspätung steht die tatsächliche Zeit in Orange
+  bzw. Rot, dahinter das Kästchen mit der Verspätung (**+3**). In den Details steht die tatsächliche Zeit
+  oben, die Planzeit klein und durchgestrichen darunter.
+- „ⓘ Hinweise“ ist grau: es gibt Hinweise, sie gefährden die Verbindung aber nicht. Ausfälle und gefährdete
+  Anschlüsse bleiben rot bzw. gelb.
 - Darunter ein **Balken** mit den Fahrten in Linienfarbe (Länge nach Fahrzeit, Fußwege gepunktet) und
   „ab 14:53 Gleis 2“ der ersten Fahrt (mit Fußweg davor: „4 Min, dann ab …“).
 - Ausfälle sind rot markiert. Knappe Umstiege (unter 2 Minuten Puffer nach Echtzeit und Fußweg) heißen
