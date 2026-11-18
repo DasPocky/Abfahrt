@@ -9,7 +9,14 @@
     "browser": true,
     "es2024": true
   },
-  "ignorePatterns": ["dist", "coverage", ".wrangler", "worker-configuration.d.ts", ".claude"],
+  "ignorePatterns": [
+    "dist",
+    "coverage",
+    ".wrangler",
+    "worker-configuration.d.ts",
+    ".claude",
+    "vendor"
+  ],
   "rules": {
     "react/rules-of-hooks": "error",
     "react/exhaustive-deps": "warn",
