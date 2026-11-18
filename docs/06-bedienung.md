@@ -27,6 +27,23 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 - **In der Nähe:** Die Startseite zeigt die Haltestellen im Umkreis von 1 km, die nächste zuerst. Dafür geht
   der Standort auf etwa 100 m gerundet an den Worker.
 
+## Wunsch sagen oder als Satz tippen
+
+- Das **Mikrofon** im Suchfeld der Startseite nimmt deinen Wunsch auf, z. B. „Abfahrten
+  Heinrich-Heine-Allee“, „nächste U79 ab Hauptbahnhof“, „von Benrath nach Essen Hbf um 8“, „morgen um 7
+  nach Köln“ oder „Ich muss bis 18 Uhr in Essen sein“.
+- Beim ersten Mal erklärt die App kurz, was passiert, und fragt um Einwilligung. Danach fragt der Browser
+  nach dem Mikrofon. Die Aufnahme endet von selbst, wenn du still bist (höchstens 10 Sekunden), oder mit
+  erneutem Tippen.
+- Die Aufnahme geht über unseren Server an die Spracherkennung von Cloudflare (Whisper) und wird danach
+  nicht gespeichert. Zurück kommt nur der Text, den die App selbst versteht und dann die Abfahrten oder die
+  Verbindung öffnet (Haltestellen zuerst, ohne Start dein Standort).
+- Ist die Spracherkennung für heute ausgelastet, sagt die App das; das Diktier-Mikrofon deiner Tastatur
+  geht immer.
+- **Tippen geht auch:** Steht im Suchfeld ein Satz wie „von Benrath nach Essen“, erscheint darunter
+  **Verbindung suchen: Benrath → Essen** (auch per Enter).
+- Die Einwilligung widerrufst du unter **Mehr → Einstellungen → Spracheingabe**.
+
 ## Abfahrten
 
 - Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen
@@ -193,6 +210,7 @@ Unter **Mehr → Einstellungen** (`/abfahrt/einstellungen`), gespeichert nur im 
   Farbstreifen der Linie). Gilt für Haltestellen und Favoriten.
 - **Erscheinungsbild:** wie System, Hell oder Dunkel. Gilt auch für die Karte.
 - **Abfahrten je Favorit** auf der Startseite: 3, 4, 6 oder 8.
+- **Spracheingabe:** Stand der Einwilligung, **Einwilligung widerrufen**.
 
 ## Installieren
 

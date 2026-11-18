@@ -224,3 +224,10 @@ export interface ApiError {
   error: string;
   message?: string;
 }
+
+// ---- Spracheingabe (#132) ----
+
+export interface SpeechResponse {
+  /** Erkannter Text */
+  text: string;
+}

@@ -16,6 +16,8 @@ export default defineConfig(async () => ({
   plugins: [
     cloudflareTest({
       wrangler: { configPath: "./wrangler.jsonc" },
+      // Workers AI (Spracheingabe) nicht bei Cloudflare aufrufen; die Tests ersetzen env.AI
+      remoteBindings: false,
       miniflare: {
         bindings: {
           TEST_MIGRATIONS: await readD1Migrations("./migrations"),

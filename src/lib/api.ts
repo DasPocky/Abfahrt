@@ -6,6 +6,7 @@ import type {
   DeparturesResponse,
   Journey,
   JourneysResponse,
+  SpeechResponse,
   StopSearchResponse,
 } from "../../shared/api-types";
 import { DATA_SOURCES } from "../../shared/api-types";
@@ -217,6 +218,27 @@ export function fetchJourneys(
   params.set("arrive", arrive ? "1" : "0");
   journeyOptionsToParams(options, params);
   return getJson(`journeys?${params.toString()}`, isJourneysResponse, signal);
+}
+
+function isSpeechResponse(value: unknown): value is SpeechResponse {
+  return isObject(value) && typeof value.text === "string";
+}
+
+/** Spracheingabe (#132): WAV an den Worker, zurück kommt nur der erkannte Text */
+export async function transcribe(wav: ArrayBuffer, signal?: AbortSignal): Promise<SpeechResponse> {
+  const res = await fetch(`${API_PREFIX}speech`, {
+    method: "POST",
+    signal,
+    headers: { "Content-Type": "audio/wav", Accept: "application/json" },
+    body: wav,
+  });
+  const body: unknown = await res.json().catch(() => null);
+  if (!res.ok) {
+    if (isApiError(body)) throw new ApiRequestError(res.status, body.error, body.message);
+    throw new ApiRequestError(res.status, "http_error");
+  }
+  if (!isSpeechResponse(body)) throw new ApiRequestError(res.status, "invalid_response");
+  return body;
 }
 
 /** Pfad der Abfahrtsseite (relativ zum Router-basename) */

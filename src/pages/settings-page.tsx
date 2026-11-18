@@ -1,4 +1,5 @@
 // Einstellungen (#37): Darstellung der Abfahrtszeile, Hell/Dunkel, Abfahrten je Favorit.
+import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, Check } from "lucide-react";
 import { cn } from "cn";
@@ -6,6 +7,7 @@ import { DepartureList } from "@/components/departure-list";
 import { Segmented } from "@/components/segmented";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/hooks/use-settings";
+import { hasVoiceConsent, setVoiceConsent } from "@/hooks/use-voice-search";
 import {
   FAVORITE_COUNTS,
   ROW_STYLES,
@@ -62,6 +64,7 @@ const PREVIEW: Departure[] = [
 
 export function SettingsPage() {
   const settings = useSettings();
+  const [voiceConsent, setVoiceConsentState] = useState(hasVoiceConsent);
   return (
     <div className="space-y-6">
       <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
@@ -138,6 +141,28 @@ export function SettingsPage() {
           value={settings.favoriteCount}
           onChange={(favoriteCount) => setSettings({ ...settings, favoriteCount })}
         />
+      </section>
+
+      <section aria-labelledby="settings-voice" className="space-y-2">
+        <h2 id="settings-voice" className="text-lg font-semibold tracking-tight">
+          Spracheingabe
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {voiceConsent
+            ? "Eingewilligt: Aufnahmen über das Mikrofon in der Suche gehen zur Erkennung an Cloudflare und werden danach nicht gespeichert."
+            : "Nicht eingewilligt. Beim ersten Tippen aufs Mikrofon in der Suche fragt die App nach."}
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={!voiceConsent}
+          onClick={() => {
+            setVoiceConsent(false);
+            setVoiceConsentState(false);
+          }}
+        >
+          Einwilligung widerrufen
+        </Button>
       </section>
 
       <p className="text-xs text-muted-foreground">
