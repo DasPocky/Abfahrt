@@ -6,7 +6,7 @@ Nutzer steht in der App unter **Mehr → Barrierefreiheit** (`src/pages/accessib
 ## Automatisch bei jeder Änderung
 
 `src/a11y.test.tsx` rendert alle Hauptseiten mit Testdaten (Startseite, Haltestelle mit Ausfall und
-Hinweis, Verbindung, Störungen, Mehr, Einstellungen, Über, Erklärung) und prüft sie mit **axe-core**
+Hinweis, Verbindung, Störungen, Mehr, Einstellungen, Über, Erklärung, Fahrtverlauf) und prüft sie mit **axe-core**
 (Regeln `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`). Kontrast und
 Zielgröße brauchen echtes Layout und fehlen dort; die prüft das Browser-Audit. Dazu: eigener Titel je
 Seite und Fokus auf die Überschrift nach einem Seitenwechsel.
@@ -27,6 +27,16 @@ Heinrich-Heine-Allee → Essen Hbf), axe-core 4.10 im Browser, Tastatur-Durchlau
 | Nach Seitenwechsel bleibt der Fokus am alten Link                               | best practice | Fokus auf die neue `h1` (`src/components/layout.tsx`)                 |
 | Ziele bei 320 px abgeschnitten („Neuss …“)                                      | 1.4.10        | Ziel bis zu zwei Zeilen, Zeit-Zeile bricht um                         |
 | Animationen auch bei „Bewegung reduzieren“                                      | 2.3.3 (AAA)   | globale Regel `prefers-reduced-motion`, Karte ohne Kamerafahrt        |
+
+Nachprüfung nach dem Zusammenführen mit Suche, Verspätung, Fahrtverlauf, Vorlesen und Spracheingabe
+(18.11.2026, gleiche Bedingungen, dazu Fahrtverlauf mit Live-Daten, Einwilligung zur Spracheingabe und
+Suchverlauf):
+
+| Befund                                                 | Kriterium | Behoben                                                            |
+| ------------------------------------------------------ | --------- | ------------------------------------------------------------------ |
+| Passierte Halte im Fahrtverlauf mit `opacity` 4,41 : 1 | 1.4.3     | Text gedämpft grau (voller Kontrast), nur Linie/Punkt blasser      |
+| Orange Verspätung (Text) 3,2 : 1 auf Weiß              | 1.4.3     | `--warning` hell 0.666 → 0.555 (≥ 4,5 : 1), Kästchen weiße Schrift |
+| Rot auf grauem Grund (eigene Haltestelle) 4,48 : 1     | 1.4.3     | `--destructive` hell 0.577 → 0.54                                  |
 
 Danach: axe im Browser ohne Befund auf allen Seiten (hell und dunkel), kein seitliches Scrollen bei
 320 px, jedes per Tastatur erreichbare Element mit sichtbarem Fokus und nicht verdeckt.

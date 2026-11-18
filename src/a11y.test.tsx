@@ -9,6 +9,7 @@ import {
   departure,
   departuresResponse,
   journey,
+  journeyLeg,
   journeysResponse,
   renderAt,
   requestUrl,
@@ -29,6 +30,13 @@ function mockApi() {
       );
     }
     if (path.endsWith("/journeys")) return Response.json(journeysResponse([journey({ id: "j1" })]));
+    if (path.endsWith("/trip")) {
+      return Response.json({
+        leg: journeyLeg(),
+        source: "vrr",
+        generatedAt: new Date().toISOString(),
+      });
+    }
     if (path.endsWith("/alerts")) return Response.json(alertsResponse([alert({ id: "x" })]));
     if (path.includes("/stops/")) return Response.json({ stops: [STOP_HBF, STOP_HHA] });
     return new Response(null, { status: 404 });
@@ -67,6 +75,7 @@ describe("Barrierefreiheit (#128)", () => {
     ["/einstellungen", "Einstellungen"],
     ["/ueber", "Über Abfahrt"],
     ["/barrierefreiheit", "Erklärung zur Barrierefreiheit"],
+    [`/verlauf?ref=${encodeURIComponent("efa|vrr|x|de:05111:18235|1|202611131200")}`, /nach/],
   ])("%s ohne axe-Verstöße", async (path, heading) => {
     mockApi();
     renderAt(path);
