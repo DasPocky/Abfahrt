@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Stop } from "../../shared/api-types";
-import { distanceKm, formatDistance, rankStops } from "./geo";
+import { distanceKm, formatDistance, MAX_PLACE_HITS, rankPlaces, rankStops } from "./geo";
 
 const DUESSELDORF = { lat: 51.2254, lon: 6.7763 };
 
@@ -86,5 +86,42 @@ describe("rankStops", () => {
 
   it("begrenzt die Anzahl", () => {
     expect(rankStops(HAUPTBAHNHOF, DUESSELDORF, 2)).toHaveLength(2);
+  });
+});
+
+function stop(id: string, lat: number): Stop {
+  return { id, name: id, lat, lon: 6.7763 };
+}
+
+function address(id: string, lat: number): Stop {
+  return { id, name: id, lat, lon: 6.7763, kind: "address", relevance: 1000 };
+}
+
+describe("rankPlaces (#119)", () => {
+  const here = { lat: 51.2254, lon: 6.7763 };
+  const hits = [
+    address("Adresse nah", 51.2255),
+    stop("Haltestelle weit", 51.6),
+    address("Adresse 2", 51.23),
+    address("Adresse 3", 51.24),
+    address("Adresse 4", 51.25),
+    stop("Haltestelle nah", 51.226),
+  ];
+
+  it("stellt Haltestellen vor Adressen, auch wenn Adressen näher und passender sind", () => {
+    const names = rankPlaces(hits, here, "Heinrich").map((r) => r.stop.name);
+    expect(names.slice(0, 2)).toEqual(["Haltestelle nah", "Haltestelle weit"]);
+    expect(names.slice(2)).toHaveLength(MAX_PLACE_HITS);
+    expect(names[2]).toBe("Adresse nah");
+  });
+
+  it("stellt Adressen vorn hin, wenn die Eingabe auf eine Hausnummer endet", () => {
+    expect(rankPlaces(hits, here, "Königsallee 12a")[0]?.stop.name).toBe("Adresse nah");
+    expect(rankPlaces(hits, here, "Bahnstr. 3")[0]?.stop.name).toBe("Adresse nah");
+  });
+
+  it("kommt ohne Standort aus", () => {
+    const names = rankPlaces(hits, null, "Heinrich").map((r) => r.stop.name);
+    expect(names.slice(0, 2)).toEqual(["Haltestelle weit", "Haltestelle nah"]);
   });
 });

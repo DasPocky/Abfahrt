@@ -6,7 +6,9 @@ import { DepartureList } from "@/components/departure-list";
 import { Segmented } from "@/components/segmented";
 import { SpeakButton } from "@/components/speak-button";
 import { Button } from "@/components/ui/button";
+import { useRecentPlaces } from "@/hooks/use-recent-places";
 import { useSettings } from "@/hooks/use-settings";
+import { clearRecent } from "@/lib/recent-places";
 import {
   FAVORITE_COUNTS,
   ROW_STYLES,
@@ -71,6 +73,7 @@ const PREVIEW: Departure[] = [
 
 export function SettingsPage() {
   const settings = useSettings();
+  const recent = useRecentPlaces();
   return (
     <div className="space-y-6">
       <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
@@ -166,6 +169,20 @@ export function SettingsPage() {
           pill
           text={() => "U 76 nach Holthausen, in 4 Minuten, 2 Minuten später, Steig 4."}
         />
+      </section>
+
+      <section aria-labelledby="settings-recent" className="space-y-2">
+        <h2 id="settings-recent" className="text-lg font-semibold tracking-tight">
+          Suchverlauf
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {recent.length === 0
+            ? "Keine zuletzt gesuchten Orte gespeichert."
+            : `${recent.length} zuletzt gesuchte ${recent.length === 1 ? "Ort" : "Orte"}, angezeigt beim Antippen eines leeren Suchfelds.`}
+        </p>
+        <Button variant="outline" size="sm" disabled={recent.length === 0} onClick={clearRecent}>
+          Verlauf löschen
+        </Button>
       </section>
 
       <p className="text-xs text-muted-foreground">

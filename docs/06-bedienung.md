@@ -16,6 +16,9 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 - Auf der Startseite den Namen einer Haltestelle eingeben, ab 2 Zeichen erscheinen Vorschläge.
 - Treffer antippen, oder per Tastatur: Pfeil runter/hoch wählt, Enter öffnet, Esc leert die Suche.
+- Haltestellen tragen das grüne Haltestellen-Schild mit gelbem **H**, Adressen ein Haus, Orte ein Gebäude.
+- **Zuletzt gesucht:** Das leere Suchfeld antippen zeigt die zuletzt geöffneten Haltestellen. Das ✕ daneben
+  entfernt eine, **Mehr → Einstellungen → Verlauf löschen** alle. Gespeichert nur im Browser.
 - **Standort:** Beim Öffnen fragt die App den Browser nach dem Standort. Mit Erlaubnis stehen Treffer in
   deiner Nähe oben (z. B. „Holthausen“ in Düsseldorf vor Essen), jeweils mit Entfernung.
   - Das 📍-Symbol im Suchfeld schaltet das an und aus. Ausgeschaltet fragt die App nicht mehr.
@@ -31,6 +34,10 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 - Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen
   weiter. Der Link lässt sich als Lesezeichen speichern.
+- **Zeiten:** Der Countdown („5 Min“, „jetzt“) zählt bis zur tatsächlichen Abfahrt. Direkt darunter steht die
+  Verspätung als farbiges Kästchen (**+2** orange bis 4 Minuten, **+6** rot ab 5 Minuten, früher grün). In
+  der Zeile unter dem Ziel steht zuerst die tatsächliche Uhrzeit in derselben Farbe, die Planzeit klein und
+  durchgestrichen daneben („ab 12:17 ~~12:12~~“). Pünktliche Fahrten zeigen dezent „pünktlich“.
 - Fahrtziele in der eigenen Stadt stehen ohne Ort („Benrath Btf“), in anderen Städten mit Ort
   („Düsseldorf Holthausen“).
 - **Filtern:** Über der Liste stehen die Verkehrsmittel der Haltestelle (z. B. S-Bahn, U-Bahn, Bus).
@@ -69,6 +76,10 @@ Bereich **Verbindung** (`/abfahrt/verbindung`).
 
 - **Von** und **Nach** wie in der Suche eintippen: Haltestellen, Adressen (🏠, z. B. „Königsallee 1“) und
   Orte (🏛, z. B. „Rheinturm“), Treffer in deiner Nähe zuerst.
+- **Haltestellen stehen immer oben**, darunter unter „Adressen und Orte“ höchstens drei Adressen bzw. Orte.
+  Endet die Eingabe auf eine Hausnummer („Königsallee 1“), stehen die Adressen oben.
+- Das leere Feld antippen zeigt „Mein Standort“, die zuletzt gewählten Orte und die Favoriten. Das gilt
+  für Von, Nach und Zwischenhalte (dort nur Haltestellen).
 - Bei Adressen und Orten beginnt bzw. endet die Verbindung mit einem Fußweg.
 - „Mein Standort“ nimmt die nächste Haltestelle.
 - Der runde Pfeil-Knopf tauscht Start und Ziel.
@@ -115,7 +126,11 @@ Aktive Optionen stehen kurz unter der Zeile. Routenwahl, Fahrrad und Umgebung wi
 
 ### Ergebnisse
 
-- Jede Verbindung zeigt Ab → An mit Verspätung, Dauer und Umstiege.
+- Jede Verbindung zeigt Ab → An, Dauer und Umstiege. Bei Verspätung steht die tatsächliche Zeit in Orange
+  bzw. Rot, dahinter das Kästchen mit der Verspätung (**+3**). In den Details steht die tatsächliche Zeit
+  oben, die Planzeit klein und durchgestrichen darunter.
+- „ⓘ Hinweise“ ist grau: es gibt Hinweise, sie gefährden die Verbindung aber nicht. Ausfälle und gefährdete
+  Anschlüsse bleiben rot bzw. gelb.
 - Darunter ein **Balken** mit den Fahrten in Linienfarbe (Länge nach Fahrzeit, Fußwege gepunktet) und
   „ab 14:53 Gleis 2“ der ersten Fahrt (mit Fußweg davor: „4 Min, dann ab …“).
 - Ausfälle sind rot markiert. Knappe Umstiege (unter 2 Minuten Puffer nach Echtzeit und Fußweg) heißen
@@ -207,6 +222,7 @@ Unter **Mehr → Einstellungen** (`/abfahrt/einstellungen`), gespeichert nur im 
   Farbstreifen der Linie). Gilt für Haltestellen und Favoriten.
 - **Erscheinungsbild:** wie System, Hell oder Dunkel. Gilt auch für die Karte.
 - **Abfahrten je Favorit** auf der Startseite: 3, 4, 6 oder 8.
+- **Suchverlauf:** Anzahl der gemerkten Orte, **Verlauf löschen** entfernt alle.
 
 ## Vorlesen
 
