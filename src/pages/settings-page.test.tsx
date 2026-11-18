@@ -30,11 +30,29 @@ describe("Einstellungen (#37)", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Dunkel" }));
     fireEvent.click(screen.getByRole("button", { name: "6" }));
-    expect(getSettings()).toEqual({ rowStyle: "b", theme: "dark", favoriteCount: 6 });
+    fireEvent.click(screen.getByRole("button", { name: "Langsam" }));
+    expect(getSettings()).toEqual({
+      rowStyle: "b",
+      theme: "dark",
+      favoriteCount: 6,
+      speechRate: "slow",
+    });
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(JSON.parse(localStorage.getItem("abfahrt:settings") ?? "{}")).toMatchObject({
       version: 1,
     });
+  });
+
+  it("löscht den Suchverlauf (#119)", () => {
+    localStorage.setItem(
+      "abfahrt:recent",
+      JSON.stringify({ version: 1, items: [{ id: "vrr:1", name: "Benrath S", kind: "stop" }] }),
+    );
+    renderAt("/einstellungen");
+    expect(screen.getByText(/1 zuletzt gesuchte Ort/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Verlauf löschen" }));
+    expect(localStorage.getItem("abfahrt:recent")).toBeNull();
+    expect(screen.getByRole("button", { name: "Verlauf löschen" })).toBeDisabled();
   });
 });
 

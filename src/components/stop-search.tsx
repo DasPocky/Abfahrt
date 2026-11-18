@@ -13,6 +13,9 @@ import { LocationHelp } from "@/components/location-help";
 import { Button } from "@/components/ui/button";
 import { useVoiceSearch, VOICE_EXAMPLES } from "@/hooks/use-voice-search";
 import { parseIntent } from "@/lib/intent";
+import { useRecentPlaces } from "@/hooks/use-recent-places";
+import { distanceKm } from "@/lib/geo";
+import { forgetPlace, recentToStop, rememberPlace } from "@/lib/recent-places";
 
 export const SEARCH_DEBOUNCE_MS = 250;
 /** Nur um Start und Ziel zu erkennen; die Uhrzeit rechnet runText mit der aktuellen Zeit */
@@ -25,6 +28,9 @@ const ICON_BUTTON =
 
 export function StopSearch({ location }: { location: LocationState }) {
   const [query, setQuery] = useState("");
+  // Fokus irgendwo in Suchfeld oder Liste: dann zeigt das leere Feld die zuletzt gesuchten
+  const [focused, setFocused] = useState(false);
+  const recent = useRecentPlaces();
   const debounced = useDebouncedValue(query.trim(), SEARCH_DEBOUNCE_MS);
   const enabled = debounced.length >= SEARCH_MIN_LENGTH;
   const navigate = useNavigate();
@@ -51,6 +57,10 @@ export function StopSearch({ location }: { location: LocationState }) {
   const ranked = enabled && showResults ? rankStops(data?.stops ?? [], location.position) : [];
   const stops = ranked.map((r) => r.stop);
   const waiting = showResults && (debounced !== query.trim() || isFetching);
+  // Startseite sucht nur Haltestellen, also auch im Verlauf nur Haltestellen
+  const recentStops =
+    focused && query.trim() === "" ? recent.filter((r) => r.kind === "stop").map(recentToStop) : [];
+  const position = location.position;
 
   function resultLinks(): HTMLAnchorElement[] {
     return Array.from(listRef.current?.querySelectorAll("a") ?? []);
@@ -70,6 +80,7 @@ export function StopSearch({ location }: { location: LocationState }) {
       const first = stops[0];
       if (first) {
         event.preventDefault();
+        rememberPlace(first);
         void navigate(stopPath(first.id), { state: { stopName: first.name } });
       }
     } else if (event.key === "Escape") {
@@ -110,7 +121,13 @@ export function StopSearch({ location }: { location: LocationState }) {
         : "Treffer nach Nähe zu meinem Standort sortieren";
 
   return (
-    <div className="space-y-2">
+    <div
+      className="space-y-2"
+      onFocus={() => setFocused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+      }}
+    >
       <div className="relative">
         <Search
           className="pointer-events-none absolute top-1/2 left-3.5 size-[1.125rem] -translate-y-1/2 text-muted-foreground"
@@ -269,12 +286,43 @@ export function StopSearch({ location }: { location: LocationState }) {
         className="divide-y overflow-hidden rounded-lg border empty:hidden"
         onKeyDown={onListKeyDown}
       >
-        {ranked.map(({ stop, distanceKm }) => (
+        {ranked.map(({ stop, distanceKm: km }) => (
           <li key={stop.id}>
-            <StopRow stop={stop} distanceKm={distanceKm} />
+            <StopRow stop={stop} distanceKm={km} onOpen={() => rememberPlace(stop)} />
           </li>
         ))}
       </ul>
+
+      {recentStops.length > 0 && (
+        <section
+          aria-labelledby={`${listId}-recent`}
+          // Fokus nicht verlieren, bevor der Klick ankommt (Safari fokussiert Links nicht)
+          onMouseDown={(event) => event.preventDefault()}
+        >
+          <h2
+            id={`${listId}-recent`}
+            className="px-1 pb-1 text-sm font-medium text-muted-foreground"
+          >
+            Zuletzt gesucht
+          </h2>
+          <ul className="divide-y overflow-hidden rounded-lg border">
+            {recentStops.map((stop) => (
+              <li key={stop.id}>
+                <StopRow
+                  stop={stop}
+                  distanceKm={
+                    position && stop.lat !== undefined && stop.lon !== undefined
+                      ? distanceKm(position, { lat: stop.lat, lon: stop.lon })
+                      : null
+                  }
+                  onOpen={() => rememberPlace(stop)}
+                  onRemove={() => forgetPlace(stop.id)}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

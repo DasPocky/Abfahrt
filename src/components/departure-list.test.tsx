@@ -84,9 +84,15 @@ describe("DepartureList", () => {
     expect(within(onTime).queryByText("+0")).toBeNull();
     expect(within(onTime).getByText("pünktlich")).toHaveAttribute("data-tone", "success");
     expect(within(onTime).getByText("pünktlich")).not.toHaveClass("font-semibold");
+    // Verspätung als farbiges Kästchen am Countdown, tatsächliche Zeit vor der Planzeit (#124)
     expect(within(slight).getByText("+2")).toHaveAttribute("data-tone", "warning");
-    expect(within(slight).getByText("+2")).toHaveClass("text-warning");
-    expect(within(late).getByText("+6")).toHaveClass("text-destructive");
+    expect(within(slight).getByText("+2")).toHaveClass("bg-warning");
+    expect(within(late).getByText("+6")).toHaveClass("bg-destructive");
+    const times = within(late)
+      .getAllByText(/^\d\d:\d\d$/)
+      .map((t) => [t.textContent, t.classList.contains("line-through")]);
+    expect(times[0]?.[1]).toBe(false);
+    expect(times[1]?.[1]).toBe(true);
     // ab 60 Minuten Uhrzeit statt Countdown, ohne Echtzeit keine Verspätung
     expect(within(far).getAllByText("14:15")).toHaveLength(2);
     expect(within(far).queryByText(/^[+-]\d+$/)).toBeNull();

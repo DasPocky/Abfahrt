@@ -147,8 +147,12 @@ describe("JourneyList", () => {
     const stops = within(legs).getAllByRole("list", { name: "Zwischenhalte S6" })[0]!;
     const [wehrhahn, zoo] = within(stops).getAllByRole("listitem");
     expect(wehrhahn).toHaveTextContent(/Düsseldorf-Wehrhahn/);
-    expect(wehrhahn?.querySelector("time")).toHaveAttribute("dateTime", T("12:05"));
-    expect(wehrhahn?.querySelector("[data-tone=warning]")).toHaveTextContent("+3");
+    // tatsächliche Zeit vorn in der Farbe der Verspätung, Planzeit durchgestrichen darunter (#124)
+    const [actual, planned] = wehrhahn!.querySelectorAll("time");
+    expect(actual).toHaveAttribute("dateTime", T("12:08"));
+    expect(actual).toHaveClass("text-warning");
+    expect(planned).toHaveAttribute("dateTime", T("12:05"));
+    expect(planned).toHaveClass("line-through");
     expect(zoo).toHaveTextContent("Düsseldorf-Zoo · entfällt");
     expect(within(zoo!).getByText("Düsseldorf-Zoo")).toHaveClass("line-through");
   });

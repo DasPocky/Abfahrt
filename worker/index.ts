@@ -1,4 +1,5 @@
 import { handleSpeech, workersAiTranscriber } from "./speech";
+import { getTrip } from "./trip";
 import { API_PREFIX, BASE_PATH } from "../shared/base-path";
 import { getDepartures, nearbyStops, searchStops } from "./api";
 import { getAlerts } from "./alerts";
@@ -61,6 +62,8 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
         );
       case "departures":
         return await getDepartures(request, ctx, url.searchParams);
+      case "trip":
+        return await getTrip(request, ctx, url.searchParams);
       case "cache-probe":
         return await cacheProbe(request, ctx);
       default:

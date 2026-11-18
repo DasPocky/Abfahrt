@@ -1,6 +1,8 @@
+import { Link } from "react-router";
 import { ChevronRight, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
+import { DelayBadge } from "@/components/delay-badge";
 import { LineBadge } from "@/components/line-badge";
 import { useSettings } from "@/hooks/use-settings";
 import {
@@ -9,6 +11,7 @@ import {
   sortDepartures,
   upcomingDepartures,
 } from "@/lib/departures";
+import { tripPath } from "@/lib/api";
 import { lineBadgeColors } from "@/lib/line-colors";
 import { platformLabel } from "@/lib/modes";
 import { summarizeNotices } from "@/lib/notices";
@@ -142,31 +145,68 @@ function DepartureNotices({
   );
 }
 
-/** Planzeit mit Verspätung bzw. „fällt aus“ */
+/**
+ * Abfahrtszeit: bei Verspätung zuerst die tatsächliche Zeit, die Planzeit klein durchgestrichen
+ * daneben (#124); pünktlich dezent grün; Ausfall mit durchgestrichener Planzeit.
+ */
 function Meta({ departure }: { departure: Departure }) {
-  const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
-  const tone = delayTone(delay);
+  const delay = departure.cancelled
+    ? null
+    : delayMinutes(departure.plannedTime, departure.realtimeTime);
+  const planned = (
+    <time
+      dateTime={departure.plannedTime}
+      className={cn(
+        delay !== null && delay !== 0
+          ? "ml-1.5 text-muted-foreground line-through"
+          : "text-foreground",
+        departure.cancelled && "line-through",
+      )}
+      aria-label={
+        delay !== null && delay !== 0
+          ? `geplant ${formatClock(new Date(departure.plannedTime))}`
+          : undefined
+      }
+    >
+      {formatClock(new Date(departure.plannedTime))}
+    </time>
+  );
   return (
     <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums">
       ab{" "}
-      <time
-        dateTime={departure.plannedTime}
-        className={cn("text-foreground", departure.cancelled && "line-through")}
-      >
-        {formatClock(new Date(departure.plannedTime))}
-      </time>
-      {delay !== null && !departure.cancelled && (
-        <span
-          className={cn("ml-1.5", delay === 0 ? "" : "font-semibold", DELAY_TONE_CLASS[tone])}
-          data-tone={tone}
-        >
-          {formatDelay(delay)}
+      {delay !== null && delay !== 0 && departure.realtimeTime !== null ? (
+        <>
+          <time
+            dateTime={departure.realtimeTime}
+            className={cn("font-semibold", DELAY_TONE_CLASS[delayTone(delay)])}
+          >
+            {formatClock(new Date(departure.realtimeTime))}
+          </time>
+          {planned}
+        </>
+      ) : (
+        planned
+      )}
+      {delay === 0 && (
+        <span className={cn("ml-1.5", DELAY_TONE_CLASS.success)} data-tone="success">
+          {formatDelay(0)}
         </span>
       )}
       {departure.cancelled && (
         <span className="ml-1.5 font-semibold text-destructive">fällt aus</span>
       )}
     </p>
+  );
+}
+
+/** Verspätung als farbiges Kästchen direkt am Countdown (#124), z. B. „+2“ */
+function DelayPill({ departure }: { departure: Departure }) {
+  if (departure.cancelled) return null;
+  return (
+    <DelayBadge
+      delay={delayMinutes(departure.plannedTime, departure.realtimeTime)}
+      className="mt-1"
+    />
   );
 }
 
@@ -205,6 +245,7 @@ function Countdown({
       ) : (
         <span className="text-sm">{countdown}</span>
       )}
+      <DelayPill departure={departure} />
     </div>
   );
 }
@@ -228,26 +269,39 @@ function DepartureRow({
   notices,
   now,
   rowStyle,
+  stopId,
 }: {
   departure: Departure;
+  /** Haltestelle der Liste: mit ihr wird die Zeile zum Link auf den Fahrtverlauf (#120) */
+  stopId?: string;
   /** Hinweise nur zu dieser Fahrt (ohne Sammelhinweise der Haltestelle) */
   notices: readonly string[];
   now: Date;
   rowStyle: RowStyle;
 }) {
   const noticeRow = notices.length > 0 && (
-    <div className="col-span-3 col-start-2">
+    // über dem Link der Zeile, damit die Hinweise eigenständig antippbar bleiben
+    <div className="relative z-10 col-span-3 col-start-2">
       <DepartureNotices departure={departure} notices={notices} />
     </div>
+  );
+  // Ganze Zeile antippbar („stretched link“), ohne die Hinweis-Schaltfläche zu verschachteln
+  const tripLink = stopId && departure.tripRef && (
+    <Link
+      to={tripPath(departure.tripRef, stopId)}
+      className="absolute inset-0 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      aria-label={`${departure.line} nach ${departure.direction}: Fahrtverlauf`}
+    />
   );
 
   if (rowStyle === "b") {
     // B · Anzeigetafel: große Minuten vorne, Linie + Ziel, Gleis rechts
     return (
       <li
-        className="grid grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1 py-2"
+        className="relative grid grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1 py-2"
         data-cancelled={departure.cancelled || undefined}
       >
+        {tripLink}
         <Countdown departure={departure} now={now} align="left" large />
         <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-2">
@@ -288,6 +342,7 @@ function DepartureRow({
           style={colors.style ? { backgroundColor: colors.style.backgroundColor } : undefined}
           aria-hidden="true"
         />
+        {tripLink}
         {content}
       </li>
     );
@@ -296,9 +351,10 @@ function DepartureRow({
   // A · Linie mit Symbol in einem Feld (Standard)
   return (
     <li
-      className="grid grid-cols-[auto_minmax(0,1fr)_auto_2.75rem] items-center gap-x-2.5 gap-y-1 py-2"
+      className="relative grid grid-cols-[auto_minmax(0,1fr)_auto_2.75rem] items-center gap-x-2.5 gap-y-1 py-2"
       data-cancelled={departure.cancelled || undefined}
     >
+      {tripLink}
       {content}
     </li>
   );
@@ -309,9 +365,12 @@ export function DepartureList({
   now,
   compact = false,
   rowStyle,
+  stopId,
 }: {
   departures: readonly Departure[];
   now: Date;
+  /** Haltestelle der Liste; mit ihr führt jede Abfahrt zum Fahrtverlauf (#120) */
+  stopId?: string;
   /** Darstellung; ohne Angabe die aus den Einstellungen (#37) */
   rowStyle?: RowStyle;
   /** Kompakte Vorschau (Favoriten): Hinweise nur per ⓘ, kein Sammelhinweis */
@@ -344,6 +403,7 @@ export function DepartureList({
             notices={departureNotices.get(departure.id) ?? []}
             now={now}
             rowStyle={style}
+            stopId={stopId}
           />
         ))}
       </ul>
