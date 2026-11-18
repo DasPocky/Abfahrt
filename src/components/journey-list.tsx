@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { ArrowRight, ChevronDown, Footprints, TriangleAlert } from "lucide-react";
+import { ArrowRight, ChevronDown, Footprints, Info, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { Clock, JourneyDetails } from "@/components/journey-details";
 import { journeyTransferRisk, legBadge, TRANSFER_RISK_TEXT } from "@/lib/connections";
@@ -82,7 +82,9 @@ function Boarding({ journey }: { journey: Journey }) {
     );
   }
   const walk = journey.legs.slice(0, index).reduce((sum, l) => sum + l.durationMinutes, 0);
-  const { plannedDeparture, platform } = first.origin;
+  const { plannedDeparture, realtimeDeparture, platform } = first.origin;
+  // tatsächliche Abfahrt, sonst Plan (#124)
+  const departure = realtimeDeparture ?? plannedDeparture;
   return (
     <span className="min-w-0 truncate">
       {walk > 0 && (
@@ -93,7 +95,7 @@ function Boarding({ journey }: { journey: Journey }) {
       )}
       ab{" "}
       <span className="text-foreground">
-        {plannedDeparture ? formatClock(new Date(plannedDeparture)) : first.origin.name}
+        {departure ? formatClock(new Date(departure)) : first.origin.name}
         {platform !== null && ` ${platformLabel(first.mode ?? "other")} ${platform}`}
       </span>
     </span>
@@ -139,6 +141,7 @@ function JourneyRow({
               planned={times.plannedDeparture}
               realtime={times.realtimeDeparture}
               cancelled={cancelled}
+              badge
             />
             <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
             <span className="sr-only"> bis </span>
@@ -146,6 +149,7 @@ function JourneyRow({
               planned={times.plannedArrival}
               realtime={times.realtimeArrival}
               cancelled={cancelled}
+              badge
             />
           </span>
           <span className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground tabular-nums">
@@ -179,8 +183,8 @@ function JourneyRow({
             </span>
           )}
           {!cancelled && !risk && hasNotices && (
-            <span className="ml-auto flex shrink-0 items-center gap-0.5 text-warning">
-              <TriangleAlert className="size-3.5 shrink-0" aria-hidden="true" />
+            <span className="ml-auto flex shrink-0 items-center gap-0.5">
+              <Info className="size-3.5 shrink-0" aria-hidden="true" />
               Hinweise
             </span>
           )}

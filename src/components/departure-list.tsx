@@ -1,6 +1,7 @@
 import { ChevronRight, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
+import { DelayBadge } from "@/components/delay-badge";
 import { LineBadge } from "@/components/line-badge";
 import { useSettings } from "@/hooks/use-settings";
 import {
@@ -15,7 +16,6 @@ import { summarizeNotices } from "@/lib/notices";
 import type { RowStyle } from "@/lib/settings";
 import {
   delayMinutes,
-  DELAY_PILL_CLASS,
   DELAY_TONE_CLASS,
   delayTone,
   formatClock,
@@ -200,20 +200,11 @@ function Meta({ departure }: { departure: Departure }) {
 /** Verspätung als farbiges Kästchen direkt am Countdown (#124), z. B. „+2“ */
 function DelayPill({ departure }: { departure: Departure }) {
   if (departure.cancelled) return null;
-  const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
-  if (delay === null || delay === 0) return null;
-  const tone = delayTone(delay);
   return (
-    <span
-      className={cn(
-        "mt-1 inline-block rounded px-1 py-0.5 text-[0.7rem] leading-none font-bold tabular-nums",
-        DELAY_PILL_CLASS[tone],
-      )}
-      data-tone={tone}
-      title={delay > 0 ? `${delay} Min später` : `${-delay} Min früher`}
-    >
-      {formatDelay(delay)}
-    </span>
+    <DelayBadge
+      delay={delayMinutes(departure.plannedTime, departure.realtimeTime)}
+      className="mt-1"
+    />
   );
 }
 

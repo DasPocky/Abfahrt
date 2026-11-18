@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
+import { DelayBadge } from "@/components/delay-badge";
 import { NOTICE_CLASS, NoticeList } from "@/components/departure-list";
 import { LazyRouteMap } from "@/components/lazy-route-map";
 import { LineBadge } from "@/components/line-badge";
@@ -27,35 +28,59 @@ import { platformLabel } from "@/lib/modes";
 import { otherPlace } from "@/lib/stop-label";
 import { hasRoute } from "@/lib/route-map";
 import { lineBadgeColors, type LineBadgeColors } from "@/lib/line-colors";
-import { DELAY_TONE_CLASS, delayMinutes, delayTone, formatClock, formatDelay } from "@/lib/time";
+import { DELAY_TONE_CLASS, delayMinutes, delayTone, formatClock } from "@/lib/time";
 import type { Journey, JourneyLeg, JourneyStop, TransportMode } from "../../shared/api-types";
 
 /** Uhrzeit laut Plan, dahinter die Verspätung in den Farben der Abfahrtsliste */
+/**
+ * Uhrzeit mit Echtzeit (#124). Bei Verspätung steht die tatsächliche Zeit in der Farbe der
+ * Verspätung vorn; `badge`: dahinter das farbige Kästchen „+2“ (Ergebnisliste), sonst darunter
+ * klein die durchgestrichene Planzeit (Zeitleiste).
+ */
 export function Clock({
   planned,
   realtime,
   cancelled = false,
+  badge = false,
 }: {
   planned: string | null;
   realtime: string | null;
   cancelled?: boolean;
+  badge?: boolean;
 }) {
   if (planned === null) return <span>–</span>;
-  const delay = delayMinutes(planned, realtime);
-  const tone = delayTone(delay);
-  return (
-    <span className="whitespace-nowrap">
-      <time dateTime={planned} className={cn(cancelled && "line-through")}>
+  const delay = cancelled ? null : delayMinutes(planned, realtime);
+  if (delay === null || delay === 0 || realtime === null) {
+    return (
+      <time dateTime={planned} className={cn("whitespace-nowrap", cancelled && "line-through")}>
         {formatClock(new Date(planned))}
       </time>
-      {delay !== null && delay !== 0 && !cancelled && (
-        <span
-          className={cn("ml-0.5 text-[0.7em] font-semibold", DELAY_TONE_CLASS[tone])}
-          data-tone={tone}
-        >
-          {formatDelay(delay)}
-        </span>
-      )}
+    );
+  }
+  const actual = (
+    <time dateTime={realtime} className={DELAY_TONE_CLASS[delayTone(delay)]}>
+      {formatClock(new Date(realtime))}
+    </time>
+  );
+  if (badge) {
+    return (
+      <span className="inline-flex items-center gap-1 whitespace-nowrap">
+        {actual}
+        <span className="sr-only">, geplant {formatClock(new Date(planned))}</span>
+        <DelayBadge delay={delay} />
+      </span>
+    );
+  }
+  return (
+    <span className="flex flex-col whitespace-nowrap">
+      {actual}
+      <time
+        dateTime={planned}
+        className="text-[0.75em] font-normal text-muted-foreground line-through"
+        aria-label={`geplant ${formatClock(new Date(planned))}`}
+      >
+        {formatClock(new Date(planned))}
+      </time>
     </span>
   );
 }

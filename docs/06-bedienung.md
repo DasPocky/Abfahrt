@@ -106,7 +106,11 @@ Aktive Optionen stehen kurz unter der Zeile. Routenwahl, Fahrrad und Umgebung wi
 
 ### Ergebnisse
 
-- Jede Verbindung zeigt Ab → An mit Verspätung, Dauer und Umstiege.
+- Jede Verbindung zeigt Ab → An, Dauer und Umstiege. Bei Verspätung steht die tatsächliche Zeit in Orange
+  bzw. Rot, dahinter das Kästchen mit der Verspätung (**+3**). In den Details steht die tatsächliche Zeit
+  oben, die Planzeit klein und durchgestrichen darunter.
+- „ⓘ Hinweise“ ist grau: es gibt Hinweise, sie gefährden die Verbindung aber nicht. Ausfälle und gefährdete
+  Anschlüsse bleiben rot bzw. gelb.
 - Darunter ein **Balken** mit den Fahrten in Linienfarbe (Länge nach Fahrzeit, Fußwege gepunktet) und
   „ab 14:53 Gleis 2“ der ersten Fahrt (mit Fußweg davor: „4 Min, dann ab …“).
 - Ausfälle sind rot markiert. Knappe Umstiege (unter 2 Minuten Puffer nach Echtzeit und Fußweg) heißen
