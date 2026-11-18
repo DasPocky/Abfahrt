@@ -1,4 +1,4 @@
-import type { Stop } from "../../shared/api-types";
+import type { PlaceKind, Stop } from "../../shared/api-types";
 import { sameCity } from "../../shared/places";
 
 /**
@@ -22,3 +22,10 @@ export function otherPlace(
 ): string | null {
   return place && !sameCity(place, home) ? place : null;
 }
+
+/** Art eines Suchtreffers für Screenreader (#119) */
+export const PLACE_KIND_LABEL: Record<PlaceKind, string> = {
+  stop: "Haltestelle",
+  address: "Adresse",
+  poi: "Ort",
+};
