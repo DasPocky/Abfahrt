@@ -6,6 +6,7 @@ import type {
   DeparturesResponse,
   Journey,
   JourneysResponse,
+  SpeechResponse,
   StopSearchResponse,
   TripResponse,
 } from "../../shared/api-types";
@@ -242,6 +243,27 @@ export function tripPath(ref: string, from?: string): string {
   const params = new URLSearchParams({ ref });
   if (from) params.set("von", from);
   return `/verlauf?${params.toString()}`;
+}
+
+function isSpeechResponse(value: unknown): value is SpeechResponse {
+  return isObject(value) && typeof value.text === "string";
+}
+
+/** Spracheingabe (#132): WAV an den Worker, zurück kommt nur der erkannte Text */
+export async function transcribe(wav: ArrayBuffer, signal?: AbortSignal): Promise<SpeechResponse> {
+  const res = await fetch(`${API_PREFIX}speech`, {
+    method: "POST",
+    signal,
+    headers: { "Content-Type": "audio/wav", Accept: "application/json" },
+    body: wav,
+  });
+  const body: unknown = await res.json().catch(() => null);
+  if (!res.ok) {
+    if (isApiError(body)) throw new ApiRequestError(res.status, body.error, body.message);
+    throw new ApiRequestError(res.status, "http_error");
+  }
+  if (!isSpeechResponse(body)) throw new ApiRequestError(res.status, "invalid_response");
+  return body;
 }
 
 /** Pfad der Abfahrtsseite (relativ zum Router-basename) */

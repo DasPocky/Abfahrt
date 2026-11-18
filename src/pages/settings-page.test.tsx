@@ -55,3 +55,13 @@ describe("Einstellungen (#37)", () => {
     expect(screen.getByRole("button", { name: "Verlauf löschen" })).toBeDisabled();
   });
 });
+
+describe("Spracheingabe in den Einstellungen (#132)", () => {
+  it("widerruft die Einwilligung", () => {
+    localStorage.setItem("abfahrt:voice-consent", "1");
+    renderAt("/einstellungen");
+    fireEvent.click(screen.getByRole("button", { name: "Einwilligung widerrufen" }));
+    expect(localStorage.getItem("abfahrt:voice-consent")).toBeNull();
+    expect(screen.getByRole("button", { name: "Einwilligung widerrufen" })).toBeDisabled();
+  });
+});

@@ -1,4 +1,5 @@
 // Einstellungen (#37): Darstellung der Abfahrtszeile, Hell/Dunkel, Abfahrten je Favorit.
+import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, Check } from "lucide-react";
 import { cn } from "cn";
@@ -8,6 +9,7 @@ import { SpeakButton } from "@/components/speak-button";
 import { Button } from "@/components/ui/button";
 import { useRecentPlaces } from "@/hooks/use-recent-places";
 import { useSettings } from "@/hooks/use-settings";
+import { hasVoiceConsent, setVoiceConsent } from "@/hooks/use-voice-search";
 import { clearRecent } from "@/lib/recent-places";
 import {
   FAVORITE_COUNTS,
@@ -73,6 +75,7 @@ const PREVIEW: Departure[] = [
 
 export function SettingsPage() {
   const settings = useSettings();
+  const [voiceConsent, setVoiceConsentState] = useState(hasVoiceConsent);
   const recent = useRecentPlaces();
   return (
     <div className="space-y-6">
@@ -182,6 +185,28 @@ export function SettingsPage() {
         </p>
         <Button variant="outline" size="sm" disabled={recent.length === 0} onClick={clearRecent}>
           Verlauf löschen
+        </Button>
+      </section>
+
+      <section aria-labelledby="settings-voice" className="space-y-2">
+        <h2 id="settings-voice" className="text-lg font-semibold tracking-tight">
+          Spracheingabe
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          {voiceConsent
+            ? "Eingewilligt: Aufnahmen über das Mikrofon in der Suche gehen zur Erkennung an Cloudflare und werden danach nicht gespeichert."
+            : "Nicht eingewilligt. Beim ersten Tippen aufs Mikrofon in der Suche fragt die App nach."}
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={!voiceConsent}
+          onClick={() => {
+            setVoiceConsent(false);
+            setVoiceConsentState(false);
+          }}
+        >
+          Einwilligung widerrufen
         </Button>
       </section>
 

@@ -1,3 +1,4 @@
+import { handleSpeech, workersAiTranscriber } from "./speech";
 import { getTrip } from "./trip";
 import { API_PREFIX, BASE_PATH } from "../shared/base-path";
 import { getDepartures, nearbyStops, searchStops } from "./api";
@@ -18,7 +19,7 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
   const url = new URL(request.url);
   const route = url.pathname.slice(API_PREFIX.length);
   // Push hat eigene Methoden (POST); alles andere ist nur lesend
-  if (!ALLOWED_METHODS.has(request.method) && !PUSH_ROUTES.has(route)) {
+  if (!ALLOWED_METHODS.has(request.method) && !PUSH_ROUTES.has(route) && route !== "speech") {
     return json({ error: "method_not_allowed" }, { status: 405, headers: { Allow: "GET, HEAD" } });
   }
 
@@ -49,6 +50,16 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
         return await getAlerts(request, ctx, url.searchParams);
       case "journeys":
         return await getJourneys(request, ctx, url.searchParams);
+      case "speech":
+        return await handleSpeech(
+          request,
+          {
+            db: env.PUSH_DB,
+            dailyMinutes: Number(env.SPEECH_DAILY_MINUTES) || 0,
+            transcribe: workersAiTranscriber(env.AI),
+          },
+          ip,
+        );
       case "departures":
         return await getDepartures(request, ctx, url.searchParams);
       case "trip":

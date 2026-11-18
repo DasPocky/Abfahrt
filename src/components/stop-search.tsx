@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type KeyboardEvent } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
-import { LoaderCircle, LocateFixed, LocateOff, Search, X } from "lucide-react";
+import { LoaderCircle, LocateFixed, LocateOff, Mic, Route, Search, Square, X } from "lucide-react";
 import { cn } from "cn";
 import { Input } from "@/components/ui/input";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
@@ -10,11 +10,16 @@ import type { LocationState } from "@/hooks/use-location";
 import { rankStops } from "@/lib/geo";
 import { searchStops, stopPath } from "@/lib/api";
 import { LocationHelp } from "@/components/location-help";
+import { Button } from "@/components/ui/button";
+import { useVoiceSearch, VOICE_EXAMPLES } from "@/hooks/use-voice-search";
+import { parseIntent } from "@/lib/intent";
 import { useRecentPlaces } from "@/hooks/use-recent-places";
 import { distanceKm } from "@/lib/geo";
 import { forgetPlace, recentToStop, rememberPlace } from "@/lib/recent-places";
 
 export const SEARCH_DEBOUNCE_MS = 250;
+/** Nur um Start und Ziel zu erkennen; die Uhrzeit rechnet runText mit der aktuellen Zeit */
+const PARSE_REFERENCE = new Date(0);
 export const SEARCH_MIN_LENGTH = 2;
 
 /** Einheitliche Symbol-Schaltflächen im Suchfeld (Größe, Strichstärke und Farbe wie die Lupe) */
@@ -29,6 +34,12 @@ export function StopSearch({ location }: { location: LocationState }) {
   const debounced = useDebouncedValue(query.trim(), SEARCH_DEBOUNCE_MS);
   const enabled = debounced.length >= SEARCH_MIN_LENGTH;
   const navigate = useNavigate();
+  const voice = useVoiceSearch(location.position);
+  // Getippter Satz wie „von Benrath nach Essen“ (#131): als Verbindung anbieten
+  const typedJourney = (() => {
+    const intent = query.includes(" ") ? parseIntent(query, PARSE_REFERENCE) : null;
+    return intent?.kind === "journey" ? intent : null;
+  })();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const listId = useId();
@@ -62,6 +73,9 @@ export function StopSearch({ location }: { location: LocationState }) {
         event.preventDefault();
         first.focus();
       }
+    } else if (event.key === "Enter" && typedJourney) {
+      event.preventDefault();
+      void voice.runText(query);
     } else if (event.key === "Enter") {
       const first = stops[0];
       if (first) {
@@ -131,7 +145,10 @@ export function StopSearch({ location }: { location: LocationState }) {
           aria-label="Haltestelle suchen"
           aria-controls={listId}
           aria-describedby={statusId}
-          className="h-12 pr-[5.25rem] pl-10 text-base md:text-base"
+          className={cn(
+            "h-12 pl-10 text-base md:text-base",
+            voice.supported ? "pr-[7.5rem]" : "pr-[5.25rem]",
+          )}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onFocus={location.ensureAsked}
@@ -156,6 +173,29 @@ export function StopSearch({ location }: { location: LocationState }) {
                 <X className="size-[1.125rem]" aria-hidden="true" />
               </button>
             )
+          )}
+          {voice.supported && (
+            <button
+              type="button"
+              onClick={voice.onMic}
+              aria-pressed={voice.phase === "listening"}
+              aria-label={voice.phase === "listening" ? "Aufnahme beenden" : "Wunsch sprechen"}
+              title={voice.phase === "listening" ? "Aufnahme beenden" : "Wunsch sprechen"}
+              className={cn(
+                ICON_BUTTON,
+                voice.phase === "listening"
+                  ? "bg-destructive text-white motion-safe:animate-pulse"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {voice.phase === "listening" ? (
+                <Square className="size-[1.125rem]" aria-hidden="true" />
+              ) : voice.phase === "working" ? (
+                <LoaderCircle className="size-[1.125rem] animate-spin" aria-hidden="true" />
+              ) : (
+                <Mic className="size-[1.125rem]" aria-hidden="true" />
+              )}
+            </button>
           )}
           {/* feine Trennlinie: links Eingabe-Aktionen, rechts Standort */}
           <span className="h-5 w-px bg-border" aria-hidden="true" />
@@ -182,6 +222,53 @@ export function StopSearch({ location }: { location: LocationState }) {
           </button>
         </div>
       </div>
+
+      {voice.phase === "consent" && (
+        <div
+          role="group"
+          aria-labelledby={`${statusId}-voice`}
+          className="space-y-2 rounded-lg border bg-muted/40 p-3 text-sm"
+        >
+          <p id={`${statusId}-voice`} className="font-medium">
+            Spracheingabe
+          </p>
+          <p className="text-muted-foreground">
+            Sag einfach, was du suchst, z. B. {VOICE_EXAMPLES}. Deine Aufnahme (höchstens 10
+            Sekunden) geht über unseren Server an die Spracherkennung von Cloudflare und wird danach
+            nicht gespeichert. Zurück kommt nur der Text. Widerrufen kannst du das in den
+            Einstellungen.
+          </p>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={voice.acceptConsent}>
+              Einverstanden
+            </Button>
+            <Button size="sm" variant="outline" onClick={voice.declineConsent}>
+              Abbrechen
+            </Button>
+          </div>
+        </div>
+      )}
+      {(voice.phase === "listening" || voice.message) && (
+        <p role="status" aria-live="polite" className="px-1 text-sm">
+          {voice.phase === "listening" ? (
+            <span className="font-medium">Ich höre zu … sprich jetzt.</span>
+          ) : (
+            voice.message
+          )}
+        </p>
+      )}
+      {typedJourney && (
+        <Button
+          variant="outline"
+          className="h-auto w-full justify-start gap-2 py-2 text-left whitespace-normal"
+          onClick={() => void voice.runText(query)}
+        >
+          <Route aria-hidden="true" />
+          <span>
+            Verbindung suchen: {typedJourney.from ?? "Mein Standort"} → {typedJourney.to}
+          </span>
+        </Button>
+      )}
 
       <p id={statusId} role="status" className="min-h-5 px-1 text-sm text-muted-foreground">
         {status}

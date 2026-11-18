@@ -58,7 +58,15 @@ function serviceWorker(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), cloudflare(), serviceWorker()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    // Workers AI (Spracheingabe, #132) läuft nur bei Cloudflare: lokal bewusst aus, damit
+    // `npm run dev` ohne Cloudflare-Login startet. Zum Testen: `wrangler login`, dann
+    // `ABFAHRT_REMOTE=1 npm run dev`.
+    cloudflare({ remoteBindings: process.env.ABFAHRT_REMOTE === "1" }),
+    serviceWorker(),
+  ],
   build: {
     // Assets liegen unter /abfahrt/assets/, passend zur Route endlab.de/abfahrt*
     assetsDir: "abfahrt/assets",

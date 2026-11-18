@@ -236,3 +236,10 @@ export interface TripResponse {
   /** ISO-8601, Zeitpunkt der Datenabfrage */
   generatedAt: string;
 }
+
+// ---- Spracheingabe (#132) ----
+
+export interface SpeechResponse {
+  /** Erkannter Text */
+  text: string;
+}

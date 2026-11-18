@@ -5,10 +5,11 @@
 # der App (worker-src 'self'), daher kein blob: für Worker und kein 'unsafe-eval'.
 # Permissions-Policy ohne „geolocation“: Standard ist ohnehin nur die eigene Seite; mit
 # „geolocation=(self)“ lehnte Safari auf dem iPhone ohne Abfrage ab (#65, 15.11.2026).
+# Mikrofon ebenso ohne Angabe (Standard: eigene Seite) für die Spracheingabe (#132).
 /*
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://tiles.openfreemap.org; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=()
+  Permissions-Policy: camera=()
   Cross-Origin-Opener-Policy: same-origin
