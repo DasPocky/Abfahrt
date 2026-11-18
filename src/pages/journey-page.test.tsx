@@ -483,13 +483,16 @@ describe("Verbindungssuche", () => {
     fireEvent.focus(combobox("Von"));
     fireEvent.change(combobox("Von"), { target: { value: "Rhein" } });
     const options = await screen.findByRole("listbox", { name: "Von: Vorschläge" });
-    const poi = await within(options).findByRole("option", { name: /Rheinturm/ });
-    expect(within(poi).getByLabelText("Ort")).toBeInTheDocument();
+    const poi = await within(options).findByRole("option", { name: /Ort:\s*Rheinturm/ });
     expect(
-      within(within(options).getByRole("option", { name: /Königsallee 1/ })).getByLabelText(
-        "Adresse",
-      ),
+      within(options).getByRole("option", { name: /Adresse:\s*Königsallee 1/ }),
     ).toBeInTheDocument();
+    // Haltestellen zuerst, Adressen und Orte darunter mit eigener Überschrift (#119)
+    const names = within(options)
+      .getAllByRole("option")
+      .map((o) => o.textContent ?? "");
+    expect(names[1]).toMatch(/Haltestelle: Düsseldorf Hbf/);
+    expect(within(options).getByText("Adressen und Orte")).toBeInTheDocument();
     const search = fetchMock.mock.calls
       .map((call) => requestUrl(call[0]))
       .find((url) => url.pathname.endsWith("/stops/search"));
@@ -501,6 +504,37 @@ describe("Verbindungssuche", () => {
     expect(params.get("vonName")).toBe("Rheinturm, Düsseldorf");
     await waitFor(() =>
       expect(journeyCalls(fetchMock).at(-1)?.searchParams.get("from")).toBe("geo:51.21780,6.76170"),
+    );
+  });
+
+  it("zeigt im leeren Feld die zuletzt gewählten Orte und Favoriten (#119)", async () => {
+    mockApi();
+    localStorage.setItem(
+      "abfahrt:favorites",
+      JSON.stringify({
+        version: 2,
+        items: [{ stopId: "vrr:de:05111:1", name: "Benrath S", place: "Düsseldorf", filter: "" }],
+      }),
+    );
+    renderAt("/verbindung");
+
+    fireEvent.focus(combobox("Von"));
+    fireEvent.change(combobox("Von"), { target: { value: "Düss" } });
+    const options = await screen.findByRole("listbox", { name: "Von: Vorschläge" });
+    fireEvent.click(await within(options).findByRole("option", { name: /Düsseldorf Hbf/ }));
+
+    fireEvent.focus(combobox("Nach"));
+    const nach = screen.getByRole("listbox", { name: "Nach: Vorschläge" });
+    expect(within(nach).getByText("Zuletzt")).toBeInTheDocument();
+    expect(within(nach).getByText("Favoriten")).toBeInTheDocument();
+    const names = within(nach)
+      .getAllByRole("option")
+      .map((o) => o.textContent ?? "");
+    expect(names[0]).toMatch(/Mein Standort/);
+    expect(names[1]).toMatch(/Haltestelle: Düsseldorf Hbf/);
+    expect(names[2]).toMatch(/Haltestelle: Benrath S/);
+    expect(JSON.parse(localStorage.getItem("abfahrt:recent") ?? "{}").items[0].id).toBe(
+      STOP_HBF.id,
     );
   });
 });

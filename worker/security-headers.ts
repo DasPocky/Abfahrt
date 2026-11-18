@@ -4,7 +4,7 @@ export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Strict-Transport-Security": "max-age=31536000",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "camera=(), microphone=()",
+  "Permissions-Policy": "camera=()",
   "Cross-Origin-Opener-Policy": "same-origin",
 };
 
@@ -15,7 +15,7 @@ export const PAGE_SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Strict-Transport-Security": "max-age=31536000",
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "camera=(), microphone=()",
+  "Permissions-Policy": "camera=()",
   "Cross-Origin-Opener-Policy": "same-origin",
 };
 

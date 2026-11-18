@@ -1,5 +1,6 @@
 import type { Departure, Stop, TransportMode } from "../../shared/api-types";
 import { fetchJson } from "../http";
+import { transitousTripRef } from "../trip-ref";
 import { normalizeHex, normalizeLineName, type LineColorMap } from "../line-colors";
 
 // Transitous (MOTIS 2), siehe docs/01-datenquellen.md – nur leichte, gecachte Nutzung.
@@ -39,6 +40,7 @@ interface TransitousStopTime {
   realTime?: boolean;
   cancelled?: boolean;
   tripCancelled?: boolean;
+  tripId?: string;
   place: {
     name?: string;
     departure?: string;
@@ -148,6 +150,7 @@ export function toDeparture(st: TransitousStopTime, index: number): Departure | 
     lineColor: st.routeColor ?? null,
     lineTextColor: st.routeTextColor ?? null,
     notices: [],
+    tripRef: transitousTripRef(st.tripId),
   };
 }
 

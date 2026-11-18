@@ -1,0 +1,251 @@
+{
+  "version": "10.4.18.18",
+  "transportation": {
+    "id": "rbg:70076: :H:j26",
+    "name": "U-Bahn U76",
+    "disassembledName": "U76",
+    "number": "U76",
+    "description": "Krefeld, Rheinstraße - Meerbusch - D-Lörick - Heinrich-Heine-Allee  - Düsseldorf Hbf - D-Oberbilk   - Holthausen",
+    "product": {
+      "id": 0,
+      "class": 2,
+      "name": "U-Bahn",
+      "iconId": 1
+    },
+    "operator": {
+      "code": "RBG",
+      "id": "70",
+      "name": "Rheinbahn"
+    },
+    "destination": {
+      "id": "20018139",
+      "name": "D-Holthausen",
+      "type": "stop"
+    },
+    "properties": {
+      "isSTT": true,
+      "tripCode": 462,
+      "timetablePeriod": "Jahresfahrplan 2026 (07.01.2026 - 06.01.2027)",
+      "validity": {
+        "from": "2026-10-01",
+        "to": "2027-03-31"
+      },
+      "lineDisplay": "LINE",
+      "globalId": "de:vrr:U76:RBG-70-76",
+      "FrequencyLine": "1"
+    },
+    "locationSequence": [
+      {
+        "isGlobalId": true,
+        "id": "de:05114:21001:1:4",
+        "name": "Krefeld Rheinstraße",
+        "disassembledName": "2",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.332499, 6.566083],
+        "niveau": 0,
+        "parent": {
+          "isGlobalId": true,
+          "id": "de:05114:21001",
+          "name": "Krefeld Rheinstraße",
+          "disassembledName": "Rheinstraße",
+          "type": "stop",
+          "parent": {
+            "id": "placeID:5114000:20",
+            "name": "Krefeld",
+            "type": "locality"
+          },
+          "properties": {
+            "stopId": "20021001"
+          },
+          "coord": [51.333155, 6.565876],
+          "niveau": 0
+        },
+        "productClasses": [2, 4, 5],
+        "properties": {
+          "DestinationText": "D-Holthausen",
+          "stoppingPointPlanned": "2",
+          "areaGid": "de:05114:21001:1",
+          "area": "1",
+          "platform": "2",
+          "platformName": "2",
+          "plannedPlatformName": "2"
+        },
+        "departureTimePlanned": "2026-11-18T10:39:00Z",
+        "departureTimeEstimated": "2026-11-18T10:46:30Z"
+      },
+      {
+        "isGlobalId": true,
+        "id": "de:05114:21002:12:12",
+        "name": "Krefeld Hbf",
+        "disassembledName": "12",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.326785, 6.570044],
+        "niveau": 0,
+        "parent": {
+          "isGlobalId": true,
+          "id": "de:05114:21002",
+          "name": "Krefeld Hbf",
+          "disassembledName": "Hbf",
+          "type": "stop",
+          "parent": {
+            "id": "placeID:5114000:20",
+            "name": "Krefeld",
+            "type": "locality"
+          },
+          "properties": {
+            "stopId": "20021002"
+          },
+          "coord": [51.325583, 6.568194],
+          "niveau": 0
+        },
+        "productClasses": [0, 2, 4, 5, 13, 17],
+        "properties": {
+          "DestinationText": "D-Holthausen",
+          "stoppingPointPlanned": "12",
+          "areaGid": "de:05114:21002:12",
+          "area": "12",
+          "platform": "12",
+          "platformName": "12",
+          "plannedPlatformName": "12"
+        },
+        "arrivalTimePlanned": "2026-11-18T10:42:30Z",
+        "departureTimePlanned": "2026-11-18T10:42:30Z",
+        "arrivalTimeEstimated": "2026-11-18T10:49:48Z",
+        "departureTimeEstimated": "2026-11-18T10:50:42Z"
+      },
+      {
+        "isGlobalId": true,
+        "id": "de:05162:18141:0:1",
+        "name": "Meerbusch Haus Meer",
+        "disassembledName": "1",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.265845, 6.669147],
+        "niveau": 0,
+        "parent": {
+          "isGlobalId": true,
+          "id": "de:05162:18141",
+          "name": "Meerbusch Haus Meer",
+          "disassembledName": "Haus Meer",
+          "type": "stop",
+          "parent": {
+            "id": "placeID:5162022:9",
+            "name": "Meerbusch",
+            "type": "locality"
+          },
+          "properties": {
+            "stopId": "20018141"
+          },
+          "coord": [51.26594, 6.668724],
+          "niveau": 0
+        },
+        "productClasses": [2, 5, 7],
+        "properties": {
+          "DestinationText": "D-Holthausen",
+          "stoppingPointPlanned": "1",
+          "areaGid": "de:05162:18141:1",
+          "area": "1",
+          "platform": "1",
+          "platformName": "1",
+          "plannedPlatformName": "1"
+        },
+        "arrivalTimePlanned": "2026-11-18T11:00:00Z",
+        "departureTimePlanned": "2026-11-18T11:00:00Z",
+        "arrivalTimeEstimated": "2026-11-18T11:07:36Z",
+        "departureTimeEstimated": "2026-11-18T11:08:12Z"
+      },
+      {
+        "isGlobalId": true,
+        "id": "de:05162:18274:0:1",
+        "name": "Meerbusch Forsthaus",
+        "disassembledName": "1",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.26227, 6.676926],
+        "niveau": 0,
+        "parent": {
+          "isGlobalId": true,
+          "id": "de:05162:18274",
+          "name": "Meerbusch Forsthaus",
+          "disassembledName": "Forsthaus",
+          "type": "stop",
+          "parent": {
+            "id": "placeID:5162022:9",
+            "name": "Meerbusch",
+            "type": "locality"
+          },
+          "properties": {
+            "stopId": "20018274"
+          },
+          "coord": [51.262214, 6.67671],
+          "niveau": 0
+        },
+        "productClasses": [2, 5],
+        "properties": {
+          "DestinationText": "D-Holthausen",
+          "stoppingPointPlanned": "1",
+          "areaGid": "de:05162:18274:1",
+          "area": "1",
+          "platform": "1",
+          "platformName": "1",
+          "plannedPlatformName": "1"
+        },
+        "arrivalTimePlanned": "2026-11-18T11:01:30Z",
+        "departureTimePlanned": "2026-11-18T11:01:30Z",
+        "arrivalTimeEstimated": "2026-11-18T11:09:30Z",
+        "departureTimeEstimated": "2026-11-18T11:09:42Z"
+      },
+      {
+        "isGlobalId": true,
+        "id": "de:05111:18266:5:4",
+        "name": "D-Holthausen",
+        "disassembledName": "4",
+        "type": "platform",
+        "pointType": "PLATFORM",
+        "coord": [51.174804, 6.833466],
+        "niveau": 0,
+        "parent": {
+          "isGlobalId": true,
+          "id": "de:05111:18266",
+          "name": "D-Holthausen",
+          "disassembledName": "Holthausen",
+          "type": "stop",
+          "parent": {
+            "id": "placeID:5111000:6",
+            "name": "Düsseldorf",
+            "type": "locality"
+          },
+          "properties": {
+            "stopId": "20018266"
+          },
+          "coord": [51.17526, 6.832945],
+          "niveau": 0
+        },
+        "productClasses": [2, 5],
+        "properties": {
+          "DestinationText": "D-Holthausen",
+          "stoppingPointPlanned": "4",
+          "areaGid": "de:05111:18266:5",
+          "area": "4",
+          "platform": "4",
+          "platformName": "4",
+          "plannedPlatformName": "4"
+        },
+        "arrivalTimePlanned": "2026-11-18T11:40:00Z",
+        "arrivalTimeEstimated": "2026-11-18T11:55:06Z"
+      }
+    ],
+    "coords": [
+      [
+        [51.332498, 6.566088],
+        [51.332296, 6.566187],
+        [51.332238, 6.566198],
+        [51.332137, 6.566211],
+        [51.33208, 6.566231],
+        [51.332012, 6.566269]
+      ]
+    ]
+  }
+}

@@ -62,6 +62,8 @@ export interface Departure {
   lineTextColor: string | null;
   /** Kurze Hinweise/Störungstexte zu dieser Fahrt */
   notices: string[];
+  /** Verweis auf den Fahrtverlauf (`/api/trip?ref=…`, #120); fehlt, wenn die Quelle keinen hat */
+  tripRef?: string;
 }
 
 export interface StopSearchResponse {
@@ -223,4 +225,21 @@ export interface VehiclesResponse {
 export interface ApiError {
   error: string;
   message?: string;
+}
+
+// ---- Fahrtverlauf (#120) ----
+
+export interface TripResponse {
+  /** Die ganze Fahrt als ein Abschnitt: Start, alle Halte dazwischen, Ziel, Strecke */
+  leg: JourneyLeg;
+  source: DataSource;
+  /** ISO-8601, Zeitpunkt der Datenabfrage */
+  generatedAt: string;
+}
+
+// ---- Spracheingabe (#132) ----
+
+export interface SpeechResponse {
+  /** Erkannter Text */
+  text: string;
 }
