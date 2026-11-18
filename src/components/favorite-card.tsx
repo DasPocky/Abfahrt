@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { DepartureList } from "@/components/departure-list";
+import { SpeakButton } from "@/components/speak-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import { sortDepartures, upcomingDepartures } from "@/lib/departures";
 import type { Favorite } from "@/lib/favorites";
 import { describeFilter, filterDepartures, filterToParams } from "@/lib/filters";
 import { useSettings } from "@/hooks/use-settings";
+import { stopSpeech } from "@/lib/speech";
 import { DEPARTURES_REFETCH_MS } from "@/pages/stop-page";
 
 export function FavoriteCard({
@@ -111,6 +113,20 @@ export function FavoriteCard({
               <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             )}
           </Link>
+        )}
+        {!editing && !renaming && data && (
+          <SpeakButton
+            size="icon-sm"
+            label={`${title} vorlesen`}
+            text={() =>
+              stopSpeech(
+                title,
+                filterDepartures(data.departures, favorite.filter),
+                new Date(),
+                favoriteCount,
+              )
+            }
+          />
         )}
       </div>
 

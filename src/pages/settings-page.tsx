@@ -4,12 +4,15 @@ import { ArrowLeft, Check } from "lucide-react";
 import { cn } from "cn";
 import { DepartureList } from "@/components/departure-list";
 import { Segmented } from "@/components/segmented";
+import { SpeakButton } from "@/components/speak-button";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/hooks/use-settings";
 import {
   FAVORITE_COUNTS,
   ROW_STYLES,
+  SPEECH_RATES,
   setSettings,
+  type SpeechRate,
   type RowStyle,
   type ThemeChoice,
 } from "@/lib/settings";
@@ -19,6 +22,12 @@ const ROW_STYLE_LABEL: Record<RowStyle, { title: string; text: string }> = {
   a: { title: "Linie vorn", text: "Linie mit Symbol, Ziel, Minuten rechts (Standard)" },
   b: { title: "Anzeigetafel", text: "Große Minuten vorn, Gleis rechts" },
   c: { title: "Karten", text: "Jede Abfahrt als Karte mit Farbstreifen der Linie" },
+};
+
+const SPEECH_RATE_LABEL: Record<SpeechRate, string> = {
+  slow: "Langsam",
+  normal: "Normal",
+  fast: "Schnell",
 };
 
 const THEME_CHOICES: { value: ThemeChoice; label: string }[] = [
@@ -137,6 +146,25 @@ export function SettingsPage() {
           choices={FAVORITE_COUNTS.map((n) => ({ value: n, label: String(n) }))}
           value={settings.favoriteCount}
           onChange={(favoriteCount) => setSettings({ ...settings, favoriteCount })}
+        />
+      </section>
+
+      <section aria-labelledby="settings-speech" className="space-y-2">
+        <h2 id="settings-speech" className="text-lg font-semibold tracking-tight">
+          Vorlesen
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Das Lautsprecher-Symbol liest Abfahrten, Verbindungen und den Fahrtverlauf mit der
+          Sprachausgabe deines Geräts vor. Dabei verlässt nichts dein Gerät.
+        </p>
+        <Segmented
+          choices={SPEECH_RATES.map((r) => ({ value: r, label: SPEECH_RATE_LABEL[r] }))}
+          value={settings.speechRate}
+          onChange={(speechRate) => setSettings({ ...settings, speechRate })}
+        />
+        <SpeakButton
+          pill
+          text={() => "U 76 nach Holthausen, in 4 Minuten, 2 Minuten später, Steig 4."}
         />
       </section>
 

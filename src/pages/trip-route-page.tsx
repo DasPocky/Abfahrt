@@ -17,6 +17,7 @@ import { Clock } from "@/components/journey-details";
 import { LazyRouteMap } from "@/components/lazy-route-map";
 import { LineBadge } from "@/components/line-badge";
 import { ModeIcon } from "@/components/mode-icon";
+import { SpeakButton } from "@/components/speak-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNow } from "@/hooks/use-now";
@@ -24,6 +25,7 @@ import { ApiRequestError, fetchTrip, stopPath } from "@/lib/api";
 import { legBadge } from "@/lib/connections";
 import { lineBadgeColors } from "@/lib/line-colors";
 import { platformLabel } from "@/lib/modes";
+import { tripSpeech } from "@/lib/speech";
 import { stopIndex, tripProgress, tripStatus, tripStops } from "@/lib/trip";
 import { formatClockWithSeconds } from "@/lib/time";
 import type { JourneyLeg, JourneyStop } from "../../shared/api-types";
@@ -237,6 +239,9 @@ export function TripRoutePage() {
             </p>
           )}
         </div>
+        {leg && (
+          <SpeakButton label="Fahrt vorlesen" text={() => tripSpeech(leg, fromIndex, new Date())} />
+        )}
         <Button
           variant="outline"
           size="icon"

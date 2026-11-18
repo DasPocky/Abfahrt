@@ -208,6 +208,17 @@ Unter **Mehr → Einstellungen** (`/abfahrt/einstellungen`), gespeichert nur im 
 - **Erscheinungsbild:** wie System, Hell oder Dunkel. Gilt auch für die Karte.
 - **Abfahrten je Favorit** auf der Startseite: 3, 4, 6 oder 8.
 
+## Vorlesen
+
+- Das **Lautsprecher-Symbol** liest vor: auf der Haltestellenseite die nächsten 5 Abfahrten, bei jedem
+  Favoriten dessen Abfahrten, im Fahrtverlauf, wann die Fahrt bei dir ist, und in den Details einer
+  Verbindung (**Vorlesen**) Abfahrt, Ankunft, Umstiege und jeden Abschnitt.
+- Beispiel: „U 76 nach Holthausen, in 4 Minuten, 13 Minuten später, Steig 4.“ Gleiswechsel („heute Gleis 9
+  statt 10“) und Ausfälle werden genannt.
+- Erneut tippen stoppt. Das Tempo (langsam, normal, schnell) steht in den Einstellungen.
+- Es spricht die Sprachausgabe deines Geräts, dabei verlässt nichts dein Gerät. Kann der Browser nicht
+  vorlesen, fehlt das Symbol.
+
 ## Installieren
 
 - **iPhone (Safari):** Teilen → „Zum Home-Bildschirm“. Nur so gibt es Benachrichtigungen.

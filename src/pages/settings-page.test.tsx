@@ -30,7 +30,13 @@ describe("Einstellungen (#37)", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Dunkel" }));
     fireEvent.click(screen.getByRole("button", { name: "6" }));
-    expect(getSettings()).toEqual({ rowStyle: "b", theme: "dark", favoriteCount: 6 });
+    fireEvent.click(screen.getByRole("button", { name: "Langsam" }));
+    expect(getSettings()).toEqual({
+      rowStyle: "b",
+      theme: "dark",
+      favoriteCount: 6,
+      speechRate: "slow",
+    });
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(JSON.parse(localStorage.getItem("abfahrt:settings") ?? "{}")).toMatchObject({
       version: 1,
