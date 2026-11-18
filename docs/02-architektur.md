@@ -185,7 +185,8 @@ Limits laut offizieller Doku (Stand 30.10.2026):
 - **Eingabevalidierung** aller `/api`-Parameter, z. B. mit `zod`. Keine Weiterleitung beliebiger URLs, der Worker ist kein offener Proxy.
 - **Rate-Limit** pro IP im Worker (60 Anfragen/Minute je Isolate, `worker/rate-limit.ts`), Pflicht laut VRR-§6.2
 - **User-Agent** `Abfahrt/<version> (+Repo-URL)` bei allen Anfragen an die Quellen, Pflicht laut Transitous-Policy
-- **Keine personenbezogenen Daten:** keine Accounts, kein Tracking, keine Logs mit Standortdaten
+- **Keine personenbezogenen Daten:** keine Accounts, kein Tracking, keine Logs mit Standortdaten. Workers Logs nur für Fehlermeldungen: `observability.logs.invocation_logs: false` in `wrangler.jsonc` (#130), denn die Anfrage-Protokolle enthielten die Adresse samt Suchbegriff und gerundetem Standort. Fehlermeldungen (`UpstreamError`) nennen nur Quelle und HTTP-Status.
+- **Impressum und Datenschutzerklärung** (#130, `src/pages/legal-page.tsx`, Routen `/abfahrt/impressum` und `/abfahrt/datenschutz`, unter „Mehr“ und auf der Über-Seite verlinkt). Angaben zum Betreiber gebündelt in `src/lib/operator.ts`; fehlen sie, zeigen beide Seiten einen Hinweis. Bei neuen Datenflüssen (z. B. Spracheingabe, #132) die Erklärung und `PRIVACY_UPDATED` anpassen.
 
 ## Pflicht-Quellhinweise (Impressum/„Über“-Seite + Ergebnislisten)
 

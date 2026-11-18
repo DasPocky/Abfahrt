@@ -36,7 +36,10 @@
       "migrations_dir": "migrations",
     },
   ],
+  // Nur Fehlermeldungen protokollieren, keine Anfragen (Datenschutz #130: Suchbegriffe und
+  // gerundeter Standort stehen in den Adressen)
   "observability": {
     "enabled": true,
+    "logs": { "invocation_logs": false },
   },
 }
