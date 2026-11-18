@@ -294,3 +294,56 @@ export async function trips(
     to: lastLeg ? toStop(lastLeg.destination) : null,
   };
 }
+
+/** Antwort von `XML_STOPSEQCOORD_REQUEST`: eine Fahrt mit allen Halten (#120) */
+interface VrrStopSequence {
+  transportation?: VrrLeg["transportation"] & {
+    locationSequence?: VrrPoint[];
+    /** Streckenverlauf, je Teilstück eine Liste von `[lat, lon]` */
+    coords?: [number, number][][];
+  };
+}
+
+/**
+ * Eine einzelne Fahrt aus der EFA (VRR oder regional) als Abschnitt: alle Halte mit Plan- und
+ * Echtzeit, Gleis und Strecke. Echtzeit gilt, sobald ein Halt eine geschätzte Zeit hat.
+ */
+export async function efaTripLeg(
+  base: string,
+  source: string,
+  ref: { line: string; stop: string; tripCode: string; date: string; time: string },
+): Promise<JourneyLeg | null> {
+  const params = new URLSearchParams({
+    line: ref.line,
+    stop: ref.stop,
+    tripCode: ref.tripCode,
+    date: ref.date,
+    time: ref.time,
+    tStOTType: "all",
+    useRealtime: "1",
+  });
+  const url = `${base}/XML_STOPSEQCOORD_REQUEST?outputFormat=rapidJSON&version=10.4.18.18&coordOutputFormat=WGS84%5Bdd.ddddd%5D&${params.toString()}`;
+  const data = await fetchJson<VrrStopSequence>(source, url, TRIP_TIMEOUT_MS);
+  return stopSequenceLeg(data);
+}
+
+export function stopSequenceLeg(data: VrrStopSequence): JourneyLeg | null {
+  const t = data.transportation;
+  const sequence = t?.locationSequence ?? [];
+  const first = sequence[0];
+  const last = sequence.at(-1);
+  if (!t || !first || !last || sequence.length < 2) return null;
+  const realtime = sequence.some((p) => p.departureTimeEstimated || p.arrivalTimeEstimated);
+  const start = Date.parse(first.departureTimePlanned ?? "");
+  const end = Date.parse(last.arrivalTimePlanned ?? "");
+  const leg = toLeg({
+    origin: first,
+    destination: last,
+    stopSequence: sequence,
+    transportation: t,
+    coords: t.coords?.flat(),
+    isRealtimeControlled: realtime,
+    duration: Number.isFinite(start) && Number.isFinite(end) ? (end - start) / 1000 : undefined,
+  });
+  return leg.kind === "transit" ? leg : null;
+}

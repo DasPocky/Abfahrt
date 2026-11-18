@@ -1,9 +1,10 @@
 import type { Departure, PlaceKind, Stop, TransportMode } from "../../shared/api-types";
 import { toGeoId } from "../../shared/geo-id";
 import { fetchJson } from "../http";
+import { efaTripRef } from "../trip-ref";
 
 // VRR OpenService (EFA rapidJSON), siehe docs/01-datenquellen.md
-const BASE = "https://openservice.vrr.de/openservice";
+export const BASE = "https://openservice.vrr.de/openservice";
 const COMMON = "outputFormat=rapidJSON&version=10.4.18.18&coordOutputFormat=WGS84%5Bdd.ddddd%5D";
 
 /**
@@ -79,9 +80,12 @@ interface VrrStopEvent {
   departureTimePlanned?: string;
   departureTimeEstimated?: string;
   location?: {
+    id?: string;
     properties?: { platform?: string; platformName?: string; plannedPlatformName?: string };
   };
   transportation?: {
+    id?: string;
+    properties?: { tripCode?: number };
     number?: string;
     disassembledName?: string;
     product?: { class?: number };
@@ -173,7 +177,7 @@ export function efaDateTime(when: Date): { date: string; time: string } {
   return { date: `${parts.year}${parts.month}${parts.day}`, time: `${parts.hour}${parts.minute}` };
 }
 
-export function toDeparture(event: VrrStopEvent, index: number): Departure | null {
+export function toDeparture(event: VrrStopEvent, index: number, source = "vrr"): Departure | null {
   const planned = event.departureTimePlanned;
   const t = event.transportation;
   if (!planned || !t) return null;
@@ -200,6 +204,13 @@ export function toDeparture(event: VrrStopEvent, index: number): Departure | nul
     lineColor: null,
     lineTextColor: null,
     notices,
+    tripRef: efaTripRef(
+      source,
+      t.id,
+      event.location?.id,
+      t.properties?.tripCode,
+      efaDateTime(new Date(planned)),
+    ),
   };
 }
 
@@ -227,7 +238,9 @@ export async function departures(
   const events = data.stopEvents ?? [];
   return {
     stop: toStop(location),
-    departures: events.map(toDeparture).filter((d): d is Departure => d !== null),
+    departures: events
+      .map((event, index) => toDeparture(event, index, source))
+      .filter((d): d is Departure => d !== null),
     hasRealtime: events.some((e) => e.isRealtimeControlled),
   };
 }

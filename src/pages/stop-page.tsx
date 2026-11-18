@@ -174,7 +174,7 @@ export function StopPage() {
               </Button>
             </div>
           ) : (
-            data && <DepartureList departures={shown} now={now} />
+            data && <DepartureList departures={shown} now={now} stopId={stopId} />
           )}
         </CardContent>
       </Card>

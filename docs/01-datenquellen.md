@@ -38,6 +38,8 @@ Stand: 30.10.2026. Alle Quellen wurden an diesem Tag live angetestet, die Testan
 - `XML_ADDINFO_REQUEST` (Störungen, getestet 16.11.2026): ungefiltert ~4,2 MB, mit `filterValidityStatus=current&filterShowLineList=0&filterShowStopList=0&filterShowPlaceList=0` noch ~3,4 MB für das ganze VRR (1.131 Meldungen). `filterOMC=5111000` (Gemeindeschlüssel) grenzt auf Düsseldorf ein: ~100 kB, 30 Meldungen; Kreise brauchen den Schlüssel der Gemeinde (`5158032` Velbert, `5158000` liefert nichts). `itdLPxx_selStop`, `filterProviders` und `itdLPxx_selLine` filtern nicht. Typen: lineInfo, stopInfo, tripMessage, stopBlocking, infrastructure (Aufzug/Rolltreppe), routeBlocking, routeInfo, lineBlocking, areaInfo. Texte kommen als HTML mit Entities.
 - Streckenverlauf (Test 15.11.2026, Heinrich-Heine-Allee → Essen Hbf): jeder Abschnitt hat `coords` als Liste von `[lat, lon]` (6 Nachkommastellen), z. B. U75 74 Punkte, RE1 570 Punkte. Die Rohantwort ist deshalb groß (3 Verbindungen: 440 kB), der Worker dünnt aus (siehe docs/02-architektur.md, Verbindungen). Fixture: `test/worker/fixtures/vrr-trip-coords.json` (eine Verbindung, `coords` vollständig); in `vrr-trip.json` fehlen die `coords` (gekürzt).
 
+- **Fahrtverlauf** (#120, getestet 18.11.2026): `XML_DM_REQUEST` mit `includeCompleteStopSeq=1` liefert im OpenService keine Halteliste. Dafür `XML_STOPSEQCOORD_REQUEST?line=<transportation.id>&stop=<location.id>&tripCode=<transportation.properties.tripCode>&date=JJJJMMTT&time=HHMM&tStOTType=all&useRealtime=1`: U76 ab Heinrich-Heine-Allee → 37 Halte von Krefeld Rheinstraße bis Holthausen, je Halt Plan- und Echtzeit (`…TimePlanned`/`…TimeEstimated`), Steig, Koordinate, dazu `transportation.coords` (Liste von Teilstücken mit `[lat, lon]`). Die Linien-ID enthält Leerzeichen („rbg:70076: :H:j26“). Fixture: `test/worker/fixtures/vrr-stopseq.json` (gekürzt).
+
 **Besonderheiten:**
 
 - Die Ergebnisse sind nach **Planzeit** sortiert. Stark verspätete Fahrten erscheinen deshalb oben, wir sortieren nach Echtzeit neu.
@@ -77,6 +79,8 @@ Quelle: https://www.opendata-oepnv.de/ht/de/standards/nutzungsvereinbarung-api
 - Düsseldorf Hbf: Abfahrten mit Echtzeit, Gleis, **Linienfarbe** (`routeColor`) und Betreiber (S8, U75, 709, 732 …)
 - Heinrich-Heine-Allee: 8/11 Abfahrten mit Echtzeit
 - `plan` Düsseldorf → Köln: 5 Verbindungen mit Fußwegen
+
+**Test 18.11.2026, Fahrtverlauf** (#120): `v5/stoptimes` liefert je Abfahrt `tripId` (z. B. `20261118_12:28_de-DELFI_3473645480`), `v5/trip?tripId=…` die ganze Fahrt als einen Abschnitt mit `from`, `intermediateStops`, `to` und `legGeometry`. Fixture: `test/worker/fixtures/transitous-trip.json` (gekürzt).
 
 **Test 07.11.2026, Live-Fahrzeugkarte** (`v5/map/trips`, Düsseldorfer Innenstadt ca. 3 × 2 km, Zeitfenster 2 min, zoom 15):
 

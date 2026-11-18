@@ -10,6 +10,7 @@ import { SettingsPage } from "@/pages/settings-page";
 import { NotFoundPage } from "@/pages/not-found-page";
 import { StopPage } from "@/pages/stop-page";
 import { TripPage } from "@/pages/trip-page";
+import { TripRoutePage } from "@/pages/trip-route-page";
 
 /** Routen relativ zum basename BASE_PATH ("/abfahrt") */
 export const routes: RouteObject[] = [
@@ -21,6 +22,7 @@ export const routes: RouteObject[] = [
       { path: "karte", element: <LazyMapPage /> },
       { path: "verbindung", element: <JourneyPage /> },
       { path: "fahrt", element: <TripPage /> },
+      { path: "verlauf", element: <TripRoutePage /> },
       { path: "stoerungen", element: <AlertsPage /> },
       { path: "mehr", element: <MorePage /> },
       { path: "einstellungen", element: <SettingsPage /> },
