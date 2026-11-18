@@ -36,4 +36,16 @@ describe("Einstellungen (#37)", () => {
       version: 1,
     });
   });
+
+  it("löscht den Suchverlauf (#119)", () => {
+    localStorage.setItem(
+      "abfahrt:recent",
+      JSON.stringify({ version: 1, items: [{ id: "vrr:1", name: "Benrath S", kind: "stop" }] }),
+    );
+    renderAt("/einstellungen");
+    expect(screen.getByText(/1 zuletzt gesuchte Ort/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Verlauf löschen" }));
+    expect(localStorage.getItem("abfahrt:recent")).toBeNull();
+    expect(screen.getByRole("button", { name: "Verlauf löschen" })).toBeDisabled();
+  });
 });

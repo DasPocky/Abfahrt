@@ -1,0 +1,41 @@
+name: picomatch-watch
+
+# Eigener Fix für picomatch (vendor/README.md, #137): jede Woche prüfen, ob es einen offiziellen
+# Patch für GHSA-fc5q-39xc-vjpf gibt oder eine neue picomatch-Version erschienen ist. Dann schlägt
+# der Lauf fehl (GitHub benachrichtigt), damit wir den eigenen Fix durch das offizielle Paket
+# ersetzen. Nur lesend, keine Schreibrechte.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # montags 06:17 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Offiziellen Patch und neue Version prüfen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUR_BASE: "4.0.7"
+        run: |
+          set -euo pipefail
+          patched=$(gh api /advisories/GHSA-fc5q-39xc-vjpf \
+            --jq '[.vulnerabilities[] | select(.package.name == "picomatch") | .first_patched_version // empty] | join(", ")')
+          latest=$(npm view picomatch version)
+          {
+            echo "### picomatch"
+            echo "- Neueste Version auf npm: \`$latest\` (unser Fix basiert auf \`$OUR_BASE\`)"
+            echo "- Gepatcht laut GHSA-fc5q-39xc-vjpf: ${patched:-noch keine}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$patched" ]; then
+            echo "::error::Offizieller Patch für GHSA-fc5q-39xc-vjpf: picomatch $patched. Eigenen Fix ersetzen (vendor/README.md, #137)."
+            exit 1
+          fi
+          if [ "$latest" != "$OUR_BASE" ]; then
+            echo "::error::Neue picomatch-Version $latest. Prüfen, ob sie GHSA-fc5q-39xc-vjpf behebt; dann eigenen Fix ersetzen (vendor/README.md, #137)."
+            exit 1
+          fi
+          echo "Noch kein offizieller Patch."
