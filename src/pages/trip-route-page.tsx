@@ -24,7 +24,7 @@ import { ApiRequestError, fetchTrip, stopPath } from "@/lib/api";
 import { legBadge } from "@/lib/connections";
 import { lineBadgeColors } from "@/lib/line-colors";
 import { platformLabel } from "@/lib/modes";
-import { stopIndex, tripProgress, tripStops } from "@/lib/trip";
+import { stopIndex, tripProgress, tripStatus, tripStops } from "@/lib/trip";
 import { formatClockWithSeconds } from "@/lib/time";
 import type { JourneyLeg, JourneyStop } from "../../shared/api-types";
 
@@ -152,8 +152,11 @@ function TripStopList({ leg, fromIndex, now }: { leg: JourneyLeg; fromIndex: num
                     <ModeIcon mode={leg.mode ?? "other"} className="size-3" />
                   </span>
                 </span>
-                <span className="self-center font-medium">
-                  {leg.line} ist gerade zwischen {stop.name} und {stops[index + 1]?.name}
+                <span className="self-center font-medium text-muted-foreground">
+                  jetzt
+                  <span className="sr-only">
+                    : zwischen {stop.name} und {stops[index + 1]?.name}
+                  </span>
                 </span>
               </div>
             )}
@@ -183,7 +186,6 @@ export function TripRoutePage() {
   const leg = data?.leg;
   const stops = leg ? tripStops(leg) : [];
   const fromIndex = stopIndex(stops, from);
-  const progress = tripProgress(stops, now);
   // Innerhalb der App zurück, beim direkten Aufruf zur Haltestelle bzw. Startseite
   const canGoBack = location.key !== "default";
 
@@ -225,9 +227,9 @@ export function TripRoutePage() {
           </h1>
           {leg && (
             <p className="text-xs text-muted-foreground" aria-live="polite">
-              {progress.state === "before" && `Fährt ab ${leg.origin.name}`}
-              {progress.state === "after" && "Fahrt beendet"}
-              {progress.state === "between" && "Unterwegs"}
+              <span className="font-medium text-foreground">
+                {tripStatus(stops, fromIndex, now)}
+              </span>
               {" · "}Stand{" "}
               <time dateTime={data.generatedAt}>
                 {formatClockWithSeconds(new Date(data.generatedAt))}

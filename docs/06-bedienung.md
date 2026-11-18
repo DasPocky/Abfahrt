@@ -46,8 +46,10 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 - Zeigt alle Halte der Fahrt vom Start bis zum Ziel mit Zeit, Verspätung und Gleis/Steig, als Linie in
   Linienfarbe.
 - Die Haltestelle, von der du kommst, ist hervorgehoben; die Seite springt beim Öffnen dorthin.
-- Bereits passierte Halte sind blasser. Dazwischen steht, wo die Bahn bzw. der Bus gerade ist („U76 ist
-  gerade zwischen Belsenplatz und Barbarossaplatz“), nach Echtzeit, sonst nach Fahrplan.
+- Oben steht kurz, wann die Fahrt bei dir ist („An Heinrich-Heine-Allee in 4 Min“), danach der nächste
+  Halt bzw. „Fahrt beendet“.
+- Bereits passierte Halte sind blasser. Das Fahrzeug-Symbol mit „jetzt“ zeigt auf der Linie, wo die Bahn
+  bzw. der Bus gerade ist (nach Echtzeit, sonst nach Fahrplan).
 - **Karte** klappt die Strecke auf. Einen Halt antippen öffnet dessen Abfahrten.
 - Lädt alle 30 Sekunden neu. Auch ein Fahrzeug auf der Karte führt über **Verlauf** hierher.
 

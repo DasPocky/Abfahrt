@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { JourneyStop } from "../../shared/api-types";
-import { stopIndex, tripProgress } from "@/lib/trip";
+import { stopIndex, tripProgress, tripStatus } from "@/lib/trip";
 
 function stop(id: string, departure: string | null, arrival: string | null = null): JourneyStop {
   return {
@@ -50,5 +50,19 @@ describe("stopIndex", () => {
     expect(stopIndex(STOPS, null)).toBe(-1);
     // keine Teiltreffer: de:05111:1 ist nicht de:05111:18036
     expect(stopIndex(STOPS, "vrr:de:05111:18036")).toBe(-1);
+  });
+});
+
+describe("tripStatus", () => {
+  const now = new Date("2026-11-18T12:01:00Z");
+  it("nennt die eigene Haltestelle, solange die Fahrt noch nicht dort war", () => {
+    expect(tripStatus(STOPS, 2, now)).toBe("An vrr:de:05111:3 in 5 Min");
+  });
+  it("sonst den nächsten Halt bzw. die Abfahrt am Start", () => {
+    expect(tripStatus(STOPS, 0, now)).toBe("Nächster Halt vrr:de:05111:2 in 2 Min");
+    expect(tripStatus(STOPS, -1, new Date("2026-11-18T11:50:00Z"))).toBe(
+      "Abfahrt ab vrr:de:05111:1 in 10 Min",
+    );
+    expect(tripStatus(STOPS, -1, new Date("2026-11-18T12:30:00Z"))).toBe("Fahrt beendet");
   });
 });

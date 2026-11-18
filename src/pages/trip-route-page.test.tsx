@@ -74,10 +74,12 @@ describe("Fahrtverlauf (#120)", () => {
       "Heinrich-Heine-Allee U",
     );
     // zwischen Meerbusch Bovert (abgefahren) und Heinrich-Heine-Allee
-    expect(
-      within(list).getByText(/U76 ist gerade zwischen Meerbusch Bovert und Heinrich-Heine-Allee U/),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Unterwegs", { exact: false })).toBeInTheDocument();
+    // Position kurz an der Linie, ausführlich nur für Screenreader
+    expect(list.querySelector("[data-vehicle]")).toHaveTextContent(
+      "jetzt: zwischen Meerbusch Bovert und Heinrich-Heine-Allee U",
+    );
+    // Statuszeile: wann die Bahn an der eigenen Haltestelle ist (4 Min Plan + 2 Verspätung)
+    expect(screen.getByText(/^An Heinrich-Heine-Allee U in [56] Min$/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Aufzug am Hbf/ })).toBeInTheDocument();
 
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
