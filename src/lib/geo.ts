@@ -58,3 +58,34 @@ export function rankStops(
   const ordered = position ? ranked.toSorted((a, b) => b.score - a.score) : ranked;
   return ordered.slice(0, limit).map(({ stop, distanceKm: km }) => ({ stop, distanceKm: km }));
 }
+
+/** Haltestellen in der Treffer-Liste der Verbindungssuche, danach Adressen und Orte (#119) */
+export const MAX_STOP_HITS = 6;
+export const MAX_PLACE_HITS = 3;
+/** Eingabe endet auf eine Hausnummer („Königsallee 1“, „Bahnstr. 12a“) */
+const HOUSE_NUMBER = /\s\d{1,4}\s?[a-z]?$/i;
+
+export function isStopHit(stop: Stop): boolean {
+  return stop.kind === undefined || stop.kind === "stop";
+}
+
+/**
+ * Treffer mit Adressen und Orten: zuerst die Haltestellen, danach wenige Adressen und Orte, jeweils
+ * nach Passgenauigkeit und Nähe. Endet die Eingabe auf eine Hausnummer, sucht man eine Adresse,
+ * dann stehen Adressen und Orte vorn.
+ */
+export function rankPlaces(
+  stops: readonly Stop[],
+  position: Position | null,
+  query: string,
+): RankedStop[] {
+  const stopHits = rankStops(stops.filter(isStopHit), position, MAX_STOP_HITS);
+  const placeHits = rankStops(
+    stops.filter((s) => !isStopHit(s)),
+    position,
+    MAX_PLACE_HITS,
+  );
+  return HOUSE_NUMBER.test(query.trim())
+    ? [...placeHits, ...stopHits]
+    : [...stopHits, ...placeHits];
+}

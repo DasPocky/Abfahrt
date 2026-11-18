@@ -19,6 +19,9 @@
 }
 
 @theme inline {
+  /* Haltestellen-Schild (gelbes H auf Grün), hell und dunkel gleich (#119) */
+  --color-stop-sign: #00703c;
+  --color-stop-sign-foreground: #ffd500;
   --font-heading: var(--font-sans);
   --font-sans: "Inter Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
