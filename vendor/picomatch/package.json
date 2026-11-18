@@ -1,7 +1,7 @@
 {
   "name": "picomatch",
-  "description": "Blazing fast and accurate glob matcher written in JavaScript, with no dependencies and full support for standard and extended Bash glob features, including braces, extglobs, POSIX brackets, and regular expressions. (Abfahrt: Fix für GHSA-fc5q-39xc-vjpf und picomatch #175, siehe vendor/README.md)",
-  "version": "4.0.7-abfahrt.2",
+  "description": "Blazing fast and accurate glob matcher written in JavaScript, with no dependencies and full support for standard and extended Bash glob features, including braces, extglobs, POSIX brackets, and regular expressions. (Abfahrt: Fixes für GHSA-fc5q-39xc-vjpf, picomatch #175 und removeBackslashes, siehe vendor/README.md)",
+  "version": "4.0.7-abfahrt.3",
   "homepage": "https://github.com/micromatch/picomatch",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "funding": "https://github.com/sponsors/jonschlinkert",

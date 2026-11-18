@@ -1,6 +1,6 @@
 # Angepasste Abhängigkeiten
 
-## picomatch 4.0.7-abfahrt.2
+## picomatch 4.0.7-abfahrt.3
 
 **Status:** eigener Fix, bis picomatch einen offiziellen Patch veröffentlicht. Der Workflow
 `.github/workflows/picomatch-watch.yml` prüft jeden Montag die Meldung und npm. Gibt es einen Patch
@@ -26,8 +26,8 @@ nicht enthalten, und alle Muster stammen aus unseren eigenen Konfigurationsdatei
 
 ### Was geändert ist
 
-Kopie von picomatch 4.0.7 (MIT, `LICENSE`), nur `lib/parse.js`, Stellen markiert mit „Abfahrt-Fix“.
-Beide Änderungen erhalten die Bedeutung der Muster:
+Kopie von picomatch 4.0.7 (MIT, `LICENSE`), nur `lib/parse.js` und `lib/utils.js`, Stellen markiert
+mit „Abfahrt-Fix“. Alle Änderungen erhalten das Verhalten:
 
 1. **Meldung (einzelner Zweig):** Ein Zweig X mit nacktem `*` ohne `/` und Klammern wird ohne äußere
    Wiederholung übersetzt: `+(X)` = `X`, `*(X)` = leer oder `X` (jede Folge von Treffern passt
@@ -37,6 +37,11 @@ Beide Änderungen erhalten die Bedeutung der Muster:
    Text-Zweig aus anderen zusammensetzen (`ab|abab`, `abc|abcabc`), ist er in der Wiederholung
    überflüssig und fällt weg: `+(ab|abab)` = `+(ab)`. Reine Präfixe (`js|jsx`, `fo|foo`) sind
    harmlos und bleiben.
+3. **CodeQL `js/polynomial-redos` in `removeBackslashes`** (`lib/utils.js`, Originalcode; fiel erst
+   auf, weil CodeQL `vendor/` scannt, `node_modules` aber nicht): Der Regex
+   `/(?:\[.*?[^\\]\]|\\(?=.))/g` ist bei vielen `[` ohne passende `]` quadratisch. Ersetzt durch einen
+   Durchlauf mit vorab berechneten Sprungtabellen (nächste passende `]`, nächster Zeilenumbruch),
+   gleiche Ausgabe.
 
 ### Geprüft (18.11.2026)
 
@@ -53,6 +58,9 @@ Beide Änderungen erhalten die Bedeutung der Muster:
 | `+(ab\|abab)`, `*(ab\|abab)`, `+(abc\|abcabc)`              | #175             | > 3 s ab ~80 Zeichen   | ≤ 5 ms                  |
 | `!(*a)`, `@(*a)`, `?(*a)`, `+(?*a)`                         | Gegenprobe       | schnell                | schnell                 |
 
+- `removeBackslashes` gegen den Original-Regex: **2,3 Mio. Fälle, 0 Unterschiede** (alle Texte bis
+  8 Zeichen aus `[ ] \ a \n \r`, 300.000 Zufallstexte bis 40 Zeichen); 50.000 × `[` in 8 ms
+  (Original: 20.000 × `[` 125 ms, quadratisch).
 - Regressionstest im Projekt: `vendor/picomatch-fix.test.ts`.
 
 ### Restrisiko

@@ -1,6 +1,7 @@
 // Regressionstest für den eigenen Fix von picomatch (GHSA-fc5q-39xc-vjpf und picomatch-Issue #175),
 // siehe vendor/README.md. Muster aus der Meldung, den verknüpften Issues und eigene Varianten.
 import picomatch from "picomatch";
+import utils from "picomatch/lib/utils.js";
 import { describe, expect, it } from "vitest";
 
 const LIMIT_MS = 200;
@@ -15,7 +16,7 @@ function duration(pattern: string, input: string): number {
 describe("picomatch (Abfahrt-Fix)", () => {
   it("ist die angepasste Kopie", async () => {
     const pkg: unknown = await import("picomatch/package.json");
-    expect(pkg).toMatchObject({ version: "4.0.7-abfahrt.2" });
+    expect(pkg).toMatchObject({ version: "4.0.7-abfahrt.3" });
   });
 
   it.each([
@@ -56,5 +57,16 @@ describe("picomatch (Abfahrt-Fix)", () => {
     for (const [input, pattern, expected] of cases) {
       expect(picomatch.isMatch(input, pattern), `${pattern} ~ ${input}`).toBe(expected);
     }
+  });
+
+  it("entfernt Backslashes in linearer Zeit und wie das Original (CodeQL)", () => {
+    const original = (str: string) =>
+      str.replace(/(?:\[.*?[^\\]\]|\\(?=.))/g, (m) => (m === "\\" ? "" : m));
+    for (const input of ["foo/\\*.js", "a/[a-z]\\]/b", "\\[x\\]", "[\\]]", "[[a]\\b", "a\\", "x\\\ny"]) {
+      expect(utils.removeBackslashes(input), input).toBe(original(input));
+    }
+    const start = performance.now();
+    utils.removeBackslashes("[".repeat(100_000));
+    expect(performance.now() - start).toBeLessThan(LIMIT_MS);
   });
 });
