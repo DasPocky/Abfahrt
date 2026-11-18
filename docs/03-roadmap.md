@@ -55,11 +55,39 @@ Jeder Punkt wird ein eigenes Issue. Ich schlage die Issues vor, du nickst sie ab
 - ✅ Orte bei Halten und Zielen in anderen Städten (#94)
 - ✅ Umstieg am selben Steig bevorzugen, alle VRR-Optionen, einfachere Zeitauswahl (#97, #101, #102)
 - ✅ Deutschlandweite Prüfung der Echtzeit (#104, [Echtzeit-Abdeckung](05-echtzeit-abdeckung.md))
-- App-Struktur mit Navigation unten, Hauptbereiche gleichwertig (#106)
-- Regionale Echtzeit-Quellen anbinden: Westfalen, MVV, Bayern-Fahrplan, Baden-Württemberg (frei), danach DB
-  Timetables, RMV, VBN, HVV (Registrierung bzw. Anfrage) (#104)
-- Kartendaten in festen Kacheln laden und länger cachen (#98)
-- Darstellungsvarianten der Abfahrtszeile in den Einstellungen (#37)
+- ✅ App-Struktur mit Navigation unten, Hauptbereiche gleichwertig (#106)
+- ✅ Kartendaten in festen Kacheln laden und länger cachen (#98)
+- ✅ Darstellungsvarianten der Abfahrtszeile in den Einstellungen (#37)
+- Regionale Echtzeit-Quellen (#104): ✅ Baden-Württemberg (efa-bw). Offen bis zur Klärung der Nutzung: MVV,
+  Bayern-Fahrplan, Westfalen, danach DB Timetables, RMV, VBN, HVV (Registrierung bzw. Anfrage), siehe
+  [Echtzeit-Abdeckung](05-echtzeit-abdeckung.md)
+
+## M5 – Features
+
+Quellen reichen erst einmal, jetzt zählen die Funktionen.
+
+**Prio 1**
+
+- Suche: zuletzt genutzte Orte, Haltestellen zuerst, klare Symbole (#119)
+- Fahrtverlauf einer Abfahrt mit allen Halten, Echtzeit und Karte (#120)
+- Linienseite mit Linienverlauf (#121)
+- Ankünfte an einer Haltestelle (#122)
+- Abfahrtswecker per Push (#123)
+- Übersichtlichkeit: weniger Lärm, Wichtiges zuerst (#124)
+- Teilen per Link (#116)
+- Tafel-Ansicht (z. B. Tablet an der Wand) (#117)
+
+**Prio 2**
+
+- Ausstiegsalarm in der Live-Begleitung
+- Pendlerstrecken auf der Startseite (feste Von/Nach mit nächsten Verbindungen)
+- „Jetzt losgehen“: Fußweg vom Standort zur Haltestelle eingerechnet
+- In der Nähe: alle Linien rund um den Standort mit der nächsten Abfahrt
+- Kalender-Export (.ics) einer Verbindung
+- Defekte Aufzüge an Umstiegen direkt in der Verbindung
+
+**Später**
+
+- E-Scooter und Leihräder (GBFS der Anbieter, Bikesharing aus dem VRR MIP): Fahrzeuge auf der Karte, danach
+  in der Verbindung
 - Wagenreihung/Auslastung (DB API Marketplace, Registrierung nötig)
-- Widget-/Tafel-Ansicht (z. B. Tablet an der Wand)
-- Teilen per Link
