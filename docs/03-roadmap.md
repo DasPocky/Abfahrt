@@ -55,11 +55,12 @@ Jeder Punkt wird ein eigenes Issue. Ich schlage die Issues vor, du nickst sie ab
 - ✅ Orte bei Halten und Zielen in anderen Städten (#94)
 - ✅ Umstieg am selben Steig bevorzugen, alle VRR-Optionen, einfachere Zeitauswahl (#97, #101, #102)
 - ✅ Deutschlandweite Prüfung der Echtzeit (#104, [Echtzeit-Abdeckung](05-echtzeit-abdeckung.md))
-- App-Struktur mit Navigation unten, Hauptbereiche gleichwertig (#106)
-- Regionale Echtzeit-Quellen anbinden: Westfalen, MVV, Bayern-Fahrplan, Baden-Württemberg (frei), danach DB
-  Timetables, RMV, VBN, HVV (Registrierung bzw. Anfrage) (#104)
-- Kartendaten in festen Kacheln laden und länger cachen (#98)
-- Darstellungsvarianten der Abfahrtszeile in den Einstellungen (#37)
+- ✅ App-Struktur mit Navigation unten, Hauptbereiche gleichwertig (#106)
+- ✅ Kartendaten in festen Kacheln laden und länger cachen (#98)
+- ✅ Darstellungsvarianten der Abfahrtszeile in den Einstellungen (#37)
+- Regionale Echtzeit-Quellen (#104): ✅ Baden-Württemberg (efa-bw). Offen bis zur Klärung der Nutzung: MVV,
+  Bayern-Fahrplan, Westfalen, danach DB Timetables, RMV, VBN, HVV (Registrierung bzw. Anfrage), siehe
+  [Echtzeit-Abdeckung](05-echtzeit-abdeckung.md)
+- Teilen per Link (#116)
+- Widget-/Tafel-Ansicht (z. B. Tablet an der Wand) (#117)
 - Wagenreihung/Auslastung (DB API Marketplace, Registrierung nötig)
-- Widget-/Tafel-Ansicht (z. B. Tablet an der Wand)
-- Teilen per Link
