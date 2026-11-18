@@ -161,6 +161,20 @@ const hasRepeatedCharPrefixOverlap = branches => {
   return false;
 };
 
+// Abfahrt-Fix: nacktes `*` in einem Zweig (kein Extglob `*(…)`, nicht in `[…]`)
+const hasBareStar = branch => /(^|[^\\])\*(?!\()/.test(branch.replace(/\[[^\]]*\]/g, ''));
+
+// Abfahrt-Fix (picomatch-Issue #175): ein reiner Text-Zweig lässt sich aus anderen Zweigen
+// zusammensetzen (`ab|abab`: abab = ab·ab, `abc|abcabc`). In einer Wiederholung lässt sich dieselbe
+// Eingabe dann exponentiell oft zerlegen. Nur Präfix (`js|jsx`, `fo|foo`) ist dagegen harmlos.
+const isComposedOf = (word, parts) => {
+  const ok = [true];
+  for (let end = 1; end <= word.length; end++) {
+    ok[end] = parts.some(p => p.length <= end && ok[end - p.length] && word.startsWith(p, end - p.length));
+  }
+  return ok[word.length] === true;
+};
+
 const parseRepeatedExtglob = (pattern, requireEnd = true) => {
   if ((pattern[0] !== '+' && pattern[0] !== '*') || pattern[1] !== '(') {
     return;
@@ -306,7 +320,7 @@ const analyzeRepeatedExtglob = (body, options) => {
   if (
     branches.length === 1 &&
     !getStarExtglobSequenceChars(branches[0]) &&
-    /(^|[^\\])\*(?!\()/.test(branches[0].replace(/\[[^\]]*\]/g, ''))
+    hasBareStar(branches[0])
   ) {
     return /[/()]/.test(branches[0]) ? { risky: true } : { risky: false, flatten: true };
   }
@@ -318,6 +332,25 @@ const analyzeRepeatedExtglob = (body, options) => {
       hasRepeatedCharPrefixOverlap(branches)
     ) {
       return { risky: true };
+    }
+
+    // Abfahrt-Fix (#175): Nur reine Text-Zweige, und einer lässt sich aus den anderen
+    // zusammensetzen → in der Wiederholung überflüssig, weglassen (gleiche Bedeutung):
+    // `+(ab|abab)` = `+(ab)`, `*(abc|abcabc)` = `*(abc)`.
+    const plain = branches.map(normalizeSimpleBranch);
+    if (plain.every(Boolean)) {
+      const kept = plain.filter((value, i) => {
+        const others = plain.filter((other, j) => j !== i && other.length < value.length);
+        return !(others.length > 0 && isComposedOf(value, others));
+      });
+      if (kept.length < plain.length) {
+        const unique = [...new Set(kept)];
+        return {
+          risky: true,
+          safeOutput: `(?:${unique.map(value => utils.escapeRegex(value)).join('|')})`,
+          quantified: true,
+        };
+      }
     }
   }
 
@@ -557,8 +590,12 @@ const parse = (input, options) => {
     const analysis = analyzeRepeatedExtglob(body, opts);
 
     if ((token.type === 'plus' || token.type === 'star') && analysis.risky) {
+      // Abfahrt-Fix (#175): umgeschriebene Zweige behalten die äußere Wiederholung
+      const repeated = analysis.quantified
+        ? `${analysis.safeOutput}${token.type === 'plus' ? '+' : '*'}`
+        : analysis.safeOutput;
       const safeOutput = analysis.safeOutput
-        ? (token.output ? '' : ONE_CHAR) + (opts.capture ? `(${analysis.safeOutput})` : analysis.safeOutput)
+        ? (token.output ? '' : ONE_CHAR) + (opts.capture ? `(${repeated})` : repeated)
         : undefined;
       const open = tokens[token.tokensIndex];
 
