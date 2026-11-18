@@ -12,7 +12,7 @@ import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useLocation } from "@/hooks/use-location";
 import { useNow } from "@/hooks/use-now";
 import { usePrefersDark } from "@/hooks/use-prefers-dark";
-import { stopPath } from "@/lib/api";
+import { stopPath, tripPath } from "@/lib/api";
 import type { Position } from "@/lib/geo";
 import {
   areaForBounds,
@@ -257,6 +257,13 @@ export function MapPage() {
                 {vehicleTime(selectedVehicle)} · Position geschätzt
               </span>
             </p>
+            {/* Fahrtverlauf (#120); die Fahrzeuge kommen von Transitous */}
+            <Button asChild size="sm" variant="outline">
+              <Link to={tripPath(`transitous|${selectedVehicle.trip}`)}>
+                Verlauf
+                <ChevronRight aria-hidden="true" />
+              </Link>
+            </Button>
             <Button
               variant="ghost"
               size="icon-sm"

@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { ChevronRight, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
@@ -9,6 +10,7 @@ import {
   sortDepartures,
   upcomingDepartures,
 } from "@/lib/departures";
+import { tripPath } from "@/lib/api";
 import { lineBadgeColors } from "@/lib/line-colors";
 import { platformLabel } from "@/lib/modes";
 import { summarizeNotices } from "@/lib/notices";
@@ -228,26 +230,39 @@ function DepartureRow({
   notices,
   now,
   rowStyle,
+  stopId,
 }: {
   departure: Departure;
+  /** Haltestelle der Liste: mit ihr wird die Zeile zum Link auf den Fahrtverlauf (#120) */
+  stopId?: string;
   /** Hinweise nur zu dieser Fahrt (ohne Sammelhinweise der Haltestelle) */
   notices: readonly string[];
   now: Date;
   rowStyle: RowStyle;
 }) {
   const noticeRow = notices.length > 0 && (
-    <div className="col-span-3 col-start-2">
+    // über dem Link der Zeile, damit die Hinweise eigenständig antippbar bleiben
+    <div className="relative z-10 col-span-3 col-start-2">
       <DepartureNotices departure={departure} notices={notices} />
     </div>
+  );
+  // Ganze Zeile antippbar („stretched link“), ohne die Hinweis-Schaltfläche zu verschachteln
+  const tripLink = stopId && departure.tripRef && (
+    <Link
+      to={tripPath(departure.tripRef, stopId)}
+      className="absolute inset-0 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      aria-label={`${departure.line} nach ${departure.direction}: Fahrtverlauf`}
+    />
   );
 
   if (rowStyle === "b") {
     // B · Anzeigetafel: große Minuten vorne, Linie + Ziel, Gleis rechts
     return (
       <li
-        className="grid grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1 py-2"
+        className="relative grid grid-cols-[2.75rem_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1 py-2"
         data-cancelled={departure.cancelled || undefined}
       >
+        {tripLink}
         <Countdown departure={departure} now={now} align="left" large />
         <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-2">
@@ -288,6 +303,7 @@ function DepartureRow({
           style={colors.style ? { backgroundColor: colors.style.backgroundColor } : undefined}
           aria-hidden="true"
         />
+        {tripLink}
         {content}
       </li>
     );
@@ -296,9 +312,10 @@ function DepartureRow({
   // A · Linie mit Symbol in einem Feld (Standard)
   return (
     <li
-      className="grid grid-cols-[auto_minmax(0,1fr)_auto_2.75rem] items-center gap-x-2.5 gap-y-1 py-2"
+      className="relative grid grid-cols-[auto_minmax(0,1fr)_auto_2.75rem] items-center gap-x-2.5 gap-y-1 py-2"
       data-cancelled={departure.cancelled || undefined}
     >
+      {tripLink}
       {content}
     </li>
   );
@@ -309,9 +326,12 @@ export function DepartureList({
   now,
   compact = false,
   rowStyle,
+  stopId,
 }: {
   departures: readonly Departure[];
   now: Date;
+  /** Haltestelle der Liste; mit ihr führt jede Abfahrt zum Fahrtverlauf (#120) */
+  stopId?: string;
   /** Darstellung; ohne Angabe die aus den Einstellungen (#37) */
   rowStyle?: RowStyle;
   /** Kompakte Vorschau (Favoriten): Hinweise nur per ⓘ, kein Sammelhinweis */
@@ -344,6 +364,7 @@ export function DepartureList({
             notices={departureNotices.get(departure.id) ?? []}
             now={now}
             rowStyle={style}
+            stopId={stopId}
           />
         ))}
       </ul>

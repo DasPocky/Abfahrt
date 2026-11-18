@@ -39,6 +39,17 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
   lässt sich teilen.
 - **Störungen** der Haltestelle stehen als schlanke Zeile über den Abfahrten. Defekte **Aufzüge und
   Rolltreppen** haben eine eigene Zeile.
+- **Abfahrt antippen** öffnet den Fahrtverlauf (auch in den Favoriten).
+
+## Fahrtverlauf
+
+- Zeigt alle Halte der Fahrt vom Start bis zum Ziel mit Zeit, Verspätung und Gleis/Steig, als Linie in
+  Linienfarbe.
+- Die Haltestelle, von der du kommst, ist hervorgehoben; die Seite springt beim Öffnen dorthin.
+- Bereits passierte Halte sind blasser. Dazwischen steht, wo die Bahn bzw. der Bus gerade ist („U76 ist
+  gerade zwischen Belsenplatz und Barbarossaplatz“), nach Echtzeit, sonst nach Fahrplan.
+- **Karte** klappt die Strecke auf. Einen Halt antippen öffnet dessen Abfahrten.
+- Lädt alle 30 Sekunden neu. Auch ein Fahrzeug auf der Karte führt über **Verlauf** hierher.
 
 ## Favoriten
 
@@ -153,7 +164,8 @@ Bereich **Karte** (`/abfahrt/karte`).
   die Abfahrten nur dieses Steigs.
 - **Live-Fahrzeuge:** Busse und Bahnen bewegen sich auf der Karte (Kreis in Linienfarbe mit Liniennummer).
   Die Position ist aus Fahrplan und Echtzeit geschätzt, ohne Echtzeit erscheint der Punkt blasser. Antippen
-  zeigt Linie, nächsten Halt und Verspätung. Das Straßenbahn-Symbol oben links blendet die Fahrzeuge aus.
+  zeigt Linie, nächsten Halt und Verspätung, **Verlauf** öffnet den Fahrtverlauf. Das Straßenbahn-Symbol
+  oben links blendet die Fahrzeuge aus.
 - Die Karte startet am Standort, wenn er in der App schon erlaubt ist (sonst Düsseldorf Innenstadt). Das
   Fadenkreuz oben links springt dorthin.
 - An unseren Server geht nur der sichtbare Ausschnitt, nicht der Standort.

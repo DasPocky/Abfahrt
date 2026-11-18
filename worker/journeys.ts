@@ -166,7 +166,7 @@ const MAX_COLOR_STOPS = 6;
  * Linienfarben für VRR-Verbindungen (die EFA liefert keine): je Einstiegshaltestelle die Farben
  * aus Transitous, 7 Tage gecacht und wie bei den Abfahrten höchstens 2,5 s abgewartet.
  */
-async function withLineColors(
+export async function withLineColors(
   request: Request,
   ctx: ExecutionContext,
   journeys: Journey[],

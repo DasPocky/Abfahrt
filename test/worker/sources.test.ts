@@ -16,7 +16,7 @@ describe("VRR-Adapter", () => {
   });
 
   it("normalisiert Stadtbahn-Abfahrten mit Echtzeit, Gleis und Hinweisen", () => {
-    const deps = vrrDm.stopEvents.map(vrr.toDeparture).filter((d) => d !== null);
+    const deps = vrrDm.stopEvents.map((e, i) => vrr.toDeparture(e, i)).filter((d) => d !== null);
     expect(deps.length).toBe(vrrDm.stopEvents.length);
     const first = deps[0]!;
     expect(first).toMatchObject({ line: "U73", mode: "subway", platform: "6", cancelled: false });
@@ -108,7 +108,7 @@ describe("Linienfarben", () => {
   });
 
   it("ergänzt fehlende Farben in VRR-Abfahrten anhand der normalisierten Linie", () => {
-    const deps = vrrDm.stopEvents.map(vrr.toDeparture).filter((d) => d !== null);
+    const deps = vrrDm.stopEvents.map((e, i) => vrr.toDeparture(e, i)).filter((d) => d !== null);
     const colors = transitous.lineColorsFromStopTimes(transitousColors.stopTimes);
     const colored = applyLineColors(deps, { ...colors, RE5: { color: "ff6418", textColor: null } });
     expect(colored.find((d) => d.line === "U79")).toMatchObject({

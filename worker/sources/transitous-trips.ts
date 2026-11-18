@@ -207,3 +207,11 @@ export async function trips(
     to: data.to ? toStop(data.to) : null,
   };
 }
+
+/** Eine einzelne Fahrt (`v5/trip`, #120) als ein Abschnitt mit allen Halten und Strecke */
+export async function tripLeg(tripId: string): Promise<JourneyLeg | null> {
+  const url = `${BASE}/v5/trip?language=de&tripId=${encodeURIComponent(tripId)}`;
+  const data = await fetchJson<{ legs?: PlanLeg[] }>("transitous", url);
+  const leg = data.legs?.find((l) => l.mode !== "WALK");
+  return leg ? toLeg(leg) : null;
+}

@@ -169,7 +169,9 @@ export function FavoriteCard({
               Abfahrten konnten nicht geladen werden.
             </p>
           )}
-          {data && <DepartureList departures={preview} now={now} compact />}
+          {data && (
+            <DepartureList departures={preview} now={now} stopId={favorite.stopId} compact />
+          )}
         </CardContent>
       )}
     </Card>

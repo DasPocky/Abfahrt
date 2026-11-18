@@ -7,6 +7,7 @@ import type {
   Journey,
   JourneysResponse,
   StopSearchResponse,
+  TripResponse,
 } from "../../shared/api-types";
 import { DATA_SOURCES } from "../../shared/api-types";
 import {
@@ -217,6 +218,30 @@ export function fetchJourneys(
   params.set("arrive", arrive ? "1" : "0");
   journeyOptionsToParams(options, params);
   return getJson(`journeys?${params.toString()}`, isJourneysResponse, signal);
+}
+
+export function isTripResponse(value: unknown): value is TripResponse {
+  return (
+    isObject(value) &&
+    isObject(value.leg) &&
+    isObject(value.leg.origin) &&
+    isObject(value.leg.destination) &&
+    Array.isArray(value.leg.intermediateStops) &&
+    isDataSource(value.source) &&
+    typeof value.generatedAt === "string"
+  );
+}
+
+/** Fahrtverlauf (#120) zu `Departure.tripRef` */
+export function fetchTrip(ref: string, signal?: AbortSignal): Promise<TripResponse> {
+  return getJson(`trip?${new URLSearchParams({ ref }).toString()}`, isTripResponse, signal);
+}
+
+/** Pfad des Fahrtverlaufs; `from`: Haltestelle, von der man kommt (wird hervorgehoben) */
+export function tripPath(ref: string, from?: string): string {
+  const params = new URLSearchParams({ ref });
+  if (from) params.set("von", from);
+  return `/verlauf?${params.toString()}`;
 }
 
 /** Pfad der Abfahrtsseite (relativ zum Router-basename) */
