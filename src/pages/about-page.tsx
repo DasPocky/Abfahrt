@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { LocationProbe } from "@/components/location-probe";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 const REPO_URL = "https://github.com/DasPocky/Abfahrt";
 
@@ -29,6 +30,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 
 /** Über die App: Zweck, Pflicht-Quellhinweise (docs/01-datenquellen.md), Quellcode, Datenschutz */
 export function AboutPage() {
+  usePageTitle("Über Abfahrt");
   return (
     <article className="space-y-8">
       <header className="space-y-1">

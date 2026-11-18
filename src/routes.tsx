@@ -1,6 +1,7 @@
 import type { RouteObject } from "react-router";
 import { Layout } from "@/components/layout";
 import { AboutPage } from "@/pages/about-page";
+import { AccessibilityPage } from "@/pages/accessibility-page";
 import { AlertsPage } from "@/pages/alerts-page";
 import { HomePage } from "@/pages/home-page";
 import { JourneyPage } from "@/pages/journey-page";
@@ -27,6 +28,7 @@ export const routes: RouteObject[] = [
       { path: "mehr", element: <MorePage /> },
       { path: "einstellungen", element: <SettingsPage /> },
       { path: "ueber", element: <AboutPage /> },
+      { path: "barrierefreiheit", element: <AccessibilityPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

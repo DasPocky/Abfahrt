@@ -29,6 +29,7 @@ import {
 } from "@/lib/filters";
 import { stopSpeech } from "@/lib/speech";
 import { formatClockWithSeconds } from "@/lib/time";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 /** Abruf der Abfahrten */
 export const DEPARTURES_REFETCH_MS = 30_000;
@@ -89,6 +90,7 @@ export function StopPage() {
 
   const knownName = data?.stop.name ?? stopNameFromState(location.state);
   const title = knownName ?? "Haltestelle";
+  usePageTitle(knownName ? `Abfahrten ${knownName}` : "Haltestelle");
 
   return (
     <section aria-labelledby="stop-title" className="space-y-4">

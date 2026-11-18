@@ -75,7 +75,9 @@ function TripStopList({ leg, fromIndex, now }: { leg: JourneyLeg; fromIndex: num
             <div
               className={cn(
                 "grid grid-cols-[3.25rem_1rem_minmax(0,1fr)] gap-x-2 rounded-md px-1 text-sm",
-                passed(index) && !isFrom && "opacity-55",
+                // passierte Halte gedämpft, Text aber mit vollem Kontrast (#128); nur Linie und Punkt
+                // werden durchsichtig
+                passed(index) && !isFrom && "text-muted-foreground",
                 isFrom && "bg-muted",
               )}
               aria-current={isFrom ? "location" : undefined}
@@ -84,7 +86,13 @@ function TripStopList({ leg, fromIndex, now }: { leg: JourneyLeg; fromIndex: num
                 <StopTime stop={stop} last={last} />
               </span>
               {/* Linie mit Punkt je Halt */}
-              <span className="relative flex justify-center" aria-hidden="true">
+              <span
+                className={cn(
+                  "relative flex justify-center",
+                  passed(index) && !isFrom && "opacity-50",
+                )}
+                aria-hidden="true"
+              >
                 <span
                   className={cn(
                     "absolute w-1",

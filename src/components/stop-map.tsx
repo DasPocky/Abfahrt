@@ -527,7 +527,11 @@ export function StopMap({
   }, [userPosition]);
 
   useEffect(() => {
-    if (focus) mapRef.current?.easeTo({ center: [focus.lon, focus.lat], duration: 600 });
+    if (focus) {
+      // ohne Bewegung, wenn das Gerät weniger Animation wünscht (#128)
+      const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+      mapRef.current?.easeTo({ center: [focus.lon, focus.lat], duration: reduce ? 0 : 600 });
+    }
   }, [focus]);
 
   const styleRef = useRef(dark);
@@ -537,12 +541,5 @@ export function StopMap({
     mapRef.current?.setStyle(mapStyle(dark), { diff: false });
   }, [dark]);
 
-  return (
-    <div
-      ref={containerRef}
-      className="size-full"
-      role="region"
-      aria-label="Karte mit Haltestellen"
-    />
-  );
+  return <div ref={containerRef} className="size-full" role="region" aria-label="Kartenfläche" />;
 }

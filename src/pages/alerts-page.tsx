@@ -23,6 +23,7 @@ import { distanceKm } from "@/lib/geo";
 import { MODE_SHORT } from "@/lib/modes";
 import { formatClock } from "@/lib/time";
 import type { TransportMode } from "../../shared/api-types";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 /** Ohne Favorit und Standort: Düsseldorf */
 export const DEFAULT_AREA = "5111000";
@@ -37,6 +38,7 @@ const isVrr = (id: string) => id.startsWith("vrr:");
 
 /** Übersicht der Störungen einer Gemeinde, gewählt über eine Haltestelle */
 export function AlertsPage() {
+  usePageTitle("Störungen");
   const [params, setParams] = useSearchParams();
   const { favorites } = useFavorites();
   const location = useLocation();

@@ -92,7 +92,7 @@ function LegSection({
         >
           {/* Nummer statt Wort: Abschnitt 1, 2, 3 … */}
           <span
-            className="flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-semibold text-white tabular-nums dark:bg-blue-500"
+            className="flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-semibold text-white tabular-nums"
             aria-hidden="true"
           >
             {index + 1}
@@ -164,7 +164,7 @@ function LegSection({
                     className={cn(
                       "h-8 rounded-full px-3 text-sm font-medium tabular-nums outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       i === choice
-                        ? "bg-blue-600 text-white dark:bg-blue-500"
+                        ? "bg-blue-600 text-white"
                         : "bg-muted text-foreground hover:bg-accent",
                     )}
                   >

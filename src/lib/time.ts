@@ -73,7 +73,7 @@ export const DELAY_TONE_CLASS: Record<DelayTone, string> = {
 export const DELAY_PILL_CLASS: Record<DelayTone, string> = {
   unknown: "bg-muted text-muted-foreground",
   success: "bg-success text-white dark:text-black",
-  warning: "bg-warning text-black",
+  warning: "bg-warning text-white dark:text-black",
   destructive: "bg-destructive text-white dark:text-black",
 };
 

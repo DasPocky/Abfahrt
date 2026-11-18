@@ -253,6 +253,15 @@ Unter **Mehr → Einstellungen** (`/abfahrt/einstellungen`), gespeichert nur im 
 - Es spricht die Sprachausgabe deines Geräts, dabei verlässt nichts dein Gerät. Kann der Browser nicht
   vorlesen, fehlt das Symbol.
 
+## Barrierefreiheit
+
+- Jede Seite hat einen eigenen Titel; nach einem Wechsel springt der Fokus zur Überschrift.
+- Alles ist per Tastatur erreichbar, der Fokus ist deutlich markiert und wird nicht von der Navigation
+  verdeckt.
+- Ziele brechen auf schmalen Bildschirmen und bei großer Schrift um, statt abgeschnitten zu werden.
+- Mit „Bewegung reduzieren“ im System laufen keine Animationen.
+- Was noch nicht gut geht und wie du Barrieren meldest: **Mehr → Barrierefreiheit**.
+
 ## Installieren
 
 - **iPhone (Safari):** Teilen → „Zum Home-Bildschirm“. Nur so gibt es Benachrichtigungen.

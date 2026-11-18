@@ -195,7 +195,7 @@ export function StopPicker({
         {label}
       </label>
       {/* Ohne eigenen Rahmen: Von und Nach stehen gemeinsam in einem Kasten (journey-page) */}
-      <div className="flex h-11 items-center gap-2.5 pr-11 pl-3 focus-within:bg-muted/50">
+      <div className="flex h-11 items-center gap-2.5 pr-11 pl-3 focus-within:bg-muted/50 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-inset">
         {marker ? (
           <span
             className={cn(

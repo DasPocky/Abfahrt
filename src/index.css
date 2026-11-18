@@ -78,15 +78,15 @@
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.52 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.54 0.235 27.325); /* ≥ 4,5 : 1 auch auf --muted (#128) */
   --success: oklch(0.527 0.154 150.069);
-  --warning: oklch(0.666 0.179 58.318);
+  --warning: oklch(0.555 0.163 48.998); /* ≥ 4,5 : 1 auf Weiß, auch als Textfarbe (#128) */
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.45 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -124,7 +124,7 @@
     --warning: oklch(0.828 0.189 84.429);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
+    --ring: oklch(0.78 0 0);
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
@@ -161,7 +161,7 @@
   --warning: oklch(0.828 0.189 84.429);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.78 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -205,4 +205,27 @@
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration {
   appearance: none;
+}
+
+/* Weniger Bewegung, wenn das Gerät es wünscht (#128): Animationen und Übergänge praktisch aus */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Überschrift bekommt nach Seitenwechsel per Skript den Fokus (#128); kein Rahmen darum */
+main h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* Fokus nicht unter der festen Navigation unten verstecken (WCAG 2.4.11, #128): beim Springen
+   per Tastatur bleibt unten Platz in Höhe der Navigation */
+html {
+  scroll-padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
 }

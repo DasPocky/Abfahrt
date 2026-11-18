@@ -10,6 +10,7 @@ Echtzeit-ÖPNV-PWA mit Fokus Düsseldorf/Rheinland und Abdeckung von ganz Deutsc
 | [04 – Workflow & Sicherheit](04-workflow-sicherheit.md) | Issues, Branches, PRs, CI, Repo-Schutz                |
 | [05 – Echtzeit-Abdeckung](05-echtzeit-abdeckung.md)     | Deutschlandweite Prüfung, Lücken, mögliche Quellen    |
 | [06 – Bedienung](06-bedienung.md)                       | So funktioniert die App im Alltag                     |
+| [07 – Barrierefreiheit](07-barrierefreiheit.md)         | Ziel WCAG 2.2 AA, Tests, Prüfprotokoll                |
 
 ## Getroffene Entscheidungen
 

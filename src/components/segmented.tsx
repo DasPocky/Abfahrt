@@ -2,7 +2,7 @@
 import { cn } from "cn";
 
 /** Akzentfarbe für gewählte Optionen (#101: mehr farbliche Klarheit) */
-export const ACCENT_ON = "bg-blue-600 text-white shadow-xs dark:bg-blue-500";
+export const ACCENT_ON = "bg-blue-600 text-white shadow-xs";
 
 /** Einzelauswahl als Segmentschalter: der gewählte Teil blau */
 export function Segmented<T>({

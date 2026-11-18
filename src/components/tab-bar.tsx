@@ -44,7 +44,7 @@ export function TabBar() {
                 to={tabTarget(tab, current, memory)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium outline-none focus-visible:bg-muted",
+                  "flex h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium outline-none focus-visible:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
                   active
                     ? "text-blue-600 dark:text-blue-400"
                     : "text-muted-foreground hover:text-foreground",
