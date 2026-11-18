@@ -132,6 +132,7 @@ export function PrivacyPage() {
       <Section id="privacy-summary" title="Kurz gesagt">
         <ul className="list-disc space-y-1 pl-5">
           <li>Keine Konten, kein Tracking, keine Werbung, keine Cookies.</li>
+          <li>Vorlesen läuft komplett auf deinem Gerät; Spracheingabe nur mit Einwilligung.</li>
           <li>Favoriten, Verlauf und Einstellungen bleiben in deinem Browser.</li>
           <li>
             Was an unseren Server geht (Suchbegriffe, Haltestellen, Kartenausschnitt), wird nicht
@@ -246,7 +247,31 @@ export function PrivacyPage() {
         </p>
       </Section>
 
-      <Section id="privacy-rights" title="8. Deine Rechte">
+      <Section id="privacy-voice" title="8. Spracheingabe">
+        <p>
+          Nur wenn du das Mikrofon in der Suche nutzt und vorher einwilligst (Art. 6 Abs. 1 lit. a
+          DSGVO): Die App nimmt höchstens 10 Sekunden auf und schickt die Aufnahme über unseren
+          Server an die Spracherkennung von Cloudflare (Workers AI, Modell Whisper). Zurück kommt
+          nur der erkannte Text, den die App auf deinem Gerät auswertet.
+        </p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>
+            Wir speichern weder die Aufnahme noch den Text. Laut Cloudflare werden Ein- und Ausgaben
+            nur für die Erkennung verarbeitet, danach nicht aufbewahrt und nicht zum Training
+            genutzt. Die Verarbeitung kann in den USA oder anderen Ländern stattfinden (siehe 2.).
+          </li>
+          <li>
+            Gezählt wird nur, wie viele Sekunden am Tag insgesamt erkannt wurden (für eine
+            Obergrenze), ohne Bezug zu dir.
+          </li>
+          <li>
+            Die Einwilligung widerrufst du unter „Mehr → Einstellungen → Spracheingabe“. Ohne
+            Spracheingabe kannst du tippen oder das Diktier-Mikrofon deiner Tastatur nutzen.
+          </li>
+        </ul>
+      </Section>
+
+      <Section id="privacy-rights" title="9. Deine Rechte">
         <p>Du hast das Recht auf</p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16) und Löschung (Art. 17),</li>

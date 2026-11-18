@@ -33,7 +33,8 @@ describe("Impressum und Datenschutz (#130)", () => {
       "5. Karte (OpenFreeMap)",
       "6. Speicherung auf deinem Gerät",
       "7. Benachrichtigungen",
-      "8. Deine Rechte",
+      "8. Spracheingabe",
+      "9. Deine Rechte",
     ]) {
       expect(screen.getByRole("heading", { name: heading })).toBeInTheDocument();
     }
