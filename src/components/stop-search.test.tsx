@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { STOP_HBF, renderAt, requestUrl } from "../test-utils";
 import type { StopSearchResponse } from "../../shared/api-types";
 
@@ -13,6 +13,8 @@ const RESULTS: StopSearchResponse = {
 function input() {
   return screen.getByRole("searchbox", { name: "Haltestelle suchen" });
 }
+
+afterEach(() => localStorage.clear());
 
 describe("StopSearch", () => {
   it("sucht ab zwei Zeichen mit Verzögerung und zeigt Treffer als Links", async () => {
@@ -91,5 +93,30 @@ describe("StopSearch", () => {
       .map((call) => requestUrl(call[0]))
       .find((url) => url.pathname.endsWith("/departures"));
     expect(departuresCall?.searchParams.get("stop")).toBe("vrr:de:05111:18235");
+  });
+
+  it("zeigt im leeren Feld die zuletzt gesuchten Haltestellen, einzeln entfernbar (#119)", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation((request) => {
+      const url = requestUrl(request);
+      if (url.pathname.endsWith("/stops/search")) return Promise.resolve(Response.json(RESULTS));
+      return new Promise(() => {});
+    });
+    const { router } = renderAt("/");
+    fireEvent.change(input(), { target: { value: "Düss" } });
+    fireEvent.click(await screen.findByRole("link", { name: /Düsseldorf Hbf/ }));
+    await waitFor(() => expect(router.state.location.pathname).toContain("/haltestelle/"));
+
+    await router.navigate("/");
+    await screen.findByRole("searchbox", { name: "Haltestelle suchen" });
+    expect(screen.queryByRole("heading", { name: "Zuletzt gesucht" })).not.toBeInTheDocument();
+    fireEvent.focus(input());
+    expect(screen.getByRole("heading", { name: "Zuletzt gesucht" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Düsseldorf Hbf/ })).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Düsseldorf Hbf aus dem Verlauf entfernen" }),
+    );
+    expect(screen.queryByRole("heading", { name: "Zuletzt gesucht" })).not.toBeInTheDocument();
+    expect(localStorage.getItem("abfahrt:recent")).toBeNull();
   });
 });

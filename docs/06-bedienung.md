@@ -16,6 +16,9 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 - Auf der Startseite den Namen einer Haltestelle eingeben, ab 2 Zeichen erscheinen Vorschläge.
 - Treffer antippen, oder per Tastatur: Pfeil runter/hoch wählt, Enter öffnet, Esc leert die Suche.
+- Haltestellen tragen das grüne Haltestellen-Schild mit gelbem **H**, Adressen ein Haus, Orte ein Gebäude.
+- **Zuletzt gesucht:** Das leere Suchfeld antippen zeigt die zuletzt geöffneten Haltestellen. Das ✕ daneben
+  entfernt eine, **Mehr → Einstellungen → Verlauf löschen** alle. Gespeichert nur im Browser.
 - **Standort:** Beim Öffnen fragt die App den Browser nach dem Standort. Mit Erlaubnis stehen Treffer in
   deiner Nähe oben (z. B. „Holthausen“ in Düsseldorf vor Essen), jeweils mit Entfernung.
   - Das 📍-Symbol im Suchfeld schaltet das an und aus. Ausgeschaltet fragt die App nicht mehr.
@@ -60,6 +63,10 @@ Bereich **Verbindung** (`/abfahrt/verbindung`).
 
 - **Von** und **Nach** wie in der Suche eintippen: Haltestellen, Adressen (🏠, z. B. „Königsallee 1“) und
   Orte (🏛, z. B. „Rheinturm“), Treffer in deiner Nähe zuerst.
+- **Haltestellen stehen immer oben**, darunter unter „Adressen und Orte“ höchstens drei Adressen bzw. Orte.
+  Endet die Eingabe auf eine Hausnummer („Königsallee 1“), stehen die Adressen oben.
+- Das leere Feld antippen zeigt „Mein Standort“, die zuletzt gewählten Orte und die Favoriten. Das gilt
+  für Von, Nach und Zwischenhalte (dort nur Haltestellen).
 - Bei Adressen und Orten beginnt bzw. endet die Verbindung mit einem Fußweg.
 - „Mein Standort“ nimmt die nächste Haltestelle.
 - Der runde Pfeil-Knopf tauscht Start und Ziel.
@@ -201,6 +208,7 @@ Unter **Mehr → Einstellungen** (`/abfahrt/einstellungen`), gespeichert nur im 
   Farbstreifen der Linie). Gilt für Haltestellen und Favoriten.
 - **Erscheinungsbild:** wie System, Hell oder Dunkel. Gilt auch für die Karte.
 - **Abfahrten je Favorit** auf der Startseite: 3, 4, 6 oder 8.
+- **Suchverlauf:** Anzahl der gemerkten Orte, **Verlauf löschen** entfernt alle.
 
 ## Installieren
 

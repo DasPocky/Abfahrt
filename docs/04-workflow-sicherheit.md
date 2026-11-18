@@ -90,3 +90,16 @@ Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechte
      - Tab **Secrets** → _New repository secret_ → Name `CLOUDFLARE_API_TOKEN`, Wert = Token
    - Die Konto-ID steht in `wrangler.jsonc` (nicht geheim), es braucht keine weitere Variable.
    - Den Token sieht nur GitHub, er landet nie im Chat oder im Repo.
+
+## Eigene Fixes für Abhängigkeiten
+
+Gibt es für eine Sicherheitslücke in einer Abhängigkeit noch keinen offiziellen Patch, fixen wir sie
+notfalls selbst in `vendor/` und binden die Kopie per `overrides` ein. Pflicht dabei: Begründung,
+Prüfung (offizielle Testsuite, Vergleich mit dem Original) und Weg zum Entfernen in
+`vendor/README.md`, ein Regressionstest, ein Issue zum Entfernen und eine automatische Überwachung
+auf den offiziellen Patch. **Sobald es ihn gibt, ersetzen wir den eigenen Fix wieder durch das
+offizielle Paket.**
+
+| Paket     | Lücke                                     | Issue | Überwachung                                                    |
+| --------- | ----------------------------------------- | ----- | -------------------------------------------------------------- |
+| picomatch | GHSA-fc5q-39xc-vjpf, picomatch-Issue #175 | #137  | `.github/workflows/picomatch-watch.yml`, montags, schlägt fehl |
