@@ -32,6 +32,7 @@ import { stopLabel } from "@/lib/stop-label";
 import { LocationHelp } from "@/components/location-help";
 import { useSavedTrip } from "@/hooks/use-saved-trip";
 import { journeySignature, setSavedTrip } from "@/lib/saved-trip";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 type Slot = "from" | "to";
 
@@ -46,6 +47,7 @@ function errorMessage(error: unknown): string {
 }
 
 export function JourneyPage() {
+  usePageTitle("Verbindung");
   const [searchParams, setSearchParams] = useSearchParams();
   const query = journeyQueryFromParams(searchParams);
   const update = (next: JourneyQuery) =>

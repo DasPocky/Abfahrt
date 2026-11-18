@@ -10,8 +10,10 @@ import { useFavorites } from "@/hooks/use-favorites";
 import { useLocation } from "@/hooks/use-location";
 import { useNow } from "@/hooks/use-now";
 import { COUNTDOWN_TICK_MS } from "@/pages/stop-page";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export function HomePage() {
+  usePageTitle("Abfahrten");
   const { favorites, move, remove, rename } = useFavorites();
   const [editing, setEditing] = useState(false);
   const now = useNow(COUNTDOWN_TICK_MS);

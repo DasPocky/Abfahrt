@@ -147,7 +147,7 @@ function Meta({ departure }: { departure: Departure }) {
   const delay = delayMinutes(departure.plannedTime, departure.realtimeTime);
   const tone = delayTone(delay);
   return (
-    <p className="mt-0.5 truncate text-xs text-muted-foreground tabular-nums">
+    <p className="mt-0.5 text-xs text-muted-foreground tabular-nums">
       ab{" "}
       <time
         dateTime={departure.plannedTime}
@@ -213,7 +213,9 @@ function Direction({ departure }: { departure: Departure }) {
   return (
     <p
       className={cn(
-        "truncate leading-tight font-medium",
+        // höchstens zwei Zeilen statt abgeschnitten: bei schmalen Bildschirmen und großer Schrift
+        // bleibt das Ziel lesbar (Reflow, #128)
+        "line-clamp-2 leading-tight font-medium break-words",
         departure.cancelled && "text-muted-foreground line-through",
       )}
     >

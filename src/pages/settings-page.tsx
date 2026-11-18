@@ -14,6 +14,7 @@ import {
   type ThemeChoice,
 } from "@/lib/settings";
 import type { Departure } from "../../shared/api-types";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 const ROW_STYLE_LABEL: Record<RowStyle, { title: string; text: string }> = {
   a: { title: "Linie vorn", text: "Linie mit Symbol, Ziel, Minuten rechts (Standard)" },
@@ -61,6 +62,7 @@ const PREVIEW: Departure[] = [
 ];
 
 export function SettingsPage() {
+  usePageTitle("Einstellungen");
   const settings = useSettings();
   return (
     <div className="space-y-6">
@@ -96,8 +98,7 @@ export function SettingsPage() {
                   <span
                     className={cn(
                       "flex size-5 items-center justify-center rounded-full border",
-                      active &&
-                        "border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500",
+                      active && "border-blue-600 bg-blue-600 text-white dark:border-blue-500",
                     )}
                     aria-hidden="true"
                   >

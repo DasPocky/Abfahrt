@@ -21,12 +21,14 @@ import {
   tripStep,
 } from "@/lib/saved-trip";
 import { formatClockWithSeconds } from "@/lib/time";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 /** Neu abfragen alle 30 s, Countdown jede 15 s */
 const REFRESH_MS = 30_000;
 const TICK_MS = 15_000;
 
 export function TripPage() {
+  usePageTitle("Live-Begleitung");
   const trip = useSavedTrip();
   const navigate = useNavigate();
   const now = useNow(TICK_MS);

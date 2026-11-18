@@ -24,6 +24,7 @@ import {
   tilesForBounds,
 } from "@/lib/map-area";
 import { fetchVehicles, vehiclePositions, type VehiclePosition } from "@/lib/vehicles";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 /** Startpunkt ohne Standort: Düsseldorf Innenstadt (Heinrich-Heine-Allee) */
 const DEFAULT_CENTER: Position = { lat: 51.2255, lon: 6.7775 };
@@ -85,6 +86,7 @@ function mergeStops(known: Map<string, Stop>, incoming: readonly Stop[]): Map<st
 }
 
 export function MapPage() {
+  usePageTitle("Karte");
   const location = useLocation();
   const dark = usePrefersDark();
   const [view, setView] = useState<MapView | null>(null);
@@ -168,8 +170,9 @@ export function MapPage() {
 
   return (
     <section aria-labelledby="map-title" className="space-y-2">
+      {/* nicht nur „Karte“: so heißt schon die Kartenfläche von MapLibre (eindeutige Bereiche, #128) */}
       <h1 id="map-title" className="sr-only">
-        Karte
+        Karte mit Haltestellen und Fahrzeugen
       </h1>
       <div className="relative h-[calc(100dvh-6.25rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] min-h-96 overflow-hidden rounded-xl border bg-muted">
         <StopMap
