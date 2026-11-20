@@ -24,14 +24,20 @@ export function useBand(main: RefObject<HTMLElement | null>, active: boolean) {
         clear();
         return;
       }
-      let last: Element = heading;
-      while (last.nextElementSibling?.tagName === "P") last = last.nextElementSibling;
+      // Titelblock: der Seitenkopf um die Überschrift (Titel, Unterzeile, Knöpfe), sonst Überschrift samt Absätzen
+      const kopf = heading.closest("header");
+      let last: Element = kopf && el.contains(kopf) ? kopf : heading;
+      if (last === heading) while (last.nextElementSibling?.tagName === "P") last = last.nextElementSibling;
       const band = Math.ceil(last.getBoundingClientRect().bottom + scrollY + 12);
       root.style.setProperty("--band", `${band}px`);
       const mark = (parent: Element) => {
         for (const child of parent.children) {
           const r = child.getBoundingClientRect();
-          if (!r.height) continue;
+          // display: contents (z. B. ein fieldset um die Seite) hat keine eigene Box: hineinsehen
+          if (!r.height) {
+            if (child.children.length) mark(child);
+            continue;
+          }
           if (r.bottom + scrollY <= band + 0.5) child.classList.add("on-band");
           else if (r.top + scrollY < band) mark(child);
         }
