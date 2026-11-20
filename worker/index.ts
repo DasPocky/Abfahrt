@@ -8,6 +8,7 @@ import { cacheProbe } from "./cache-probe";
 import { getJourneys } from "./journeys";
 import { runPushCron } from "./push/cron";
 import { handlePush, PUSH_ROUTES } from "./push/routes";
+import { handleProfile, PROFILE_ROUTES } from "./profile";
 import { apiError, json, UpstreamError } from "./http";
 import { isRateLimited } from "./rate-limit";
 import { PAGE_SECURITY_HEADERS, withSecurityHeaders } from "./security-headers";
@@ -19,8 +20,13 @@ const ALLOWED_METHODS = new Set(["GET", "HEAD"]);
 async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(request.url);
   const route = url.pathname.slice(API_PREFIX.length);
-  // Push hat eigene Methoden (POST); alles andere ist nur lesend
-  if (!ALLOWED_METHODS.has(request.method) && !PUSH_ROUTES.has(route) && route !== "speech") {
+  // Push und Geräteprofil haben eigene Methoden (POST, PUT); alles andere ist nur lesend
+  if (
+    !ALLOWED_METHODS.has(request.method) &&
+    !PUSH_ROUTES.has(route) &&
+    !PROFILE_ROUTES.has(route) &&
+    route !== "speech"
+  ) {
     return json({ error: "method_not_allowed" }, { status: 405, headers: { Allow: "GET, HEAD" } });
   }
 
@@ -45,6 +51,11 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
       case "push/test":
       case "push/topics":
         return await handlePush(request, env, route);
+      case "profile":
+      case "profile/create":
+      case "profile/transfer":
+      case "profile/claim":
+        return await handleProfile(request, env, route);
       case "vehicles":
         return await getVehicles(request, ctx, url.searchParams);
       case "alerts":

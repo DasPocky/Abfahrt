@@ -36,8 +36,11 @@ describe("Über-Seite", () => {
       within(privacy).getByText("Keine Accounts, kein Tracking, keine Cookies."),
     ).toBeVisible();
     expect(
-      within(privacy).getByText(/Favoriten und die gemerkte Verbindung werden nur lokal/),
+      within(privacy).getByText(/Favoriten und die gemerkte Verbindung werden lokal/),
     ).toBeVisible();
+    expect(
+      within(privacy).getByText(/Auf anderes Gerät übertragen \(nur wenn du es/),
+    ).toBeInTheDocument();
     expect(within(privacy).getByText(/Standort wird beim Öffnen angefragt/)).toBeVisible();
     expect(within(privacy).getByText(/nur der sichtbare Kartenausschnitt/)).toBeVisible();
   });

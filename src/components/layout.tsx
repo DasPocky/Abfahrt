@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useBand } from "@/lib/use-band";
 import { Outlet, useLocation } from "react-router";
+import { ProfileSync } from "@/components/profile-sync";
 import { PushSync } from "@/components/push-sync";
 import { TabBar } from "@/components/tab-bar";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,7 @@ export function Layout() {
       >
         <Outlet />
         <PushSync />
+        <ProfileSync />
         {!isMap && (
           <footer className="endlab-footer layout-footer mt-10">
             <span className="endlab-logo" aria-hidden />
