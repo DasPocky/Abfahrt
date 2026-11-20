@@ -27,7 +27,8 @@ Cloudflare, ohne Konto und ohne Werbung.
 - **Karte** mit jedem Steig an seiner echten Position und **Live-Fahrzeugen**
 - **Störungen**, Aufzüge und Rolltreppen, mit Hinweis bei deinen Favoriten
 - **Benachrichtigungen** (Web Push) bei Störungen und Änderungen deiner gemerkten Fahrt
-- **Installierbar** auf iPhone und Android, funktioniert offline mit dem letzten Stand, hell und dunkel
+- **Installierbar** auf iPhone und Android im Vollbild, funktioniert offline mit dem letzten Stand, hell und dunkel
+  im EndLab-Look wie alle EndLab-Apps
 
 Wie alles im Detail funktioniert: [Bedienung](docs/06-bedienung.md).
 
