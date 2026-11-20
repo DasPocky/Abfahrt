@@ -64,6 +64,13 @@ export function MorePage() {
           <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
         </Link>
       </nav>
+
+      {/* Voller Seitenaufruf statt App-Wechsel: nur so greift die Anmeldung von Cloudflare Access */}
+      <p className="text-center text-xs text-muted-foreground">
+        <Link to="/verwaltung" reloadDocument className="underline">
+          Verwaltung
+        </Link>
+      </p>
     </div>
   );
 }

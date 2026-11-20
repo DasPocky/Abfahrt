@@ -76,6 +76,16 @@ Cloudflare baut selbst, sobald auf GitHub gepusht wird. In GitHub liegt kein Clo
 
 Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechten Spalte schaltet der Repo-Owner ein, ein Teil davon setzt die CI-Jobs voraus (Ruleset: Pflicht-Checks). Action-Minuten sind unbegrenzt.
 
+## Verwaltung (`/verwaltung`)
+
+Nutzung und Push, Tagesgrenze der Sprachsuche, Hinweis-Banner und Geräteprofile (`src/pages/admin-page.tsx`, Schnittstelle `worker/admin.ts`).
+
+- **Zugang:** Cloudflare Access, Anwendung „Abfahrt-Verwaltung“ für `abfahrt.endlab.de/verwaltung` und `abfahrt.endlab.de/api/verwaltung`, Anmeldung über EndLab Login (Richtlinie „Angemeldet über EndLab Login“, Sitzung 24 Stunden). Der Worker prüft den Access-Ausweis selbst (`ACCESS_TEAM`, `ACCESS_AUD` in `wrangler.jsonc`) und fragt EndLab Login über das Service Binding `LOGIN`, ob das Konto bei „Abfahrt“ die Rolle `verwaltung` hat. Fällt Access weg, bleibt die Schnittstelle zu (403).
+- **Freigeben:** login.endlab.de/verwaltung → Konto → Abfahrt: `verwaltung`.
+- **Vorschauen:** keine Access-Anwendung, `ACCESS_AUD` ist dort leer – die Verwaltung ist in Vorschauen gesperrt.
+- **Gespeichert:** D1 `admin_settings` (Banner, Tagesgrenze); ohne Eintrag gilt `SPEECH_DAILY_MINUTES` und kein Banner.
+- **Rückweg:** Access-Anwendung „Abfahrt-Verwaltung“ in Zero Trust löschen; ohne gültigen Ausweis antwortet die Schnittstelle 403, die App läuft unverändert.
+
 ## Was du einmalig tun musst
 
 1. **SSH-Signier-Key** für deine eigenen Commits: GitHub → Settings → SSH and GPG keys → _New SSH key_ → Typ **Signing Key**. Lokal:

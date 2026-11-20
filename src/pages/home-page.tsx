@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
+import { BannerNotice } from "@/components/banner-notice";
 import { FavoriteAlertsBanner } from "@/components/favorite-alerts-banner";
 import { FavoriteCard } from "@/components/favorite-card";
 import { NearbyStops } from "@/components/nearby-stops";
@@ -119,7 +120,8 @@ export function HomePage() {
         <StopSearch location={location} />
       </section>
 
-      <div className="shrink-0">
+      <div className="shrink-0 space-y-2">
+        <BannerNotice />
         <SavedTripCard />
       </div>
 

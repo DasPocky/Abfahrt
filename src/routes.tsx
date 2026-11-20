@@ -1,3 +1,4 @@
+import { AdminPage } from "@/pages/admin-page";
 import { ClaimPage } from "@/pages/claim-page";
 import type { RouteObject } from "react-router";
 import { Layout } from "@/components/layout";
@@ -29,6 +30,7 @@ export const routes: RouteObject[] = [
       { path: "mehr", element: <MorePage /> },
       { path: "einstellungen", element: <SettingsPage /> },
       { path: "profil/uebernehmen/:code", element: <ClaimPage /> },
+      { path: "verwaltung", element: <AdminPage /> },
       { path: "ueber", element: <AboutPage /> },
       { path: "barrierefreiheit", element: <AccessibilityPage /> },
       { path: "*", element: <NotFoundPage /> },
