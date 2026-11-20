@@ -86,8 +86,12 @@ export function AboutPage() {
       <Section id="about-privacy" title="Datenschutz">
         <ul className="list-disc space-y-1 pl-5">
           <li>Keine Accounts, kein Tracking, keine Cookies.</li>
+          <li>Favoriten und die gemerkte Verbindung werden lokal in deinem Browser gespeichert.</li>
           <li>
-            Favoriten und die gemerkte Verbindung werden nur lokal in deinem Browser gespeichert.
+            Auf anderes Gerät übertragen (nur wenn du es in den Einstellungen wählst): Favoriten und
+            Einstellungen liegen dann zusätzlich auf unserem Server bei Cloudflare, unter einer
+            zufälligen Kennung, ohne Bezug zu deiner Person. Jedes Gerät hat einen eigenen
+            Schlüssel, gespeichert wird davon nur ein Hash. „Abgleich beenden“ trennt das Gerät.
           </li>
           <li>
             Benachrichtigungen (falls eingeschaltet): Gespeichert werden die Adresse beim

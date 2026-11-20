@@ -1,3 +1,4 @@
+import { ClaimPage } from "@/pages/claim-page";
 import type { RouteObject } from "react-router";
 import { Layout } from "@/components/layout";
 import { AboutPage } from "@/pages/about-page";
@@ -27,6 +28,7 @@ export const routes: RouteObject[] = [
       { path: "stoerungen", element: <AlertsPage /> },
       { path: "mehr", element: <MorePage /> },
       { path: "einstellungen", element: <SettingsPage /> },
+      { path: "profil/uebernehmen/:code", element: <ClaimPage /> },
       { path: "ueber", element: <AboutPage /> },
       { path: "barrierefreiheit", element: <AccessibilityPage /> },
       { path: "*", element: <NotFoundPage /> },

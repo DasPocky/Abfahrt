@@ -1,4 +1,5 @@
 // Einstellungen (#37): Darstellung der Abfahrtszeile, Hell/Dunkel, Abfahrten je Favorit.
+import { ProfileTransfer } from "@/components/profile-transfer";
 import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, Check } from "lucide-react";
@@ -173,6 +174,8 @@ export function SettingsPage() {
           text={() => "U 76 nach Holthausen, in 4 Minuten, 2 Minuten später, Steig 4."}
         />
       </section>
+
+      <ProfileTransfer />
 
       <section aria-labelledby="settings-recent" className="space-y-2">
         <h2 id="settings-recent" className="text-lg font-semibold tracking-tight">
