@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Copy, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { QrCode } from "@/components/qr-code";
 import {
   claimLink,
   claimTransfer,
@@ -74,8 +75,13 @@ export function ProfileTransfer() {
       {transfer ? (
         <div className="space-y-2 rounded-xl border p-4 text-center">
           <p className="text-sm text-muted-foreground">
-            Auf dem anderen Gerät eingeben oder den Link öffnen:
+            Mit dem anderen Gerät scannen, den Code dort eingeben oder den Link öffnen:
           </p>
+          <QrCode
+            value={claimLink(transfer.code)}
+            label="QR-Code zum Übertragen"
+            className="mx-auto w-44 rounded-lg"
+          />
           <p
             className="font-mono text-2xl font-semibold tracking-[0.2em]"
             data-testid="transfer-code"
