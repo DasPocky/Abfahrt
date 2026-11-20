@@ -25,7 +25,15 @@
   // Spracheingabe (#132): Whisper über Workers AI. Das freie Kontingent (10.000 Neurons/Tag) gilt
   // fürs ganze Konto; SPEECH_DAILY_MINUTES begrenzt den Anteil von Abfahrt (Audio-Minuten je Tag).
   "ai": { "binding": "AI" },
-  "vars": { "SPEECH_DAILY_MINUTES": "120" },
+  // Verwaltung hinter Cloudflare Access (Anmeldung über EndLab Login); der Worker prüft den Ausweis
+  // selbst und fragt EndLab Login nach der Rolle (worker/admin.ts)
+  "vars": {
+    "SPEECH_DAILY_MINUTES": "120",
+    "ACCESS_TEAM": "endlab-de.cloudflareaccess.com",
+    // Öffentliche Kennung der Access-Anwendung (steht in jedem Ausweis), kein Geheimnis
+    "ACCESS_AUD": "4e9db034867b61ae0bb1b9ba14b49ed6c4a014ff1e2cc926d4da2f68836bc800", // gitleaks:allow
+  },
+  "services": [{ "binding": "LOGIN", "service": "endlab-login", "entrypoint": "Intern" }],
   // Push-Abos (#71), Schema in migrations/
   "d1_databases": [
     {
@@ -42,7 +50,13 @@
   // Abos. Migrationen dafür: wrangler.preview-migrations.jsonc (npm run cf:preview).
   "previews": {
     "ai": { "binding": "AI" },
-    "vars": { "SPEECH_DAILY_MINUTES": "20" },
+    // Vorschauen haben keine Access-Anwendung: leere AUD sperrt die Verwaltung dort ganz
+    "vars": {
+      "SPEECH_DAILY_MINUTES": "20",
+      "ACCESS_TEAM": "endlab-de.cloudflareaccess.com",
+      "ACCESS_AUD": "",
+    },
+    "services": [{ "binding": "LOGIN", "service": "endlab-login", "entrypoint": "Intern" }],
     "d1_databases": [
       {
         "binding": "PUSH_DB",

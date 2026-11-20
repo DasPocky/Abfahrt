@@ -25,6 +25,8 @@ export function renderAt(path: string) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
+  // Kein Hinweis aus der Verwaltung: sonst holt die Startseite ihn mit und verbraucht Test-Antworten
+  queryClient.setQueryData(["banner"], null);
   const result = render(<App router={router} queryClient={queryClient} />);
   return { ...result, router, queryClient };
 }

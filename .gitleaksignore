@@ -1,0 +1,4 @@
+# Fehlalarme von gitleaks, je Fund mit Begründung (Format: Commit:Datei:Regel:Zeile).
+# ACCESS_AUD ist die öffentliche Kennung der Access-Anwendung „Abfahrt-Verwaltung“ (steht in
+# jedem Access-Ausweis), kein Geheimnis. Seit dem Folgecommit trägt die Zeile `gitleaks:allow`.
+ee8b030135c9c30110706a8c93204c1fc14ecd0a:wrangler.jsonc:generic-api-key:33

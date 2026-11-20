@@ -41,6 +41,8 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin || !url.pathname.startsWith(SHELL_URL)) return;
   // API-Antworten nie cachen: immer Netz, offline zeigt die App ihre Fehlermeldung
   if (url.pathname.startsWith(API_PREFIX)) return;
+  // Verwaltung liegt hinter Cloudflare Access: immer übers Netz, damit die Anmeldung greift
+  if (url.pathname.startsWith(`${BUILD.base}/verwaltung`)) return;
 
   if (request.mode === "navigate") {
     event.respondWith(navigate(request));

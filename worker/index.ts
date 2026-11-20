@@ -9,6 +9,7 @@ import { getJourneys } from "./journeys";
 import { runPushCron } from "./push/cron";
 import { handlePush, PUSH_ROUTES } from "./push/routes";
 import { handleProfile, PROFILE_ROUTES } from "./profile";
+import { ADMIN_ROUTES, handleAdmin, handleBanner, speechDailyMinutes } from "./admin";
 import { apiError, json, UpstreamError } from "./http";
 import { isRateLimited } from "./rate-limit";
 import { PAGE_SECURITY_HEADERS, withSecurityHeaders } from "./security-headers";
@@ -25,6 +26,7 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
     !ALLOWED_METHODS.has(request.method) &&
     !PUSH_ROUTES.has(route) &&
     !PROFILE_ROUTES.has(route) &&
+    !ADMIN_ROUTES.has(route) &&
     route !== "speech"
   ) {
     return json({ error: "method_not_allowed" }, { status: 405, headers: { Allow: "GET, HEAD" } });
@@ -56,6 +58,15 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
       case "profile/transfer":
       case "profile/claim":
         return await handleProfile(request, env, route);
+      case "banner":
+        return await handleBanner(env);
+      case "verwaltung/stand":
+      case "verwaltung/banner":
+      case "verwaltung/sprache":
+      case "verwaltung/profile":
+      case "verwaltung/profile/loeschen":
+      case "verwaltung/codes/zurueckziehen":
+        return await handleAdmin(request, env, route);
       case "vehicles":
         return await getVehicles(request, ctx, url.searchParams);
       case "alerts":
@@ -67,7 +78,7 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
           request,
           {
             db: env.PUSH_DB,
-            dailyMinutes: Number(env.SPEECH_DAILY_MINUTES) || 0,
+            dailyMinutes: await speechDailyMinutes(env),
             transcribe: workersAiTranscriber(env.AI),
           },
           ip,
