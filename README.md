@@ -1,7 +1,6 @@
 # Abfahrt
 
 [![CI](https://github.com/DasPocky/Abfahrt/actions/workflows/ci.yml/badge.svg)](https://github.com/DasPocky/Abfahrt/actions/workflows/ci.yml)
-[![Deploy](https://github.com/DasPocky/Abfahrt/actions/workflows/deploy.yml/badge.svg)](https://github.com/DasPocky/Abfahrt/actions/workflows/deploy.yml)
 [![Lizenz: AGPL-3.0](https://img.shields.io/badge/Lizenz-AGPL--3.0-blue.svg)](LICENSE)
 
 Echtzeit-Auskunft für Bus und Bahn als Progressive Web App: Abfahrten, Verbindungen, Karte mit Live-Fahrzeugen
@@ -70,21 +69,21 @@ npm run typecheck   # TypeScript
 npm run build       # Produktions-Build
 ```
 
-Deploy läuft über GitHub Actions: jeder Pull Request bekommt eine eigene Vorschau, ein Merge auf `main`
-geht in Produktion. Secrets (Cloudflare-Token, Push-Schlüssel) liegen nur in GitHub bzw. als Worker-Secret,
-nie im Repo.
+Deploy läuft über Cloudflare Workers Builds: jeder Zweig bekommt eine eigene Vorschau mit eigener
+Push-Datenbank, ein Merge auf `main` geht in Produktion. GitHub Actions prüfen nur. Secrets (Push-Schlüssel)
+liegen nur als Worker-Secret, nie im Repo und nie in GitHub. Details: [Workflow & Sicherheit](docs/04-workflow-sicherheit.md).
 
 ```text
 src/        App (Seiten, Komponenten, reine Logik in src/lib)
 worker/     Cloudflare Worker (API, Quellen-Adapter, Push)
 shared/     Typen und Logik für App und Worker
 test/       Worker-Tests mit aufgezeichneten Antworten der Quellen
-docs/       Konzept, Datenquellen, Architektur, Roadmap, Bedienung
+docs/       Konzept, Datenquellen, Architektur, Workflow, Bedienung
 ```
 
 ## Mitmachen
 
-Ablauf, Regeln und Commit-Stil: [CONTRIBUTING.md](CONTRIBUTING.md). Was geplant ist: [Roadmap](docs/03-roadmap.md).
+Ablauf, Regeln und Commit-Stil: [CONTRIBUTING.md](CONTRIBUTING.md).
 Sicherheitslücken bitte vertraulich melden: [SECURITY.md](SECURITY.md).
 
 ## Lizenz

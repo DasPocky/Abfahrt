@@ -1,0 +1,15 @@
+// Nur für die Migrationen der Staging-Datenbank abfahrt-push-vorschau (npm run cf:preview).
+// Wird nie deployt.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "abfahrt-vorschau-migrationen",
+  "account_id": "ef9cbceacd8be6cff839033e54c0cb6b",
+  "d1_databases": [
+    {
+      "binding": "PUSH_DB",
+      "database_name": "abfahrt-push-vorschau",
+      "database_id": "188162d2-8a25-4004-acf3-759389496139",
+      "migrations_dir": "migrations",
+    },
+  ],
+}

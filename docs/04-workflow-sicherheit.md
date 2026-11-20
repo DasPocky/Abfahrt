@@ -36,21 +36,29 @@ Workflow: [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 
 **Laufzeit:** Alle Jobs laufen gleichzeitig, `concurrency` bricht veraltete Läufe eines PRs ab, npm-Cache ist aktiv.
 
-## Deploy (Cloudflare Workers)
+## Deploy (Cloudflare Workers Builds)
 
-Workflow: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
+Cloudflare baut selbst, sobald auf GitHub gepusht wird. In GitHub liegt kein Cloudflare-Token.
 
-| Ereignis         | Job                                     | Ergebnis                                                                                                                                              |
-| ---------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PR gegen `main`  | `preview` (Environment `preview`)       | `wrangler versions upload` mit Alias `pr-<nr>`, die URL kommt als PR-Kommentar und wird bei jedem Push aktualisiert. Die Produktion bleibt unberührt. |
-| Merge auf `main` | `production` (Environment `production`) | `wrangler deploy`, danach Smoke-Test auf `https://endlab.de/abfahrt/` und `/abfahrt/api/health`                                                       |
+| Feld (Workers & Pages → abfahrt → Settings → Builds) | Wert                    |
+| ---------------------------------------------------- | ----------------------- |
+| Production branch                                    | `main`                  |
+| Build command                                        | `npm run cf:build`      |
+| Deploy command                                       | `npm run cf:deploy`     |
+| Version command                                      | `npm run cf:preview`    |
+| API token                                            | `endlab-workers-builds` |
 
-- **Produktion:** https://endlab.de/abfahrt (Route `endlab.de/abfahrt*` auf der Zone `endlab.de`), zusätzlich https://abfahrt.bjoern-ef9.workers.dev
-- **Preview pro PR:** `https://pr-<nr>-abfahrt.bjoern-ef9.workers.dev`
-- PRs aus Forks und von Dependabot bekommen keine Actions-Secrets und bekommen deshalb keine Preview. Die Pflicht-Checks laufen trotzdem.
-- **Rollback:** Cloudflare-Dashboard → Workers → `abfahrt` → _Deployments_, frühere Version auswählen, oder lokal `npx wrangler rollback`.
+| Ereignis         | Ergebnis                                                                                                                      |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Push auf Zweig   | `cf:build` (Lint, Tests, Build, Probe-Deploy), dann `cf:preview`: Migrationen auf `abfahrt-push-vorschau`, `wrangler preview` |
+| Merge auf `main` | `cf:build`, dann `cf:deploy`: Migrationen auf `abfahrt-push`, `wrangler deploy`                                               |
 
-**Einrichtung Web Push** ([`.github/workflows/push-setup.yml`](../.github/workflows/push-setup.yml), manuell über _Actions → push-setup → Run workflow_): legt die D1-Datenbank `abfahrt-push` an, rollt den aktuellen Stand von `main` aus (Cloudflare ändert Secrets nur bei ausgerollter neuester Version, PR-Previews laden neuere hoch) und erzeugt das VAPID-Schlüsselpaar im Runner. Der private Schlüssel geht per `wrangler secret put` direkt als Worker-Secret `VAPID_PRIVATE_JWK` an Cloudflare und erscheint nirgends; die Zusammenfassung des Laufs nennt nur die Datenbank-ID und den öffentlichen Schlüssel. Ein vorhandenes Secret bleibt bestehen, außer man setzt „rotate_vapid“ (dann werden alle Push-Abos ungültig).
+- **Stufen:** Test lokal und in GitHub Actions, Staging als Vorschau je Zweig mit eigener Push-Datenbank (`previews` in `wrangler.jsonc`), Live auf `main`.
+- **Produktion:** https://endlab.de/abfahrt (Route `endlab.de/abfahrt*` auf der Zone `endlab.de`)
+- **Vorschau je Zweig:** Adresse steht im Build unter Workers & Pages → abfahrt → Deployments; nach dem Merge wird sie gelöscht (`npx wrangler preview delete --name <zweig>`).
+- **Rollback:** Cloudflare-Dashboard → Workers → `abfahrt` → _Deployments_, frühere Version auswählen, oder `npx wrangler rollback`.
+
+**Web Push:** D1 `abfahrt-push` (Staging: `abfahrt-push-vorschau`), privater Schlüssel als Worker-Secret `VAPID_PRIVATE_JWK`. Ein neuer Schlüssel macht alle Push-Abos ungültig und wird nur bewusst gesetzt (`npx wrangler secret put VAPID_PRIVATE_JWK`).
 
 **Prüfung der Workflows:** Vor Änderungen an `.github/` lokal `actionlint` und `zizmor` laufen lassen.
 
@@ -63,7 +71,7 @@ Workflow: [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
 | Abhängigkeiten                | Dependabot (wöchentlich gesammelt, 7 Tage Cooldown, Security sofort), Versionen exakt gepinnt, Installationsskripte verboten (`allowScripts`), `npm audit` + Signaturprüfung, Dependency-Review | Dependabot alerts, security updates, Malware alerts                                                  |
 | Code-Analyse                  | –                                                                                                                                                                                               | CodeQL (Default setup)                                                                               |
 | Actions gehärtet              | Actions auf Commit-SHA gepinnt, `permissions:` minimal je Job, keine `pull_request_target`-Workflows                                                                                            | gleich                                                                                               |
-| Cloudflare-Token              | nur als GitHub-Secret, eigenes Token nur für GitHub Actions mit „Workers Scripts: Edit“ auf ein Konto                                                                                           | gleich                                                                                               |
+| Cloudflare-Token              | keiner in GitHub; Workers Builds baut mit dem Token `endlab-workers-builds` in Cloudflare                                                                                                       | gleich                                                                                               |
 | Meldeweg                      | `SECURITY.md`                                                                                                                                                                                   | + private Vulnerability Reports                                                                      |
 
 Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechten Spalte schaltet der Repo-Owner ein, ein Teil davon setzt die CI-Jobs voraus (Ruleset: Pflicht-Checks). Action-Minuten sind unbegrenzt.
@@ -76,20 +84,6 @@ Das Repo ist seit 31.10.2026 öffentlich. Die GitHub-Einstellungen in der rechte
    git config --global user.signingkey ~/.ssh/id_ed25519.pub
    git config --global commit.gpgsign true
    ```
-2. **Cloudflare-API-Token für GitHub Actions:**
-   - Account-API-Token (von Cloudflare für CI/CD empfohlen, hängt nicht an einem Benutzer, Präfix `cfat_`)
-   - Cloudflare-Dashboard → Konto **EndLab** → _Manage account_ → _Account API tokens_ → _Create Token_
-   - Token name: `github-actions-abfahrt`
-   - Permission policies: _Start from scratch_
-     - Konto **EndLab**: **Workers Scripts → Edit/Write** (aktuell zusätzlich „Workers Editor“)
-     - Konto **EndLab**: **D1 → Edit/Write** (Datenbank für Push-Abos, seit 16.11.2026)
-     - Zone **endlab.de**: **Workers Routes → Edit/Write** (für die Route `endlab.de/abfahrt*`)
-   - Token expiration: _1 year_, Client IP filtering leer lassen (GitHub Actions nutzt wechselnde IPs)
-   - _Review token_ → _Create token_ → Token kopieren (wird nur einmal angezeigt)
-   - In GitHub unter _Settings → Secrets and variables → Actions_:
-     - Tab **Secrets** → _New repository secret_ → Name `CLOUDFLARE_API_TOKEN`, Wert = Token
-   - Die Konto-ID steht in `wrangler.jsonc` (nicht geheim), es braucht keine weitere Variable.
-   - Den Token sieht nur GitHub, er landet nie im Chat oder im Repo.
 
 ## Eigene Fixes für Abhängigkeiten
 

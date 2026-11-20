@@ -31,7 +31,7 @@
   // fürs ganze Konto; SPEECH_DAILY_MINUTES begrenzt den Anteil von Abfahrt (Audio-Minuten je Tag).
   "ai": { "binding": "AI" },
   "vars": { "SPEECH_DAILY_MINUTES": "120" },
-  // Push-Abos (#71); angelegt vom Workflow push-setup, Schema in migrations/
+  // Push-Abos (#71), Schema in migrations/
   "d1_databases": [
     {
       "binding": "PUSH_DB",
@@ -42,5 +42,19 @@
   ],
   "observability": {
     "enabled": true,
+  },
+  // Staging: Vorschau je Zweig (wrangler preview) mit eigener Push-Datenbank, nie den echten
+  // Abos. Migrationen dafür: wrangler.preview-migrations.jsonc (npm run cf:preview).
+  "previews": {
+    "ai": { "binding": "AI" },
+    "vars": { "SPEECH_DAILY_MINUTES": "20" },
+    "d1_databases": [
+      {
+        "binding": "PUSH_DB",
+        "database_name": "abfahrt-push-vorschau",
+        "database_id": "188162d2-8a25-4004-acf3-759389496139",
+      },
+    ],
+    "observability": { "enabled": true },
   },
 }
