@@ -138,7 +138,7 @@ Der Vertrag (Typen `Stop`, `Departure`, …) steht in `shared/api-types.ts` und 
 **Web Push** (`worker/push/`, `src/lib/push.ts`, `src/pwa/service-worker.js`, #71):
 
 - Ohne Fremddienst und ohne Bibliothek: VAPID-Token (RFC 8292, ES256) und Verschlüsselung der Nachricht (RFC 8291, `aes128gcm`, ein Datensatz) mit WebCrypto im Worker (`worker/push/crypto.ts`). Die Tests entschlüsseln unabhängig wie ein Browser und prüfen die Signatur.
-- Schlüssel: privater VAPID-Schlüssel als Worker-Secret `VAPID_PRIVATE_JWK` (angelegt vom Workflow push-setup, siehe [Workflow & Sicherheit](04-workflow-sicherheit.md)); den öffentlichen Schlüssel berechnet der Worker daraus (`GET push/key`).
+- Schlüssel: privater VAPID-Schlüssel als Worker-Secret `VAPID_PRIVATE_JWK` (siehe [Workflow & Sicherheit](04-workflow-sicherheit.md)); den öffentlichen Schlüssel berechnet der Worker daraus (`GET push/key`).
 - Abos in **D1** `abfahrt-push` (Bindung `PUSH_DB`, Schema in `migrations/`, angewendet vom Deploy-Workflow): Kennung = SHA-256 des Endpunkts, Endpunkt, Schlüssel des Browsers, `topics` (für #72), Zeitstempel, Fehlerzähler. Keine personenbezogenen Daten.
 - `POST push/subscribe`, `push/unsubscribe`, `push/test` (Body `{ subscription }` aus `PushSubscription.toJSON()`): nur mit `Origin` der eigenen Seite, JSON bis 4 KB, Endpunkt nur bei bekannten Push-Diensten (Google FCM, Mozilla, Apple, Microsoft), sonst `400`. Antwortet der Push-Dienst mit 404/410, wird das Abo gelöscht.
 - Service Worker: `push` zeigt die Nachricht (Titel, Text, Kennung `tag` ersetzt ältere), `notificationclick` öffnet bzw. fokussiert die Seite aus `url` (nur Seiten unter `/abfahrt/`).

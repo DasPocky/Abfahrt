@@ -17,7 +17,12 @@
     "format": "prettier --write .",
     "test": "npm run test:app && npm run test:worker",
     "test:app": "vitest run",
-    "test:worker": "vitest run --config vitest.worker.config.ts"
+    "test:worker": "vitest run --config vitest.worker.config.ts",
+    "check": "npm run lint && npm test && npm run build && wrangler deploy --dry-run",
+    "db:migrate:preview": "wrangler d1 migrations apply abfahrt-push-vorschau --remote --config wrangler.preview-migrations.jsonc",
+    "cf:build": "npm run check",
+    "cf:deploy": "wrangler d1 migrations apply abfahrt-push --remote && wrangler deploy",
+    "cf:preview": "npm run db:migrate:preview && wrangler preview"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.3.0",
