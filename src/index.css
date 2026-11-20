@@ -79,14 +79,13 @@
   * {
     @apply border-border outline-ring/50;
   }
-  /* Vollbild: Hintergrund bis unter Statusleiste und Home-Leiste, Inhalt im Querformat neben der Notch */
+  /* Vollbild: Hintergrund und Kopf bis an alle Ränder; den Abstand zur Notch im Querformat
+     halten Kopfinhalt und Hauptbereich selbst (layout.tsx) */
   html {
     @apply bg-background;
   }
   body {
     @apply bg-background text-foreground;
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
   }
   html {
     @apply font-sans;

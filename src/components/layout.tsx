@@ -29,7 +29,7 @@ export function Layout() {
     <div className="min-h-dvh bg-background">
       {/* EndLab-Kopf mit Welle – nicht auf der Karte, die die ganze Höhe braucht */}
       {!isMap && (
-        <header className="endlab-head px-4 pt-[calc(0.75rem+env(safe-area-inset-top))]">
+        <header className="endlab-head pt-[calc(0.75rem+env(safe-area-inset-top))] pr-[calc(1rem+env(safe-area-inset-right))] pl-[calc(1rem+env(safe-area-inset-left))]">
           <span
             className="endlab-bubble"
             style={{ width: 110, height: 110, right: -30, top: -50 }}
@@ -39,7 +39,7 @@ export function Layout() {
       )}
       <main
         className={cn(
-          "mx-auto max-w-2xl px-4 pb-[calc(5rem+env(safe-area-inset-bottom))]",
+          "mx-auto max-w-2xl pr-[calc(1rem+env(safe-area-inset-right))] pb-[calc(5rem+env(safe-area-inset-bottom))] pl-[calc(1rem+env(safe-area-inset-left))]",
           isMap ? "pt-[calc(1rem+env(safe-area-inset-top))]" : "pt-1",
         )}
       >
