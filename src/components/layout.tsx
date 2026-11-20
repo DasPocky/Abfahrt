@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useBand } from "@/lib/use-band";
 import { Outlet, useLocation } from "react-router";
 import { PushSync } from "@/components/push-sync";
 import { TabBar } from "@/components/tab-bar";
@@ -12,6 +13,8 @@ export function Layout() {
   const { pathname } = useLocation();
   const shown = useRef(pathname);
   const isMap = pathname.startsWith("/karte");
+  const main = useRef<HTMLElement>(null);
+  useBand(main, !isMap);
 
   // Nach einem Seitenwechsel den Fokus auf die neue Überschrift setzen, damit Screenreader die neue
   // Seite ansagen und die Tastatur dort weitermacht (#128). Nicht beim ersten Laden.
@@ -26,20 +29,20 @@ export function Layout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-dvh bg-background">
-      {/* EndLab-Kopf mit Welle – nicht auf der Karte, die die ganze Höhe braucht */}
+    <div className="relative min-h-dvh bg-background">
+      {/* EndLab-Band mit Welle bis unter den Seitentitel – nicht auf der Karte, die die ganze Höhe braucht */}
       {!isMap && (
-        <header className="endlab-head pt-[calc(0.75rem+env(safe-area-inset-top))] pr-[calc(1rem+env(safe-area-inset-right))] pl-[calc(1rem+env(safe-area-inset-left))]">
-          <span
-            className="endlab-bubble"
-            style={{ width: 110, height: 110, right: -30, top: -50 }}
-          />
-          <p className="mx-auto max-w-2xl text-lg font-bold tracking-tight">Abfahrt</p>
-        </header>
+        <>
+          <div className="endlab-band" aria-hidden="true" />
+          <header className="relative pt-[calc(0.25rem+env(safe-area-inset-top))] pr-[calc(1rem+env(safe-area-inset-right))] pl-[calc(1rem+env(safe-area-inset-left))] text-white">
+            <p className="mx-auto max-w-2xl text-sm font-bold tracking-tight opacity-80">Abfahrt</p>
+          </header>
+        </>
       )}
       <main
+        ref={main}
         className={cn(
-          "mx-auto max-w-2xl pr-[calc(1rem+env(safe-area-inset-right))] pb-[calc(5rem+env(safe-area-inset-bottom))] pl-[calc(1rem+env(safe-area-inset-left))]",
+          "relative mx-auto max-w-2xl pr-[calc(1rem+env(safe-area-inset-right))] pb-[calc(5rem+env(safe-area-inset-bottom))] pl-[calc(1rem+env(safe-area-inset-left))]",
           isMap ? "pt-[calc(1rem+env(safe-area-inset-top))]" : "pt-1",
         )}
       >
