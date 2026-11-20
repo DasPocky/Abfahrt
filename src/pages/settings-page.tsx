@@ -105,15 +105,14 @@ export function SettingsPage() {
                 onClick={() => setSettings({ ...settings, rowStyle: style })}
                 className={cn(
                   "block w-full rounded-xl border p-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  active &&
-                    "border-blue-600 ring-1 ring-blue-600 dark:border-blue-500 dark:ring-blue-500",
+                  active && "border-primary ring-1 ring-primary",
                 )}
               >
                 <span className="flex items-center gap-2">
                   <span
                     className={cn(
                       "flex size-5 items-center justify-center rounded-full border",
-                      active && "border-blue-600 bg-blue-600 text-white dark:border-blue-500",
+                      active && "border-primary bg-primary text-primary-foreground",
                     )}
                     aria-hidden="true"
                   >

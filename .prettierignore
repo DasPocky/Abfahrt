@@ -7,3 +7,5 @@ worker-configuration.d.ts
 LICENSE
 .claude
 vendor
+# Gemeinsame EndLab-Datei, in allen EndLab-Apps gleich
+src/styles/endlab/

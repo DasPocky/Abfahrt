@@ -64,7 +64,7 @@ function Section({
   return (
     <section role="group" aria-label={label} className="space-y-2">
       <p className="flex items-center gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-        <Icon className="size-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+        <Icon className="size-3.5 text-primary" aria-hidden="true" />
         {label}
       </p>
       {children}

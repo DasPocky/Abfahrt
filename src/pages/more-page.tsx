@@ -24,7 +24,7 @@ export function MorePage() {
           id="more-install"
           className="flex items-center gap-2 text-lg font-semibold tracking-tight"
         >
-          <Download className="size-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <Download className="size-5 text-primary" aria-hidden="true" />
           Als App installieren
         </h2>
         <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed">
@@ -43,7 +43,7 @@ export function MorePage() {
           to="/einstellungen"
           className="flex items-center gap-3 px-4 py-3 text-sm font-medium outline-none hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
         >
-          <Settings className="size-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <Settings className="size-4 text-primary" aria-hidden="true" />
           <span className="flex-1">Einstellungen</span>
           <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
         </Link>
@@ -51,7 +51,7 @@ export function MorePage() {
           to="/ueber"
           className="flex items-center gap-3 px-4 py-3 text-sm font-medium outline-none hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
         >
-          <Info className="size-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <Info className="size-4 text-primary" aria-hidden="true" />
           <span className="flex-1">Über Abfahrt · Datenquellen · Datenschutz</span>
           <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
         </Link>
@@ -59,7 +59,7 @@ export function MorePage() {
           to="/barrierefreiheit"
           className="flex items-center gap-3 px-4 py-3 text-sm font-medium outline-none hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
         >
-          <Accessibility className="size-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <Accessibility className="size-4 text-primary" aria-hidden="true" />
           <span className="flex-1">Barrierefreiheit</span>
           <ChevronRight className="size-4 text-muted-foreground" aria-hidden="true" />
         </Link>
