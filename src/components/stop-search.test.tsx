@@ -31,12 +31,12 @@ describe("StopSearch", () => {
 
     const results = await screen.findByRole("list", { name: "Suchergebnisse" });
     const link = await within(results).findByRole("link", { name: /Düsseldorf Hbf/ });
-    expect(link).toHaveAttribute("href", "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18235");
+    expect(link).toHaveAttribute("href", "/haltestelle/vrr%3Ade%3A05111%3A18235");
     expect(within(results).getAllByRole("link")).toHaveLength(2);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/stops/search");
+    expect(url.pathname).toBe("/api/stops/search");
     expect(url.searchParams.get("q")).toBe("Düss");
   });
 
@@ -86,7 +86,7 @@ describe("StopSearch", () => {
 
     fireEvent.keyDown(input(), { key: "Enter" });
     await waitFor(() =>
-      expect(router.state.location.pathname).toBe("/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18235"),
+      expect(router.state.location.pathname).toBe("/haltestelle/vrr%3Ade%3A05111%3A18235"),
     );
     expect(await screen.findByRole("heading", { name: "Düsseldorf Hbf" })).toBeInTheDocument();
     const departuresCall = fetchMock.mock.calls

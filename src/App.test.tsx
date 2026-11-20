@@ -36,17 +36,14 @@ describe("App", () => {
     expect(screen.getByLabelText("in 5 Min")).toBeInTheDocument();
     expect(screen.getByText("+2")).toBeInTheDocument();
     expect(screen.getByText(/^Stand/)).toHaveTextContent("Stand 13:00:00");
-    expect(screen.getByRole("link", { name: "Zurück zur Suche" })).toHaveAttribute(
-      "href",
-      "/abfahrt",
-    );
+    expect(screen.getByRole("link", { name: "Zurück zur Suche" })).toHaveAttribute("href", "/");
     expect(
       screen.getByText(/Fahrplanauskünfte werden durch den Lizenzgeber zur Verfügung gestellt/),
     ).toBeInTheDocument();
     expect(screen.getByText("Daten: VRR")).toBeInTheDocument();
 
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/departures");
+    expect(url.pathname).toBe("/api/departures");
     expect(url.searchParams.get("stop")).toBe("vrr:de:05111:18235");
   });
 
@@ -98,7 +95,7 @@ describe("Navigation unten (#106)", () => {
     await waitFor(() =>
       expect(within(nav).getByRole("link", { name: "Verbindung" })).toHaveAttribute(
         "href",
-        "/abfahrt/verbindung?von=vrr%3Ade%3A05111%3A18235",
+        "/verbindung?von=vrr%3Ade%3A05111%3A18235",
       ),
     );
   });

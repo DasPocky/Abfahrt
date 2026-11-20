@@ -7,7 +7,7 @@ Echtzeit-Auskunft für Bus und Bahn als Progressive Web App: Abfahrten, Verbindu
 und Störungen. Schwerpunkt Düsseldorf/Rheinland, nutzbar in ganz Deutschland. Läuft komplett im Free-Plan von
 Cloudflare, ohne Konto und ohne Werbung.
 
-**👉 Live: [endlab.de/abfahrt](https://endlab.de/abfahrt)**
+**👉 Live: [abfahrt.endlab.de](https://abfahrt.endlab.de)**
 
 <p align="center">
   <img src="docs/images/abfahrten.webp" width="260" alt="Abfahrten an Heinrich-Heine-Allee mit Linien, Steigen und Verspätungen">
@@ -62,7 +62,7 @@ Voraussetzung: Node.js ≥ 26 (siehe `.nvmrc`).
 
 ```sh
 npm ci              # Abhängigkeiten installieren (ohne Installationsskripte)
-npm run dev         # App und Worker lokal starten (http://localhost:5173/abfahrt/)
+npm run dev         # App und Worker lokal starten (http://localhost:5173/)
 npm test            # Tests für App und Worker
 npm run lint        # oxlint + Prettier
 npm run typecheck   # TypeScript

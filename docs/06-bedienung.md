@@ -49,7 +49,7 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 ## Abfahrten
 
-- Die Abfahrtsseite (`/abfahrt/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen
+- Die Abfahrtsseite (`/haltestelle/<id>`) lädt alle 30 Sekunden neu, der Countdown läuft dazwischen
   weiter. Der Link lässt sich als Lesezeichen speichern.
 - **Zeiten:** Der Countdown („5 Min“, „jetzt“) zählt bis zur tatsächlichen Abfahrt. Direkt darunter steht die
   Verspätung als farbiges Kästchen (**+2** orange bis 4 Minuten, **+6** rot ab 5 Minuten, früher grün). In
@@ -87,7 +87,7 @@ Unten stehen fünf Bereiche: **Abfahrten**, **Verbindung**, **Karte**, **Störun
 
 ## Verbindung suchen
 
-Bereich **Verbindung** (`/abfahrt/verbindung`).
+Bereich **Verbindung** (`/verbindung`).
 
 ### Start und Ziel
 
@@ -175,7 +175,7 @@ Aktive Optionen stehen kurz unter der Zeile. Routenwahl, Fahrrad und Umgebung wi
 
 ## Live-Begleitung
 
-- **„Merken & live verfolgen“** in den Details einer Verbindung öffnet `/abfahrt/fahrt`.
+- **„Merken & live verfolgen“** in den Details einer Verbindung öffnet `/fahrt`.
 - Groß steht der nächste Schritt: „U76 ab Holthausen · Gleis 2 – Abfahrt in 5 Min“, unterwegs „Ankunft in
   12 Min“, beim Umstieg „Umsteigen: S6 ab … in 6 Min“. Darunter die Zeitleiste.
 - Die Seite fragt alle 30 Sekunden neu ab und erkennt die Verbindung an Linien und Planzeiten wieder.
@@ -186,7 +186,7 @@ Aktive Optionen stehen kurz unter der Zeile. Routenwahl, Fahrrad und Umgebung wi
 
 ## Karte
 
-Bereich **Karte** (`/abfahrt/karte`).
+Bereich **Karte** (`/karte`).
 
 - **Haltestellen** erscheinen ab Straßenzoom, ab Zoomstufe 16 mit Namen. Weiter herausgezoomt bittet die
   Karte ums Heranzoomen.
@@ -206,7 +206,7 @@ Bereich **Karte** (`/abfahrt/karte`).
 
 ## Störungen
 
-Bereich **Störungen** (`/abfahrt/stoerungen`).
+Bereich **Störungen** (`/stoerungen`).
 
 - Sperrungen, Aufzüge/Rolltreppen und Infos des VRR für eine Gemeinde, Sperrungen zuerst.
 - Die Gemeinde ergibt sich aus der ersten Favoriten-Haltestelle, sonst aus der nächsten Haltestelle
@@ -221,7 +221,7 @@ Bereich **Störungen** (`/abfahrt/stoerungen`).
 
 ## Benachrichtigungen
 
-- Im Bereich [Mehr](https://endlab.de/abfahrt/mehr) einschalten und mit einer **Testnachricht**
+- Im Bereich [Mehr](https://abfahrt.endlab.de/mehr) einschalten und mit einer **Testnachricht**
   prüfen. Am iPhone geht das nur, wenn Abfahrt auf dem Home-Bildschirm installiert ist.
 - Darunter wählst du, wofür Nachrichten kommen:
   - **Störungen bei Favoriten:** neue Meldungen zu deinen Haltestellen und den Linien aus deren Filtern
@@ -232,7 +232,7 @@ Bereich **Störungen** (`/abfahrt/stoerungen`).
 
 ## Einstellungen
 
-Unter **Mehr → Einstellungen** (`/abfahrt/einstellungen`), gespeichert nur im Browser:
+Unter **Mehr → Einstellungen** (`/einstellungen`), gespeichert nur im Browser:
 
 - **Darstellung der Abfahrten** mit Vorschau: **Linie vorn** (Standard: Linie mit Symbol, Ziel, Minuten
   rechts), **Anzeigetafel** (große Minuten vorn, Gleis rechts) oder **Karten** (jede Abfahrt als Karte mit

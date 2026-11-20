@@ -100,14 +100,14 @@ describe("Web-Push-Krypto", () => {
     const jwk = parseVapidJwk(env.VAPID_PRIVATE_JWK);
     expect(jwk).not.toBeNull();
     if (!jwk) return;
-    const header = await vapidAuthorization(jwk, ENDPOINT, "https://endlab.de/abfahrt", 0);
+    const header = await vapidAuthorization(jwk, ENDPOINT, "https://abfahrt.endlab.de", 0);
     const [, token, key] = /^vapid t=([^,]+), k=(.+)$/.exec(header) ?? [];
     expect(key).toBe(vapidPublicKey(jwk));
     const [h, c, s] = (token ?? "").split(".");
     expect(JSON.parse(new TextDecoder().decode(base64UrlDecode(c ?? "")))).toEqual({
       aud: "https://fcm.googleapis.com",
       exp: 12 * 60 * 60,
-      sub: "https://endlab.de/abfahrt",
+      sub: "https://abfahrt.endlab.de",
     });
     const publicKey = await crypto.subtle.importKey(
       "raw",
@@ -168,7 +168,7 @@ describe("API push", () => {
     expect(request?.headers.get("Content-Encoding")).toBe("aes128gcm");
     expect(request?.headers.get("Authorization")).toMatch(/^vapid t=/);
     const message: unknown = JSON.parse(await decrypt(request?.body ?? new Uint8Array(), browser));
-    expect(message).toMatchObject({ title: "Abfahrt", url: "/abfahrt/" });
+    expect(message).toMatchObject({ title: "Abfahrt", url: "/" });
     vi.restoreAllMocks();
 
     expect((await post("push/unsubscribe", { subscription })).status).toBe(200);

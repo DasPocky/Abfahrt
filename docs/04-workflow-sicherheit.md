@@ -54,7 +54,7 @@ Cloudflare baut selbst, sobald auf GitHub gepusht wird. In GitHub liegt kein Clo
 | Merge auf `main` | `cf:build`, dann `cf:deploy`: Migrationen auf `abfahrt-push`, `wrangler deploy`                                               |
 
 - **Stufen:** Test lokal und in GitHub Actions, Staging als Vorschau je Zweig mit eigener Push-Datenbank (`previews` in `wrangler.jsonc`), Live auf `main`.
-- **Produktion:** https://endlab.de/abfahrt (Route `endlab.de/abfahrt*` auf der Zone `endlab.de`)
+- **Produktion:** https://abfahrt.endlab.de (eigene Domain am Worker). Die alte Adresse `endlab.de/abfahrt` (Route `endlab.de/abfahrt*`) zieht Seiten samt Gerätedaten dorthin um, siehe [Architektur](02-architektur.md#adresse-abfahrtendlabde).
 - **Vorschau je Zweig:** Adresse steht im Build unter Workers & Pages → abfahrt → Deployments; nach dem Merge wird sie gelöscht (`npx wrangler preview delete --name <zweig>`).
 - **Rollback:** Cloudflare-Dashboard → Workers → `abfahrt` → _Deployments_, frühere Version auswählen, oder `npx wrangler rollback`.
 

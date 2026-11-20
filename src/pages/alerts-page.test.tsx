@@ -170,16 +170,13 @@ describe("Hinweis auf der Startseite", () => {
     renderAt("/");
 
     const link = await screen.findByRole("link", { name: /2 Störungen bei deinen Favoriten/ });
-    expect(link).toHaveAttribute("href", "/abfahrt/stoerungen");
+    expect(link).toHaveAttribute("href", "/stoerungen");
     expect(alertCalls(fetchMock)).toEqual([`?stop=${encodeURIComponent(STOP_HBF.id)}&lines=U79`]);
   });
 
   it("bietet den Einstieg zur Übersicht unter der Suche", () => {
     renderAt("/");
-    expect(screen.getByRole("link", { name: "Störungen" })).toHaveAttribute(
-      "href",
-      "/abfahrt/stoerungen",
-    );
+    expect(screen.getByRole("link", { name: "Störungen" })).toHaveAttribute("href", "/stoerungen");
   });
 });
 

@@ -1,43 +1,43 @@
 {
-  "id": "/abfahrt/",
+  "id": "/",
   "name": "Abfahrt",
   "short_name": "Abfahrt",
   "description": "Echtzeit-Abfahrten, Verbindungen und Karte für Bus und Bahn",
   "lang": "de",
   "dir": "ltr",
-  "start_url": "/abfahrt/",
-  "scope": "/abfahrt/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
   "categories": ["travel", "navigation"],
   "icons": [
     {
-      "src": "/abfahrt/icons/icon.svg",
+      "src": "/icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/abfahrt/icons/icon-192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/abfahrt/icons/icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/abfahrt/icons/icon-maskable-192.png",
+      "src": "/icons/icon-maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/abfahrt/icons/icon-maskable-512.png",
+      "src": "/icons/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -46,10 +46,10 @@
   "shortcuts": [
     {
       "name": "Abfahrten",
-      "url": "/abfahrt/",
+      "url": "/",
       "icons": [
         {
-          "src": "/abfahrt/icons/icon-192.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]
@@ -57,30 +57,30 @@
     {
       "name": "Verbindung suchen",
       "short_name": "Verbindung",
-      "url": "/abfahrt/verbindung",
+      "url": "/verbindung",
       "icons": [
         {
-          "src": "/abfahrt/icons/icon-192.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]
     },
     {
       "name": "Karte",
-      "url": "/abfahrt/karte",
+      "url": "/karte",
       "icons": [
         {
-          "src": "/abfahrt/icons/icon-192.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]
     },
     {
       "name": "Störungen",
-      "url": "/abfahrt/stoerungen",
+      "url": "/stoerungen",
       "icons": [
         {
-          "src": "/abfahrt/icons/icon-192.png",
+          "src": "/icons/icon-192.png",
           "sizes": "192x192"
         }
       ]

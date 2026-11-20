@@ -97,11 +97,11 @@ describe("In der Nähe", () => {
     expect(links).toHaveLength(4);
     expect(links[0]).toHaveTextContent("Heinrich-Heine-Allee U");
     expect(links[0]).toHaveTextContent("50 m");
-    expect(links[0]).toHaveAttribute("href", "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18036");
+    expect(links[0]).toHaveAttribute("href", "/haltestelle/vrr%3Ade%3A05111%3A18036");
 
     // Position nur gerundet (~100 m) an den Worker
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/stops/nearby");
+    expect(url.pathname).toBe("/api/stops/nearby");
     expect(url.searchParams.get("lat")).toBe("51.226");
     expect(url.searchParams.get("lon")).toBe("6.777");
     expect(localStorage.getItem(LOCATION_PREF_KEY)).toBe("on");

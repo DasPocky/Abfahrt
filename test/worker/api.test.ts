@@ -35,13 +35,30 @@ describe("Worker-API", () => {
   });
 });
 
-describe("Basis-Pfad", () => {
-  it("leitet /abfahrt auf /abfahrt/ weiter", async () => {
-    const res = await exports.default.fetch("https://endlab.test/abfahrt?x=1", {
-      redirect: "manual",
-    });
+describe("Frühere Adresse /abfahrt", () => {
+  const page = { redirect: "manual", headers: { "Sec-Fetch-Mode": "navigate" } } as const;
+
+  it("leitet auf derselben Adresse an die Wurzel um, Pfad und Query bleiben", async () => {
+    const res = await exports.default.fetch("https://abfahrt.endlab.de/abfahrt/fahrt?x=1", page);
     expect(res.status).toBe(301);
-    expect(res.headers.get("Location")).toBe("https://endlab.test/abfahrt/?x=1");
+    expect(res.headers.get("Location")).toBe("https://abfahrt.endlab.de/fahrt?x=1");
+  });
+
+  it("zieht von endlab.de mit einer Umzugsseite nach abfahrt.endlab.de", async () => {
+    const res = await exports.default.fetch("https://endlab.de/abfahrt/karte?x=1", page);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Security-Policy")).toMatch(/script-src 'nonce-/);
+    expect(await res.text()).toContain('"https://abfahrt.endlab.de/karte?x=1"');
+  });
+
+  it("ersetzt den alten Service Worker durch einen, der sich abmeldet", async () => {
+    const res = await exports.default.fetch("https://endlab.de/abfahrt/sw.js");
+    expect(await res.text()).toContain("unregister()");
+  });
+
+  it("beantwortet /api für offene Tabs weiter", async () => {
+    const res = await exports.default.fetch("https://endlab.de/abfahrt/api/health");
+    expect(res.status).toBe(200);
   });
 });
 
@@ -62,9 +79,9 @@ describe("App-Seiten (#76)", () => {
   const pageEnv: Env = { ...env, ASSETS: assets };
 
   it.each([
-    "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18036",
-    "/abfahrt/verbindung?von=vrr%3Ade%3A05111%3A18036",
-    "/abfahrt/fahrt",
+    "/haltestelle/vrr%3Ade%3A05111%3A18036",
+    "/verbindung?von=vrr%3Ade%3A05111%3A18036",
+    "/fahrt",
   ])("liefert %s als index.html mit den Seiten-Headern aus", async (path) => {
     requested.length = 0;
     const res = await worker.fetch(

@@ -7,7 +7,11 @@ import { registerServiceWorker } from "@/pwa/register-service-worker";
 import { App } from "./App";
 import { routes } from "./routes";
 import { BASE_PATH } from "../shared/base-path";
+import { moveIn } from "./move-in";
 import "./index.css";
+
+// Zuerst: Umzug von endlab.de/abfahrt annehmen, bevor die App den Speicher liest
+moveIn();
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root fehlt in index.html");

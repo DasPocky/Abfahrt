@@ -1,7 +1,6 @@
 import { BASE_PATH } from "../../shared/base-path";
 
 function register(): void {
-  // Scope ausdrücklich /abfahrt/, damit andere Apps auf endlab.de unberührt bleiben
   navigator.serviceWorker
     .register(`${BASE_PATH}/sw.js`, { scope: `${BASE_PATH}/` })
     .catch((error: unknown) => {

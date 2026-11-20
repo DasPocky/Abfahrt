@@ -53,7 +53,7 @@ describe("Spracheingabe (#132)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Einverstanden" }));
     expect(localStorage.getItem("abfahrt:voice-consent")).toBe("1");
 
-    await waitFor(() => expect(router.state.location.pathname).toBe("/abfahrt/verbindung"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/verbindung"));
     const params = new URLSearchParams(router.state.location.search);
     expect(params.get("von")).toBe(BENRATH.id);
     expect(params.get("nach")).toBe(ESSEN.id);
@@ -79,6 +79,6 @@ describe("Spracheingabe (#132)", () => {
       target: { value: "von Benrath nach Essen" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Verbindung suchen: Benrath → Essen" }));
-    await waitFor(() => expect(router.state.location.pathname).toBe("/abfahrt/verbindung"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/verbindung"));
   });
 });

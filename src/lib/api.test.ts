@@ -22,7 +22,7 @@ describe("searchStops", () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json({ stops: [] }));
     await expect(searchStops("Düsseldorf Hbf")).resolves.toEqual({ stops: [] });
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/stops/search");
+    expect(url.pathname).toBe("/api/stops/search");
     expect(url.searchParams.get("q")).toBe("Düsseldorf Hbf");
   });
 });
@@ -35,7 +35,7 @@ describe("fetchAlerts", () => {
     const res = await fetchAlerts({ stop: "vrr:de:05111:18235", lines: ["U79", "706"] });
     expect(res.alerts).toHaveLength(1);
     let url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/alerts");
+    expect(url.pathname).toBe("/api/alerts");
     expect(url.searchParams.get("stop")).toBe("vrr:de:05111:18235");
     expect(url.searchParams.get("lines")).toBe("U79,706");
 
@@ -66,7 +66,7 @@ describe("fetchDepartures", () => {
       .mockResolvedValue(Response.json(departuresResponse([])));
     await fetchDepartures("vrr:de:05111:18235", undefined, "2026-11-13T12:00:00Z");
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/departures");
+    expect(url.pathname).toBe("/api/departures");
     expect(url.searchParams.get("stop")).toBe("vrr:de:05111:18235");
     expect(url.searchParams.get("when")).toBe("2026-11-13T12:00:00Z");
   });
@@ -98,7 +98,7 @@ describe("fetchJourneys", () => {
       fetchJourneys({ from: "vrr:a", to: "vrr:b", when: "2026-11-13T12:00:00Z", arrive: true }),
     ).resolves.toEqual(body);
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/journeys");
+    expect(url.pathname).toBe("/api/journeys");
     expect(Object.fromEntries(url.searchParams)).toEqual({
       from: "vrr:a",
       to: "vrr:b",

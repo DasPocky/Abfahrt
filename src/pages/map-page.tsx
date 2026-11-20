@@ -1,4 +1,4 @@
-// Karte mit Haltestellen (/abfahrt/karte). Lazy geladen, siehe src/pages/lazy-map-page.tsx.
+// Karte mit Haltestellen (/karte). Lazy geladen, siehe src/pages/lazy-map-page.tsx.
 import { useMemo, useState } from "react";
 import { keepPreviousData, useQueries, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";

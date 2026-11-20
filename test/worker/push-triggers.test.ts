@@ -114,7 +114,7 @@ describe("Störungen: was ist neu?", () => {
   it("meldet neue Meldungen einzeln bzw. gesammelt", () => {
     const one = checkAlerts([alert("a", "Alt"), alert("b", "Aufzug defekt", ["U79"])], ["a"]);
     expect(one.messages).toEqual([
-      { title: "Störung: U79", body: "Aufzug defekt", url: "/abfahrt/stoerungen", tag: "alerts" },
+      { title: "Störung: U79", body: "Aufzug defekt", url: "/stoerungen", tag: "alerts" },
     ]);
     expect(one.seen).toEqual(["a", "b"]);
     const many = checkAlerts([alert("c", "Eins"), alert("d", "Zwei")], ["a"]);
@@ -272,7 +272,7 @@ describe("Push-Interessen und Cron", () => {
 
     // Zweiter Lauf (Cache umgehen: neue Minute reicht nicht, daher anderer Zeitpunkt + leerer Cache)
     await caches.default.delete(
-      new Request("https://endlab.de/abfahrt/api/__cache/alerts%3Av2%3A5111000"),
+      new Request("https://abfahrt.endlab.de/api/__cache/alerts%3Av2%3A5111000"),
     );
     vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
       const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;

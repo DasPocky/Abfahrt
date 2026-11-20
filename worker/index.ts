@@ -1,6 +1,7 @@
 import { handleSpeech, workersAiTranscriber } from "./speech";
 import { getTrip } from "./trip";
-import { API_PREFIX, BASE_PATH } from "../shared/base-path";
+import { API_PREFIX, HOME, OLD_HOST, OLD_PATH } from "../shared/base-path";
+import { isNavigation, movePage, retireServiceWorker } from "./move";
 import { getDepartures, nearbyStops, searchStops } from "./api";
 import { getAlerts } from "./alerts";
 import { cacheProbe } from "./cache-probe";
@@ -81,25 +82,47 @@ async function handleApi(request: Request, env: Env, ctx: ExecutionContext): Pro
   }
 }
 
+/** Pfad ohne das frühere Präfix /abfahrt, oder null, wenn er nicht darunter liegt */
+function oldPath(path: string): string | null {
+  if (path === OLD_PATH) return "/";
+  return path.startsWith(`${OLD_PATH}/`) ? path.slice(OLD_PATH.length) : null;
+}
+
+/** Gebaute Dateien (Rest sind App-Seiten) */
+function isStaticFile(path: string): boolean {
+  return (
+    path.startsWith("/assets/") ||
+    path.startsWith("/icons/") ||
+    path === "/sw.js" ||
+    path === "/manifest.webmanifest"
+  );
+}
+
 export default {
   async fetch(request, env, ctx): Promise<Response> {
     const url = new URL(request.url);
+    // Frühere Adresse mit /abfahrt davor. Seiten ziehen um: von endlab.de samt Daten auf dem
+    // Gerät nach abfahrt.endlab.de, sonst einfach an die Wurzel. Dateien und /api gibt es dort
+    // weiter ohne Präfix, damit offene Tabs bis zum nächsten Neuladen laufen.
+    const old = oldPath(url.pathname);
+    if (old !== null) {
+      if (url.hostname === OLD_HOST && old === "/sw.js") return retireServiceWorker();
+      if (isNavigation(request) && !old.startsWith(API_PREFIX)) {
+        if (url.hostname === OLD_HOST) return movePage(`${HOME}${old}${url.search}`);
+        return withSecurityHeaders(Response.redirect(`${url.origin}${old}${url.search}`, 301));
+      }
+      url.pathname = old;
+      request = new Request(url, request);
+    }
     if (url.pathname.startsWith(API_PREFIX)) {
       return withSecurityHeaders(await handleApi(request, env, ctx));
     }
-    // /abfahrt ohne Schrägstrich: auf /abfahrt/ weiterleiten, damit relative Pfade stimmen
-    if (url.pathname === BASE_PATH) {
-      url.pathname = `${BASE_PATH}/`;
-      return withSecurityHeaders(Response.redirect(url.toString(), 301));
-    }
-    // App-Seiten (/abfahrt/haltestelle/…, /abfahrt/verbindung, …) liefert der Worker selbst als
-    // index.html aus. Grund (#76): Die Static Assets antworten Browsern bei Pfaden mit „%3A“ mit
-    // einer 307-Weiterleitung auf dieselbe Adresse (Endlosschleife). Dateien unter
-    // /abfahrt/assets/ usw. kommen weiter direkt aus den Assets (siehe run_worker_first).
-    if (
-      url.pathname.startsWith(`${BASE_PATH}/`) &&
-      (request.method === "GET" || request.method === "HEAD")
-    ) {
+    if (isStaticFile(url.pathname)) return env.ASSETS.fetch(request);
+    // App-Seiten (/haltestelle/…, /verbindung, …) liefert der Worker selbst als index.html aus.
+    // Grund (#76): Die Static Assets antworten Browsern bei Pfaden mit „%3A“ mit einer
+    // 307-Weiterleitung auf dieselbe Adresse (Endlosschleife). Dateien unter /assets/ usw. kommen
+    // direkt aus den Assets (siehe run_worker_first).
+    if (request.method === "GET" || request.method === "HEAD") {
       const index = await env.ASSETS.fetch(
         new Request(new URL("/", url), { method: request.method, headers: request.headers }),
       );

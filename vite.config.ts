@@ -19,7 +19,7 @@ function listFiles(dir: string): string[] {
 }
 
 /**
- * Erzeugt beim Build den Service Worker abfahrt/sw.js (Scope /abfahrt/) aus der Vorlage
+ * Erzeugt beim Build den Service Worker sw.js (Scope /) aus der Vorlage
  * src/pwa/service-worker.js: Dateiliste der App-Hülle + Version aus dem Inhalt aller Dateien.
  * Ändert sich eine Datei, ändert sich die Version, der Browser installiert den neuen Service
  * Worker und dieser löscht die alten Caches.
@@ -50,7 +50,7 @@ function serviceWorker(): Plugin {
       const urls = precacheUrls([...Object.keys(bundle), ...publicFiles]);
       this.emitFile({
         type: "asset",
-        fileName: `${BASE_PATH.slice(1)}/sw.js`,
+        fileName: BASE_PATH ? `${BASE_PATH.slice(1)}/sw.js` : "sw.js",
         source: renderServiceWorker(template, { version: hash.digest("hex").slice(0, 12), urls }),
       });
     },
@@ -68,8 +68,7 @@ export default defineConfig({
     serviceWorker(),
   ],
   build: {
-    // Assets liegen unter /abfahrt/assets/, passend zur Route endlab.de/abfahrt*
-    assetsDir: "abfahrt/assets",
+    assetsDir: "assets",
     // Die Karte (lazy, mit MapLibre) ist bewusst ein großer eigener Chunk, siehe src/routes.tsx
     chunkSizeWarningLimit: 1200,
   },

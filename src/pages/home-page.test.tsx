@@ -51,7 +51,7 @@ describe("Favoriten auf der Startseite", () => {
     const list = screen.getByRole("list", { name: "Favoriten" });
     expect(within(list).getByRole("link", { name: /Düsseldorf Hbf/ })).toHaveAttribute(
       "href",
-      "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18235?vm=suburban",
+      "/haltestelle/vrr%3Ade%3A05111%3A18235?vm=suburban",
     );
     expect(within(list).getByText("Düsseldorf · S-Bahn")).toBeInTheDocument();
     const deps = await within(list).findByRole("list", { name: "Abfahrten" });

@@ -13,7 +13,7 @@ describe("Einstellungen (#37)", () => {
     renderAt("/mehr");
     expect(screen.getByRole("link", { name: "Einstellungen" })).toHaveAttribute(
       "href",
-      "/abfahrt/einstellungen",
+      "/einstellungen",
     );
   });
 

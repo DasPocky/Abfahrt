@@ -89,7 +89,7 @@ describe("Verbindungssuche", () => {
     const nav = screen.getByRole("navigation", { name: "Hauptnavigation" });
     expect(within(nav).getByRole("link", { name: "Verbindung" })).toHaveAttribute(
       "href",
-      "/abfahrt/verbindung",
+      "/verbindung",
     );
   });
 
