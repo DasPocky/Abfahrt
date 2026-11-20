@@ -32,6 +32,7 @@ export function FavoriteCard({
   onMove,
   onRemove,
   onRename,
+  limit,
 }: {
   favorite: Favorite;
   now: Date;
@@ -41,6 +42,8 @@ export function FavoriteCard({
   onMove: (delta: number) => void;
   onRemove: () => void;
   onRename: (label: string) => void;
+  /** Höchstens so viele Abfahrten (Dashboard: was auf den Bildschirm passt) */
+  limit?: number;
 }) {
   const [renaming, setRenaming] = useState(false);
   // Abfahrten je Favorit aus den Einstellungen (#37)
@@ -57,7 +60,7 @@ export function FavoriteCard({
     ? upcomingDepartures(
         sortDepartures(filterDepartures(data.departures, favorite.filter)),
         now,
-      ).slice(0, favoriteCount)
+      ).slice(0, Math.min(favoriteCount, limit ?? favoriteCount))
     : [];
   const params = filterToParams(favorite.filter, false).toString();
   const to = params ? `${stopPath(favorite.stopId)}?${params}` : stopPath(favorite.stopId);

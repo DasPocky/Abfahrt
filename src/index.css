@@ -124,3 +124,11 @@ main h1[tabindex="-1"]:focus {
 html {
   scroll-padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
 }
+
+/* Dashboard (Startseite): passt genau zwischen Kopf und Tab-Leiste – kein Abstand unten, keine Fußzeile */
+:root[data-dashboard] main {
+  padding-bottom: 0;
+}
+:root[data-dashboard] .layout-footer {
+  display: none;
+}

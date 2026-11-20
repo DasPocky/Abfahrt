@@ -49,7 +49,7 @@ export function Layout() {
         <Outlet />
         <PushSync />
         {!isMap && (
-          <footer className="endlab-footer mt-10">
+          <footer className="endlab-footer layout-footer mt-10">
             <span className="endlab-logo" aria-hidden />
             <span>
               Powered by <b>EndLab</b>
