@@ -14,7 +14,7 @@ export function Layout() {
   const shown = useRef(pathname);
   const isMap = pathname.startsWith("/karte");
   const main = useRef<HTMLElement>(null);
-  useBand(main, !isMap, pathname);
+  useBand(main, !isMap);
 
   // Nach einem Seitenwechsel den Fokus auf die neue Überschrift setzen, damit Screenreader die neue
   // Seite ansagen und die Tastatur dort weitermacht (#128). Nicht beim ersten Laden.

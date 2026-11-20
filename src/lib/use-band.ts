@@ -4,21 +4,24 @@ import { useLayoutEffect, type RefObject } from "react";
  * EndLab-Band hinter dem Seitenkopf: Es reicht bis unter den Titelblock der Seite (erste sichtbare
  * Überschrift samt direkt folgender Absätze). Was ganz im Band liegt (Zurück-Knopf, Titel, Stern …),
  * bekommt die Klasse `on-band` und steht hell auf Marineblau. Die Höhe landet als `--band` am <html>.
- * Misst neu bei jeder Größenänderung des Inhalts, also auch, wenn Daten nachladen.
+ * Misst neu, sobald sich der Inhalt ändert (Seitenwechsel, nachgeladene Daten, andere Größe).
  */
-export function useBand(main: RefObject<HTMLElement | null>, active: boolean, key: string) {
+export function useBand(main: RefObject<HTMLElement | null>, active: boolean) {
   useLayoutEffect(() => {
     const el = main.current;
     const root = document.documentElement;
+    const clear = () => root.style.removeProperty("--band");
     if (!el || !active) {
-      root.style.removeProperty("--band");
-      return;
+      clear();
+      return undefined;
     }
     const measure = () => {
       for (const marked of el.querySelectorAll(".on-band")) marked.classList.remove("on-band");
-      const heading = [...el.querySelectorAll("h1")].find((h) => !h.classList.contains("sr-only") && h.getClientRects().length > 0);
+      const heading = [...el.querySelectorAll("h1")].find(
+        (h) => !h.classList.contains("sr-only") && h.getClientRects().length > 0,
+      );
       if (!heading) {
-        root.style.removeProperty("--band");
+        clear();
         return;
       }
       let last: Element = heading;
@@ -36,13 +39,18 @@ export function useBand(main: RefObject<HTMLElement | null>, active: boolean, ke
       mark(el);
     };
     measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(el);
+    // Eigene Klassenänderungen (on-band) lösen keinen neuen Lauf aus: nur Struktur und Text beobachten
+    const mutations = new MutationObserver(measure);
+    mutations.observe(el, { childList: true, subtree: true, characterData: true });
+    // ResizeObserver fehlt in der Testumgebung (jsdom)
+    const sizes = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(measure);
+    sizes?.observe(el);
     addEventListener("resize", measure);
     return () => {
-      observer.disconnect();
+      mutations.disconnect();
+      sizes?.disconnect();
       removeEventListener("resize", measure);
-      root.style.removeProperty("--band");
+      clear();
     };
-  }, [main, active, key]);
+  }, [main, active]);
 }
