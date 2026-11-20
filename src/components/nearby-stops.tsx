@@ -12,7 +12,14 @@ import { LocationHelp } from "@/components/location-help";
 export const NEARBY_VISIBLE = 4;
 
 /** „In der Nähe“ auf der Startseite: Haltestellen im Umkreis von 1 km, nächste zuerst */
-export function NearbyStops({ location }: { location: LocationState }) {
+export function NearbyStops({
+  location,
+  max = NEARBY_VISIBLE,
+}: {
+  location: LocationState;
+  /** Höchstens so viele Haltestellen ohne „Alle anzeigen“ (Dashboard: weniger) */
+  max?: number;
+}) {
   const [expanded, setExpanded] = useState(false);
   const { position, status } = location;
   // gerundet, damit kleine GPS-Schwankungen keine neue Abfrage auslösen
@@ -34,7 +41,7 @@ export function NearbyStops({ location }: { location: LocationState }) {
         }))
         .toSorted((a, b) => a.km - b.km)
     : [];
-  const visible = expanded ? ranked : ranked.slice(0, NEARBY_VISIBLE);
+  const visible = expanded ? ranked : ranked.slice(0, max);
 
   let message: string | null = null;
   if (status === "denied") message = "Standort nicht freigegeben.";
@@ -71,7 +78,7 @@ export function NearbyStops({ location }: { location: LocationState }) {
               </li>
             ))}
           </ul>
-          {ranked.length > NEARBY_VISIBLE && (
+          {ranked.length > max && (
             <Button variant="ghost" size="sm" onClick={() => setExpanded((v) => !v)}>
               {expanded ? "Weniger anzeigen" : `Alle ${ranked.length} anzeigen`}
             </Button>
