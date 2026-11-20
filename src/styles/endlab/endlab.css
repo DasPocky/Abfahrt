@@ -1,0 +1,137 @@
+/*
+ * EndLab-Look – gleich in allen EndLab-Apps (Startseite, Login, HealthLog, Tasto, Abfahrt, Spieltisch).
+ * Hell „Welle“: Marineblau mit Eisblau. Dunkel „Nachthimmel“: folgt der Systemeinstellung.
+ * Schrift Sora (SIL Open Font License, fonts/OFL.txt), selbst ausgeliefert.
+ * Änderungen hier in allen Apps gleich nachziehen.
+ */
+@font-face { font-family: "Sora"; src: url("./fonts/sora-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Sora"; src: url("./fonts/sora-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+
+:root {
+  --navy: #0e2240;
+  --ice: #3fb6d8;
+  --ice-soft: #a9e3f2;
+  --ice-press: #135d77;
+  --edge: #d5e5f0;
+  --head-from: #0e2240;
+  --head-to: #0e2240;
+
+  --background: #eef4f9;
+  --foreground: #0e2240;
+  --card: #ffffff;
+  --card-foreground: #0e2240;
+  --popover: #ffffff;
+  --popover-foreground: #0e2240;
+  /* Hauptfarbe hell: tieferes Eisblau, damit auch Text und Links gut lesbar sind (Kontrast über 4,5:1) */
+  --primary: #1d7fa0;
+  --primary-foreground: #ffffff;
+  --secondary: #dcebf4;
+  --secondary-foreground: #0e2240;
+  --muted: #e3edf5;
+  --muted-foreground: #56677f;
+  --accent: #a9e3f2;
+  --accent-foreground: #0e2240;
+  --destructive: #d64545;
+  --border: #d5e5f0;
+  --input: #c9dbe8;
+  --ring: #3fb6d8;
+  --radius: 1rem;
+  color-scheme: light;
+}
+
+/* Dunkel: folgt der Systemeinstellung; data-theme="light"/"dark" am <html> erzwingt hell bzw. dunkel */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ice-soft: #1d3b66;
+    --ice-press: #2a95b5;
+    --edge: #081428;
+    --head-from: #173a6b;
+    --head-to: #0b1a33;
+
+    --background: #0b1a33;
+    --foreground: #eaf6fb;
+    --card: #14294a;
+    --card-foreground: #eaf6fb;
+    --popover: #14294a;
+    --popover-foreground: #eaf6fb;
+    --primary: #3fb6d8;
+    --primary-foreground: #0e2240;
+    --secondary: #1b3358;
+    --secondary-foreground: #eaf6fb;
+    --muted: #14294a;
+    --muted-foreground: #9fb4c9;
+    --accent: #1d3b66;
+    --accent-foreground: #eaf6fb;
+    --destructive: #f06a6a;
+    --border: #22406b;
+    --input: #22406b;
+    --ring: #3fb6d8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ice-soft: #1d3b66;
+  --ice-press: #2a95b5;
+  --edge: #081428;
+  --head-from: #173a6b;
+  --head-to: #0b1a33;
+
+  --background: #0b1a33;
+  --foreground: #eaf6fb;
+  --card: #14294a;
+  --card-foreground: #eaf6fb;
+  --popover: #14294a;
+  --popover-foreground: #eaf6fb;
+  --primary: #3fb6d8;
+  --primary-foreground: #0e2240;
+  --secondary: #1b3358;
+  --secondary-foreground: #eaf6fb;
+  --muted: #14294a;
+  --muted-foreground: #9fb4c9;
+  --accent: #1d3b66;
+  --accent-foreground: #eaf6fb;
+  --destructive: #f06a6a;
+  --border: #22406b;
+  --input: #22406b;
+  --ring: #3fb6d8;
+  color-scheme: dark;
+}
+
+/* Kopf mit Welle und Blasen: <header class="endlab-head"><span class="endlab-bubble …"></span>…</header> */
+.endlab-head {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(160deg, var(--head-from), var(--head-to) 70%);
+  padding-bottom: 44px;
+}
+.endlab-head::after {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -32px;
+  height: 64px;
+  background: var(--background);
+  border-radius: 50% 50% 0 0;
+}
+.endlab-head > * { position: relative; z-index: 1; }
+.endlab-bubble { position: absolute !important; z-index: 0 !important; border-radius: 50%; background: var(--ice); opacity: 0.35; pointer-events: none; }
+
+/* Karten und Knöpfe mit Unterkante – drückbar wie Spielsteine */
+.endlab-raised { box-shadow: 0 5px 0 var(--edge); }
+.endlab-raised:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--edge); }
+
+/* „Powered by EndLab“ */
+.endlab-footer { display: flex; gap: 8px; align-items: center; justify-content: center; color: var(--muted-foreground); font-size: 0.8rem; }
+.endlab-logo { width: 20px; height: 20px; border-radius: 6px; background: var(--navy); display: inline-grid; place-items: center; flex: none; }
+.endlab-logo::after { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ice); }
+.endlab-footer b { color: var(--foreground); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .endlab-logo { background: var(--ice); }
+  :root:not([data-theme="light"]) .endlab-logo::after { background: var(--navy); }
+  :root:not([data-theme="light"]) .endlab-footer b { color: var(--ice); }
+}
+:root[data-theme="dark"] .endlab-logo { background: var(--ice); }
+:root[data-theme="dark"] .endlab-logo::after { background: var(--navy); }
+:root[data-theme="dark"] .endlab-footer b { color: var(--ice); }

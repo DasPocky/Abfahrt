@@ -26,7 +26,7 @@ export interface Leg {
 /** Symbole wie im Von/Nach-Kasten: Start hohl, Zwischenhalt Fähnchen, Ziel gefüllt */
 function PointIcon({ kind }: { kind: "start" | "via" | "end" }) {
   if (kind === "via") {
-    return <Flag className="size-3.5 shrink-0 text-blue-600 dark:text-blue-400" />;
+    return <Flag className="size-3.5 shrink-0 text-primary" />;
   }
   return (
     <span
@@ -92,7 +92,7 @@ function LegSection({
         >
           {/* Nummer statt Wort: Abschnitt 1, 2, 3 … */}
           <span
-            className="flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-semibold text-white tabular-nums"
+            className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-white tabular-nums"
             aria-hidden="true"
           >
             {index + 1}
@@ -143,7 +143,7 @@ function LegSection({
             <Button
               variant="ghost"
               size="sm"
-              className="-ml-2 h-7 text-blue-600 dark:text-blue-400"
+              className="-ml-2 h-7 text-primary"
               aria-expanded={showAll}
               onClick={() => setShowAll((v) => !v)}
             >
@@ -164,7 +164,7 @@ function LegSection({
                     className={cn(
                       "h-8 rounded-full px-3 text-sm font-medium tabular-nums outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       i === choice
-                        ? "bg-blue-600 text-white"
+                        ? "bg-primary text-primary-foreground"
                         : "bg-muted text-foreground hover:bg-accent",
                     )}
                   >
@@ -243,16 +243,14 @@ export function LegJourneys({
           </span>
           <span className="inline-flex items-center gap-1 text-sm whitespace-nowrap text-muted-foreground">
             {total !== null && <>{formatDuration(total)} ·</>}
-            <Flag className="size-3.5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+            <Flag className="size-3.5 text-primary" aria-hidden="true" />
             {legs.length - 1} Zwischenhalte
           </span>
         </p>
         <ol aria-label="Halte" className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs">
           {legs.map((leg, i) => (
             <li key={`${leg.from.id}-${i}`} className="flex items-center gap-1">
-              {i > 0 && (
-                <Flag className="size-3 text-blue-600 dark:text-blue-400" aria-hidden="true" />
-              )}
+              {i > 0 && <Flag className="size-3 text-primary" aria-hidden="true" />}
               <span className={cn(i === 0 && "font-medium")}>{leg.from.name}</span>
               {i > 0 && leg.stay > 0 && (
                 <span className="text-muted-foreground">({leg.stay} Min)</span>

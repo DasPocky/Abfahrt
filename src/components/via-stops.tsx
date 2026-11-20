@@ -116,12 +116,7 @@ export function AddViaButton({ count, onAdd }: { count: number; onAdd: () => voi
     );
   }
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="h-7 px-2 text-blue-600 dark:text-blue-400"
-      onClick={onAdd}
-    >
+    <Button variant="ghost" size="sm" className="h-7 px-2 text-primary" onClick={onAdd}>
       <Plus aria-hidden="true" />
       Zwischenhalt
     </Button>
