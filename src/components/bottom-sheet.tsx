@@ -57,12 +57,12 @@ export function BottomSheet({
         // Tipp auf den abgedunkelten Hintergrund schließt (Ziel ist dann das <dialog> selbst)
         onClick={(event) => event.target === event.currentTarget && close()}
         className={cn(
-          "mx-auto mt-auto mb-0 max-h-[80dvh] w-full max-w-2xl overflow-y-auto rounded-t-xl border-t bg-popover p-0 text-sm text-popover-foreground shadow-lg backdrop:bg-black/30 open:animate-in open:fade-in-0 open:slide-in-from-bottom-10",
+          "mx-auto mt-auto mb-0 max-h-[min(80dvh,calc(100dvh-env(safe-area-inset-top)-1rem))] w-full max-w-2xl overflow-y-auto rounded-t-xl border-t bg-popover p-0 text-sm text-popover-foreground shadow-lg backdrop:bg-black/30 open:animate-in open:fade-in-0 open:slide-in-from-bottom-10",
           className,
         )}
       >
         {open && (
-          <div className="pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <div className="pr-[env(safe-area-inset-right)] pb-[max(1rem,env(safe-area-inset-bottom))] pl-[env(safe-area-inset-left)]">
             <div className="flex items-start gap-2 p-4">
               <div className="min-w-0 flex-1 space-y-1">
                 <h2 id={`${id}-title`} className="font-heading font-medium text-foreground">
