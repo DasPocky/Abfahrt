@@ -30,7 +30,8 @@
   "vars": {
     "SPEECH_DAILY_MINUTES": "120",
     "ACCESS_TEAM": "endlab-de.cloudflareaccess.com",
-    "ACCESS_AUD": "4e9db034867b61ae0bb1b9ba14b49ed6c4a014ff1e2cc926d4da2f68836bc800",
+    // Öffentliche Kennung der Access-Anwendung (steht in jedem Ausweis), kein Geheimnis
+    "ACCESS_AUD": "4e9db034867b61ae0bb1b9ba14b49ed6c4a014ff1e2cc926d4da2f68836bc800", // gitleaks:allow
   },
   "services": [{ "binding": "LOGIN", "service": "endlab-login", "entrypoint": "Intern" }],
   // Push-Abos (#71), Schema in migrations/
