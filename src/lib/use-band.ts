@@ -27,7 +27,8 @@ export function useBand(main: RefObject<HTMLElement | null>, active: boolean) {
       // Titelblock: der Seitenkopf um die Überschrift (Titel, Unterzeile, Knöpfe), sonst Überschrift samt Absätzen
       const kopf = heading.closest("header");
       let last: Element = kopf && el.contains(kopf) ? kopf : heading;
-      if (last === heading) while (last.nextElementSibling?.tagName === "P") last = last.nextElementSibling;
+      if (last === heading)
+        while (last.nextElementSibling?.tagName === "P") last = last.nextElementSibling;
       const band = Math.ceil(last.getBoundingClientRect().bottom + scrollY + 12);
       root.style.setProperty("--band", `${band}px`);
       const mark = (parent: Element) => {
