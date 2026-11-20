@@ -43,7 +43,7 @@ export function checkAlerts(alerts: readonly Alert[], seen: readonly string[] | 
       ? {
           title: lines.length > 0 ? `Störung: ${lines.join(", ")}` : "Neue Störung",
           body: first.title,
-          url: "/abfahrt/stoerungen",
+          url: "/stoerungen",
           tag: "alerts",
         }
       : {
@@ -52,7 +52,7 @@ export function checkAlerts(alerts: readonly Alert[], seen: readonly string[] | 
             .map((a) => a.title)
             .slice(0, 3)
             .join(" · "),
-          url: "/abfahrt/stoerungen",
+          url: "/stoerungen",
           tag: "alerts",
         };
   return { messages: [message], seen: nextSeen };
@@ -111,7 +111,7 @@ export function checkTrip(
   const state: TripState =
     previous.signature === trip.signature ? { ...previous } : { signature: trip.signature };
   const messages: PushMessage[] = [];
-  const base = { url: "/abfahrt/fahrt", tag: "trip" };
+  const base = { url: "/fahrt", tag: "trip" };
 
   if (!journey) {
     if (!state.missing) {

@@ -17,7 +17,7 @@ const MAX_SUBSCRIPTIONS = 50;
 /** Je Abo und Lauf höchstens so viele Nachrichten */
 const MAX_MESSAGES = 2;
 /** Basis-URL für die Cache-Schlüssel (der Cron-Lauf hat keine Anfrage) */
-const CACHE_BASE = new Request("https://endlab.de/abfahrt/api/cron");
+const CACHE_BASE = new Request("https://abfahrt.endlab.de/api/cron");
 
 function parseJson<T>(raw: string | null, fallback: T, guard: (v: unknown) => v is T): T {
   if (raw === null) return fallback;

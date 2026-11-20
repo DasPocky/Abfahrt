@@ -1,14 +1,14 @@
 import { encryptPayload, vapidAuthorization, type SubscriptionKeys, type VapidJwk } from "./crypto";
 
 /** Absender-Angabe im VAPID-Token (für Rückfragen der Push-Dienste) */
-export const VAPID_SUBJECT = "https://endlab.de/abfahrt";
+export const VAPID_SUBJECT = "https://abfahrt.endlab.de";
 const TIMEOUT_MS = 10_000;
 
 /** Inhalt einer Benachrichtigung; der Service Worker zeigt sie an (src/pwa/service-worker.js) */
 export interface PushMessage {
   title: string;
   body: string;
-  /** Seite der App, die beim Antippen öffnet (unter /abfahrt/) */
+  /** Seite der App, die beim Antippen öffnet (Pfad an der Wurzel) */
   url: string;
   /** Gleiche Kennung ersetzt eine ältere Benachrichtigung statt eine weitere anzuzeigen */
   tag?: string;

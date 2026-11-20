@@ -13,7 +13,7 @@ import { StopPage } from "@/pages/stop-page";
 import { TripPage } from "@/pages/trip-page";
 import { TripRoutePage } from "@/pages/trip-route-page";
 
-/** Routen relativ zum basename BASE_PATH ("/abfahrt") */
+/** Routen relativ zum basename BASE_PATH (leer: an der Wurzel) */
 export const routes: RouteObject[] = [
   {
     element: <Layout />,

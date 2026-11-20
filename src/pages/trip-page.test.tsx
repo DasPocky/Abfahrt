@@ -68,7 +68,7 @@ describe("Live-Begleitung", () => {
     fireEvent.click(within(list).getAllByRole("button", { expanded: false })[0]!);
     fireEvent.click(screen.getByRole("button", { name: /Merken & live verfolgen/ }));
 
-    await waitFor(() => expect(router.state.location.pathname).toBe("/abfahrt/fahrt"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/fahrt"));
     expect(localStorage.getItem(SAVED_TRIP_KEY)).toContain(journeySignature(trip));
     const status = await screen.findByText("U79 ab Düsseldorf Hbf · Steig 2");
     expect(status).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe("Live-Begleitung", () => {
     expect(alert).toHaveTextContent("nicht mehr im Fahrplan");
     expect(within(alert).getByRole("link", { name: /Alternativen suchen/ })).toHaveAttribute(
       "href",
-      expect.stringContaining(`/abfahrt/verbindung?von=${encodeURIComponent(STOP_HBF.id)}`),
+      expect.stringContaining(`/verbindung?von=${encodeURIComponent(STOP_HBF.id)}`),
     );
   });
 
@@ -99,12 +99,12 @@ describe("Live-Begleitung", () => {
     mockJourneys([upcoming("j1")]);
     const { router } = renderAt("/");
     const card = screen.getByRole("link", { name: /Unterwegs nach Heinrich-Heine-Allee/ });
-    expect(card).toHaveAttribute("href", "/abfahrt/fahrt");
+    expect(card).toHaveAttribute("href", "/fahrt");
 
     fireEvent.click(card);
     fireEvent.click(await screen.findByRole("button", { name: /Begleitung beenden/ }));
     expect(localStorage.getItem(SAVED_TRIP_KEY)).toBeNull();
-    expect(router.state.location.pathname).toMatch(/^\/abfahrt\/?$/);
+    expect(router.state.location.pathname).toBe("/");
     expect(screen.queryByRole("link", { name: /Unterwegs nach/ })).toBeNull();
   });
 

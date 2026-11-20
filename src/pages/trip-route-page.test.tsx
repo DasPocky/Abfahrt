@@ -83,7 +83,7 @@ describe("Fahrtverlauf (#120)", () => {
     expect(screen.getByRole("button", { name: /Aufzug am Hbf/ })).toBeInTheDocument();
 
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/trip");
+    expect(url.pathname).toBe("/api/trip");
     expect(url.searchParams.get("ref")).toBe(REF);
   });
 
@@ -143,7 +143,7 @@ describe("Fahrtverlauf (#120)", () => {
     });
     const { router } = renderAt("/haltestelle/vrr%3Ade%3A05111%3A18036");
     fireEvent.click(await screen.findByRole("link", { name: /U76 nach Holthausen: Fahrtverlauf/ }));
-    await waitFor(() => expect(router.state.location.pathname).toBe("/abfahrt/verlauf"));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/verlauf"));
     expect(await screen.findByRole("list", { name: "Halte" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Zurück" })).toBeInTheDocument();
   });

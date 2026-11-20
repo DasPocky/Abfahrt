@@ -1,7 +1,7 @@
-// Service Worker der App, ausgeliefert als /abfahrt/sw.js und damit nur für den Scope /abfahrt/.
+// Service Worker der App, ausgeliefert als /sw.js für abfahrt.endlab.de.
 // Vorlage: Das Vite-Plugin in vite.config.ts ersetzt beim Build die Zeile BUILD durch die
 // Build-Version und die Dateien der App-Hülle (siehe src/pwa/precache.ts).
-const BUILD = { version: "dev", base: "/abfahrt", urls: [] };
+const BUILD = { version: "dev", base: "", urls: [] };
 
 // Die Origin endlab.de teilen sich mehrere Apps: nur eigene Caches anfassen.
 const CACHE_PREFIX = "abfahrt-shell-";

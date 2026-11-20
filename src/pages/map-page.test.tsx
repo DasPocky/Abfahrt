@@ -65,7 +65,7 @@ describe("Karte", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Punkt D-Heinrich-Heine-Allee U" }));
 
     const url = requestUrl(fetchMock.mock.calls[0]?.[0]);
-    expect(url.pathname).toBe("/abfahrt/api/stops/area");
+    expect(url.pathname).toBe("/api/stops/area");
     // feste Kachel, die den Ausschnitt abdeckt (#98)
     expect(url.searchParams.get("min")).toBe("51.200,6.720");
     expect(url.searchParams.get("max")).toBe("51.240,6.780");
@@ -76,7 +76,7 @@ describe("Karte", () => {
     expect(card).toHaveTextContent("Steig 4 · U-Bahn, Straßenbahn");
     expect(within(card).getByRole("link", { name: /Abfahrten/ })).toHaveAttribute(
       "href",
-      "/abfahrt/haltestelle/vrr%3Ade%3A05111%3A18036?gleis=4",
+      "/haltestelle/vrr%3Ade%3A05111%3A18036?gleis=4",
     );
     fireEvent.click(screen.getByRole("button", { name: "Schließen" }));
     expect(screen.queryByRole("group", { name: "D-Heinrich-Heine-Allee U" })).toBeNull();

@@ -3,47 +3,44 @@ import { BUILD_PLACEHOLDER, precacheUrls, renderServiceWorker } from "./precache
 import template from "./service-worker.js?raw";
 
 describe("precacheUrls", () => {
-  it("nimmt die App-Hülle unter /abfahrt/ auf, nicht aber Fremdes", () => {
+  it("nimmt die App-Hülle auf, nicht aber Fremdes", () => {
     const urls = precacheUrls([
       "index.html",
       ".assetsignore",
       "_headers",
-      "abfahrt/assets/index-BnKAFR0j.js",
-      "abfahrt/assets/index-BnKAFR0j.js.map",
-      "abfahrt/assets/index-Q5H_YITN.css",
-      "abfahrt/assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
-      "abfahrt/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2",
-      "abfahrt/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2",
-      "abfahrt/manifest.webmanifest",
-      "abfahrt/icons/icon-192.png",
-      "abfahrt/sw.js",
-      "abfahrt/.vite/manifest.json",
+      "assets/index-BnKAFR0j.js",
+      "assets/index-BnKAFR0j.js.map",
+      "assets/index-Q5H_YITN.css",
+      "assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
+      "assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2",
+      "assets/inter-cyrillic-wght-normal-DqGufNeO.woff2",
+      "manifest.webmanifest",
+      "icons/icon-192.png",
+      "sw.js",
+      ".vite/manifest.json",
     ]);
     expect(urls).toEqual([
-      "/abfahrt/",
-      "/abfahrt/assets/index-BnKAFR0j.js",
-      "/abfahrt/assets/index-Q5H_YITN.css",
-      "/abfahrt/assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
-      "/abfahrt/icons/icon-192.png",
-      "/abfahrt/manifest.webmanifest",
+      "/",
+      "/assets/index-BnKAFR0j.js",
+      "/assets/index-Q5H_YITN.css",
+      "/assets/inter-latin-wght-normal-Dx4kXJAl.woff2",
+      "/icons/icon-192.png",
+      "/manifest.webmanifest",
     ]);
   });
 
   it("lässt die lazy geladene Karte samt MapLibre-Worker weg", () => {
     expect(
       precacheUrls([
-        "abfahrt/assets/map-page-CX_qZUJr.js",
-        "abfahrt/assets/map-page-qvkd0SPb.css",
-        "abfahrt/assets/maplibre-gl-worker-CMkqA50c.mjs",
+        "assets/map-page-CX_qZUJr.js",
+        "assets/map-page-qvkd0SPb.css",
+        "assets/maplibre-gl-worker-CMkqA50c.mjs",
       ]),
-    ).toEqual(["/abfahrt/"]);
+    ).toEqual(["/"]);
   });
 
   it("versteht Windows-Pfade und entfernt Doppelte", () => {
-    expect(precacheUrls(["abfahrt\\icons\\icon.svg", "abfahrt/icons/icon.svg"])).toEqual([
-      "/abfahrt/",
-      "/abfahrt/icons/icon.svg",
-    ]);
+    expect(precacheUrls(["icons\\icon.svg", "icons/icon.svg"])).toEqual(["/", "/icons/icon.svg"]);
   });
 });
 
@@ -52,11 +49,11 @@ describe("renderServiceWorker", () => {
     expect(template).toContain(BUILD_PLACEHOLDER);
     const code = renderServiceWorker(template, {
       version: "abc123",
-      urls: ["/abfahrt/", "/abfahrt/assets/a$&.js"],
+      urls: ["/", "/assets/a$&.js"],
     });
     expect(code).not.toContain(BUILD_PLACEHOLDER);
     expect(code).toContain(
-      'const BUILD = {"version":"abc123","base":"/abfahrt","urls":["/abfahrt/","/abfahrt/assets/a$&.js"]};',
+      'const BUILD = {"version":"abc123","base":"","urls":["/","/assets/a$&.js"]};',
     );
   });
 
