@@ -24,6 +24,7 @@ import { MODE_SHORT } from "@/lib/modes";
 import { formatClock } from "@/lib/time";
 import type { TransportMode } from "../../shared/api-types";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 /** Ohne Favorit und Standort: Düsseldorf */
 export const DEFAULT_AREA = "5111000";
@@ -135,10 +136,7 @@ export function AlertsPage() {
 
   return (
     <section aria-labelledby="alerts-title" className="space-y-3">
-      <div>
-        <h1 id="alerts-title" className="text-2xl font-semibold tracking-tight">
-          Störungen{areaName ? ` in ${areaName}` : ""}
-        </h1>
+      <PageHeader id="alerts-title" title={`Störungen${areaName ? ` in ${areaName}` : ""}`}>
         <p className="text-xs text-muted-foreground" aria-live="polite">
           {sourceLine}
           {sourceLine && data && " · "}
@@ -149,7 +147,7 @@ export function AlertsPage() {
             </>
           )}
         </p>
-      </div>
+      </PageHeader>
 
       <div className="rounded-lg border">
         <StopPicker

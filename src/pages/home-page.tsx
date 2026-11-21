@@ -15,6 +15,7 @@ import { fitFavorites, type CardSize } from "@/lib/dashboard";
 import { cn } from "@/lib/utils";
 import { COUNTDOWN_TICK_MS } from "@/pages/stop-page";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 /** „In der Nähe“ auf dem Dashboard: nur die nächsten beiden */
 const NEARBY_ON_DASHBOARD = 2;
@@ -114,9 +115,7 @@ export function HomePage() {
       className={cn(dashboard ? "flex flex-col gap-4 overflow-hidden" : "space-y-6")}
     >
       <section aria-labelledby="home-title" className="shrink-0 space-y-2">
-        <h1 id="home-title" className="text-2xl font-semibold tracking-tight">
-          Abfahrten
-        </h1>
+        <PageHeader id="home-title" title="Abfahrten" />
         <StopSearch location={location} />
       </section>
 

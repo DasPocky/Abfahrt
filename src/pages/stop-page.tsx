@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation, useParams, useSearchParams } from "react-router";
-import { ArrowLeft, LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react";
+import { useLocation, useParams, useSearchParams } from "react-router";
+import { LoaderCircle, RefreshCw, TriangleAlert } from "lucide-react";
 import { StopAlertsBanner } from "@/components/alert-list";
 import { DepartureList, StopNoticesBanner } from "@/components/departure-list";
 import { FavoriteButton } from "@/components/favorite-button";
@@ -30,6 +30,7 @@ import {
 import { stopSpeech } from "@/lib/speech";
 import { formatClockWithSeconds } from "@/lib/time";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 /** Abruf der Abfahrten */
 export const DEPARTURES_REFETCH_MS = 30_000;
@@ -94,18 +95,22 @@ export function StopPage() {
 
   return (
     <section aria-labelledby="stop-title" className="space-y-4">
-      <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-        <Link to="/" aria-label="Zurück zur Suche">
-          <ArrowLeft aria-hidden="true" />
-          Suche
-        </Link>
-      </Button>
+      <PageHeader
+        id="stop-title"
+        title={title}
+        back={{ to: "/", label: "Zurück zur Suche" }}
+        actions={
+          knownName && (
+            <FavoriteButton
+              stop={{ id: stopId, name: knownName, place: data?.stop.place }}
+              filter={filter}
+            />
+          )
+        }
+      />
 
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <h1 id="stop-title" className="text-2xl font-semibold tracking-tight break-words">
-            {title}
-          </h1>
           {data?.stop.place && <p className="text-sm text-muted-foreground">{data.stop.place}</p>}
           {!isEmptyFilter(filter) && (
             <p className="text-sm font-medium">Ansicht: {describeFilter(filter)}</p>
@@ -119,12 +124,6 @@ export function StopPage() {
             </p>
           )}
         </div>
-        {knownName && (
-          <FavoriteButton
-            stop={{ id: stopId, name: knownName, place: data?.stop.place }}
-            filter={filter}
-          />
-        )}
         {data && (
           <SpeakButton
             label="Abfahrten vorlesen"

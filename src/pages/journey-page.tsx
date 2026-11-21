@@ -33,6 +33,7 @@ import { LocationHelp } from "@/components/location-help";
 import { useSavedTrip } from "@/hooks/use-saved-trip";
 import { journeySignature, setSavedTrip } from "@/lib/saved-trip";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 type Slot = "from" | "to";
 
@@ -180,9 +181,7 @@ export function JourneyPage() {
 
   return (
     <section aria-labelledby="journey-title" className="space-y-3">
-      <h1 id="journey-title" className="text-2xl font-semibold tracking-tight">
-        Verbindung
-      </h1>
+      <PageHeader id="journey-title" title="Verbindung" />
 
       <div className="space-y-2">
         <div className="relative rounded-xl border bg-card">

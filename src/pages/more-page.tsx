@@ -3,12 +3,13 @@ import { Link } from "react-router";
 import { Accessibility, ChevronRight, Download, Info, Settings } from "lucide-react";
 import { PushSettings } from "@/components/push-settings";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 export function MorePage() {
   usePageTitle("Mehr");
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Mehr</h1>
+      <PageHeader title="Mehr" />
 
       <section aria-labelledby="more-push" className="space-y-2">
         <h2 id="more-push" className="text-lg font-semibold tracking-tight">

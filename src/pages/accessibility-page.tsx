@@ -1,9 +1,7 @@
 // Erklärung zur Barrierefreiheit (#128): freiwillig, angelehnt an das Muster nach BITV 2.0.
 import type { ReactNode } from "react";
-import { Link } from "react-router";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 const ISSUES_URL = "https://github.com/DasPocky/Abfahrt/issues/new?template=fehler.yml";
 const UPDATED = "18.11.2026";
@@ -23,16 +21,11 @@ export function AccessibilityPage() {
   usePageTitle("Barrierefreiheit");
   return (
     <article className="space-y-8">
-      <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-        <Link to="/mehr" aria-label="Zurück zu Mehr">
-          <ArrowLeft aria-hidden="true" />
-          Mehr
-        </Link>
-      </Button>
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Erklärung zur Barrierefreiheit</h1>
-        <p className="text-sm text-muted-foreground">Stand: {UPDATED}</p>
-      </header>
+      <PageHeader title="Barrierefreiheit" back={{ to: "/mehr", label: "Zurück zu Mehr" }}>
+        <p className="text-sm text-muted-foreground">
+          Erklärung zur Barrierefreiheit · Stand: {UPDATED}
+        </p>
+      </PageHeader>
 
       <Section id="a11y-goal" title="Ziel">
         <p>
