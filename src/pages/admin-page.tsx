@@ -3,7 +3,7 @@
 // den Ausweis und die Rolle bei EndLab Login selbst (worker/admin.ts).
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { LoaderCircle, RefreshCw, Trash2 } from "lucide-react";
+import { LoaderCircle, LogOut, RefreshCw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePageTitle } from "@/hooks/use-page-title";
@@ -312,6 +312,26 @@ export function AdminPage() {
             ))}
           </ul>
         )}
+      </section>
+
+      <section className="space-y-2 border-t pt-6">
+        <p className="text-sm text-muted-foreground">
+          Angemeldet über{" "}
+          <a className="underline" href="https://login.endlab.de/">
+            EndLab Login
+          </a>
+          . Abmelden gilt für alle EndLab-Apps.
+        </p>
+        <Button
+          variant="outline"
+          onClick={() => {
+            // Überall abmelden: EndLab Login beendet die eigene Sitzung und die bei Cloudflare Access
+            location.href = "https://login.endlab.de/abmelden";
+          }}
+        >
+          <LogOut aria-hidden="true" />
+          Abmelden
+        </Button>
       </section>
     </div>
   );
