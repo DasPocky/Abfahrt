@@ -119,15 +119,16 @@
 .endlab-bubble { position: absolute !important; z-index: 0 !important; border-radius: 50%; background: var(--ice); opacity: 0.35; pointer-events: none; }
 
 /* Band hinter dem Seitenkopf: reicht bis unter den Titelblock der Seite (--band, gemessen),
-   mit Blase und Welle. Was ganz darin liegt, trägt .on-band und steht hell darauf.
+   mit Blase und Welle. Was ganz darin liegt, trägt .on-band und steht hell darauf; das erste
+   Element darunter rückt so weit ab, dass es ganz unter der Welle beginnt (useBand).
    <div class="endlab-band" aria-hidden="true"></div> als erstes Kind eines position:relative-Rahmens. */
 .endlab-band {
   position: absolute; left: 0; right: 0; top: 0; z-index: 0; overflow: hidden; pointer-events: none;
-  height: calc(var(--band, calc(env(safe-area-inset-top, 0px) + 7rem)) + 36px);
+  height: calc(var(--band, calc(env(safe-area-inset-top, 0px) + 7rem)) + 20px);
   background: linear-gradient(160deg, var(--head-from), var(--head-to) 70%);
 }
 .endlab-band::before { content: ""; position: absolute; width: 120px; height: 120px; right: -30px; top: -50px; border-radius: 50%; background: var(--ice); opacity: 0.35; }
-.endlab-band::after { content: ""; position: absolute; left: -10%; right: -10%; bottom: -32px; height: 64px; background: var(--background); border-radius: 50% 50% 0 0; }
+.endlab-band::after { content: ""; position: absolute; left: -10%; right: -10%; bottom: -20px; height: 40px; background: var(--background); border-radius: 50% 50% 0 0; }
 .on-band { color: #fff; }
 .on-band .text-muted-foreground, .on-band.text-muted-foreground { color: #a9e3f2; }
 
