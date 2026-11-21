@@ -1,5 +1,5 @@
 // Karte mit Haltestellen (/karte). Lazy geladen, siehe src/pages/lazy-map-page.tsx.
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { keepPreviousData, useQueries, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { ChevronRight, LoaderCircle, LocateFixed, TramFront, X } from "lucide-react";
@@ -138,6 +138,11 @@ export function MapPage() {
     [segments, nowMs],
   );
   const selectedVehicle = vehicles.find((v) => v.trip === selectedTrip) ?? null;
+  // Für die flüssige Fahrt auf der Karte: Positionen zu jedem Zeitpunkt
+  const vehiclesAt = useCallback(
+    (ms: number) => (segments ? vehiclePositions(segments, ms) : []),
+    [segments],
+  );
 
   function toggleLive() {
     setLive((on) => {
@@ -188,6 +193,7 @@ export function MapPage() {
           onViewChange={setView}
           onSelect={onSelectStop}
           vehicles={vehicles}
+          vehiclesAt={vehiclesAt}
           selectedTrip={selectedVehicle?.trip ?? null}
           onSelectVehicle={onSelectVehicle}
         />

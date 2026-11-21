@@ -2,7 +2,7 @@
 // einbinden, damit MapLibre nicht im Haupt-Bundle landet.
 import { useEffect, useRef } from "react";
 import { Map as MapLibreMap, NavigationControl, type GeoJSONSource } from "maplibre-gl";
-import { MAP_LOCALE, mapStyle } from "@/components/map-base";
+import { MAP_LOCALE, mapStyle, simplifyBaseMap } from "@/components/map-base";
 import type { RouteData } from "@/lib/route-map";
 
 /** Rand um die Route beim Einpassen (Platz für Zoomknöpfe, Namen unter den Punkten, Quellhinweis) */
@@ -117,7 +117,10 @@ export function RouteMap({ data, dark, label }: RouteMapProps) {
     map.keyboard.disableRotation();
     map.addControl(new NavigationControl({ showCompass: false }), "top-right");
     mapRef.current = map;
-    map.on("style.load", () => addRouteLayers(map, latest.current.dark, latest.current.data));
+    map.on("style.load", () => {
+      simplifyBaseMap(map);
+      addRouteLayers(map, latest.current.dark, latest.current.data);
+    });
     return () => {
       mapRef.current = null;
       map.remove();
