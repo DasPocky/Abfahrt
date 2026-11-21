@@ -17,6 +17,20 @@ export function mapStyle(dark: boolean): string {
   return dark ? MAP_STYLES.dark : MAP_STYLES.light;
 }
 
+/**
+ * Die Grundkarte zeigt nur Straßen, Gleise, Wasser und Ortsnamen. Ihre eigenen Haltestellen-Symbole
+ * (`poi_transit`) und Orte wie Läden oder Sehenswürdigkeiten (`poi_*`) blenden wir aus: Haltestellen
+ * zeichnet Abfahrt selbst (antippbar, mit Steigen), doppelt wären sie nur verwirrend.
+ */
+export function simplifyBaseMap(map: {
+  getStyle(): { layers?: { id: string }[] } | undefined;
+  setLayoutProperty(id: string, name: string, value: unknown): void;
+}): void {
+  for (const layer of map.getStyle()?.layers ?? []) {
+    if (layer.id.startsWith("poi")) map.setLayoutProperty(layer.id, "visibility", "none");
+  }
+}
+
 /** Deutsche Texte für die MapLibre-Bedienelemente (Vorlesen, Hilfetexte) */
 export const MAP_LOCALE = {
   "Map.Title": "Karte",

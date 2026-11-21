@@ -9,7 +9,7 @@ import {
 } from "maplibre-gl";
 import type { FeatureCollection, Point } from "geojson";
 import type { Stop, StopPlatform, TransportMode } from "../../shared/api-types";
-import { MAP_LOCALE, mapStyle } from "@/components/map-base";
+import { MAP_LOCALE, mapStyle, simplifyBaseMap } from "@/components/map-base";
 import type { Position } from "@/lib/geo";
 import type { VehiclePosition } from "@/lib/vehicles";
 import { mergeRadiusMeters, platformGroups, selectionKey, type Bounds } from "@/lib/map-area";
@@ -18,6 +18,8 @@ const STOPS_LAYER = "abfahrt-stops";
 const VEHICLES_LAYER = "abfahrt-vehicles";
 /** Ab hier stehen Steig-Nummern im Punkt und Haltestellennamen daneben */
 const DETAIL_MIN_ZOOM = 16;
+/** Haltestellennamen ab hier: Die Grundkarte beschriftet Haltestellen nicht mehr (simplifyBaseMap) */
+const NAMES_MIN_ZOOM = 14.5;
 
 /** Farben der Verkehrsmittel (wie die Fallback-Farben der Linien) */
 const MODE_HEX: Record<TransportMode, string> = {
@@ -133,6 +135,11 @@ interface StopMapProps {
   onSelect: (selection: MapSelection | null) => void;
   /** Live-Fahrzeuge (#92), leer wenn ausgeschaltet */
   vehicles: readonly VehiclePosition[];
+  /**
+   * Positionen zu einem beliebigen Zeitpunkt (aus dem Fahrplan berechnet). Ist sie da, fährt die
+   * Karte die Fahrzeuge flüssig mit jedem Bild statt im Sekundentakt.
+   */
+  vehiclesAt?: (ms: number) => readonly VehiclePosition[];
   /** Fahrt-ID des ausgewählten Fahrzeugs */
   selectedTrip: string | null;
   onSelectVehicle: (vehicle: VehiclePosition) => void;
@@ -293,7 +300,7 @@ function addOwnLayers(
     id: "abfahrt-stop-labels",
     type: "symbol",
     source: "abfahrt-stop-names",
-    minzoom: DETAIL_MIN_ZOOM,
+    minzoom: NAMES_MIN_ZOOM,
     layout: {
       "text-field": ["get", "name"],
       "text-font": ["Noto Sans Regular"],
@@ -366,6 +373,7 @@ export function StopMap({
   onViewChange,
   onSelect,
   vehicles,
+  vehiclesAt,
   selectedTrip,
   onSelectVehicle,
 }: StopMapProps) {
@@ -422,6 +430,7 @@ export function StopMap({
       const { stops: s, selectedKey: sel, userPosition: me, dark: d } = latest.current;
       const { vehicles: v, selectedTrip: trip } = latest.current;
       shownBucket.current = zoomBucket(map.getZoom());
+      simplifyBaseMap(map);
       addOwnLayers(
         map,
         d,
@@ -514,11 +523,32 @@ export function StopMap({
     void names?.setData(namesToGeoJson(stops));
   }, [stops, selectedKey, dark]);
 
+  // Flüssige Fahrt: Positionen bei jedem Bild neu berechnen (höchstens ~30 Bilder je Sekunde).
+  // Ohne vehiclesAt oder bei „Bewegung reduzieren“ bleibt es beim Sekundentakt über `vehicles`.
+  const smooth =
+    vehiclesAt !== undefined &&
+    !(typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches);
   useEffect(() => {
+    if (smooth) return;
     void mapRef.current
       ?.getSource<GeoJSONSource>(VEHICLES_LAYER)
       ?.setData(vehiclesToGeoJson(vehicles, selectedTrip));
-  }, [vehicles, selectedTrip]);
+  }, [smooth, vehicles, selectedTrip]);
+  useEffect(() => {
+    if (!smooth || !vehiclesAt) return undefined;
+    let frame = 0;
+    let last = 0;
+    const draw = (time: number) => {
+      frame = requestAnimationFrame(draw);
+      if (time - last < 33) return;
+      last = time;
+      void mapRef.current
+        ?.getSource<GeoJSONSource>(VEHICLES_LAYER)
+        ?.setData(vehiclesToGeoJson(vehiclesAt(Date.now()), selectedTrip));
+    };
+    frame = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(frame);
+  }, [smooth, vehiclesAt, selectedTrip]);
 
   useEffect(() => {
     void mapRef.current
