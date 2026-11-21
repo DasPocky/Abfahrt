@@ -2,14 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
-import {
-  ArrowLeft,
-  ChevronDown,
-  LoaderCircle,
-  Map as MapIcon,
-  RefreshCw,
-  TriangleAlert,
-} from "lucide-react";
+import { ChevronDown, LoaderCircle, Map as MapIcon, RefreshCw, TriangleAlert } from "lucide-react";
 import { cn } from "cn";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { NOTICE_CLASS, NoticeList } from "@/components/departure-list";
@@ -29,6 +22,7 @@ import { tripSpeech } from "@/lib/speech";
 import { stopIndex, tripProgress, tripStatus, tripStops } from "@/lib/trip";
 import { formatClockWithSeconds } from "@/lib/time";
 import type { JourneyLeg, JourneyStop } from "../../shared/api-types";
+import { PageHeader } from "@/components/page-header";
 
 const REFRESH_MS = 30_000;
 const TICK_MS = 15_000;
@@ -201,40 +195,22 @@ export function TripRoutePage() {
 
   return (
     <section aria-labelledby="trip-route-title" className="space-y-4">
-      {canGoBack ? (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="-ml-2 h-7 text-muted-foreground"
-          onClick={() => void navigate(-1)}
-        >
-          <ArrowLeft aria-hidden="true" />
-          Zurück
-        </Button>
-      ) : (
-        <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-          <Link to={from ? stopPath(from) : "/"}>
-            <ArrowLeft aria-hidden="true" />
-            {from ? "Abfahrten" : "Startseite"}
-          </Link>
-        </Button>
-      )}
+      <PageHeader
+        id="trip-route-title"
+        title={leg ? `nach ${leg.destination.name}` : "Fahrtverlauf"}
+        badge={leg && <LineBadge departure={legBadge(leg)} />}
+        back={
+          canGoBack
+            ? { label: "Zurück", onClick: () => void navigate(-1) }
+            : {
+                to: from ? stopPath(from) : "/",
+                label: from ? "Zurück zu den Abfahrten" : "Zur Startseite",
+              }
+        }
+      />
 
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1 space-y-1">
-          <h1
-            id="trip-route-title"
-            className="flex items-center gap-2 text-xl font-semibold tracking-tight"
-          >
-            {leg ? (
-              <>
-                <LineBadge departure={legBadge(leg)} />
-                <span className="min-w-0 break-words">nach {leg.destination.name}</span>
-              </>
-            ) : (
-              "Fahrtverlauf"
-            )}
-          </h1>
           {leg && (
             <p className="text-xs text-muted-foreground" aria-live="polite">
               <span className="font-medium text-foreground">

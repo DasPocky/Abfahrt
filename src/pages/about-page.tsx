@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { LocationProbe } from "@/components/location-probe";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 const REPO_URL = "https://github.com/DasPocky/Abfahrt";
 
@@ -33,12 +34,11 @@ export function AboutPage() {
   usePageTitle("Über Abfahrt");
   return (
     <article className="space-y-8">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Über Abfahrt</h1>
+      <PageHeader title="Über Abfahrt" back={{ to: "/mehr", label: "Zurück zu Mehr" }}>
         <p className="text-sm text-muted-foreground">
           Echtzeit-Abfahrten für Bus und Bahn – mit Fokus auf Düsseldorf und das Rheinland.
         </p>
-      </header>
+      </PageHeader>
 
       <Section id="about-purpose" title="Wozu?">
         <p>

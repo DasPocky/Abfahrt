@@ -74,7 +74,7 @@ describe("Barrierefreiheit (#128)", () => {
     ["/mehr", "Mehr"],
     ["/einstellungen", "Einstellungen"],
     ["/ueber", "Über Abfahrt"],
-    ["/barrierefreiheit", "Erklärung zur Barrierefreiheit"],
+    ["/barrierefreiheit", "Barrierefreiheit"],
     [`/verlauf?ref=${encodeURIComponent("efa|vrr|x|de:05111:18235|1|202611131200")}`, /nach/],
   ])("%s ohne axe-Verstöße", async (path, heading) => {
     mockApi();

@@ -1,8 +1,7 @@
 // Einstellungen (#37): Darstellung der Abfahrtszeile, Hell/Dunkel, Abfahrten je Favorit.
 import { ProfileTransfer } from "@/components/profile-transfer";
 import { useState } from "react";
-import { Link } from "react-router";
-import { ArrowLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "cn";
 import { DepartureList } from "@/components/departure-list";
 import { Segmented } from "@/components/segmented";
@@ -23,6 +22,7 @@ import {
 } from "@/lib/settings";
 import type { Departure } from "../../shared/api-types";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 const ROW_STYLE_LABEL: Record<RowStyle, { title: string; text: string }> = {
   a: { title: "Linie vorn", text: "Linie mit Symbol, Ziel, Minuten rechts (Standard)" },
@@ -82,13 +82,7 @@ export function SettingsPage() {
   const recent = useRecentPlaces();
   return (
     <div className="space-y-6">
-      <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-        <Link to="/mehr" aria-label="Zurück zu Mehr">
-          <ArrowLeft aria-hidden="true" />
-          Mehr
-        </Link>
-      </Button>
-      <h1 className="text-2xl font-semibold tracking-tight">Einstellungen</h1>
+      <PageHeader title="Einstellungen" back={{ to: "/mehr", label: "Zurück zu Mehr" }} />
 
       <section aria-labelledby="settings-rows" className="space-y-2">
         <h2 id="settings-rows" className="text-lg font-semibold tracking-tight">

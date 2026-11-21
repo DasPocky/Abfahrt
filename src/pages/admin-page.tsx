@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { API_PREFIX } from "../../shared/base-path";
+import { PageHeader } from "@/components/page-header";
 
 interface Stand {
   push: { abos: number; aktiv7: number; fehlerhaft: number };
@@ -135,7 +136,7 @@ export function AdminPage() {
   if (fehler === "kein_zugang") {
     return (
       <section className="space-y-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Verwaltung</h1>
+        <PageHeader title="Verwaltung" />
         <p>
           Kein Zugang. In der Verwaltung von EndLab Login braucht dein Konto bei „Abfahrt“ die Rolle
           „verwaltung“.
@@ -146,7 +147,7 @@ export function AdminPage() {
   if (!stand) {
     return (
       <section className="space-y-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Verwaltung</h1>
+        <PageHeader title="Verwaltung" />
         {fehler ? (
           <p role="alert" className="text-destructive">
             Gerade nicht erreichbar.
@@ -163,12 +164,14 @@ export function AdminPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-start justify-between gap-3">
-        <h1 className="text-2xl font-semibold tracking-tight">Verwaltung</h1>
-        <Button variant="ghost" size="icon" aria-label="Neu laden" onClick={() => void laden()}>
-          <RefreshCw aria-hidden="true" />
-        </Button>
-      </div>
+      <PageHeader
+        title="Verwaltung"
+        actions={
+          <Button variant="ghost" size="icon" aria-label="Neu laden" onClick={() => void laden()}>
+            <RefreshCw aria-hidden="true" />
+          </Button>
+        }
+      />
 
       {meldung && (
         <p role="status" className="text-sm text-muted-foreground">

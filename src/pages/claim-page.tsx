@@ -4,6 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { claimTransfer, ProfileError } from "@/lib/profile";
+import { PageHeader } from "@/components/page-header";
 
 /** Link vom anderen Gerät: Code einlösen und Favoriten und Einstellungen übernehmen */
 export function ClaimPage() {
@@ -25,9 +26,7 @@ export function ClaimPage() {
 
   return (
     <section aria-labelledby="claim-title" className="space-y-4">
-      <h1 id="claim-title" className="text-2xl font-semibold tracking-tight">
-        Übertragen
-      </h1>
+      <PageHeader id="claim-title" title="Übertragen" />
       {state === "busy" && (
         <p role="status" className="flex items-center gap-2 text-muted-foreground">
           <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />

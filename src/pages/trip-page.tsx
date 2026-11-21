@@ -2,7 +2,7 @@
 import { useEffect, useId } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
-import { ArrowLeft, ArrowRight, Radio, Search, TriangleAlert, X } from "lucide-react";
+import { Radio, Search, TriangleAlert, X } from "lucide-react";
 import { cn } from "cn";
 import { JourneyDetails } from "@/components/journey-details";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import {
 } from "@/lib/saved-trip";
 import { formatClockWithSeconds } from "@/lib/time";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { PageHeader } from "@/components/page-header";
 
 /** Neu abfragen alle 30 s, Countdown jede 15 s */
 const REFRESH_MS = 30_000;
@@ -62,14 +63,17 @@ export function TripPage() {
 
   if (!trip) {
     return (
-      <section className="space-y-4 py-8 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">Keine gemerkte Verbindung</h1>
-        <p className="text-sm text-muted-foreground">
-          In der Verbindungssuche eine Verbindung aufklappen und „Merken & live verfolgen“ tippen.
-        </p>
-        <Button asChild>
-          <Link to="/verbindung">Verbindung suchen</Link>
-        </Button>
+      <section className="space-y-4">
+        <PageHeader title="Live-Fahrt" />
+        <div className="space-y-4 py-4 text-center">
+          <h2 className="text-lg font-semibold">Keine gemerkte Verbindung</h2>
+          <p className="text-sm text-muted-foreground">
+            In der Verbindungssuche eine Verbindung aufklappen und „Merken & live verfolgen“ tippen.
+          </p>
+          <Button asChild>
+            <Link to="/verbindung">Verbindung suchen</Link>
+          </Button>
+        </div>
       </section>
     );
   }
@@ -100,23 +104,13 @@ export function TripPage() {
 
   return (
     <section aria-labelledby="trip-title" className="space-y-3">
-      <Button asChild variant="ghost" size="sm" className="-ml-2 h-7 text-muted-foreground">
-        <Link to="/verbindung" aria-label="Zurück zur Verbindungssuche">
-          <ArrowLeft aria-hidden="true" />
-          Verbindung
-        </Link>
-      </Button>
+      <PageHeader
+        id="trip-title"
+        title={`${trip.from.name} → ${trip.to.name}`}
+        back={{ to: "/verbindung", label: "Zurück zur Verbindungssuche" }}
+      />
 
       <div>
-        <h1 id="trip-title" className="text-lg leading-snug font-semibold tracking-tight">
-          {trip.from.name}
-          <ArrowRight
-            className="mx-1 inline size-4 align-[-0.15em] text-muted-foreground"
-            aria-hidden="true"
-          />
-          <span className="sr-only"> nach </span>
-          {trip.to.name}
-        </h1>
         <p className="flex items-center gap-1 text-xs text-muted-foreground">
           <Radio
             className={cn("size-3.5", !over && !isError && "text-success")}
